@@ -133,7 +133,7 @@ app.post('/api/extract-product', async (req, res) => {
     await page.goto(url, { waitUntil: 'domcontentloaded', timeout: 15000 });
     
     // Wait for content to load
-    await page.waitForTimeout(2000);
+    await new Promise(resolve => setTimeout(resolve, 2000));
     
     // Extract text content from the page
     const pageText = await page.evaluate((siteRules) => {
