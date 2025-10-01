@@ -189,34 +189,28 @@ export default function PricePerUnitCalculator() {
               </p>
             </div>
           </div>
-          <button
-            onClick={() => window.location.reload()}
-            style={{
-              background: 'linear-gradient(135deg, #a855f7 0%, #7c3aed 100%)',
-              border: 'none',
-              borderRadius: window.innerWidth < 768 ? '8px' : '12px',
-              padding: window.innerWidth < 768 ? '0.625rem' : '0.75rem 1.5rem',
-              color: '#ffffff',
-              fontWeight: 'bold',
-              cursor: 'pointer',
-              fontSize: '0.875rem',
-              transition: 'all 0.3s ease',
-              boxShadow: '0 4px 20px rgba(168, 85, 247, 0.3)',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              minWidth: window.innerWidth < 768 ? '40px' : 'auto',
-              minHeight: window.innerWidth < 768 ? '40px' : 'auto'
-            }}
-          >
-            {window.innerWidth < 768 ? (
-              <RotateCcw size={18} />
-            ) : (
-              <>
-                <RotateCcw size={16} />
-              </>
-            )}
-          </button>
+          {window.innerWidth >= 768 && (
+            <button
+              onClick={() => window.location.reload()}
+              style={{
+                background: 'linear-gradient(135deg, #a855f7 0%, #7c3aed 100%)',
+                border: 'none',
+                borderRadius: '12px',
+                padding: '0.75rem 1.5rem',
+                color: '#ffffff',
+                fontWeight: 'bold',
+                cursor: 'pointer',
+                fontSize: '0.875rem',
+                transition: 'all 0.3s ease',
+                boxShadow: '0 4px 20px rgba(168, 85, 247, 0.3)',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center'
+              }}
+            >
+              <RotateCcw size={16} />
+            </button>
+          )}
         </div>
       </div>
 
