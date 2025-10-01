@@ -291,12 +291,25 @@ OTHER RULES:
     try {
       const productInfo = JSON.parse(aiResponse);
       
+      // Convert kg to grams for easier comparison
+      let quantity = productInfo.quantity || '';
+      let unit = productInfo.unit || 'g';
+      
+      if (unit.toLowerCase() === 'kg' && quantity) {
+        const numQuantity = parseFloat(quantity);
+        if (!isNaN(numQuantity)) {
+          quantity = (numQuantity * 1000).toString();
+          unit = 'g';
+          console.log(`Converted ${productInfo.quantity}kg to ${quantity}g`);
+        }
+      }
+      
       // Validate the response has expected fields
       const validResponse = {
         name: productInfo.name || '',
         price: productInfo.price || '',
-        quantity: productInfo.quantity || '',
-        unit: productInfo.unit || 'g'
+        quantity: quantity,
+        unit: unit
       };
 
       console.log('Extracted product info:', validResponse);
