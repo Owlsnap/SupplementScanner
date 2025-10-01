@@ -8,7 +8,11 @@ import dotenv from 'dotenv';
 dotenv.config({ path: '.env.local' });
 
 const app = express();
-const PORT = 3001;
+const PORT = process.env.PORT || 3001;
+
+// Debug environment variables
+console.log('🔑 OpenAI API Key available:', !!process.env.OPENAI_API_KEY);
+console.log('🚀 Starting server on port:', PORT);
 
 // Initialize OpenAI
 const openai = new OpenAI({
@@ -105,11 +109,19 @@ app.post('/api/extract-product', async (req, res) => {
   console.log('Using site rules for:', siteRules.siteName);
 
   try {
+    console.log('🚀 Launching browser...');
     // Launch browser and get page text (cheaper than Vision API)
     const browser = await chromium.launch({ 
       headless: true,
-      args: ['--no-sandbox', '--disable-setuid-sandbox', '--disable-blink-features=AutomationControlled']
+      args: [
+        '--no-sandbox', 
+        '--disable-setuid-sandbox', 
+        '--disable-blink-features=AutomationControlled',
+        '--disable-dev-shm-usage',
+        '--disable-gpu'
+      ]
     });
+    console.log('✅ Browser launched successfully');
     const context = await browser.newContext({
       userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
       extraHTTPHeaders: {
@@ -295,7 +307,12 @@ OTHER RULES:
     }
 
   } catch (error) {
-    console.error('Extraction error:', error);
+    console.error('❌ Extraction error details:', {
+      message: error.message,
+      stack: error.stack,
+      name: error.name,
+      url: url
+    });
     
     if (error.message.includes('timeout')) {
       return res.status(500).json({
@@ -304,9 +321,16 @@ OTHER RULES:
       });
     }
     
+    if (error.message.includes('OpenAI')) {
+      return res.status(500).json({
+        success: false,
+        error: 'OpenAI API error. Please check API key and credits.'
+      });
+    }
+    
     return res.status(500).json({
       success: false,
-      error: 'Failed to extract product information. The site might be blocking automated access.'
+      error: `Server error: ${error.message}`
     });
   }
 });

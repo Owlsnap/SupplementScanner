@@ -10,7 +10,8 @@
     "preview": "vite preview",
     "server": "node server.js",
     "start": "node server.js",
-    "start:full": "concurrently \"npm run dev\" \"npm run server\""
+    "start:full": "concurrently \"npm run dev\" \"npm run server\"",
+    "postinstall": "npx playwright install chromium"
   },
   "dependencies": {
     "@tailwindcss/postcss": "^4.1.13",
