@@ -550,7 +550,7 @@ export default function PricePerUnitCalculator() {
                         textAlign: 'center'
                       }}>
                         <FlaskConical size={16} style={{ display: 'inline', marginRight: '0.5rem' }} />
-                        Unit
+                        _
                       </label>
                       <div
                         style={{
