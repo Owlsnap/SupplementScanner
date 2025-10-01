@@ -1,7 +1,7 @@
 import express from 'express';
 import cors from 'cors';
 import OpenAI from 'openai';
-import { chromium } from 'playwright';
+import puppeteer from 'puppeteer';
 import dotenv from 'dotenv';
 
 // Load environment variables
@@ -111,7 +111,7 @@ app.post('/api/extract-product', async (req, res) => {
   try {
     console.log('🚀 Launching browser...');
     // Launch browser and get page text (cheaper than Vision API)
-    const browser = await chromium.launch({ 
+    const browser = await puppeteer.launch({ 
       headless: true,
       args: [
         '--no-sandbox', 
@@ -122,14 +122,12 @@ app.post('/api/extract-product', async (req, res) => {
       ]
     });
     console.log('✅ Browser launched successfully');
-    const context = await browser.newContext({
-      userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
-      extraHTTPHeaders: {
-        'Accept-Language': 'sv-SE,sv;q=0.9,en;q=0.8',
-        'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8'
-      }
+    const page = await browser.newPage();
+    await page.setUserAgent('Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36');
+    await page.setExtraHTTPHeaders({
+      'Accept-Language': 'sv-SE,sv;q=0.9,en;q=0.8',
+      'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8'
     });
-    const page = await context.newPage();
     
     // Wait longer for Swedish sites
     await page.goto(url, { waitUntil: 'domcontentloaded', timeout: 15000 });
