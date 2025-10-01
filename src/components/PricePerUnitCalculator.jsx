@@ -9,7 +9,7 @@ export default function PricePerUnitCalculator() {
       name: "",
       price: "",
       quantity: "",
-      unit: "unit",
+      unit: "_",
       pricePerUnit: null,
       url: "",
     },
@@ -35,7 +35,7 @@ export default function PricePerUnitCalculator() {
         name: "",
         price: "",
         quantity: "",
-        unit: "unit",
+        unit: "_",
         pricePerUnit: null,
         url: "",
       },
@@ -71,7 +71,7 @@ export default function PricePerUnitCalculator() {
                 name: data.name || "",
                 price: data.price || "",
                 quantity: data.quantity || "",
-                unit: data.unit || "unit",
+                unit: data.unit || "_",
               };
 
               // Recalculate price per unit
@@ -551,7 +551,7 @@ export default function PricePerUnitCalculator() {
                         textAlign: 'center'
                       }}>
                         <FlaskConical size={16} style={{ display: 'inline', marginRight: '0.5rem' }} />
-                        _
+                        Unit
                       </label>
                       <div
                         style={{
