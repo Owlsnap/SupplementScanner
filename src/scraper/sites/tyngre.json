@@ -1,0 +1,28 @@
+{
+  "siteName": "Tyngre",
+  "domain": "tyngre.se",
+  "selectors": {
+    "price": [".css-1po23rs", ".css-pfatic", "[class*=\"price\"]"],
+    "quantity": ["h1", ".product-title", "[class*=\"size\"]", "[class*=\"weight\"]"],
+    "info": [".product-description", ".supplement-facts", ".product-info"],
+    "name": ["h1", ".product-title", ".product-name"]
+  },
+  "pricePattern": "(\\d{2,4})\\s*(kr|sek|€|\\$|:-)",
+  "instructions": {
+    "price": "Look for element with class css-1po23rs and text color #AA2E25 (red sale price) next to crossed out price, or p.css-pfatic with text color #1D1D1D (regular price). Ignore URL numbers like '3662p.html'.",
+    "quantity": "Keep original units - if '1kg' use quantity '1' and unit 'kg', if '900g' use quantity '900' and unit 'g', if '90 capsules' use quantity '90' and unit 'capsules'."
+  },
+  "swedishTerms": {
+    "dosageIndicators": ["per kapsel", "per tablett", "per portion", "daglig dos"],
+    "units": ["mg", "mcg", "µg", "IE", "g", "kapslar", "tabletter", "portioner"],
+    "sections": ["BESKRIVNING", "PRODUKTBESKRIVNING", "INFORMATION", "INNEHÅLL"]
+  },
+  "waitTime": 2000,
+  "targetSections": [
+    "text=/beskrivning/i",
+    "text=/produktbeskrivning/i",
+    "text=/produktinformation/i",
+    "text=/information/i",
+    "[class*=\"description\"]"
+  ]
+}

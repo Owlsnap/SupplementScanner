@@ -1,0 +1,28 @@
+{
+  "siteName": "Proteinbolaget",
+  "domain": "proteinbolaget.se",
+  "selectors": {
+    "price": [".price-current", ".product-price", "[data-testid=\"price\"]"],
+    "quantity": [".product-weight", ".size-info", "[class*=\"vikt\"]"],
+    "info": [".product-description", ".supplement-facts", ".product-info"],
+    "name": ["h1", ".product-title", ".product-name"]
+  },
+  "pricePattern": "(\\d{2,4})\\s*kr",
+  "instructions": {
+    "price": "Look for span.PrisREA with text color #FF7043, next to crossed out prices or span.PrisBOLD with text color: #414141.",
+    "quantity": "Keep original units - if '1kg' use quantity '1' and unit 'kg', if '750g' use quantity '750' and unit 'g', if '60 capsules' use quantity '60' and unit 'capsules'."
+  },
+  "swedishTerms": {
+    "dosageIndicators": ["per kapsel", "per tablett", "per portion", "daglig dos"],
+    "units": ["mg", "mcg", "µg", "IE", "g", "kapslar", "tabletter", "portioner"],
+    "sections": ["BESKRIVNING", "PRODUKTBESKRIVNING", "INFORMATION", "INNEHÅLL"]
+  },
+  "waitTime": 2000,
+  "targetSections": [
+    "text=/beskrivning/i",
+    "text=/produktbeskrivning/i", 
+    "text=/information/i",
+    "[class*=\"description\"]",
+    "[class*=\"information\"]"
+  ]
+}

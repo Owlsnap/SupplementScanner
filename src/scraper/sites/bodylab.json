@@ -1,0 +1,28 @@
+{
+  "siteName": "Bodylab",
+  "domain": "bodylab.se",
+  "selectors": {
+    "price": ["[itemprop=\"price\"]", "[data-price]", "[class*=\"Prices_Custom_DIV\"]", ".price-current", ".sale-price", "[class*=\"price\"]"],
+    "quantity": ["[itemprop=\"weight\"]", "h1", ".product-title", "[class*=\"size\"]", "[class*=\"weight\"]", ".product-subtitle"],
+    "info": [".product-description", ".supplement-facts", ".product-info"],
+    "name": ["h1", ".product-title", ".product-name"]
+  },
+  "pricePattern": "(\\d{2,4})[,.]?(\\d{0,2})\\s*(kr|sek|€|\\$)",
+  "instructions": {
+    "price": "PRIORITY 1: Look for span with itemprop='price' and extract value from content='X.XX' attribute (e.g., content='299.00' means price is '299'). PRIORITY 2: Look for span with itemprop='price' and data-unitprice attribute. PRIORITY 3: Look for div with class containing 'Prices_Custom_DIV'. The correct price format is like <span content='299.00' itemprop='price'>299,00</span> - extract '299' from the content attribute. CRITICAL: Ignore URL numbers like '663p.html' and ignore any prices like '169' that might be old/crossed out prices.",
+    "quantity": "Look for itemprop='weight' first, then in product title. Keep original units - if '500g' use quantity '500' and unit 'g', if '1kg' use quantity '1' and unit 'kg', if '60 capsules' use quantity '60' and unit 'capsules'."
+  },
+  "swedishTerms": {
+    "dosageIndicators": ["per kapsel", "per tablett", "per portion", "daglig dos"],
+    "units": ["mg", "mcg", "µg", "IE", "g", "kapslar", "tabletter", "portioner"],
+    "sections": ["BESKRIVNING", "PRODUKTBESKRIVNING", "INFORMATION", "INNEHÅLL"]
+  },
+  "waitTime": 2000,
+  "targetSections": [
+    "text=/beskrivning/i",
+    "text=/produktbeskrivning/i",
+    "text=/information/i",
+    "[class*=\"description\"]",
+    "[itemprop=\"description\"]"
+  ]
+}

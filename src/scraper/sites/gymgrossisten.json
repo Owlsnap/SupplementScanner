@@ -1,0 +1,71 @@
+{
+  "siteName": "Gymgrossisten",
+  "domain": "gymgrossisten.com",
+  "selectors": {
+    "price": ["#product-detail div.price-sales", "#product-detail .price-adjusted", "#product-detail .prices .price-sales"],
+    "quantity": ["#product-detail .product-details", "#product-detail h1", "#product-detail .size-selector"],
+    "info": ["#product-tabs", ".product-description", "#product-detail .supplement-facts"],
+    "name": ["#product-detail h1", "#product-detail .product-title", "#product-detail .product-name"]
+  },
+  "pricePattern": "(\\d{2,4})\\s*(kr|:-)",
+  "instructions": {
+    "price": "CRITICAL: Extract price ONLY from within the #product-detail section. Look specifically for div.price-sales inside the product-detail container. IGNORE any prices outside this section, including comparison prices, recommendation prices, or other product prices. The correct price structure is: #product-detail > prices-and-availability > prices > price > price-sales.",
+    "supplementInfo": "CRITICAL FOCUSED EXTRACTION: Look ONLY in these two specific HTML sections: 1) class='product-detail' id='product-detail' for basic product info, and 2) id='product-tabs' class='tabs product-tabs' for detailed information. Click 'Läs mer' button to reveal supplement details within these sections. Extract: active ingredient amount PER SERVING, dosage per unit, daily dosage instructions, and serving size calculations.",
+    "quantity": "Extract quantity from #product-detail section only. Look for product size information in the main product detail area, not from other products or recommendations.",
+    "dosageExtraction": {
+      "searchSections": ["Produktbeskrivning", "Information", "Innehåll", "Näringsinnehåll", "Doseringsinstruktioner", "Dosering"],
+      "dosagePatterns": [
+        "\\d+g per portion",
+        "\\d+ ?g/portion",
+        "\\d+ ?mg per kapsel",
+        "\\d+ ?mg/kapsel",
+        "Kreatin \\d+ ?g",
+        "Magnesium \\d+ ?mg",
+        "\\d+ ?mg magnesium",
+        "per portion: \\d+ ?g",
+        "per kapsel: \\d+ ?mg",
+        "Innehåll per portion: .*? \\d+ ?g",
+        "Portionsstorlek: ca \\d+ ?g"
+      ],
+      "servingPatterns": [
+        "1 portion dagligen",
+        "Tag 1 portion dagligen",
+        "en portion dagligen",
+        "2 teskedar dagligen",
+        "Tag 2 teskedar",
+        "\\d+ portion dagligen",
+        "\\d+ teskedar dagligen",
+        "ca \\d+ g dagligen"
+      ],
+      "servingRules": {
+        "en portion": 1,
+        "1 portion": 1,
+        "2 teskedar": 1,
+        "två teskedar": 1,
+        "1 tesked": 0.5,
+        "en tesked": 0.5
+      },
+      "extractionInstructions": "Extract dosagePerUnit as NUMBER ONLY in mg (e.g., from 'Kreatin 5g per portion' return 5000). Extract servingSize from daily dosage instructions (e.g., '1 portion dagligen' = 1, '2 teskedar' = 1 serving)."
+    }
+  },
+  "swedishTerms": {
+    "dosageIndicators": ["per portion", "per kapsel", "per tablett", "daglig dos", "rekommenderad dos", "per tesked", "teskedar"],
+    "units": ["mg", "mcg", "µg", "IE", "g", "kapslar", "tabletter", "portioner", "teskedar"],
+    "sections": ["BESKRIVNING", "PRODUKTBESKRIVNING", "PRODUKTINFORMATION", "INFORMATION", "INNEHÅLL", "NÄRINGSINNEHÅLL", "DOSERINGSINSTRUKTIONER", "DOSERING"],
+    "dosageKeywords": ["dagligen", "tillsammans med måltid", "på morgonen", "på kvällen", "morgon och kväll", "tag", "blanda", "teskedar"]
+  },
+  "waitTime": 2000,
+  "targetSections": [
+    "#product-detail",
+    "#product-tabs", 
+    "button[class*='read-more']",
+    "button[class*='läs-mer']",
+    "[class*='product-detail']",
+    "[class*='product-tabs']",
+    "text=/läs mer/i",
+    "text=/beskrivning/i",
+    "text=/information/i",
+    "text=/innehåll/i",
+    "text=/dosering/i"
+  ]
+}

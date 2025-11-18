@@ -1,0 +1,65 @@
+{
+  "siteName": "Tillskottsbolaget",
+  "domain": "tillskottsbolaget.se",
+  "selectors": {
+    "price": ["span.prisBOLD", ".price", ".current-price", "[class*=\"pris\"]"],
+    "quantity": [".product-size", ".weight", "[class*=\"storlek\"]", "h1"],
+    "info": ["#Faktakolumn", ".product-info", ".supplement-facts"],
+    "name": ["h1", ".product-title", ".product-name"]
+  },
+  "pricePattern": "(\\d{2,4})\\s*(kr|:-)",
+  "instructions": {
+    "price": "CRITICAL: Extract the actual price from the page text. Look for the price number that appears after the product name and article number (Artnr). For example, if you see '249 kr' in the text, return '249'. DO NOT use any hardcoded values. Always use the price found in the extracted page text.",
+    "supplementInfo": "CRITICAL DOSAGE EXTRACTION: Look in #Faktakolumn and Produktbeskrivning sections for: 1) Active ingredient amount PER CAPSULE (e.g., 'Magnesium 200 mg per kapsel', 'Magnesiumcitrat 400mg per kapsel'). 2) Extract the NUMBER ONLY for dosagePerUnit (e.g., if '200 mg per kapsel' then dosagePerUnit = 200). 3) Find serving size from Rekommenderad dosering section (e.g., '1 kapsel dagligen' = servingSize 1, 'på morgonen och kvällen' = servingSize 2). 4) Calculate servingsPerContainer = quantity ÷ servingSize.",
+    "quantity": "Keep original units - if '1kg' use quantity '1' and unit 'kg', if '750g' use quantity '750' and unit 'g', if '30 servings' use quantity '30' and unit 'servings'.",
+    "dosageExtraction": {
+      "searchSections": ["Faktakolumn", "Produktbeskrivning", "Rekommenderad dosering", "Dosering"],
+      "dosagePatterns": [
+        "\\d+ ?mg per kapsel",
+        "\\d+ ?mg/kapsel", 
+        "Magnesium \\d+ ?mg",
+        "Magnesiumcitrat \\d+ ?mg",
+        "\\d+ ?mg magnesium",
+        "per kapsel: \\d+ ?mg",
+        "Innehåll per kapsel: .*? \\d+ ?mg"
+      ],
+      "servingPatterns": [
+        "1 kapsel dagligen tillsammans med måltid",
+        "Tag 1 kapsel dagligen", 
+        "en kapsel dagligen",
+        "1 kapsel på morgonen och en på kvällen",
+        "Tag 2 kapslar dagligen",
+        "\\d+ kapsel dagligen",
+        "\\d+ kapslar dagligen"
+      ],
+      "servingRules": {
+        "en kapsel": 1,
+        "1 kapsel": 1,
+        "2 kapslar": 2,
+        "på morgonen och en på kvällen": 2,
+        "morgon och kväll": 2
+      },
+      "extractionInstructions": "Extract dosagePerUnit as NUMBER ONLY (e.g., from 'Magnesium 200mg per kapsel' return 200). Extract servingSize from daily dosage instructions (e.g., '1 kapsel dagligen' = 1, 'morgon och kväll' = 2)."
+    }
+  },
+  "swedishTerms": {
+    "dosageIndicators": ["per kapsel", "per tablett", "per portion", "daglig dos", "rekommenderad dos"],
+    "units": ["mg", "mcg", "µg", "IE", "g", "kapslar", "tabletter", "portioner"],
+    "sections": ["BESKRIVNING", "PRODUKTBESKRIVNING", "PRODUKTINFORMATION", "NÄRING & INGREDIENSER", "LÄS MER", "INFORMATION", "INNEHÅLL", "NÄRINGSINNEHÅLL", "REKOMMENDERAD DOSERING"],
+    "dosageKeywords": ["dagligen", "tillsammans med måltid", "på morgonen", "på kvällen", "morgon och kväll", "tag"]
+  },
+  "waitTime": 3000,
+  "targetSections": [
+    "#Faktakolumn",
+    "text=/beskrivning/i",
+    "text=/produktbeskrivning/i",
+    "text=/produktinformation/i",
+    "text=/information/i",
+    "text=/innehåll/i",
+    "text=/näringsinnehåll/i",
+    "text=/rekommenderad dosering/i",
+    "text=/dosering/i",
+    "[class*=\"dosage\"]",
+    "[class*=\"dosering\"]"
+  ]
+}

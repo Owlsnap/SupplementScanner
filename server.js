@@ -34,95 +34,35 @@ const corsOptions = {
 app.use(cors(corsOptions));
 app.use(express.json());
 
-// Site-specific extraction rules
-function getSiteSpecificRules(url) {
-  const hostname = new URL(url).hostname.toLowerCase();
-  
-  // Define rules for different websites
-  if (hostname.includes('proteinbolaget')) {
-    return {
-      siteName: 'Proteinbolaget',
-      priceSelectors: ['.price-current', '.product-price', '[data-testid="price"]'],
-      quantitySelectors: ['.product-weight', '.size-info', '[class*="vikt"]'],
-      pricePattern: /(\d{2,4})\s*kr/i,
-      specialInstructions: 'PRICE: Look for span.PrisREA with text color #FF7043, next to crossed out prices or span.PrisBOLD with text color: #414141. QUANTITY: Keep original units - if "1kg" use quantity "1" and unit "kg", if "750g" use quantity "750" and unit "g", if "60 capsules" use quantity "60" and unit "capsules".'
-    };
-  }
-  
-  if (hostname.includes('tillskottsbolaget')) {
-    return {
-      siteName: 'Tillskottsbolaget', 
-      priceSelectors: ['.price', '.current-price', '[class*="pris"]'],
-      quantitySelectors: ['.product-size', '.weight', '[class*="storlek"]', 'h1'],
-      pricePattern: /(\d{2,4})\s*(kr|:-)/i,
-      specialInstructions: 'PRICE: Look for span.PrisREA with text color #A61513 and "fr." before the price, next to crossed out prices or span.PrisBOLD with text color: ##0F091C. QUANTITY: Keep original units - if "1kg" use quantity "1" and unit "kg", if "750g" use quantity "750" and unit "g", if "30 servings" use quantity "30" and unit "servings".'
-    };
-  }
-  
-  if (hostname.includes('gymgrossisten')) {
-    return {
-      siteName: 'Gymgrossisten',
-      priceSelectors: ['.product-price', '.price-box', '.current-price'],
-      quantitySelectors: ['.product-details', '.size-selector', '[class*="vikt"]'],
-      pricePattern: /(\d{2,4})\s*kr/i,
-      specialInstructions: 'PRICE: Look for div.price-adjusted with color #cd0000, usually next to or above a crossed-out original price. Also look for div.price-sales with text color #000000. QUANTITY: Keep original units - if "1kg" use quantity "1" and unit "kg", if "500g" use quantity "500" and unit "g", if "120 tablets" use quantity "120" and unit "tablets".'
-    };
-  }
-  
-
-
-  if (hostname.includes('tyngre')) {
-    return {
-      siteName: 'Tyngre',
-      priceSelectors: ['.css-1po23rs', '.css-pfatic', '[class*="price"]'],
-      quantitySelectors: ['h1', '.product-title', '[class*="size"]', '[class*="weight"]'],
-      pricePattern: /(\d{2,4})\s*(kr|sek|€|\$|:-)/i,
-      specialInstructions: 'PRICE: Look for element with class css-1po23rs and text color #AA2E25 (red sale price) next to crossed out price, or p.css-pfatic with text color #1D1D1D (regular price). Ignore URL numbers like "3662p.html". QUANTITY: Keep original units - if "1kg" use quantity "1" and unit "kg", if "900g" use quantity "900" and unit "g", if "90 capsules" use quantity "90" and unit "capsules".'
-    };
-  }
-  
-  if (hostname.includes('bodylab')) {
-    return {
-      siteName: 'Bodylab',
-      priceSelectors: ['[itemprop="price"]', '[data-price]', '[class*="Prices_Custom_DIV"]', '.price-current', '.sale-price', '[class*="price"]'],
-      quantitySelectors: ['[itemprop="weight"]', 'h1', '.product-title', '[class*="size"]', '[class*="weight"]', '.product-subtitle'],
-      pricePattern: /(\d{2,4})[,.]?(\d{0,2})\s*(kr|sek|€|\$)/i,
-      specialInstructions: 'PRICE: PRIORITY 1: Look for span with itemprop="price" and extract value from content="X.XX" attribute (e.g., content="299.00" means price is "299"). PRIORITY 2: Look for span with itemprop="price" and data-unitprice attribute. PRIORITY 3: Look for div with class containing "Prices_Custom_DIV". The correct price format is like <span content="299.00" itemprop="price">299,00</span> - extract "299" from the content attribute. CRITICAL: Ignore URL numbers like "663p.html" and ignore any prices like "169" that might be old/crossed out prices. QUANTITY: Look for itemprop="weight" first, then in product title. Keep original units - if "500g" use quantity "500" and unit "g", if "1kg" use quantity "1" and unit "kg", if "60 capsules" use quantity "60" and unit "capsules".'
-    };
-  }
-
-  // Default rules for unknown sites
-  return {
-    siteName: 'Generic',
-    priceSelectors: ['.price', '[class*="price"]', '[data-testid*="price"]'],
-    quantitySelectors: ['h1', '.product-title', '[class*="size"]', '[class*="weight"]'],
-    pricePattern: /(\d{2,4})\s*(kr|sek|€|\$|:-)/i,
-    specialInstructions: 'PRICE: Find the main product price that customers pay. Ignore URL numbers. QUANTITY: Keep original units - if "500g" use quantity "500" and unit "g", if "1kg" use quantity "1" and unit "kg", if "60 capsules" use quantity "60" and unit "capsules", if "30 servings" use quantity "30" and unit "servings".'
-  };
-}
-
 // Simple health check
 app.get('/', (req, res) => {
   res.json({ message: 'AI Product Extraction API is running!' });
 });
 
+// Test endpoint to verify API is reachable
+app.get('/api/test', (req, res) => {
+  console.log('🧪 Test endpoint hit from:', req.headers['origin'] || req.headers['host']);
+  res.json({ success: true, message: 'API is working!', timestamp: new Date().toISOString() });
+});
+
 // Product extraction endpoint
 app.post('/api/extract-product', async (req, res) => {
+  console.log('🎯 POST /api/extract-product - Request received');
+  console.log('📨 Headers:', req.headers);
+  console.log('📦 Body:', req.body);
+  
   const { url } = req.body;
 
   if (!url) {
+    console.log('❌ No URL provided in request');
     return res.status(400).json({ success: false, error: 'URL is required' });
   }
 
-  console.log('Extracting product info from:', url);
-
-  // Get site-specific extraction rules
-  const siteRules = getSiteSpecificRules(url);
-  console.log('Using site rules for:', siteRules.siteName);
+  console.log('🔍 Extracting product info from:', url);
 
   try {
     console.log('🚀 Launching browser...');
-    // Launch browser and get page text (cheaper than Vision API)
+    // Launch browser and take screenshot
     const browser = await puppeteer.launch({ 
       headless: true,
       args: [
@@ -135,204 +75,61 @@ app.post('/api/extract-product', async (req, res) => {
     });
     console.log('✅ Browser launched successfully');
     const page = await browser.newPage();
-    await page.setUserAgent('Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36');
-    await page.setExtraHTTPHeaders({
-      'Accept-Language': 'sv-SE,sv;q=0.9,en;q=0.8',
-      'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8'
-    });
     
-    // Wait longer for Swedish sites
-    await page.goto(url, { waitUntil: 'domcontentloaded', timeout: 15000 });
+    // Set viewport for better mobile/desktop compatibility
+    await page.setViewport({ width: 1200, height: 800 });
     
-    // Wait for content to load
-    await new Promise(resolve => setTimeout(resolve, 2000));
-    
-    // Extract text content from the page
-    const pageText = await page.evaluate((siteRules) => {
-      // Remove script and style elements
-      const scripts = document.querySelectorAll('script, style, noscript');
-      scripts.forEach(el => el.remove());
-      
-      // Get site-specific selectors (passed from server)
-      const sitePriceSelectors = siteRules.priceSelectors || [];
-      const siteQuantitySelectors = siteRules.quantitySelectors || [];
-      
-      // Combine site-specific and general selectors
-      const selectors = [
-        // Site-specific selectors first (highest priority)
-        ...sitePriceSelectors,
-        ...siteQuantitySelectors,
-        // General price selectors
-        '[class*="current"]', '[class*="sale"]', '[class*="discount"]', '[class*="special"]',
-        '[data-testid*="price"]', '.price', '[class*="price"]', '[id*="price"]',
-        '[class*="pris"]', '[class*="rea"]', '[class*="nu"]',
-        // Product info
-        '.product-title', '.product-name', 'h1', 'h2',
-        '[class*="weight"]', '[class*="size"]', '[class*="amount"]',
-        '.product-info', '.product-description', '[class*="product"]',
-        // Swedish-specific selectors
-        '[class*="vikt"]', '[class*="storlek"]'
-      ];
-      
-      let content = '';
-      selectors.forEach(selector => {
-        const elements = document.querySelectorAll(selector);
-        elements.forEach(el => {
-          // For itemprop="price" elements, prioritize content attribute
-          if (el.getAttribute('itemprop') === 'price') {
-            const contentAttr = el.getAttribute('content');
-            const dataUnitPrice = el.getAttribute('data-unitprice');
-            if (contentAttr) {
-              content += `MAIN_PRICE_CONTENT_ATTR: ${contentAttr} | `;
-            }
-            if (dataUnitPrice) {
-              content += `MAIN_PRICE_DATA_ATTR: ${dataUnitPrice} | `;
-            }
-          }
-          
-          if (el.innerText && el.innerText.trim()) {
-            content += el.innerText.trim() + ' | ';
-          }
-        });
-      });
-      
-      // Fallback to body text if specific selectors don't work
-      if (content.length < 150) {
-        const bodyText = document.body.innerText || '';
-        // Extract lines that might contain price/product info
-        const lines = bodyText.split('\n').filter(line => 
-          line.length > 5 && line.length < 200 && (
-            /\d/.test(line) || // contains numbers
-            /kr|sek|€|\$|pound|gram|kilogram|liter|ml|g|kg|l/i.test(line) || // contains units/currency
-            /solid|whey|protein|supplement|nutrition/i.test(line) // contains product keywords
-          )
-        );
-        content = lines.slice(0, 20).join(' | ');
+    await page.goto(url, { waitUntil: 'networkidle2', timeout: 30000 });
+        
+    // Try to click on common description/information tabs that might contain supplement info
+    try {
+      // Look for Tillskottsbolaget specific read-more button
+      const readMoreButton = await page.$('.btn.sup-read-more-btn');
+      if (readMoreButton) {
+        console.log('🔽 Clicking on Tillskottsbolaget read-more button');
+        await readMoreButton.click();
+        await page.waitFor(2000); // Wait for content expansion
       }
-      
-      return content.substring(0, 4000); // Increased limit
-    }, siteRules);
+    } catch (e) {
+      // If clicking fails, continue with screenshot
+    }
+    
+    // Take a full page screenshot to capture all content including expanded sections
+    const screenshot = await page.screenshot({ 
+      fullPage: true,
+      timeout: 10000
+    });
     
     await browser.close();
 
-    console.log('Extracted text length:', pageText.length);
-    console.log('Price-related text sample:', pageText.split('|').filter(line => 
-      /\d+\s*(kr|sek|€|\$|:-|pris|price)/i.test(line)
-    ).slice(0, 10).join(' | '));
+    // Convert screenshot to base64
+    const base64Image = screenshot.toString('base64');
 
-    // Use OpenAI to extract structured data
-    const response = await openai.chat.completions.create({
-      model: "gpt-3.5-turbo",
-      messages: [{
-        role: "user",
-        content: `You are extracting product information from ${siteRules.siteName} (${url}). Analyze this text and find the MAIN PRODUCT PRICE that a customer would pay.
-
-SITE-SPECIFIC INSTRUCTIONS: ${siteRules.specialInstructions}
-
-TEXT TO ANALYZE:
-${pageText}
-
-Look for the primary purchase price (usually 2-3 digits for supplements). Examples of what to look for:
-- "199 kr" → extract "199"
-- "299:-" → extract "299" 
-- "Pris: 249 kr" → extract "249"
-- "149 SEK or 149,00 SEK" → extract "149"
-
-Return exactly this format (no other text):
-{
-  "name": "product name here",
-  "price": "complete numeric price only (remove currency symbols)",
-  "quantity": "numeric quantity in original unit", 
-  "unit": "original unit (g, kg, ml, capsules, tablets, servings, etc.)"
-}
-
-Examples:
-- "Whey Protein 1kg for 249kr" → {"name": "Whey Protein", "price": "249", "quantity": "1", "unit": "kg"}
-- "Creatine 500g for 150kr" → {"name": "Creatine", "price": "150", "quantity": "500", "unit": "g"}
-- "Omega-3 60 capsules for 199kr" → {"name": "Omega-3", "price": "199", "quantity": "60", "unit": "capsules"}
-- "Vitamin D3 100 tablets for 89kr" → {"name": "Vitamin D3", "price": "89", "quantity": "100", "unit": "tablets"}
-
-CRITICAL PRICE RULES:
-- ⚠️  NEVER USE NUMBERS FROM THE URL! URLs like "clear-whey-3662p.html" contain product IDs, NOT prices
-- Find the MAIN PRICE that a customer would pay to buy this product right now
-- Look for the most prominent price display (usually largest font, most visible)
-- If there are multiple prices, choose the CURRENT price (what customer pays), not old/crossed-out prices
-- Look for price with different color near crossed-out prices or "old price" labels
-- Common price patterns: "199 kr", "199:-", "199 SEK", "Price: 199"
-- Ignore partial prices like "99" if the full price is "199" 
-- Ignore shipping costs, membership prices, or "from" prices
-- Price should be a complete number (remove kr, SEK, $, €, :- etc.)
-- Double-check: does this price make sense for a supplement product? (usually 50-500+ kr)
-- ⚠️  If you find a 4-digit number like "3662", check if it's from URL - if so, ignore it!
-
-OTHER RULES:
-- Extract only the main product being sold
-- Look for Swedish terms: "pris" (price), "vikt" (weight), "storlek" (size)
-- CRITICAL: PRESERVE original units exactly as they appear:
-  * "1kg" → quantity: "1", unit: "kg"
-  * "2.5kg" → quantity: "2.5", unit: "kg" 
-  * "750g" → quantity: "750", unit: "g"
-  * "500ml" → quantity: "500", unit: "ml"
-  * "60 capsules" → quantity: "60", unit: "capsules"
-  * "100 tablets" → quantity: "100", unit: "tablets"
-  * "30 servings" → quantity: "30", unit: "servings"
-- Keep units as they appear on the product page for accurate comparison
-- Common supplement units: g, kg, ml, capsules, tablets, servings, doses, scoops
-- If information is unclear, make reasonable assumptions based on context
-- Return ONLY the JSON object, nothing else`
-      }],
-      max_tokens: 200,
-      temperature: 0.1
-    });
-
-    const aiResponse = response.choices[0].message.content.trim();
-    console.log('AI Response:', aiResponse);
-
-    try {
-      const productInfo = JSON.parse(aiResponse);
-      
-      // Convert kg to grams for easier comparison
-      let quantity = productInfo.quantity || '';
-      let unit = productInfo.unit || 'g';
-      
-      if (unit.toLowerCase() === 'kg' && quantity) {
-        const numQuantity = parseFloat(quantity);
-        if (!isNaN(numQuantity)) {
-          quantity = (numQuantity * 1000).toString();
-          unit = 'g';
-          console.log(`Converted ${productInfo.quantity}kg to ${quantity}g`);
-        }
-      }
-      
-      // Validate the response has expected fields
-      const validResponse = {
-        name: productInfo.name || '',
-        price: productInfo.price || '',
-        quantity: quantity,
-        unit: unit
-      };
-
-      console.log('Extracted product info:', validResponse);
-
-      return res.json({
-        success: true,
-        ...validResponse
-      });
-
-    } catch (parseError) {
-      console.error('JSON parse error:', parseError);
-      console.error('AI Response was:', aiResponse);
-      
-      return res.status(500).json({
-        success: false,
-        error: 'Could not parse AI response. The page might be too complex or blocked.'
-      });
+    // Use OpenAI with structured extraction system
+    const extractedData = await performStructuredExtraction(base64Image);
+    
+    if (!extractedData) {
+      throw new Error('Failed to extract product information');
     }
+    
+    // Validate and clean the extracted data
+    const validatedData = validateAndCleanData(extractedData);
+    
+    console.log('AI Extraction Result:', {
+      foundBasicInfo: !!(validatedData.name || validatedData.price),
+      foundSupplementInfo: !!(validatedData.activeIngredient || validatedData.dosagePerUnit),
+      extractedData: validatedData
+    });
+    
+    return res.status(200).json({
+      success: true,
+      ...validatedData
+    });
 
   } catch (error) {
     console.error('❌ Extraction error details:', {
       message: error.message,
-      stack: error.stack,
+      stack: error.stack?.substring(0, 500),
       name: error.name,
       url: url
     });
@@ -357,6 +154,200 @@ OTHER RULES:
     });
   }
 });
+
+// ====== PROFESSIONAL AI EXTRACTION SYSTEM ======
+
+// JSON Schema for supplement extraction
+const SUPPLEMENT_SCHEMA = {
+  type: "object",
+  properties: {
+    name: { type: "string", description: "Product name" },
+    price: { type: "number", description: "Current selling price as number" },
+    quantity: { type: "number", description: "Quantity/weight as number" },
+    unit: { type: "string", description: "Unit (kapslar, tabletter, g, ml, etc.)" },
+    activeIngredient: { type: "string", description: "Main active ingredient" },
+    dosagePerUnit: { type: "number", description: "Dosage per unit as number" },
+    servingSize: { type: "number", description: "Recommended serving size" },
+    servingsPerContainer: { type: "number", description: "Total servings per container" }
+  },
+  required: ["name", "price", "quantity", "unit"]
+};
+
+// // Specialized extraction functions
+// function extractPrice(html) {
+//   // Price extraction logic - find current selling price
+//   const pricePatterns = [
+//     /(?:pris|price)[^\d]*([\d,\.]+)\s*kr/i,
+//     /([\d,\.]+)\s*kr(?!.*tidigare|.*var|.*förut)/i,
+//     /\b([\d,\.]+)\s*kr\s*(?:köp|buy)/i
+//   ];
+  
+//   for (const pattern of pricePatterns) {
+//     const match = html.match(pattern);
+//     if (match) {
+//       return parseFloat(match[1].replace(',', '.'));
+//     }
+//   }
+//   return null;
+// }
+// function extractDosage(html) {
+//   // Dosage extraction with Swedish patterns
+//   const dosagePatterns = [
+//     /(?:per\s+kapsel|per\s+tablett)[^\d]*([\d]+)\s*mg/i,
+//     /([\d]+)\s*mg\s+per\s+(?:kapsel|tablett)/i,
+//     /innehåll\s+per\s+kapsel[^\d]*([\d]+)\s*mg/i
+//   ];
+  
+//   for (const pattern of dosagePatterns) {
+//     const match = html.match(pattern);
+//     if (match) {
+//       return parseInt(match[1]);
+//     }
+//   }
+//   return null;
+// }
+
+function cleanNumber(str) {
+  if (typeof str === 'number') return str;
+  if (!str) return null;
+  
+  // Remove all non-numeric characters except decimal points
+  const cleaned = str.toString().replace(/[^\d\.]/g, '');
+  const num = parseFloat(cleaned);
+  return isNaN(num) ? null : num;
+}
+
+// System prompt for AI extraction
+function getSystemPrompt() {
+  return `You are a professional supplement data extraction bot. Your role is to extract structured product information from Swedish supplement website screenshots.
+
+You MUST return valid JSON that matches this exact schema:
+{
+  "name": "string - exact product name",
+  "price": "number - current selling price (IGNORE crossed-out/old prices)",
+  "quantity": "number - amount/weight", 
+  "unit": "string - measurement unit",
+  "activeIngredient": "string - main ingredient",
+  "dosagePerUnit": "number - mg/g per capsule/tablet",
+  "servingSize": "number - capsules/tablets per serving",
+  "servingsPerContainer": "number - total servings"
+}
+
+EXTRACTION RULES:
+1. PRICE: Find the current selling price (largest, near "Lägg till i kundvagnen" buttons). Ignore "tidigare pris" or crossed-out prices
+2. DOSAGE: Look in product description or "Läs mer" sections for "per kapsel" information
+3. SERVING: Check "Rekommenderad dosering" for daily intake
+4. Return ONLY valid JSON, no explanatory text`;
+}
+
+// Fallback extraction prompt
+function getFallbackPrompt() {
+  return `FALLBACK EXTRACTION: Extract basic product info if detailed extraction failed.
+Focus on finding at least: name, price, quantity, unit.
+Return JSON only.`;
+}
+
+// Structured extraction with fallback strategy
+async function performStructuredExtraction(base64Image) {
+  try {
+    // Primary extraction attempt
+    const response = await openai.chat.completions.create({
+      model: "gpt-4o",
+      messages: [
+        {
+          role: "system",
+          content: getSystemPrompt()
+        },
+        {
+          role: "user",
+          content: [
+            {
+              type: "text",
+              text: "Extract supplement information from this product page screenshot."
+            },
+            {
+              type: "image_url",
+              image_url: {
+                url: `data:image/png;base64,${base64Image}`
+              }
+            }
+          ]
+        }
+      ],
+      max_tokens: 800,
+      response_format: { type: "json_object" }
+    });
+
+    const extractedText = response.choices[0].message.content;
+    const productInfo = JSON.parse(extractedText);
+    
+    return productInfo;
+    
+  } catch (error) {
+    console.error('Primary extraction failed:', error);
+    
+    // Fallback extraction attempt
+    try {
+      const fallbackResponse = await openai.chat.completions.create({
+        model: "gpt-4o",
+        messages: [
+          {
+            role: "user",
+            content: [
+              {
+                type: "text",
+                text: getFallbackPrompt()
+              },
+              {
+                type: "image_url",
+                image_url: {
+                  url: `data:image/png;base64,${base64Image}`
+                }
+              }
+            ]
+          }
+        ],
+        max_tokens: 400
+      });
+      
+      let fallbackText = fallbackResponse.choices[0].message.content.trim();
+      
+      // Clean markdown if present
+      if (fallbackText.startsWith('```json')) {
+        fallbackText = fallbackText.replace(/^```json\s*/, '').replace(/\s*```$/, '');
+      } else if (fallbackText.startsWith('```')) {
+        fallbackText = fallbackText.replace(/^```\s*/, '').replace(/\s*```$/, '');
+      }
+      
+      return JSON.parse(fallbackText);
+      
+    } catch (fallbackError) {
+      console.error('Fallback extraction failed:', fallbackError);
+      return null;
+    }
+  }
+}
+
+// Validation and data cleaning
+function validateAndCleanData(data) {
+  const cleaned = {
+    name: data.name || "Unknown Product",
+    price: cleanNumber(data.price) || 0,
+    quantity: cleanNumber(data.quantity) || 0,
+    unit: data.unit || "units",
+    activeIngredient: data.activeIngredient || "Unknown",
+    dosagePerUnit: cleanNumber(data.dosagePerUnit) || 0,
+    servingSize: cleanNumber(data.servingSize) || 1,
+    servingsPerContainer: cleanNumber(data.servingsPerContainer) || 0
+  };
+  
+  // Calculate missing values if possible
+  if (cleaned.servingsPerContainer === 0 && cleaned.quantity > 0 && cleaned.servingSize > 0) {
+    cleaned.servingsPerContainer = Math.floor(cleaned.quantity / cleaned.servingSize);
+  }
+  
+  return cleaned;
+}
 
 app.listen(PORT, () => {
   console.log(`🚀 AI Extraction API running on http://localhost:${PORT}`);

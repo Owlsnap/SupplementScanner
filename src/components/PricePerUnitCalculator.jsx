@@ -1,22 +1,42 @@
-import { useState } from "react";
-import { Bot, RotateCcw, Plus, DollarSign, Weight, FlaskConical, Link, Trophy, Trash2 } from "lucide-react";
+import { useState, useEffect } from "react";
+import { Bot, Plus, Link, Trash2, Menu, Target } from "lucide-react";
 import CookieBanner from './CookieBanner';
+import IngredientQualityComparison from './IngredientQualityComparison';
+import NutrientCostAnalysis from './NutrientCostAnalysis';
+import RecommendationsPage from '../pages/RecommendationsPage';
+import GuidePage from '../pages/GuidePage';
+import { compareSupplementValue } from '../utils/supplementAnalysis.js';
 
-export default function PricePerUnitCalculator() {
+export default function SupplementAnalyzer() {
   const [products, setProducts] = useState([
     {
       id: 1,
       name: "",
       price: "",
       quantity: "",
-      unit: "_",
-      pricePerUnit: null,
+      unit: "",
       url: "",
     },
   ]);
   const [nextId, setNextId] = useState(2);
   const [toasts, setToasts] = useState([]);
   const [extractingProducts, setExtractingProducts] = useState(new Set());
+  const [analyzedSupplements, setAnalyzedSupplements] = useState({});
+  const [bestValueProduct, setBestValueProduct] = useState(null);
+  const [currentPage, setCurrentPage] = useState('scanner');
+  const [showMenu, setShowMenu] = useState(false);
+
+  // Close menu when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (showMenu && !event.target.closest('[data-menu]')) {
+        setShowMenu(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, [showMenu]);
 
   // Toast functions
   const showToast = (message, type = 'success') => {
@@ -35,8 +55,7 @@ export default function PricePerUnitCalculator() {
         name: "",
         price: "",
         quantity: "",
-        unit: "_",
-        pricePerUnit: null,
+        unit: "",
         url: "",
       },
     ]);
@@ -46,10 +65,14 @@ export default function PricePerUnitCalculator() {
   const extractProductInfo = async (productId, url) => {
     if (!url.trim()) return;
 
+    console.log('🚀 Starting extraction for:', url);
     setExtractingProducts(prev => new Set([...prev, productId]));
     try {
       // Call backend API (local dev or production)
       const apiUrl = import.meta.env.VITE_API_URL || "http://localhost:3001";
+      console.log('📡 API URL:', apiUrl);
+      console.log('📦 Sending request to:', `${apiUrl}/api/extract-product`);
+      
       const response = await fetch(
         `${apiUrl}/api/extract-product`,
         {
@@ -58,42 +81,87 @@ export default function PricePerUnitCalculator() {
           body: JSON.stringify({ url }),
         }
       );
+      
+      console.log('📨 Response status:', response.status);
+      console.log('📨 Response ok:', response.ok);
 
       const data = await response.json();
+      console.log('📄 Response data:', data);
+      console.log('🔍 Detailed AI extraction check:', {
+        url: url,
+        foundName: data.name,
+        foundPrice: data.price,
+        foundQuantity: data.quantity,
+        foundUnit: data.unit,
+        foundActiveIngredient: data.activeIngredient,
+        foundDosagePerUnit: data.dosagePerUnit,
+        foundServingSize: data.servingSize,
+        foundServingsPerContainer: data.servingsPerContainer,
+        extractionSuccess: data.success
+      });
 
       if (data.success) {
+        console.log('✅ Extraction successful:', data);
         // Update all fields at once to avoid React state batching issues
-        setProducts(
-          products.map((product) => {
-            if (product.id === productId) {
-              const updatedProduct = {
-                ...product,
-                name: data.name || "",
-                price: data.price || "",
-                quantity: data.quantity || "",
-                unit: data.unit || "_",
-              };
+        const updatedProducts = products.map((product) => {
+          if (product.id === productId) {
+            const updatedProduct = {
+              ...product,
+              name: data.name || "",
+              price: data.price || "",
+              quantity: data.quantity || "",
+              unit: data.unit || "_",
+              // Enhanced data from AI extraction
+              activeIngredient: data.activeIngredient || "",
+              dosagePerUnit: data.dosagePerUnit || "",
+              servingSize: data.servingSize || "",
+              servingsPerContainer: data.servingsPerContainer || ""
+            };
 
-              // Recalculate price per unit
-              const price = parseFloat(updatedProduct.price) || 0;
-              const quantity = parseFloat(updatedProduct.quantity) || 0;
+            // Recalculate price per unit
+            const price = parseFloat(updatedProduct.price) || 0;
+            const quantity = parseFloat(updatedProduct.quantity) || 0;
 
-              if (price > 0 && quantity > 0) {
-                updatedProduct.pricePerUnit = price / quantity;
-              } else {
-                updatedProduct.pricePerUnit = null;
-              }
-
-              return updatedProduct;
+            if (price > 0 && quantity > 0) {
+              updatedProduct.pricePerUnit = price / quantity;
+            } else {
+              updatedProduct.pricePerUnit = null;
             }
-            return product;
-          })
-        );
+
+            return updatedProduct;
+          }
+          return product;
+        });
+        
+        setProducts(updatedProducts);
+        
+        // Update supplement analysis
+        console.log('🔍 Updated products for analysis check:', updatedProducts);
+        const validProducts = updatedProducts.filter(p => {
+          const isValid = p.name && p.name.trim() && p.price && p.price.toString().trim() && p.quantity && p.quantity.toString().trim();
+          console.log(`Product ${p.name}: name=${!!p.name}, price=${!!p.price}, quantity=${!!p.quantity}, activeIngredient=${!!p.activeIngredient}, dosagePerUnit=${!!p.dosagePerUnit}, isValid=${isValid}`);
+          return isValid;
+        });
+        console.log('🔍 Valid products for analysis:', validProducts);
+        if (validProducts.length > 0) {
+          console.log('🧪 Starting supplement analysis...');
+          const analysis = compareSupplementValue(validProducts);
+          console.log('📊 Supplement analysis result:', analysis);
+          console.log('📊 Analysis keys:', Object.keys(analysis));
+          console.log('📊 Total categories found:', Object.keys(analysis).length);
+          setAnalyzedSupplements(analysis);
+        } else {
+          console.log('❌ No valid products found for analysis');
+          setAnalyzedSupplements({});
+        }
+        
         showToast(`✅ Product info extracted successfully! Found ${data.name}`, 'success');
       } else {
+        console.error('❌ Extraction failed:', data.error);
         showToast(`❌ Could not extract product info: ${data.error}`, 'error');
       }
     } catch (error) {
+      console.error('🚨 Network/API Error:', error);
       showToast('❌ Error: Make sure the backend server is running! Run: node server.js', 'error');
     } finally {
       setExtractingProducts(prev => {
@@ -109,39 +177,78 @@ export default function PricePerUnitCalculator() {
   };
 
   const updateProduct = (id, field, value) => {
-    setProducts(
-      products.map((product) => {
-        if (product.id === id) {
-          const updatedProduct = { ...product, [field]: value };
-
-          // Recalculate price per unit
-          const price = parseFloat(updatedProduct.price) || 0;
-          const quantity = parseFloat(updatedProduct.quantity) || 0;
-
-          if (price > 0 && quantity > 0) {
-            updatedProduct.pricePerUnit = price / quantity;
-          } else {
-            updatedProduct.pricePerUnit = null;
-          }
-
-          return updatedProduct;
-        }
-        return product;
-      })
-    );
+    const updatedProducts = products.map((product) => {
+      if (product.id === id) {
+        return { ...product, [field]: value };
+      }
+      return product;
+    });
+    
+    setProducts(updatedProducts);
+    
+    // Calculate best value product (lowest price per unit)
+    const productsWithPricePerUnit = updatedProducts.filter(p => p.price && p.quantity && p.unit)
+      .map(p => ({
+        ...p,
+        pricePerUnit: parseFloat(p.price) / parseFloat(p.quantity)
+      }));
+    
+    if (productsWithPricePerUnit.length > 0) {
+      const bestValue = productsWithPricePerUnit.reduce((best, current) => 
+        current.pricePerUnit < best.pricePerUnit ? current : best
+      );
+      setBestValueProduct(bestValue);
+    } else {
+      setBestValueProduct(null);
+    }
+    
+    // Update supplement analysis when products change
+    const validProducts = updatedProducts.filter(p => p.name && p.price && p.quantity);
+    if (validProducts.length > 0) {
+      const analysis = compareSupplementValue(validProducts);
+      setAnalyzedSupplements(analysis);
+    } else {
+      setAnalyzedSupplements({});
+    }
   };
 
-  // Find the best value
-  const validProducts = products.filter((p) => p.pricePerUnit !== null);
-  const bestValue =
-    validProducts.length > 1
-      ? validProducts.reduce((best, current) =>
-          current.pricePerUnit < best.pricePerUnit ? current : best
-        )
-      : null;
+  // Handle page navigation
+  if (currentPage === 'recommendations') {
+    return (
+      <RecommendationsPage 
+        onBack={() => setCurrentPage('scanner')} 
+        products={products}
+      />
+    );
+  }
+
+  if (currentPage === 'guide') {
+    return (
+      <GuidePage 
+        onBack={() => setCurrentPage('scanner')} 
+      />
+    );
+  }
 
   return (
     <>
+      {/* Backdrop Overlay */}
+      {showMenu && (
+        <div 
+          style={{
+            position: 'fixed',
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            background: 'rgba(0, 0, 0, 0.2)',
+            zIndex: 999,
+            transition: 'all 0.3s ease'
+          }}
+          onClick={() => setShowMenu(false)}
+        />
+      )}
+
       {/* Modern Navbar */}
       <div 
         style={{
@@ -185,32 +292,161 @@ export default function PricePerUnitCalculator() {
                 SupplementScanner
               </h1>
               <p style={{ margin: 0, fontSize: '0.875rem', color: '#94a3b8' }}>
-                AI-Powered Price Analytics
+                Quality & Dosage Analyzer
               </p>
             </div>
           </div>
-          {window.innerWidth >= 768 && (
-            <button
-              onClick={() => window.location.reload()}
-              style={{
-                background: 'linear-gradient(135deg, #a855f7 0%, #7c3aed 100%)',
-                border: 'none',
-                borderRadius: '12px',
-                padding: '0.75rem 1.5rem',
-                color: '#ffffff',
-                fontWeight: 'bold',
-                cursor: 'pointer',
-                fontSize: '0.875rem',
-                transition: 'all 0.3s ease',
-                boxShadow: '0 4px 20px rgba(168, 85, 247, 0.3)',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center'
-              }}
-            >
-              <RotateCcw size={16} />
-            </button>
-          )}
+          <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+            {/* Menu Dropdown */}
+            <div style={{ position: 'relative' }} data-menu>
+              <button
+                onClick={() => setShowMenu(!showMenu)}
+                style={{
+                  background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+                  border: 'none',
+                  borderRadius: '12px',
+                  padding: '1.25rem',
+                  color: '#ffffff',
+                  fontWeight: 'bold',
+                  cursor: 'pointer',
+                  fontSize: '0.875rem',
+                  transition: 'all 0.3s ease',
+                  boxShadow: '0 4px 20px rgba(102, 126, 234, 0.3)',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center'
+                }}
+                onMouseEnter={(e) => {
+                  e.target.style.transform = 'translateY(-2px)';
+                  e.target.style.boxShadow = '0 8px 32px rgba(102, 126, 234, 0.4)';
+                }}
+                onMouseLeave={(e) => {
+                  e.target.style.transform = 'translateY(0)';
+                  e.target.style.boxShadow = '0 4px 20px rgba(102, 126, 234, 0.3)';
+                }}
+              >
+                <Menu size={16} />
+              </button>
+
+              {/* Dropdown Menu */}
+              {showMenu && (
+                <div style={{
+                  position: 'absolute',
+                  top: '100%',
+                  right: 0,
+                  marginTop: '0.75rem',
+                  background: 'rgba(15, 23, 42, 0.95)',
+                  backdropFilter: 'blur(20px)',
+                  borderRadius: '16px',
+                  border: '1px solid rgba(148, 163, 184, 0.1)',
+                  boxShadow: '0 20px 60px rgba(0, 0, 0, 0.5)',
+                  overflow: 'hidden',
+                  minWidth: '280px',
+                  zIndex: 1001
+                }}>
+                  <button
+                    onClick={() => {
+                      setCurrentPage('recommendations');
+                      setShowMenu(false);
+                    }}
+                    style={{
+                      width: '100%',
+                      padding: '1.5rem 2rem',
+                      background: 'transparent',
+                      border: 'none',
+                      color: '#f1f5f9',
+                      fontSize: '1rem',
+                      fontWeight: '600',
+                      cursor: 'pointer',
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '1rem',
+                      transition: 'all 0.3s ease',
+                      textAlign: 'left'
+                    }}
+                    onMouseEnter={(e) => {
+                      const button = e.currentTarget;
+                      button.style.background = 'rgba(56, 243, 171, 0.1)';
+                      // Apply hover color to all text elements
+                      const textElements = button.querySelectorAll('div');
+                      textElements.forEach(el => el.style.color = '#38f3ab');
+                    }}
+                    onMouseLeave={(e) => {
+                      const button = e.currentTarget;
+                      button.style.background = 'transparent';
+                      // Reset colors for text elements
+                      const textElements = button.querySelectorAll('div');
+                      textElements.forEach(el => {
+                        if (el.style.fontSize === '0.75rem') {
+                          el.style.color = '#94a3b8'; // Secondary text color
+                        } else {
+                          el.style.color = '#f1f5f9'; // Primary text color
+                        }
+                      });
+                    }}
+                  >
+                    <Target size={20} />
+                    <div>
+                      <div style={{ marginBottom: '0.25rem' }}>Supplement Recommendations</div>
+                      <div style={{ fontSize: '0.75rem', color: '#94a3b8', fontWeight: '400' }}>
+                        Find supplements for your health goals
+                      </div>
+                    </div>
+                  </button>
+
+                  <button
+                    onClick={() => {
+                      setCurrentPage('guide');
+                      setShowMenu(false);
+                    }}
+                    style={{
+                      width: '100%',
+                      padding: '1.5rem 2rem',
+                      background: 'transparent',
+                      border: 'none',
+                      color: '#f1f5f9',
+                      fontSize: '1rem',
+                      fontWeight: '600',
+                      cursor: 'pointer',
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '1rem',
+                      transition: 'all 0.3s ease',
+                      textAlign: 'left'
+                    }}
+                    onMouseEnter={(e) => {
+                      const button = e.currentTarget;
+                      button.style.background = 'rgba(56, 243, 171, 0.1)';
+                      // Apply hover color to all text elements
+                      const textElements = button.querySelectorAll('div');
+                      textElements.forEach(el => el.style.color = '#38f3ab');
+                    }}
+                    onMouseLeave={(e) => {
+                      const button = e.currentTarget;
+                      button.style.background = 'transparent';
+                      // Reset colors for text elements
+                      const textElements = button.querySelectorAll('div');
+                      textElements.forEach(el => {
+                        if (el.style.fontSize === '0.75rem') {
+                          el.style.color = '#94a3b8'; // Secondary text color
+                        } else {
+                          el.style.color = '#f1f5f9'; // Primary text color
+                        }
+                      });
+                    }}
+                  >
+                    <Bot size={20} />
+                    <div>
+                      <div style={{ marginBottom: '0.25rem' }}>Guide</div>
+                      <div style={{ fontSize: '0.75rem', color: '#94a3b8', fontWeight: '400' }}>
+                        How to use the AI extraction feature
+                      </div>
+                    </div>
+                  </button>
+                </div>
+              )}
+            </div>
+          </div>
         </div>
       </div>
 
@@ -222,7 +458,9 @@ export default function PricePerUnitCalculator() {
           padding: '1rem',
           paddingTop: '120px',
           paddingBottom: '120px', // Much more bottom padding for mobile
-          position: 'relative'
+          position: 'relative',
+          filter: showMenu ? 'blur(3px)' : 'none',
+          transition: 'filter 0.3s ease'
         }}
       >
         {/* Animated Background Elements */}
@@ -252,430 +490,315 @@ export default function PricePerUnitCalculator() {
             borderRadius: window.innerWidth < 768 ? '1rem' : '1.5rem',
             padding: window.innerWidth < 768 ? '1rem' : '2rem',
             border: '1px solid rgba(56, 243, 171, 0.1)',
-            boxShadow: '0 20px 60px rgba(0, 0, 0, 0.5)'
+            boxShadow: '0 20px 60px rgba(0, 0, 0, 0.5)',
+            marginBottom: '2rem'
           }}
         >
+          {/* Header */}
+          <div style={{ marginBottom: '2rem', textAlign: 'center' }}>
+            <h2 style={{
+              fontSize: '2rem',
+              fontWeight: 'bold',
+              background: 'linear-gradient(135deg, #38f3ab 0%, #1dd1a1 100%)',
+              WebkitBackgroundClip: 'text',
+              WebkitTextFillColor: 'transparent',
+              backgroundClip: 'text',
+              margin: 0,
+              marginBottom: '0.5rem',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              gap: '0.75rem'
+            }}>
+              <Link size={32} />
+              Add Supplement Products
+            </h2>
+            <p style={{ color: '#94a3b8', fontSize: '1rem', margin: 0 }}>
+              Paste product URLs to extract information and analyze ingredient quality
+            </p>
+            
+            {/* Best Value Quick Access */}
+            {bestValueProduct && (
+              <div style={{
+                background: 'linear-gradient(135deg, rgba(251, 191, 36, 0.2) 0%, rgba(245, 158, 11, 0.2) 100%)',
+                border: '2px solid rgba(251, 191, 36, 0.4)',
+                borderRadius: '16px',
+                padding: '1rem',
+                marginTop: '1rem',
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '1rem'
+              }}>
+                <div>
+                  <div style={{ color: '#fbbf24', fontWeight: '700', fontSize: '0.875rem' }}>
+                    🏆 BEST VALUE FOUND
+                  </div>
+                  <div style={{ color: '#f1f5f9', fontSize: '0.875rem' }}>
+                    Product #{bestValueProduct.id}: {bestValueProduct.name || 'Unnamed Product'}
+                  </div>
+                  <div style={{ color: '#94a3b8', fontSize: '0.75rem' }}>
+                    {bestValueProduct.pricePerUnit?.toFixed(2)} kr per {bestValueProduct.unit}
+                  </div>
+                </div>
+                {bestValueProduct.url && (
+                  <button
+                    onClick={() => window.open(bestValueProduct.url, '_blank')}
+                    style={{
+                      padding: '0.75rem 1.5rem',
+                      background: 'linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%)',
+                      color: '#0f172a',
+                      border: 'none',
+                      borderRadius: '12px',
+                      fontSize: '0.875rem',
+                      fontWeight: '700',
+                      cursor: 'pointer',
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '0.5rem',
+                      whiteSpace: 'nowrap'
+                    }}
+                  >
+                    🛒 Buy Best Value
+                  </button>
+                )}
+              </div>
+            )}
+          </div>
+
+          {/* Product Input Cards */}
           <div
-            className="mb-8 flex-1"
             style={{
               display: "grid",
-              gridTemplateColumns: window.innerWidth < 768 ? "1fr" : "repeat(auto-fit, minmax(350px, 1fr))",
-              gap: "1.5rem"
+              gridTemplateColumns: window.innerWidth < 768 ? "1fr" : "repeat(auto-fit, minmax(400px, 1fr))",
+              gap: "1.5rem",
+              marginBottom: '2rem'
             }}
           >
-            {products.map((product) => {
-              const isBestValue = bestValue && product.id === bestValue.id;
-
-              return (
-                <div
-                  key={product.id}
-                  style={{
-                    background: isBestValue 
-                      ? 'linear-gradient(135deg, rgba(56, 243, 171, 0.2) 0%, rgba(29, 209, 161, 0.2) 100%)'
-                      : 'rgba(30, 41, 59, 0.6)',
-                    backdropFilter: 'blur(16px)',
-                    borderRadius: '20px',
-                    padding: '1.5rem',
-                    border: isBestValue 
-                      ? '2px solid rgba(56, 243, 171, 0.4)'
-                      : '1px solid rgba(148, 163, 184, 0.1)',
-                    boxShadow: isBestValue
-                      ? '0 10px 40px rgba(56, 243, 171, 0.2)'
-                      : '0 8px 32px rgba(0, 0, 0, 0.3)',
-                    transition: 'all 0.3s ease',
-                    position: 'relative'
-                  }}
-                >
-                  {/* Product Header */}
-                  <div style={{ 
-                    display: 'flex', 
-                    alignItems: 'center', 
-                    justifyContent: 'center', 
-                    marginBottom: '1.5rem' 
-                  }}>
-                    <div
-                      style={{
-                        padding: "0.75rem 1.5rem",
-                        borderRadius: "50px",
-                        background: 'rgba(102, 126, 234, 0.2)',
-                        backdropFilter: 'blur(16px)',
-                        border: '1px solid rgba(118, 75, 162, 0.3)',
-                        color: '#e0e7ff',
-                        fontWeight: '600',
-                        fontSize: '0.875rem',
-                        boxShadow: '0 8px 32px rgba(102, 126, 234, 0.2)',
-                        textShadow: '0 0 10px rgba(118, 75, 162, 0.5)'
-                      }}
-                    >
-                      Product {product.id}
-                    </div>
+            {products.map((product) => (
+              <div
+                key={product.id}
+                style={{
+                  background: 'rgba(30, 41, 59, 0.6)',
+                  backdropFilter: 'blur(16px)',
+                  borderRadius: '20px',
+                  padding: '1.5rem',
+                  border: '1px solid rgba(148, 163, 184, 0.1)',
+                  boxShadow: '0 8px 32px rgba(0, 0, 0, 0.3)',
+                  transition: 'all 0.3s ease'
+                }}
+              >
+                {/* Product Header */}
+                <div style={{ 
+                  display: 'flex', 
+                  alignItems: 'center', 
+                  justifyContent: 'center', 
+                  marginBottom: '1.5rem',
+                  gap: '1rem',
+                  flexWrap: 'wrap'
+                }}>
+                  <div
+                    style={{
+                      padding: "0.75rem 1.5rem",
+                      borderRadius: "50px",
+                      background: bestValueProduct?.id === product.id 
+                        ? 'linear-gradient(135deg, #38f3ab 0%, #1dd1a1 100%)'
+                        : 'rgba(102, 126, 234, 0.2)',
+                      backdropFilter: 'blur(16px)',
+                      border: bestValueProduct?.id === product.id 
+                        ? '2px solid #38f3ab'
+                        : '1px solid rgba(118, 75, 162, 0.3)',
+                      color: bestValueProduct?.id === product.id ? '#0f172a' : '#e0e7ff',
+                      fontWeight: '700',
+                      fontSize: '1rem'
+                    }}
+                  >
+                    Product #{product.id}
                   </div>
-
-                  {/* AI URL Extraction - Prominent */}
-                  <div style={{ 
-                    marginBottom: '2rem',
-                    background: 'linear-gradient(135deg, rgba(56, 243, 171, 0.1) 0%, rgba(29, 209, 161, 0.1) 100%)',
-                    border: '2px solid rgba(56, 243, 171, 0.3)',
-                    borderRadius: '16px',
-                    padding: '1.5rem',
-                    position: 'relative',
-                    overflow: 'hidden'
-                  }}>
-                    {/* Glow effect */}
+                  {bestValueProduct?.id === product.id && (
                     <div style={{
-                      position: 'absolute',
-                      top: 0,
-                      left: 0,
-                      right: 0,
-                      bottom: 0,
-                      background: 'radial-gradient(circle at 50% 0%, rgba(56, 243, 171, 0.1) 0%, transparent 70%)',
-                      pointerEvents: 'none'
-                    }} />
-                    
-                    <div style={{ position: 'relative', zIndex: 1 }}>
-                      <label style={{
-                        display: 'flex',
-                        alignItems: 'center',
-                        fontSize: '1rem',
-                        fontWeight: '700',
-                        color: '#38f3ab',
-                        marginBottom: '0.75rem',
-                        textShadow: '0 0 10px rgba(56, 243, 171, 0.5)'
-                      }}>
-                        <Bot size={20} style={{ marginRight: '0.5rem' }} />
-                        🚀 AI Auto-Extract: Paste Product URL
-                      </label>
-                      <p style={{
-                        fontSize: '0.875rem',
-                        color: '#94a3b8',
-                        marginBottom: '1rem',
-                        lineHeight: '1.4'
-                      }}>
-                        Paste any Swedish supplement store URL and let AI extract price, quantity, and units (g, capsules, tablets, ml, etc.) automatically!
-                      </p>
-                      {/* Url input */}
-                      <div style={{ display: 'flex', gap: '0.75rem', alignItems: 'end' }}>
-                        <div style={{ flex: 1 }}>
-                          <input
-                            type="url"
-                            placeholder="https://www.proteinbolaget.se/shop/product-name... (try it!)"
-                            value={product.url}
-                            onChange={(e) =>
-                              updateProduct(product.id, "url", e.target.value)
-                            }
-                            style={{
-                              width: '95%',
-                              padding: '0.875rem',
-                              background: 'rgba(15, 23, 42, 0.9)',
-                              border: '2px solid rgba(56, 243, 171, 0.3)',
-                              borderRadius: '12px',
-                              color: '#f1f5f9',
-                              fontSize: '1rem',
-                              outline: 'none',
-                              transition: 'all 0.3s ease',
-                              boxShadow: '0 4px 20px rgba(56, 243, 171, 0.1)'
-                            }}
-                            onFocus={(e) => {
-                              e.target.style.border = '2px solid rgba(56, 243, 171, 0.6)';
-                              e.target.style.boxShadow = '0 8px 32px rgba(56, 243, 171, 0.2)';
-                            }}
-                            onBlur={(e) => {
-                              e.target.style.border = '2px solid rgba(56, 243, 171, 0.3)';
-                              e.target.style.boxShadow = '0 4px 20px rgba(56, 243, 171, 0.1)';
-                            }}
-                          />
-                        </div>
-                        <button
-                          onClick={() =>
-                            extractProductInfo(product.id, product.url)
-                          }
-                          disabled={!product.url.trim() || extractingProducts.has(product.id)}
-                          style={{
-                            padding: "1rem 0.5rem",
-                            background: extractingProducts.has(product.id)
-                              ? "rgba(156, 163, 175, 0.8)"
-                              : "linear-gradient(135deg, #38f3ab 0%, #1dd1a1 100%)",
-                            borderRadius: "12px",
-                            border: "none",
-                            color: extractingProducts.has(product.id) ? "#6b7280" : "#0f172a",
-                            cursor: extractingProducts.has(product.id) ? "not-allowed" : "pointer",
-                            fontSize: "0.875rem",
-                            fontWeight: "600",
-                            display: 'flex',
-                            flexDirection: 'reverse-column',
-                            alignItems: 'center',
-                            gap: '0.5rem',
-                            transition: 'all 0.3s ease',
-                            boxShadow: '0 4px 20px rgba(56, 243, 171, 0.3)',
-                            whiteSpace: 'nowrap',
-                            marginLeft: '1.5rem'
-                          }}
-                          onMouseEnter={(e) => {
-                            if (!extractingProducts.has(product.id)) {
-                              e.target.style.transform = "translateY(-2px)";
-                              e.target.style.boxShadow = "0 8px 32px rgba(56, 243, 171, 0.4)";
-                            }
-                          }}
-                          onMouseLeave={(e) => {
-                            e.target.style.transform = "translateY(0)";
-                            e.target.style.boxShadow = "0 4px 20px rgba(56, 243, 171, 0.3)";
-                          }}
-                        >
-                          {extractingProducts.has(product.id) ? (
-                            <>⏳ Extracting...</>
-                          ) : (
-                            <>
-                              <Bot size={18} />
-                              Extract
-                            </>
-                          )}
-                        </button>
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Product Name Input */}
-                  <div style={{ marginBottom: '1.5rem' }}>
-                    <label style={{
-                      display: 'block',
-                      fontSize: '0.875rem',
-                      fontWeight: '600',
-                      color: '#94a3b8',
-                      marginBottom: '0.5rem'
+                      padding: "0.5rem 1rem",
+                      borderRadius: "25px",
+                      background: 'linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%)',
+                      color: '#0f172a',
+                      fontWeight: '700',
+                      fontSize: '0.75rem',
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '0.25rem'
                     }}>
-                      Product Name
-                    </label>
-                    <input
-                      type="text"
-                      placeholder="Enter product name (optional - auto-filled by AI)"
-                      value={product.name}
-                      onChange={(e) =>
-                        updateProduct(product.id, "name", e.target.value)
-                      }
-                      style={{
-                        width: '95%',
-                        padding: '0.75rem',
-                        background: 'rgba(15, 23, 42, 0.8)',
-                        border: '1px solid rgba(148, 163, 184, 0.2)',
-                        borderRadius: '12px',
-                        color: '#f1f5f9',
-                        fontSize: '1rem',
-                        outline: 'none',
-                        transition: 'all 0.3s ease'
-                      }}
-                      onFocus={(e) => e.target.style.border = '1px solid rgba(56, 243, 171, 0.5)'}
-                      onBlur={(e) => e.target.style.border = '1px solid rgba(148, 163, 184, 0.2)'}
-                    />
-                  </div>
-                  {/* Price Input */}
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
-                    <div>
-                      <label style={{
-                        display: 'block',
-                        fontSize: '0.875rem',
-                        fontWeight: '600',
-                        color: '#94a3b8',
-                        marginBottom: '0.5rem'
-                      }}>
-                        <DollarSign size={16} style={{ display: 'inline', marginRight: '0.5rem' }} />
-                        Price (kr)
-                      </label>
-                      <input
-                        type="number"
-                        step="0.01"
-                        placeholder="0.00"
-                        value={product.price}
-                        onChange={(e) =>
-                          updateProduct(product.id, "price", e.target.value)
-                        }
-                        style={{
-                          width: '95%',
-                          padding: '0.75rem',
-                          background: 'rgba(15, 23, 42, 0.8)',
-                          border: '1px solid rgba(148, 163, 184, 0.2)',
-                          borderRadius: '12px',
-                          color: '#f1f5f9',
-                          fontSize: '1rem',
-                          outline: 'none',
-                          transition: 'all 0.3s ease'
-                        }}
-                        onFocus={(e) => e.target.style.border = '1px solid rgba(56, 243, 171, 0.5)'}
-                        onBlur={(e) => e.target.style.border = '1px solid rgba(148, 163, 184, 0.2)'}
-                      />
-                    </div>
-                    {/* Quantity Input */}
-                    <div style={{ marginTop: '1.5rem' }}>
-                      <label style={{
-                        display: 'block',
-                        fontSize: '0.875rem',
-                        fontWeight: '600',
-                        color: '#94a3b8',
-                        marginBottom: '0.5rem'
-                      }}>
-                        <Weight size={16} style={{ display: 'inline', marginRight: '0.5rem' }} />
-                        Quantity
-                      </label>
-                      <input
-                        type="number"
-                        step="0.01"
-                        placeholder="0"
-                        value={product.quantity}
-                        onChange={(e) =>
-                          updateProduct(product.id, "quantity", e.target.value)
-                        }
-                        style={{
-                          width: '95%',
-                          padding: '0.75rem',
-                          background: 'rgba(15, 23, 42, 0.8)',
-                          border: '1px solid rgba(148, 163, 184, 0.2)',
-                          borderRadius: '12px',
-                          color: '#f1f5f9',
-                          fontSize: '1rem',
-                          outline: 'none',
-                          transition: 'all 0.3s ease'
-                        }}
-                        onFocus={(e) => e.target.style.border = '1px solid rgba(56, 243, 171, 0.5)'}
-                        onBlur={(e) => e.target.style.border = '1px solid rgba(148, 163, 184, 0.2)'}
-                      />
-                    </div>
-
-                    {/* Unit Input - Auto-detected */}
-                    <div style={{display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem', padding: "1rem"}}>
-                      <label style={{
-                        display: 'flex',
-                        fontSize: '1rem',
-                        fontWeight: '600',
-                        color: '#94a3b8',
-                        alignItems: 'center', 
-                        justifyContent: 'center',
-                        textAlign: 'center'
-                      }}>
-                        <FlaskConical size={16} style={{ display: 'inline', marginRight: '0.5rem' }} />
-                        Unit
-                      </label>
-                      <div
-                        style={{
-                          width: 'fit-content',
-                          borderRadius: '12px',
-                          background: 'transparent',
-                          border: 'none',
-                          textAlign: 'center',
-                          // Style the unit text here:
-                        }}
-                      >
-                        <span style={{
-                          fontSize: '1.2rem',
-                          fontWeight: '600',
-                          color: '#38f3ab', // Neon green color
-                          textShadow: '0 0 10px rgba(56, 243, 171, 0.5)' // Glow effect
-                        }}>{product.unit}</span> <span style={{fontSize: '0.875rem', color: '#94a3b8'}}>(auto-detected)</span>
-                      </div>
-                    </div>
-                  </div>
-                  {/* Price Per Unit Display */}
-                  <div className="bg-gray-50 p-4 rounded-xl text-center">
-                    {product.pricePerUnit !== null ? (
-                      <>
-                        <div className="text-3xl font-bold text-gray-800">
-                          {product.pricePerUnit.toFixed(4)} kr per{" "}
-                          {product.unit}
-                        </div>
-                        {isBestValue && (
-                          <div style={{ 
-                            display: 'flex', 
-                            alignItems: 'center', 
-                            justifyContent: 'center', 
-                            gap: '1rem', 
-                            marginTop: '1rem',
-                            flexWrap: 'wrap'
-                          }}> 
-                          {/* Best value display */}
-                            <div className="inline-block px-4 py-2 bg-green-500 text-white rounded-full text-sm font-bold animate-pulse">
-                              <Trophy size={16} style={{ display: 'inline', marginRight: '0.5rem' }} />
-                              <span style={{color: 'gold'}}>Best value!</span>
-                            </div>
-                            {/* Product Affiliate URL Button / Buy button */}
-                            {product.url && (
-                              <button
-                                onClick={() => window.open(product.url, '_blank')}
-                                style={{
-                                  padding: '0.75rem',
-                                  background: 'linear-gradient(135deg, #a855f7 0%, #7c3aed 100%)',
-                                  color: 'white',
-                                  border: 'none',
-                                  borderRadius: '25px',
-                                  fontSize: '0.875rem',                
-                                  fontWeight: '400',
-                                  cursor: 'pointer',
-                                  transition: 'all 0.3s ease',
-                                  boxShadow: '0 4px 20px rgba(56, 243, 171, 0.4)',
-                                  display: 'flex',
-                                  alignItems: 'center',
-                                  gap: '0.5rem',
-                                  letterSpacing: '0.05em'
-                                }}
-                                onMouseEnter={(e) => {
-                                  e.target.style.transform = 'translateY(-2px) scale(1.05)';
-                                  e.target.style.boxShadow = '0 8px 32px rgba(56, 243, 171, 0.6)';
-                                }}
-                                onMouseLeave={(e) => {
-                                  e.target.style.transform = 'translateY(0) scale(1)';
-                                  e.target.style.boxShadow = '0 4px 20px rgba(56, 243, 171, 0.4)';
-                                }}
-                              >
-                                🛒 Buy
-                              </button>
-                            )}
-                          </div>
-                        )}
-                      </>
-                    ) : (
-                      <div className="text-2xl font-bold text-gray-800">
-                        Paste URL of product page to auto-fill or enter price and quantity
-                      </div>
-                    )}
-                  </div>
-                  {/* Remove Product Button */}
-                  {products.length > 1 && (
-                    <div className="flex justify-center">
-                      <button
-                        onClick={() => removeProduct(product.id)}
-                        style={{
-                          padding: "0.75rem 1.5rem",
-                          background: "linear-gradient(135deg, #ef4444 0%, #dc2626 100%)",
-                          color: "#ffffff",
-                          border: "none",
-                          borderRadius: "12px",
-                          fontSize: "0.875rem",
-                          fontWeight: "600",
-                          cursor: "pointer",
-                          transition: "all 0.3s ease",
-                          boxShadow: "0 4px 20px rgba(239, 68, 68, 0.3)",
-                          display: "flex",
-                          alignItems: "center",
-                          gap: "0.5rem",
-                          marginTop: "1rem"
-                        }}
-                        onMouseEnter={(e) => {
-                          e.target.style.transform = "translateY(-1px)";
-                          e.target.style.boxShadow = "0 6px 24px rgba(239, 68, 68, 0.4)";
-                        }}
-                        onMouseLeave={(e) => {
-                          e.target.style.transform = "translateY(0)";
-                          e.target.style.boxShadow = "0 4px 20px rgba(239, 68, 68, 0.3)";
-                        }}
-                      >
-                        <Trash2 size={16} />
-                        Remove
-                      </button>
+                      🏆 BEST VALUE
                     </div>
                   )}
                 </div>
-              );
-            })}
+
+                {/* URL Input */}
+                <div style={{ 
+                  marginBottom: '1.5rem',
+                  background: 'linear-gradient(135deg, rgba(56, 243, 171, 0.1) 0%, rgba(29, 209, 161, 0.1) 100%)',
+                  border: '2px solid rgba(56, 243, 171, 0.3)',
+                  borderRadius: '16px',
+                  padding: '1.5rem'
+                }}>
+                  <label style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    fontSize: '1rem',
+                    fontWeight: '700',
+                    color: '#38f3ab',
+                    marginBottom: '0.75rem'
+                  }}>
+                    <Bot size={20} style={{ marginRight: '0.5rem' }} />
+                    🚀 Paste Product URL
+                  </label>
+                  
+                  <div style={{ display: 'flex', gap: '0.75rem', alignItems: 'end' }}>
+                    <input
+                      type="url"
+                      placeholder="https://www.tillskottsbolaget.se/product-name..."
+                      value={product.url}
+                      onChange={(e) => updateProduct(product.id, "url", e.target.value)}
+                      style={{
+                        flex: 1,
+                        padding: '0.875rem',
+                        background: 'rgba(15, 23, 42, 0.9)',
+                        border: '2px solid rgba(56, 243, 171, 0.3)',
+                        borderRadius: '12px',
+                        color: '#f1f5f9',
+                        fontSize: '1rem',
+                        outline: 'none'
+                      }}
+                    />
+                    <button
+                      onClick={() => extractProductInfo(product.id, product.url)}
+                      disabled={!product.url.trim() || extractingProducts.has(product.id)}
+                      style={{
+                        padding: "1rem 1.5rem",
+                        background: extractingProducts.has(product.id)
+                          ? "rgba(156, 163, 175, 0.8)"
+                          : "linear-gradient(135deg, #38f3ab 0%, #1dd1a1 100%)",
+                        borderRadius: "12px",
+                        border: "none",
+                        color: extractingProducts.has(product.id) ? "#6b7280" : "#0f172a",
+                        cursor: extractingProducts.has(product.id) ? "not-allowed" : "pointer",
+                        fontSize: "0.875rem",
+                        fontWeight: "600",
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '0.5rem',
+                        whiteSpace: 'nowrap'
+                      }}
+                    >
+                      {extractingProducts.has(product.id) ? (
+                        <>⏳ Extracting...</>
+                      ) : (
+                        <>
+                          <Bot size={18} />
+                          Extract
+                        </>
+                      )}
+                    </button>
+                  </div>
+                </div>
+
+                {/* Product Display */}
+                {product.name && (
+                  <div style={{
+                    background: 'rgba(15, 23, 42, 0.8)',
+                    borderRadius: '12px',
+                    padding: '1rem',
+                    marginBottom: '1rem',
+                    border: bestValueProduct?.id === product.id ? '2px solid rgba(56, 243, 171, 0.3)' : 'none'
+                  }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '0.75rem' }}>
+                      <h3 style={{ 
+                        color: '#f1f5f9', 
+                        fontSize: '1.125rem', 
+                        fontWeight: '600',
+                        margin: 0,
+                        flex: 1
+                      }}>
+                        {product.name}
+                      </h3>
+                      {product.url && (
+                        <button
+                          onClick={() => window.open(product.url, '_blank')}
+                          style={{
+                            padding: '0.5rem 1rem',
+                            background: 'linear-gradient(135deg, #38f3ab 0%, #1dd1a1 100%)',
+                            color: '#0f172a',
+                            border: 'none',
+                            borderRadius: '8px',
+                            fontSize: '0.75rem',
+                            fontWeight: '600',
+                            cursor: 'pointer',
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: '0.25rem'
+                          }}
+                        >
+                          🛒 Buy
+                        </button>
+                      )}
+                    </div>
+                    
+                    <div style={{ 
+                      display: 'grid', 
+                      gridTemplateColumns: window.innerWidth < 768 ? 'repeat(2, 1fr)' : 'repeat(4, 1fr)', 
+                      gap: '0.75rem', 
+                      fontSize: '0.875rem' 
+                    }}>
+                      <div>
+                        <span style={{ color: '#94a3b8' }}>Product #:</span>
+                        <div style={{ color: '#a855f7', fontWeight: '700' }}>#{product.id}</div>
+                      </div>
+                      <div>
+                        <span style={{ color: '#94a3b8' }}>Price:</span>
+                        <div style={{ color: '#f1f5f9', fontWeight: '600' }}>{product.price} kr</div>
+                      </div>
+                      <div>
+                        <span style={{ color: '#94a3b8' }}>Quantity:</span>
+                        <div style={{ color: '#f1f5f9', fontWeight: '600' }}>{product.quantity} {product.unit}</div>
+                      </div>
+                      <div>
+                        <span style={{ color: '#94a3b8' }}>Active Ingredient:</span>
+                        <div style={{ color: '#38f3ab', fontWeight: '600', textTransform: 'capitalize' }}>
+                          {product.activeIngredient || 'Detecting...'}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                {/* Remove Button */}
+                {products.length > 1 && (
+                  <div style={{ display: 'flex', justifyContent: 'center' }}>
+                    <button
+                      onClick={() => removeProduct(product.id)}
+                      style={{
+                        padding: "0.75rem 1.5rem",
+                        background: "linear-gradient(135deg, #ef4444 0%, #dc2626 100%)",
+                        color: "#ffffff",
+                        border: "none",
+                        borderRadius: "12px",
+                        fontSize: "0.875rem",
+                        fontWeight: "600",
+                        cursor: "pointer",
+                        display: "flex",
+                        alignItems: "center",
+                        gap: "0.5rem"
+                      }}
+                    >
+                      <Trash2 size={16} />
+                      Remove
+                    </button>
+                  </div>
+                )}
+              </div>
+            ))}
           </div>
+
           {/* Add Product Button */}
-          <div className="text-center">
+          <div style={{ textAlign: 'center' }}>
             <button
               onClick={addProduct}
               style={{
@@ -687,27 +810,24 @@ export default function PricePerUnitCalculator() {
                 fontSize: "1rem",
                 fontWeight: "bold",
                 cursor: "pointer",
-                transition: "all 0.3s ease",
-                boxShadow: "0 8px 32px rgba(56, 243, 171, 0.3)",
                 display: "flex",
                 alignItems: "center",
                 gap: "0.5rem",
-                margin: "0.875rem auto",
-              }}
-              onMouseEnter={(e) => {
-                e.target.style.transform = "translateY(-2px)";
-                e.target.style.boxShadow = "0 12px 40px rgba(56, 243, 171, 0.4)";
-              }}
-              onMouseLeave={(e) => {
-                e.target.style.transform = "translateY(0)";
-                e.target.style.boxShadow = "0 8px 32px rgba(56, 243, 171, 0.3)";
+                margin: "0 auto"
               }}
             >
-              <Plus size={20} style={{ marginRight: '0.5rem' }} />
-              Add Product
+              <Plus size={20} />
+              Add Another Product
             </button>
           </div>
         </div>
+
+        {/* Comprehensive Analysis Components */}
+        {/* Cost Analysis - Shows price efficiency per nutrient */}
+        <NutrientCostAnalysis products={products} />
+        
+        {/* Quality Analysis - Shows ingredient forms and bioavailability */}
+        <IngredientQualityComparison analyzedProducts={analyzedSupplements} />
         </div>
       </div>
 
@@ -751,7 +871,7 @@ export default function PricePerUnitCalculator() {
       </div>
 
       {/* Toast Animation Styles */}
-      <style jsx>{`
+      <style>{`
         @keyframes slideIn {
           from {
             transform: translateX(100%);

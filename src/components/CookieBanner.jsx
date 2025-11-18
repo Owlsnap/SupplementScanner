@@ -11,7 +11,7 @@ export default function CookieBanner() {
       if (window.Cookiebot) {
         // Show banner only if consent is needed
         if (!window.Cookiebot.hasResponse) {
-          setShowBanner(true);
+          setShowBanner(false); // is set to false to hide banner in development
         }
         
         // Listen for CookieBot events
