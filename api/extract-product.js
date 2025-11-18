@@ -1,4 +1,4 @@
-// API endpoint for extracting product information
+// API endpoint for extracting product information with multi-layer extraction system
 // You'll need to install: npm install openai puppeteer
 
 import OpenAI from 'openai';
@@ -12,18 +12,163 @@ const openai = new OpenAI({
 // Initialize the scraper system
 const scraper = new SwedishSupplementScraper();
 
+// Import our new multi-layer extraction system (server-side only)
+let extractSupplementData, completeWithUserInput, getExtractionSummary;
+
+// Dynamically import the extraction system to avoid client-side issues
+async function loadExtractionSystem() {
+  if (!extractSupplementData) {
+    try {
+      const extractionModule = await import('../src/extraction/multiLayerExtractor.js');
+      extractSupplementData = extractionModule.extractSupplementData;
+      completeWithUserInput = extractionModule.completeWithUserInput; 
+      getExtractionSummary = extractionModule.getExtractionSummary;
+      console.log('✅ Multi-layer extraction system loaded');
+    } catch (error) {
+      console.error('❌ Failed to load extraction system:', error);
+      console.log('🔄 Falling back to legacy extraction only');
+    }
+  }
+}
+
 export default async function handler(req, res) {
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Method not allowed' });
   }
 
-  const { url } = req.body;
+  const { url, method = 'hybrid', userInput = null } = req.body;
 
   if (!url) {
     return res.status(400).json({ error: 'URL is required' });
   }
 
   try {
+    console.log(`🚀 Starting extraction with method: ${method}`);
+
+    // Load the extraction system
+    await loadExtractionSystem();
+
+    // If user provided input to complete a previous extraction
+    if (userInput && method === 'complete') {
+      return handleUserInputCompletion(req, res);
+    }
+
+    // Choose extraction method based on availability
+    if ((method === 'multi-layer' || method === 'hybrid') && extractSupplementData) {
+      return await handleMultiLayerExtraction(url, res, method === 'hybrid');
+    } else {
+      console.log('🔄 Using legacy extraction method');
+      return await handleLegacyExtraction(url, res);
+    }
+
+  } catch (error) {
+    console.error('💥 Extraction error:', error);
+    res.status(500).json({ 
+      error: 'Extraction failed', 
+      details: error.message 
+    });
+  }
+}
+
+/**
+ * Handle multi-layer extraction method
+ */
+async function handleMultiLayerExtraction(url, res, useHybrid = false) {
+  console.log('📦 Starting multi-layer extraction...');
+  
+  try {
+    // Get HTML content using puppeteer
+    const browser = await puppeteer.launch();
+    const page = await browser.newPage();
+    
+    await page.setViewport({ width: 1280, height: 800 });
+    await page.goto(url, { waitUntil: 'networkidle2', timeout: 30000 });
+    
+    // Get the full HTML content
+    const htmlContent = await page.content();
+    
+    await browser.close();
+
+    console.log(`📄 HTML content extracted: ${htmlContent.length} characters`);
+
+    // Use the multi-layer extraction system
+    const extractionResult = await extractSupplementData(htmlContent, url);
+    
+    if (extractionResult.success) {
+      console.log('✅ Multi-layer extraction successful');
+      
+      return res.status(200).json({
+        success: true,
+        data: extractionResult.data,
+        extraction_method: 'multi-layer',
+        metadata: extractionResult.metadata,
+        summary: getExtractionSummary(extractionResult)
+      });
+    } else {
+      console.log('⚠️ Multi-layer extraction partial - user input needed');
+      
+      // If hybrid mode and multi-layer failed, try legacy
+      if (useHybrid && extractionResult.metadata.layers_completed < 3) {
+        console.log('🔄 Falling back to legacy vision method...');
+        return await handleLegacyExtraction(url, res);
+      }
+      
+      return res.status(206).json({
+        success: false,
+        partial_data: extractionResult.data,
+        missing_fields: extractionResult.metadata.missing_fields || [],
+        user_input_needed: extractionResult.metadata.user_input_needed || [],
+        extraction_method: 'multi-layer-partial',
+        metadata: extractionResult.metadata,
+        summary: getExtractionSummary(extractionResult)
+      });
+    }
+    
+  } catch (error) {
+    console.error('💥 Multi-layer extraction failed:', error);
+    
+    if (useHybrid) {
+      console.log('🔄 Hybrid mode: Falling back to legacy vision method...');
+      return await handleLegacyExtraction(url, res);
+    }
+    
+    throw error;
+  }
+}
+
+/**
+ * Handle user input completion
+ */
+async function handleUserInputCompletion(req, res) {
+  const { partialResult, userInput } = req.body;
+  
+  if (!partialResult || !userInput) {
+    return res.status(400).json({ 
+      error: 'Partial result and user input are required' 
+    });
+  }
+
+  try {
+    const completedResult = completeWithUserInput(partialResult, userInput);
+    
+    return res.status(200).json({
+      success: true,
+      data: completedResult.data,
+      extraction_method: 'multi-layer-completed',
+      metadata: completedResult.metadata,
+      summary: getExtractionSummary(completedResult)
+    });
+    
+  } catch (error) {
+    console.error('💥 User input completion failed:', error);
+    throw error;
+  }
+}
+
+/**
+ * Handle legacy vision-based extraction
+ */
+async function handleLegacyExtraction(url, res) {
     // Get site-specific configuration
     const { prompt: sitePrompt, siteConfig } = scraper.generateExtractionPrompt(url);
     const browserConfig = scraper.getBrowserConfig(url);
@@ -138,6 +283,7 @@ export default async function handler(req, res) {
         success: true,
         siteName: siteConfig.siteName,
         validation: validation,
+        extraction_method: 'legacy-vision',
         ...validation.cleanedData
       });
     } catch (parseError) {
@@ -145,15 +291,10 @@ export default async function handler(req, res) {
       console.log('Raw AI Response:', extractedText);
       return res.status(500).json({
         success: false,
-        error: 'Could not parse AI response - please try a different supplement product page'
+        error: 'Failed to parse AI response',
+        details: parseError.message,
+        raw_response: extractedText,
+        extraction_method: 'legacy-vision'
       });
     }
-
-  } catch (error) {
-    console.error('Extraction error:', error);
-    return res.status(500).json({
-      success: false,
-      error: 'Failed to extract product information'
-    });
-  }
 }

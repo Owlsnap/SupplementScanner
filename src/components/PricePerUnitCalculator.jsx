@@ -7,6 +7,39 @@ import RecommendationsPage from '../pages/RecommendationsPage';
 import GuidePage from '../pages/GuidePage';
 import { compareSupplementValue } from '../utils/supplementAnalysis.js';
 
+/**
+ * Transform multi-layer extraction data to legacy format for compatibility
+ */
+function transformMultiLayerData(multiLayerResponse) {
+  const { data, success, metadata } = multiLayerResponse;
+  
+  if (!success || !data) {
+    return { success: false, error: 'Multi-layer extraction failed' };
+  }
+
+  // Find primary active ingredient
+  const primaryIngredient = data.active_ingredients?.find(ing => ing.is_primary) || data.active_ingredients?.[0];
+  
+  // Convert new format to legacy format
+  return {
+    success: true,
+    name: data.name,
+    price: data.price_sek,
+    quantity: data.total_servings,
+    unit: data.product_type === 'capsules' ? 'capsules' : 
+          data.product_type === 'tablets' ? 'tablets' :
+          data.product_type === 'powder' ? 'g' : '_',
+    activeIngredient: primaryIngredient?.name || 'Unknown',
+    dosagePerUnit: primaryIngredient?.dose_mg || 0,
+    servingSize: data.serving_size,
+    servingsPerContainer: data.total_servings,
+    // Additional metadata for enhanced functionality
+    confidence: data.confidence,
+    extractionMethod: 'multi-layer',
+    allIngredients: data.active_ingredients || []
+  };
+}
+
 export default function SupplementAnalyzer() {
   const [products, setProducts] = useState([
     {
@@ -78,44 +111,66 @@ export default function SupplementAnalyzer() {
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ url }),
+          body: JSON.stringify({ 
+            url,
+            method: "hybrid" // Use hybrid method for best compatibility
+          }),
         }
       );
       
       console.log('📨 Response status:', response.status);
       console.log('📨 Response ok:', response.ok);
 
-      const data = await response.json();
-      console.log('📄 Response data:', data);
-      console.log('🔍 Detailed AI extraction check:', {
+      const responseData = await response.json();
+      console.log('📄 Raw response data:', responseData);
+
+      // Handle both new multi-layer and legacy extraction formats
+      let extractedData;
+      if (responseData.extraction_method?.includes('multi-layer')) {
+        // New multi-layer system format
+        console.log('🆕 Using new multi-layer extraction data');
+        extractedData = transformMultiLayerData(responseData);
+      } else {
+        // Legacy extraction format
+        console.log('🔄 Using legacy extraction data');
+        extractedData = responseData;
+      }
+
+      console.log('🔍 Detailed extraction check:', {
         url: url,
-        foundName: data.name,
-        foundPrice: data.price,
-        foundQuantity: data.quantity,
-        foundUnit: data.unit,
-        foundActiveIngredient: data.activeIngredient,
-        foundDosagePerUnit: data.dosagePerUnit,
-        foundServingSize: data.servingSize,
-        foundServingsPerContainer: data.servingsPerContainer,
-        extractionSuccess: data.success
+        extractionMethod: responseData.extraction_method || 'legacy',
+        foundName: extractedData.name,
+        foundPrice: extractedData.price,
+        foundQuantity: extractedData.quantity,
+        foundUnit: extractedData.unit,
+        foundActiveIngredient: extractedData.activeIngredient,
+        foundDosagePerUnit: extractedData.dosagePerUnit,
+        foundServingSize: extractedData.servingSize,
+        foundServingsPerContainer: extractedData.servingsPerContainer,
+        extractionSuccess: extractedData.success,
+        confidence: responseData.metadata?.final_confidence || 'unknown'
       });
 
-      if (data.success) {
-        console.log('✅ Extraction successful:', data);
+      if (extractedData.success) {
+        console.log('✅ Extraction successful:', extractedData);
         // Update all fields at once to avoid React state batching issues
         const updatedProducts = products.map((product) => {
           if (product.id === productId) {
             const updatedProduct = {
               ...product,
-              name: data.name || "",
-              price: data.price || "",
-              quantity: data.quantity || "",
-              unit: data.unit || "_",
-              // Enhanced data from AI extraction
-              activeIngredient: data.activeIngredient || "",
-              dosagePerUnit: data.dosagePerUnit || "",
-              servingSize: data.servingSize || "",
-              servingsPerContainer: data.servingsPerContainer || ""
+              name: extractedData.name || "",
+              price: extractedData.price || "",
+              quantity: extractedData.quantity || "",
+              unit: extractedData.unit || "_",
+              // Enhanced data from extraction
+              activeIngredient: extractedData.activeIngredient || "",
+              dosagePerUnit: extractedData.dosagePerUnit || "",
+              servingSize: extractedData.servingSize || "",
+              servingsPerContainer: extractedData.servingsPerContainer || "",
+              // New multi-layer metadata
+              extractionMethod: responseData.extraction_method,
+              confidence: responseData.metadata?.final_confidence,
+              completeness: responseData.metadata?.completeness
             };
 
             // Recalculate price per unit
@@ -155,10 +210,44 @@ export default function SupplementAnalyzer() {
           setAnalyzedSupplements({});
         }
         
-        showToast(`✅ Product info extracted successfully! Found ${data.name}`, 'success');
+        showToast(`✅ Product info extracted successfully! Found ${extractedData.name}`, 'success');
       } else {
-        console.error('❌ Extraction failed:', data.error);
-        showToast(`❌ Could not extract product info: ${data.error}`, 'error');
+        // Handle partial extraction from multi-layer system
+        if (responseData.extraction_method?.includes('multi-layer') && responseData.partial_data) {
+          console.log('⚠️ Partial extraction - some fields missing');
+          const partialData = transformMultiLayerData({
+            data: responseData.partial_data,
+            success: false,
+            metadata: responseData.metadata
+          });
+          
+          // Update with partial data
+          const updatedProducts = products.map((product) => {
+            if (product.id === productId) {
+              return {
+                ...product,
+                name: partialData.name || product.name || "",
+                price: partialData.price || product.price || "",
+                quantity: partialData.quantity || product.quantity || "",
+                unit: partialData.unit || product.unit || "_",
+                activeIngredient: partialData.activeIngredient || product.activeIngredient || "",
+                dosagePerUnit: partialData.dosagePerUnit || product.dosagePerUnit || "",
+                // Mark as partial
+                isPartial: true,
+                missingFields: responseData.missing_fields || [],
+                confidence: partialData.confidence || 30
+              };
+            }
+            return product;
+          });
+          
+          setProducts(updatedProducts);
+          showToast(`⚠️ Partial extraction completed. Missing: ${(responseData.missing_fields || []).join(', ')}`, "warning");
+        } else {
+          console.log('❌ Extraction failed completely');
+          console.error('❌ Extraction failed:', extractedData.error);
+          showToast(`❌ Could not extract product info: ${extractedData.error}`, 'error');
+        }
       }
     } catch (error) {
       console.error('🚨 Network/API Error:', error);
