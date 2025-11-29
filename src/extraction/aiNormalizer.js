@@ -29,10 +29,10 @@ ${formatBlocksForPrompt(rankedBlocks.nutritional_blocks)}
 
 Here is the partial extraction from regex patterns:
 - price: ${patternExtraction.price || 'null'}
-- dosages: ${JSON.stringify(patternExtraction.dosages.slice(0, 5))}
-- quantities: ${JSON.stringify(patternExtraction.quantities.slice(0, 3))}
-- serving_sizes: ${JSON.stringify(patternExtraction.serving_sizes.slice(0, 3))}
-- ingredients: ${JSON.stringify(patternExtraction.ingredients.slice(0, 8))}
+- dosages: ${JSON.stringify((patternExtraction.dosages || []).slice(0, 5))}
+- quantities: ${JSON.stringify((patternExtraction.quantities || []).slice(0, 3))}
+- serving_sizes: ${JSON.stringify((patternExtraction.serving_sizes || []).slice(0, 3))}
+- ingredients: ${JSON.stringify((patternExtraction.ingredients || []).slice(0, 8))}
 - product_name: ${patternExtraction.product_name || 'null'}
 
 Your task:
@@ -101,7 +101,7 @@ export async function normalizeWithAI(rankedBlocks, patternExtraction) {
     console.log('📝 AI Prompt length:', prompt.length);
     console.log('🔍 Pattern extraction confidence:', patternExtraction.confidence_scores);
 
-    const response = await fetch('/api/normalize-supplement-data', {
+    const response = await fetch('http://localhost:3001/api/normalize-supplement-data', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -110,10 +110,10 @@ export async function normalizeWithAI(rankedBlocks, patternExtraction) {
         prompt,
         pattern_extraction: patternExtraction,
         blocks_summary: {
-          price_blocks: rankedBlocks.price_blocks.length,
-          ingredient_blocks: rankedBlocks.ingredient_blocks.length,
-          dosage_blocks: rankedBlocks.dosage_blocks.length,
-          quantity_blocks: rankedBlocks.quantity_blocks.length
+          price_blocks: rankedBlocks?.price_blocks?.length || 0,
+          ingredient_blocks: rankedBlocks?.ingredient_blocks?.length || 0,
+          dosage_blocks: rankedBlocks?.dosage_blocks?.length || 0,
+          quantity_blocks: rankedBlocks?.quantity_blocks?.length || 0
         }
       })
     });
@@ -257,7 +257,7 @@ export function createFallbackData(patternExtraction, rankedBlocks) {
   };
 
   // Try to determine serving count
-  if (patternExtraction.quantities.length > 0) {
+  if (patternExtraction.quantities && patternExtraction.quantities.length > 0) {
     const quantity = patternExtraction.quantities[0];
     fallbackData.total_servings = quantity.value;
     
@@ -273,7 +273,7 @@ export function createFallbackData(patternExtraction, rankedBlocks) {
   }
 
   // Extract active ingredients
-  if (patternExtraction.ingredients.length > 0) {
+  if (patternExtraction.ingredients && patternExtraction.ingredients.length > 0) {
     patternExtraction.ingredients.slice(0, 5).forEach((ingredient, index) => {
       if (ingredient.name && ingredient.amount) {
         // Convert to mg
@@ -294,7 +294,7 @@ export function createFallbackData(patternExtraction, rankedBlocks) {
   }
 
   // Try to infer serving size from dosage data
-  if (!fallbackData.serving_size && patternExtraction.serving_sizes.length > 0) {
+  if (!fallbackData.serving_size && patternExtraction.serving_sizes && patternExtraction.serving_sizes.length > 0) {
     const serving = patternExtraction.serving_sizes[0];
     fallbackData.serving_size = `${serving.value}${serving.unit}`;
     

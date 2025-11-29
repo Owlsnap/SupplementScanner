@@ -8,10 +8,8 @@ export default function NutrientCostAnalysis({ products }) {
   const [selectedCategory, setSelectedCategory] = useState('');
 
   useEffect(() => {
-    console.log('🔍 NutrientCostAnalysis received products:', products);
     // Analyze all products when they change
     const validProducts = products.filter(p => p.name && p.price && p.quantity);
-    console.log('🔍 Valid products for nutrient analysis:', validProducts);
     
     if (validProducts.length > 0) {
       console.log('🧪 Running compareSupplementValue from NutrientCostAnalysis...');
@@ -32,7 +30,6 @@ export default function NutrientCostAnalysis({ products }) {
         setSelectedCategory(firstCategory);
       }
     } else {
-      console.log('❌ No valid products for nutrient analysis');
       setAnalyzedData({});
       setRecommendations([]);
       setSelectedCategory('');

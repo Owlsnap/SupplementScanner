@@ -6,6 +6,224 @@
 import { extractAndRankBlocks } from './domBlockExtractor.js';
 import { extractWithPatterns } from './patternExtractor.js';
 import { validateWithFallbacks } from './validationFallback.js';
+import StructuredAINormalizer from './structuredAINormalizer.js';
+
+/**
+ * Parallel extraction that runs both structured ingredient extraction and legacy AI analysis simultaneously
+ */
+export async function extractSupplementDataParallel(html, url = null) {
+  console.log('🔥 PARALLEL EXTRACTION INITIATED!');
+  console.log('⚡ Running structured ingredient extraction + legacy AI analysis in parallel');
+  console.log(`🔗 Processing URL: ${url}`);
+  
+  const startTime = performance.now();
+  
+  try {
+    // For known sites with working extractors, prioritize structured extraction
+    if (url && url.includes('tillskottsbolaget.se')) {
+      console.log('🏢 Known site detected, running structured extraction first...');
+      
+      const structuredResult = await extractSupplementDataStructured(html, url);
+      
+      if (structuredResult.success && structuredResult.structuredData?.extractionMetadata?.confidence > 0.8) {
+        console.log('🎯 High confidence structured extraction successful, skipping legacy extraction');
+        
+        return {
+          success: true,
+          data: {
+            structuredIngredients: structuredResult.structuredData,
+            parallel_extraction: true,
+            structured_confidence: structuredResult.metadata?.confidence,
+            optimized_extraction: true
+          },
+          structuredData: structuredResult.structuredData,
+          metadata: {
+            ...structuredResult.metadata,
+            parallel_extraction: true,
+            extraction_method: 'optimized_structured',
+            total_time: performance.now() - startTime
+          }
+        };
+      }
+    }
+    
+    // Run both extractions in parallel for unknown sites or low confidence
+    const [structuredResult, legacyResult] = await Promise.all([
+      extractSupplementDataStructured(html, url),
+      extractSupplementData(html, url)
+    ]);
+    
+    console.log('🎯 Both extractions completed, combining results...');
+    
+    // Combine the best of both worlds
+    const combinedResult = {
+      success: structuredResult.success || legacyResult.success,
+      data: {
+        // Use legacy for basic product info (name, price, quality analysis)
+        ...legacyResult.data,
+        // Enhance with structured ingredient data
+        structuredIngredients: structuredResult.structuredData,
+        // Keep both extraction methods metadata
+        parallel_extraction: true,
+        structured_confidence: structuredResult.metadata?.confidence,
+        legacy_confidence: legacyResult.metadata?.confidence
+      },
+      structuredData: structuredResult.structuredData,
+      metadata: {
+        ...legacyResult.metadata,
+        parallel_extraction: true,
+        structured_layers_completed: structuredResult.metadata?.layers_completed,
+        legacy_layers_completed: legacyResult.metadata?.layers_completed,
+        extraction_method: 'parallel',
+        total_time: performance.now() - startTime
+      }
+    };
+    
+    const totalTime = performance.now() - startTime;
+    console.log(`🚀 Parallel extraction completed in ${totalTime.toFixed(1)}ms`);
+    console.log(`📊 Combined result quality:`, {
+      hasBasicInfo: !!(combinedResult.data.name && combinedResult.data.price),
+      hasStructuredIngredients: !!combinedResult.structuredData?.ingredients,
+      structuredSuccess: structuredResult.success,
+      legacySuccess: legacyResult.success
+    });
+    
+    return combinedResult;
+    
+  } catch (error) {
+    console.error('❌ Parallel extraction failed:', error);
+    
+    // Fallback to whichever method works
+    console.log('🔄 Falling back to individual extraction methods...');
+    try {
+      const structuredFallback = await extractSupplementDataStructured(html, url);
+      if (structuredFallback.success) return structuredFallback;
+      
+      const legacyFallback = await extractSupplementData(html, url);
+      return legacyFallback;
+    } catch (fallbackError) {
+      console.error('❌ All extraction methods failed:', fallbackError);
+      return {
+        success: false,
+        error: 'All extraction methods failed',
+        details: error.message
+      };
+    }
+  }
+}
+
+/**
+ * Enhanced extraction that supports structured ingredient parsing
+ */
+export async function extractSupplementDataStructured(html, url = null) {
+  console.log('🧬 STRUCTURED EXTRACTION FUNCTION CALLED!!!');
+  console.log('🧬 Starting Structured Multi-Layer Extraction System...');
+  console.log(`🔗 Processing URL: ${url}`);
+  console.log(`📄 HTML length: ${html?.length || 0} characters`);
+  
+  const extractionResult = {
+    success: false,
+    data: null,
+    structuredData: null,
+    layers: {
+      layer1_blocks: null,
+      layer2_patterns: null,
+      layer3_ai_structured: null,
+      layer4_validation: null
+    },
+    metadata: {
+      url,
+      extraction_time: Date.now(),
+      layers_completed: 0,
+      fallbacks_used: [],
+      confidence_breakdown: {},
+      structured_extraction: true
+    }
+  };
+
+  try {
+    // LAYER 1: DOM Block Extraction (same as before)
+    console.log('📦 Layer 1: Extracting semantic blocks...');
+    const startTime = performance.now();
+    
+    const rankedBlocks = extractAndRankBlocks(html);
+    extractionResult.layers.layer1_blocks = rankedBlocks;
+    extractionResult.metadata.layers_completed = 1;
+    
+    const layer1Time = performance.now() - startTime;
+    console.log(`✅ Layer 1 completed in ${layer1Time.toFixed(1)}ms`);
+
+    // LAYER 2: Pattern Extraction (same as before)
+    console.log('🔍 Layer 2: Pattern-based extraction...');
+    const layer2Start = performance.now();
+    
+    const patternData = extractWithPatterns(rankedBlocks, url);
+    extractionResult.layers.layer2_patterns = patternData;
+    extractionResult.metadata.layers_completed = 2;
+    
+    const layer2Time = performance.now() - layer2Start;
+    console.log(`✅ Layer 2 completed in ${layer2Time.toFixed(1)}ms`);
+
+    // LAYER 3: Structured AI Normalization
+    console.log('🧠 Layer 3: Structured AI normalization...');
+    const layer3Start = performance.now();
+    
+    const structuredNormalizer = new StructuredAINormalizer();
+    const combinedData = { 
+      rankedBlocks, 
+      patternData,
+      html // Pass original HTML for site-specific extractors
+    };
+    const structuredData = await structuredNormalizer.normalizeData(combinedData, url);
+    
+    extractionResult.layers.layer3_ai_structured = structuredData;
+    extractionResult.structuredData = structuredData;
+    extractionResult.metadata.layers_completed = 3;
+    
+    const layer3Time = performance.now() - layer3Start;
+    console.log(`✅ Layer 3 completed in ${layer3Time.toFixed(1)}ms`);
+
+    // Convert structured data to legacy format for compatibility
+    const legacyData = structuredNormalizer.toLegacyFormat(structuredData);
+    
+    // LAYER 4: Validation & Fallbacks (enhanced for structured data)
+    console.log('🔍 Layer 4: Validation with structured data...');
+    const layer4Start = performance.now();
+    
+    const validatedData = validateWithFallbacks(legacyData, extractionResult.layers);
+    // Add structured data to validated result
+    validatedData.structuredIngredients = structuredData;
+    
+    extractionResult.layers.layer4_validation = validatedData;
+    extractionResult.data = validatedData;
+    extractionResult.metadata.layers_completed = 4;
+    
+    const layer4Time = performance.now() - layer4Start;
+    console.log(`✅ Layer 4 completed in ${layer4Time.toFixed(1)}ms`);
+
+    const totalTime = performance.now() - startTime;
+    extractionResult.metadata.total_extraction_time_ms = totalTime;
+    
+    extractionResult.success = true;
+    console.log(`🎉 Structured extraction completed successfully in ${totalTime.toFixed(1)}ms`);
+    
+    return extractionResult;
+
+  } catch (error) {
+    console.error('❌ Structured extraction failed:', error);
+    extractionResult.metadata.error = error.message;
+    
+    // Fallback to legacy extraction
+    console.log('🔄 Falling back to legacy extraction...');
+    try {
+      const fallbackResult = await extractSupplementData(html, url);
+      return { ...fallbackResult, metadata: { ...fallbackResult.metadata, structured_fallback: true } };
+    } catch (fallbackError) {
+      console.error('❌ Fallback extraction also failed:', fallbackError);
+      return extractionResult;
+    }
+  }
+}
 
 /**
  * Main orchestrator function for the multi-layer extraction

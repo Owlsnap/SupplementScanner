@@ -21,23 +21,9 @@ export async function validateWithFallbacks(rankedBlocks, patternExtraction) {
     user_input_needed: []
   };
 
-  // Step 1: Try AI normalization first
-  console.log('🤖 Attempting AI normalization...');
-  const aiResult = await normalizeWithAI(rankedBlocks, patternExtraction);
-  
-  if (aiResult.success && aiResult.validation.isValid) {
-    console.log('✅ AI normalization successful and valid');
-    return {
-      ...result,
-      success: true,
-      data: aiResult.data,
-      source: 'ai_normalized',
-      validation: aiResult.validation
-    };
-  }
-
-  result.fallbacks_used.push('ai_normalization_failed');
-  console.log('❌ AI normalization failed, trying pattern-based fallback...');
+  // Step 1: Skip AI normalization for now (endpoints not available) and go directly to pattern fallback
+  console.log('⚠️ Skipping AI normalization, using pattern-based fallback...');
+  result.fallbacks_used.push('ai_normalization_skipped');
 
   // Step 2: Try pattern-based fallback
   const fallbackResult = createFallbackData(patternExtraction, rankedBlocks);
@@ -61,33 +47,7 @@ export async function validateWithFallbacks(rankedBlocks, patternExtraction) {
     const missingFields = identifyMissingFields(fallbackResult.data);
     const userInputNeeded = identifyUserInputNeeds(missingFields, rankedBlocks);
 
-    console.log('⚠️ Pattern fallback has missing fields, checking vision fallback...');
-    
-    // Step 3: Try vision fallback for missing ingredient table
-    if (missingFields.includes('active_ingredients') || missingFields.includes('serving_size')) {
-      console.log('👁️ Attempting vision OCR fallback for ingredient table...');
-      const visionResult = await tryVisionFallback(rankedBlocks, missingFields);
-      
-      if (visionResult.success) {
-        // Merge vision results with pattern data
-        const mergedData = mergeFallbackData(fallbackResult.data, visionResult.data);
-        const mergedValidation = validateRequiredFields(mergedData);
-        
-        if (mergedValidation.completeness > 60) {
-          console.log('✅ Vision fallback successful');
-          return {
-            ...result,
-            success: true,
-            data: mergedData,
-            source: 'pattern_with_vision_fallback',
-            validation: mergedValidation,
-            fallbacks_used: [...result.fallbacks_used, 'pattern_fallback', 'vision_ocr']
-          };
-        }
-      }
-      
-      result.fallbacks_used.push('vision_fallback_attempted');
-    }
+    console.log('⚠️ Pattern fallback has missing fields, skipping vision fallback (endpoints unavailable)...');
 
     // Step 4: Return partial data with user input requirements
     console.log('⚠️ Partial data available, user input needed');
@@ -233,7 +193,7 @@ async function tryVisionFallback(rankedBlocks, missingFields) {
     // Create a focused vision prompt for the specific missing information
     const visionPrompt = createVisionPrompt(missingFields);
 
-    const response = await fetch('/api/vision-fallback', {
+    const response = await fetch('http://localhost:3001/api/vision-fallback', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

@@ -9,18 +9,71 @@ import { compareSupplementValue } from '../utils/supplementAnalysis.js';
 
 /**
  * Transform multi-layer extraction data to legacy format for compatibility
+ * Also handles structured extraction data
  */
 function transformMultiLayerData(multiLayerResponse) {
-  const { data, success, metadata } = multiLayerResponse;
+  const { data, structuredData, success, metadata } = multiLayerResponse;
   
   if (!success || !data) {
     return { success: false, error: 'Multi-layer extraction failed' };
   }
 
-  // Find primary active ingredient
+  // Handle structured extraction format
+  if (structuredData && (metadata?.structured_extraction || metadata?.siteDomain || metadata?.parallel_extraction)) {
+    const extractionType = metadata?.parallel_extraction ? 'parallel' : 'structured';
+    console.log(`🧬 Processing ${extractionType} extraction data:`, {
+      productName: structuredData.productName,
+      ingredientCount: Object.keys(structuredData.ingredients || {}).length,
+      confidence: structuredData.extractionMetadata?.confidence,
+      hasLegacyQuality: metadata?.parallel_extraction && !!data.name
+    });
+    
+    // Find active ingredients from structured data
+    const activeIngredients = [];
+    Object.entries(structuredData.ingredients || {}).forEach(([key, ingredient]) => {
+      if (ingredient.isIncluded && ingredient.dosage_mg) {
+        activeIngredients.push({
+          name: key.replace(/_/g, '-'),
+          dose_mg: ingredient.dosage_mg,
+          is_primary: key === 'caffeine' // Caffeine is often primary in pre-workouts
+        });
+      }
+    });
+
+    const primaryIngredient = activeIngredients.find(ing => ing.is_primary) || activeIngredients[0];
+    
+    const result = {
+      success: true,
+      name: structuredData.productName || data.name,
+      price: data.price_sek,
+      quantity: data.total_servings,
+      unit: data.product_type === 'capsules' ? 'capsules' : 
+            data.product_type === 'tablets' ? 'tablets' :
+            data.product_type === 'powder' ? 'g' : '_',
+      activeIngredient: activeIngredients.map(ing => ing.name).join(' + '),
+      dosagePerUnit: primaryIngredient?.dose_mg || 0,
+      servingSize: structuredData.servingSize ? parseFloat(structuredData.servingSize.replace(/[^\d.]/g, '')) : (data.serving_size || 20),
+      servingsPerContainer: data.total_servings || Math.floor(400 / 20), // Calculate from container size / serving size
+      // Include structured data for enhanced analysis
+      structuredIngredients: structuredData,
+      confidence: structuredData.extractionMetadata?.confidence || data.confidence,
+      extractionMethod: metadata?.parallel_extraction ? 'parallel' : 'structured',
+      allIngredients: activeIngredients
+    };
+    
+    console.log('🧬 Structured transform result:', {
+      name: result.name,
+      servingSize: result.servingSize,
+      servingsPerContainer: result.servingsPerContainer,
+      activeIngredient: result.activeIngredient,
+      structuredData: !!result.structuredIngredients
+    });
+    return result;
+  }
+
+  // Handle legacy multi-layer format
   const primaryIngredient = data.active_ingredients?.find(ing => ing.is_primary) || data.active_ingredients?.[0];
   
-  // Convert new format to legacy format
   return {
     success: true,
     name: data.name,
@@ -33,7 +86,6 @@ function transformMultiLayerData(multiLayerResponse) {
     dosagePerUnit: primaryIngredient?.dose_mg || 0,
     servingSize: data.serving_size,
     servingsPerContainer: data.total_servings,
-    // Additional metadata for enhanced functionality
     confidence: data.confidence,
     extractionMethod: 'multi-layer',
     allIngredients: data.active_ingredients || []
@@ -98,13 +150,17 @@ export default function SupplementAnalyzer() {
   const extractProductInfo = async (productId, url) => {
     if (!url.trim()) return;
 
-    console.log('🚀 Starting extraction for:', url);
     setExtractingProducts(prev => new Set([...prev, productId]));
+    
+    // Choose extraction method based on URL
+    let extractionMethod = "hybrid"; // Default
+    if (url.includes('tillskottsbolaget.se')) {
+      extractionMethod = "parallel"; // Use parallel for Tillskottsbolaget (structured ingredients + legacy AI quality analysis)
+    }
+    
     try {
       // Call backend API (local dev or production)
       const apiUrl = import.meta.env.VITE_API_URL || "http://localhost:3001";
-      console.log('📡 API URL:', apiUrl);
-      console.log('📦 Sending request to:', `${apiUrl}/api/extract-product`);
       
       const response = await fetch(
         `${apiUrl}/api/extract-product`,
@@ -113,46 +169,26 @@ export default function SupplementAnalyzer() {
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ 
             url,
-            method: "hybrid" // Use hybrid method for best compatibility
+            method: extractionMethod
           }),
         }
       );
       
-      console.log('📨 Response status:', response.status);
-      console.log('📨 Response ok:', response.ok);
-
       const responseData = await response.json();
-      console.log('📄 Raw response data:', responseData);
 
       // Handle both new multi-layer and legacy extraction formats
       let extractedData;
-      if (responseData.extraction_method?.includes('multi-layer')) {
-        // New multi-layer system format
-        console.log('🆕 Using new multi-layer extraction data');
+      if (responseData.extraction_method?.includes('multi-layer') || 
+          responseData.extraction_method === 'structured' || 
+          responseData.extraction_method === 'parallel') {
         extractedData = transformMultiLayerData(responseData);
       } else {
-        // Legacy extraction format
-        console.log('🔄 Using legacy extraction data');
         extractedData = responseData;
       }
 
-      console.log('🔍 Detailed extraction check:', {
-        url: url,
-        extractionMethod: responseData.extraction_method || 'legacy',
-        foundName: extractedData.name,
-        foundPrice: extractedData.price,
-        foundQuantity: extractedData.quantity,
-        foundUnit: extractedData.unit,
-        foundActiveIngredient: extractedData.activeIngredient,
-        foundDosagePerUnit: extractedData.dosagePerUnit,
-        foundServingSize: extractedData.servingSize,
-        foundServingsPerContainer: extractedData.servingsPerContainer,
-        extractionSuccess: extractedData.success,
-        confidence: responseData.metadata?.final_confidence || 'unknown'
-      });
+
 
       if (extractedData.success) {
-        console.log('✅ Extraction successful:', extractedData);
         // Update all fields at once to avoid React state batching issues
         const updatedProducts = products.map((product) => {
           if (product.id === productId) {
@@ -167,11 +203,19 @@ export default function SupplementAnalyzer() {
               dosagePerUnit: extractedData.dosagePerUnit || "",
               servingSize: extractedData.servingSize || "",
               servingsPerContainer: extractedData.servingsPerContainer || "",
+              // Include structured ingredients data if available
+              structuredIngredients: extractedData.structuredIngredients || responseData.structuredData,
               // New multi-layer metadata
               extractionMethod: responseData.extraction_method,
               confidence: responseData.metadata?.final_confidence,
               completeness: responseData.metadata?.completeness
             };
+
+            console.log('💾 Updated product with structured data:', {
+              name: updatedProduct.name,
+              structuredIngredients: updatedProduct.structuredIngredients,
+              extractionMethod: updatedProduct.extractionMethod
+            });
 
             // Recalculate price per unit
             const price = parseFloat(updatedProduct.price) || 0;
@@ -192,14 +236,35 @@ export default function SupplementAnalyzer() {
         
         // Update supplement analysis
         console.log('🔍 Updated products for analysis check:', updatedProducts);
+        console.log('🔍 Total products:', updatedProducts.length);
         const validProducts = updatedProducts.filter(p => {
           const isValid = p.name && p.name.trim() && p.price && p.price.toString().trim() && p.quantity && p.quantity.toString().trim();
-          console.log(`Product ${p.name}: name=${!!p.name}, price=${!!p.price}, quantity=${!!p.quantity}, activeIngredient=${!!p.activeIngredient}, dosagePerUnit=${!!p.dosagePerUnit}, isValid=${isValid}`);
+          console.log(`Product "${p.name}": name=${!!p.name}, price=${!!p.price}, quantity=${!!p.quantity}, activeIngredient=${!!p.activeIngredient}, dosagePerUnit=${!!p.dosagePerUnit}, isValid=${isValid}`);
+          console.log(`  → Full product data:`, {
+            id: p.id,
+            name: p.name,
+            price: p.price,
+            quantity: p.quantity,
+            activeIngredient: p.activeIngredient,
+            structuredIngredients: !!p.structuredIngredients,
+            extractionMethod: p.extractionMethod
+          });
           return isValid;
         });
-        console.log('🔍 Valid products for analysis:', validProducts);
+        console.log('🔍 Valid products for analysis:', validProducts.length, 'out of', updatedProducts.length);
         if (validProducts.length > 0) {
           console.log('🧪 Starting supplement analysis...');
+          // Debug: Check what's in each product before analysis
+          validProducts.forEach((product, index) => {
+            console.log(`🔍 Product ${index + 1} data:`, {
+              name: product.name,
+              hasStructuredIngredients: !!product.structuredIngredients,
+              structuredKeys: product.structuredIngredients?.ingredients ? Object.keys(product.structuredIngredients.ingredients) : 'none',
+              extractionMethod: product.extractionMethod,
+              activeIngredient: product.activeIngredient
+            });
+          });
+          
           const analysis = compareSupplementValue(validProducts);
           console.log('📊 Supplement analysis result:', analysis);
           console.log('📊 Analysis keys:', Object.keys(analysis));

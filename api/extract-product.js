@@ -13,25 +13,41 @@ const openai = new OpenAI({
 const scraper = new SwedishSupplementScraper();
 
 // Import our new multi-layer extraction system (server-side only)
-let extractSupplementData, completeWithUserInput, getExtractionSummary;
+let extractSupplementData, extractSupplementDataStructured, extractSupplementDataParallel, completeWithUserInput, getExtractionSummary;
 
 // Dynamically import the extraction system to avoid client-side issues
 async function loadExtractionSystem() {
   if (!extractSupplementData) {
     try {
+      console.log('🔄 Attempting to import extraction module...');
       const extractionModule = await import('../src/extraction/multiLayerExtractor.js');
+      console.log('📦 Extraction module imported, available exports:', Object.keys(extractionModule));
+      
       extractSupplementData = extractionModule.extractSupplementData;
+      extractSupplementDataStructured = extractionModule.extractSupplementDataStructured;
+      extractSupplementDataParallel = extractionModule.extractSupplementDataParallel;
       completeWithUserInput = extractionModule.completeWithUserInput; 
       getExtractionSummary = extractionModule.getExtractionSummary;
-      console.log('✅ Multi-layer extraction system loaded');
+      
+      console.log('✅ Multi-layer extraction system loaded:', {
+        extractSupplementData: typeof extractSupplementData,
+        extractSupplementDataStructured: typeof extractSupplementDataStructured,
+        extractSupplementDataParallel: typeof extractSupplementDataParallel,
+        completeWithUserInput: typeof completeWithUserInput,
+        getExtractionSummary: typeof getExtractionSummary
+      });
     } catch (error) {
       console.error('❌ Failed to load extraction system:', error);
       console.log('🔄 Falling back to legacy extraction only');
     }
+  } else {
+    console.log('⚡ Extraction system already loaded');
   }
 }
 
 export default async function handler(req, res) {
+  console.log('🎯 HANDLER VERSION 2.0 - DEBUG ENHANCED'); // Unique marker to ensure new code is running
+  
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Method not allowed' });
   }
@@ -43,10 +59,22 @@ export default async function handler(req, res) {
   }
 
   try {
-    console.log(`🚀 Starting extraction with method: ${method}`);
+    console.log(`🚀 Starting extraction with method: ${method} for URL: ${url}`);
+    console.log(`📋 Available extraction functions:`, {
+      hasExtractSupplementData: !!extractSupplementData,
+      hasExtractSupplementDataStructured: !!extractSupplementDataStructured,
+      hasCompleteWithUserInput: !!completeWithUserInput
+    });
 
     // Load the extraction system
     await loadExtractionSystem();
+
+    console.log(`✅ Extraction system loaded, functions available:`, {
+      hasExtractSupplementData: !!extractSupplementData,
+      hasExtractSupplementDataStructured: !!extractSupplementDataStructured,
+      hasExtractSupplementDataParallel: !!extractSupplementDataParallel,
+      hasCompleteWithUserInput: !!completeWithUserInput
+    });
 
     // If user provided input to complete a previous extraction
     if (userInput && method === 'complete') {
@@ -54,10 +82,21 @@ export default async function handler(req, res) {
     }
 
     // Choose extraction method based on availability
-    if ((method === 'multi-layer' || method === 'hybrid') && extractSupplementData) {
+    console.log(`🔀 Routing to extraction method: ${method}`);
+    console.log(`🔍 extractSupplementDataParallel available:`, !!extractSupplementDataParallel);
+    if (method === 'parallel' && extractSupplementDataParallel) {
+      console.log('🚀 Using parallel extraction path');
+      return await handleParallelExtraction(url, res);
+    } else if ((method === 'multi-layer' || method === 'hybrid') && extractSupplementData) {
+      console.log('📦 Using multi-layer extraction path');
       return await handleMultiLayerExtraction(url, res, method === 'hybrid');
+    } else if (method === 'structured' && extractSupplementDataStructured) {
+      console.log('🧬 Using structured extraction path');
+      return await handleStructuredExtraction(url, res);
     } else {
       console.log('🔄 Using legacy extraction method');
+      console.log('🔍 Parallel extraction available?', !!extractSupplementDataParallel);
+      console.log('🔍 Method requested:', method);
       return await handleLegacyExtraction(url, res);
     }
 
@@ -133,6 +172,128 @@ async function handleMultiLayerExtraction(url, res, useHybrid = false) {
     }
     
     throw error;
+  }
+}
+
+/**
+ * Handle parallel extraction method that runs structured + legacy simultaneously
+ */
+async function handleParallelExtraction(url, res) {
+  console.log('🚀 Using parallel extraction method (structured + legacy simultaneously)');
+  
+  try {
+    // Get HTML content using puppeteer
+    const browser = await puppeteer.launch();
+    const page = await browser.newPage();
+    
+    await page.setViewport({ width: 1280, height: 800 });
+    await page.goto(url, { waitUntil: 'networkidle2', timeout: 30000 });
+    
+    // Get the full HTML content
+    const html = await page.content();
+    
+    await browser.close();
+
+    console.log(`📄 HTML content extracted: ${html.length} characters`);
+    
+    if (!html) {
+      return res.status(400).json({ 
+        error: 'Failed to fetch HTML content from URL' 
+      });
+    }
+    
+    // Run parallel extraction
+    const extractionResult = await extractSupplementDataParallel(html, url);
+    
+    if (extractionResult.success && extractionResult.data) {
+      console.log('✅ Parallel extraction completed successfully');
+      
+      return res.status(200).json({
+        success: true,
+        data: extractionResult.data,
+        structuredData: extractionResult.structuredData,
+        extraction_method: 'parallel',
+        metadata: extractionResult.metadata
+      });
+    } else {
+      console.log('⚠️ Parallel extraction incomplete');
+      
+      return res.status(206).json({
+        success: false,
+        partial_data: extractionResult.data,
+        structuredData: extractionResult.structuredData,
+        extraction_method: 'parallel-partial',
+        metadata: extractionResult.metadata
+      });
+    }
+    
+  } catch (error) {
+    console.error('💥 Parallel extraction failed:', error);
+    
+    // Fallback to legacy method
+    console.log('🔄 Falling back to legacy vision method...');
+    return await handleLegacyExtraction(url, res);
+  }
+}
+
+/**
+ * Handle structured extraction method for detailed ingredient parsing
+ */
+async function handleStructuredExtraction(url, res) {
+  console.log('🧬 Using structured multi-layer extraction method');
+  
+  try {
+    // Get HTML content using puppeteer (same as multi-layer extraction)
+    const browser = await puppeteer.launch();
+    const page = await browser.newPage();
+    
+    await page.setViewport({ width: 1280, height: 800 });
+    await page.goto(url, { waitUntil: 'networkidle2', timeout: 30000 });
+    
+    // Get the full HTML content
+    const html = await page.content();
+    
+    await browser.close();
+
+    console.log(`📄 HTML content extracted: ${html.length} characters`);
+    
+    if (!html) {
+      return res.status(400).json({ 
+        error: 'Failed to fetch HTML content from URL' 
+      });
+    }
+    
+    // Run structured extraction
+    const extractionResult = await extractSupplementDataStructured(html, url);
+    
+    if (extractionResult.success && extractionResult.data) {
+      console.log('✅ Structured extraction completed successfully');
+      
+      return res.status(200).json({
+        success: true,
+        data: extractionResult.data,
+        structuredData: extractionResult.structuredData,
+        extraction_method: 'structured',
+        metadata: extractionResult.metadata
+      });
+    } else {
+      console.log('⚠️ Structured extraction incomplete');
+      
+      return res.status(206).json({
+        success: false,
+        partial_data: extractionResult.data,
+        structuredData: extractionResult.structuredData,
+        extraction_method: 'structured-partial',
+        metadata: extractionResult.metadata
+      });
+    }
+    
+  } catch (error) {
+    console.error('💥 Structured extraction failed:', error);
+    
+    // Fallback to legacy method
+    console.log('🔄 Falling back to legacy vision method...');
+    return await handleLegacyExtraction(url, res);
   }
 }
 

@@ -179,7 +179,6 @@ const calculateValueScore = (costPerMg, qualityScore) => {
  * @returns {object} - Products grouped by category with analysis
  */
 export const compareSupplementValue = (products) => {
-  console.log('🔍 compareSupplementValue input products:', products);
   
   const analyzed = products
     .map(product => {
@@ -187,16 +186,41 @@ export const compareSupplementValue = (products) => {
       let supplementInfo = null;
       let nutrientCost = null;
       
-      console.log(`🔍 Analyzing product: ${product.name}`);
-      console.log('🔍 Product URL:', product.url || 'No URL available');
-      console.log('AI extracted data:', {
-        activeIngredient: product.activeIngredient,
-        dosagePerUnit: product.dosagePerUnit,
-        servingSize: product.servingSize,
-        servingsPerContainer: product.servingsPerContainer
-      });
+      // Handle structured extraction data (priority over regular extraction)
+      if (product.structuredIngredients && product.structuredIngredients.ingredients) {
+        const structured = product.structuredIngredients;
+        
+        // Find the most prominent ingredient for categorization
+        const activeIngredients = Object.entries(structured.ingredients)
+          .filter(([key, data]) => data.isIncluded && data.dosage_mg)
+          .sort(([,a], [,b]) => b.dosage_mg - a.dosage_mg);
+          
+        if (activeIngredients.length > 0) {
+          const [primaryKey, primaryData] = activeIngredients[0];
+          const primaryIngredient = primaryKey.replace(/_/g, '-');
+          
+          supplementInfo = {
+            activeIngredient: primaryIngredient,
+            dosagePerUnit: primaryData.dosage_mg,
+            category: 'pre_workout', // Structured data is primarily for pre-workouts
+            quality: getIngredientQuality(primaryIngredient) || {
+              score: null,
+              description: 'Individual choice supplement',
+              bioavailability: 'Variable',
+              absorption: 'Variable',
+              sideEffects: 'Variable',
+              benefits: ['Varies by ingredient'],
+              drawbacks: ['Varies by ingredient'],
+              considerations: 'Evaluate each ingredient individually based on your goals and tolerance'
+            }
+          };
+          
+          nutrientCost = calculateNutrientCost(parseFloat(product.price), supplementInfo);
+        }
+      }
       
-      if (product.activeIngredient && product.dosagePerUnit && 
+      // Regular extraction processing (fallback)
+      else if (product.activeIngredient && product.dosagePerUnit && 
           product.dosagePerUnit !== 'N/A' && product.dosagePerUnit !== '' && 
           product.dosagePerUnit !== 'null' && product.dosagePerUnit !== null) {
         // Use AI-extracted supplement data
@@ -278,11 +302,8 @@ export const compareSupplementValue = (products) => {
         }
       } else {
         // Fall back to regex parsing for products without AI data
-        console.log('No AI data, falling back to regex parsing');
         supplementInfo = parseSupplementInfo(product.name, product.unit, product.quantity);
         nutrientCost = supplementInfo ? calculateNutrientCost(parseFloat(product.price), supplementInfo) : null;
-        console.log('Regex parsed supplementInfo:', supplementInfo);
-        console.log('Regex calculated nutrientCost:', nutrientCost);
       }
       
       const result = {
@@ -292,17 +313,13 @@ export const compareSupplementValue = (products) => {
         pricePerUnit: parseFloat(product.price) / parseFloat(product.quantity)
       };
       
-      console.log('Final analyzed product:', result);
       return result;
     })
     .filter(product => {
       const hasData = product.supplementInfo && product.nutrientCost;
-      console.log(`Product ${product.name} has analysis data: ${hasData}`);
       return hasData;
     });
     
-  console.log('📊 Analyzed products:', analyzed);
-
   // Group by supplement category
   const byCategory = analyzed.reduce((acc, product) => {
     const category = product.supplementInfo.category;

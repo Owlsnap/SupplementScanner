@@ -1,16 +1,24 @@
-import { useState } from "react";
-import { FlaskConical, Scale, TrendingUp, TrendingDown, CheckCircle, XCircle, Info, AlertTriangle } from "lucide-react";
+import { useState, useEffect } from "react";
+import { FlaskConical, Scale, TrendingUp, TrendingDown, CheckCircle, XCircle, Info, AlertTriangle, ChevronDown, ChevronUp } from "lucide-react";
 import { ingredientQuality, compareIngredients, getIngredientQuality } from '../data/supplementData.js';
 
 export default function IngredientQualityComparison({ analyzedProducts = {} }) {
-  console.log('🔬 IngredientQualityComparison received analyzedProducts:', analyzedProducts);
-  console.log('🔬 Available categories:', Object.keys(analyzedProducts));
-  
   const [selectedCategory, setSelectedCategory] = useState('');
   const [comparisonResults, setComparisonResults] = useState(null);
+  const [selectedIngredient, setSelectedIngredient] = useState({});
+  const [expandedIngredients, setExpandedIngredients] = useState({});
 
   // Get available categories from analyzed products
   const availableCategories = Object.keys(analyzedProducts);
+
+  // Auto-select first category when data loads
+  useEffect(() => {
+    if (availableCategories.length > 0 && !selectedCategory) {
+      const firstCategory = availableCategories[0];
+      console.log('🎯 Auto-selecting first category for ingredient analysis:', firstCategory);
+      setSelectedCategory(firstCategory);
+    }
+  }, [availableCategories, selectedCategory]);
   
   // Available categories for manual comparison
   const allCategories = [
@@ -28,9 +36,20 @@ export default function IngredientQualityComparison({ analyzedProducts = {} }) {
   
   // Get all unique ingredients in the category
   const categoryIngredients = categoryProducts
-    .map(product => product.supplementInfo?.activeIngredient)
+    .map(product => {
+      // For pre-workout products, always return a placeholder that indicates multi-ingredient
+      if (selectedCategory === 'pre_workout') {
+        return 'Pre-Workout Formula'; // Use a generic name that will trigger multi-ingredient logic
+      }
+      return product.supplementInfo?.activeIngredient;
+    })
     .filter(Boolean)
     .filter((ingredient, index, self) => self.indexOf(ingredient) === index);
+  
+  // Only log when we have a selected category with issues
+  if (selectedCategory && categoryIngredients.length === 0 && categoryProducts.length > 0) {
+    console.log(`🐛 No ingredients found for category "${selectedCategory}":`, categoryProducts);
+  }
 
   const getQualityLabel = (score) => {
     if (score === null) return 'Individual Choice';
@@ -50,13 +69,223 @@ export default function IngredientQualityComparison({ analyzedProducts = {} }) {
     return '#ef4444'; // Red
   };
 
-  const renderIngredientCard = (ingredientName) => {
-    const quality = getIngredientQuality(ingredientName);
-    if (!quality) return null;
+  // Enhanced dosage analysis that works with structured ingredient data
+  const analyzeDosageFromStructured = (ingredientName, structuredData) => {
+    const key = ingredientName?.toLowerCase().replace(/[-\s]/g, '_');
+    
+    // Check if we have structured ingredient data
+    if (structuredData?.ingredients && structuredData.ingredients[key]) {
+      const ingredient = structuredData.ingredients[key];
+      if (ingredient.isIncluded && ingredient.dosage_mg) {
+        return analyzeDosage(ingredientName, ingredient.dosage_mg);
+      }
+    }
+    
+    // Fallback to legacy dosage analysis
+    return {
+      level: 'unknown',
+      color: '#94a3b8',
+      message: 'Individual dosage not available',
+      recommendation: 'Check supplement facts panel for specific dosages'
+    };
+  };
 
-    const matchingProducts = categoryProducts.filter(p => 
-      p.supplementInfo?.activeIngredient === ingredientName
-    );
+  // Analyze dosage levels for ingredients (legacy function, kept for compatibility)
+  const analyzeDosage = (ingredientName, dosage, productName = '') => {
+    const dosageRanges = {
+      'caffeine': { low: 100, optimal: [150, 300], high: 400, unit: 'mg' },
+      'beta-alanine': { low: 1500, optimal: [3000, 5000], high: 6000, unit: 'mg' },
+      'l-citrulline': { low: 4000, optimal: [6000, 8000], high: 10000, unit: 'mg' },
+      'citrulline malate': { low: 5000, optimal: [6000, 10000], high: 12000, unit: 'mg' },
+      'creatine monohydrate': { low: 3000, optimal: [5000, 5000], high: 10000, unit: 'mg' },
+      'taurine': { low: 500, optimal: [1000, 3000], high: 4000, unit: 'mg' },
+      'l-tyrosine': { low: 500, optimal: [500, 2000], high: 3000, unit: 'mg' },
+      'l-theanine': { low: 50, optimal: [100, 200], high: 300, unit: 'mg' }
+    };
+
+    const key = ingredientName?.toLowerCase();
+    const ranges = dosageRanges[key];
+    
+    if (!ranges || !dosage) {
+      return {
+        level: 'unknown',
+        color: '#94a3b8',
+        message: 'Dosage information not available',
+        recommendation: 'Check product label for dosage details'
+      };
+    }
+
+    const dose = parseFloat(dosage);
+    
+    if (dose < ranges.low) {
+      return {
+        level: 'low',
+        color: '#ef4444',
+        message: `Low dose (${dose}${ranges.unit})`,
+        recommendation: `Consider ${ranges.optimal[0]}-${ranges.optimal[1]}${ranges.unit} for optimal effects`
+      };
+    } else if (dose >= ranges.optimal[0] && dose <= ranges.optimal[1]) {
+      return {
+        level: 'optimal',
+        color: '#22c55e',
+        message: `Optimal dose (${dose}${ranges.unit})`,
+        recommendation: `Perfect dosage range for maximum benefits`
+      };
+    } else if (dose > ranges.optimal[1] && dose <= ranges.high) {
+      return {
+        level: 'high',
+        color: '#f97316',
+        message: `High dose (${dose}${ranges.unit})`,
+        recommendation: `Above optimal range but likely safe. Monitor tolerance.`
+      };
+    } else {
+      return {
+        level: 'excessive',
+        color: '#ef4444',
+        message: `Excessive dose (${dose}${ranges.unit})`,
+        recommendation: `Consider lower dose to avoid side effects`
+      };
+    }
+  };
+
+  // Extract all ingredients from a product (for pre-workout analysis)
+  const extractProductIngredients = (product) => {
+    const ingredients = [];
+    
+    // FIRST: Check for structured ingredients data (priority)
+    if (product.structuredIngredients?.ingredients) {
+      const structuredIngredients = Object.keys(product.structuredIngredients.ingredients)
+        .filter(key => product.structuredIngredients.ingredients[key].isIncluded)
+        .map(key => {
+          // Map Swedish/structured keys back to readable names
+          const keyMappings = {
+            'koffein': 'caffeine',
+            'beta_alanin': 'beta-alanine', 
+            'citrullin_malat': 'l-citrulline',
+            'l_citrullin': 'l-citrulline',
+            'kreatin_monohydrat': 'creatine monohydrate',
+            'taurin': 'taurine',
+            'l_tyrosin': 'l-tyrosine',
+            'l_theanin': 'l-theanine'
+          };
+          const readableName = keyMappings[key] || key.replace(/_/g, '-');
+          return {
+            name: readableName,
+            dose: product.structuredIngredients.ingredients[key].dosage_mg,
+            source: 'structured'
+          };
+        });
+      
+      if (structuredIngredients.length > 0) {
+        console.log('🧬 extractProductIngredients: Using structured data:', structuredIngredients.length, 'ingredients');
+        return structuredIngredients;
+      }
+    }
+    
+    // FALLBACK: Check for "+" separated format (old method)
+    if (product.supplementInfo?.activeIngredient?.includes('+')) {
+      const ingredientNames = product.supplementInfo.activeIngredient.split(' + ');
+      ingredientNames.forEach(name => {
+        ingredients.push({
+          name: name.trim(),
+          dose: null, // We'll need to extract individual doses
+          source: 'combined'
+        });
+      });
+      console.log('🔗 extractProductIngredients: Using "+" format:', ingredients.length, 'ingredients');
+    } else {
+      // Single ingredient product (or unrecognized format)
+      ingredients.push({
+        name: product.supplementInfo?.activeIngredient || 'Unknown',
+        dose: product.supplementInfo?.dosagePerUnit || null,
+        source: 'single'
+      });
+      console.log('📦 extractProductIngredients: Single ingredient or unknown format');
+    }
+
+    return ingredients;
+  };
+
+  const renderIngredientCard = (ingredientName) => {
+    // Handle special case for Pre-Workout Formula
+    const effectiveIngredientName = ingredientName === 'Pre-Workout Formula' ? 'caffeine' : ingredientName;
+    const quality = getIngredientQuality(effectiveIngredientName);
+    
+    // Always render a card, even if we don't have quality data
+    if (!quality && ingredientName !== 'Pre-Workout Formula') return null;
+
+    const matchingProducts = categoryProducts.filter(p => {
+      // For pre-workout, all products in the category match the "Pre-Workout Formula" ingredient
+      if (selectedCategory === 'pre_workout' && ingredientName === 'Pre-Workout Formula') {
+        return true;
+      }
+      // For other categories, match by activeIngredient
+      return p.supplementInfo?.activeIngredient === ingredientName;
+    });
+
+    // For multi-ingredient products like pre-workout, extract all ingredients using the function
+    // Pre-workout is always multi-ingredient, other categories depend on '+' or structured data
+    const isMultiIngredient = selectedCategory === 'pre_workout' || ingredientName.includes('+');
+    let allIngredients = [ingredientName];
+    
+
+    
+    if (isMultiIngredient && matchingProducts.length > 0) {
+      // Debug: Check what data we have
+      const product = matchingProducts[0];
+      console.log('🔍 Product data structure:', {
+        name: product.name,
+        hasStructuredIngredients: !!product.structuredIngredients,
+        structuredKeys: product.structuredIngredients?.ingredients ? Object.keys(product.structuredIngredients.ingredients) : 'none',
+        extractionMethod: product.extractionMethod,
+        activeIngredient: product.supplementInfo?.activeIngredient
+      });
+      
+      // PRIORITY 1: Use extractProductIngredients to get actual ingredients (handles structured data properly)
+      const extractedIngredients = extractProductIngredients(product);
+      const extractedNames = extractedIngredients.map(ing => ing.name);
+      
+      // Check if we got meaningful ingredients from structured data specifically
+      const hasStructuredIngredients = extractedIngredients.some(ing => ing.source === 'structured');
+      
+      // For pre-workouts, if we don't have structured data, use fallback regardless of what we extracted
+      if (selectedCategory === 'pre_workout' && !hasStructuredIngredients) {
+        allIngredients = ['caffeine', 'beta-alanine', 'l-citrulline', 'creatine monohydrate', 'taurine', 'l-tyrosine', 'l-theanine'];
+        console.log('🔥 Using pre-workout fallback (no structured data available):', allIngredients);
+      } else if (extractedNames.length > 0 && extractedNames[0] !== 'Unknown') {
+        allIngredients = extractedNames;
+        console.log('🎯 Using actual extracted ingredients:', allIngredients);
+      } else {
+        // Last resort fallback
+        if (selectedCategory === 'pre_workout') {
+          allIngredients = ['caffeine', 'beta-alanine', 'l-citrulline', 'creatine monohydrate', 'taurine', 'l-tyrosine', 'l-theanine'];
+          console.log('🔥 Using pre-workout fallback (unknown ingredients):', allIngredients);
+        } else {
+          allIngredients = ingredientName.split(' + ').map(ing => ing.trim());
+          console.log('🔗 Using "+" split ingredients:', allIngredients);
+        }
+      }
+    } else if (isMultiIngredient) {
+      // Fallback: for pre-workout category without products, provide common ingredients
+      if (selectedCategory === 'pre_workout') {
+        allIngredients = ['caffeine', 'beta-alanine', 'l-citrulline', 'creatine monohydrate', 'taurine', 'l-tyrosine', 'l-theanine'];
+        console.log('🔥 Using pre-workout fallback (no products available):', allIngredients);
+      } else {
+        allIngredients = ingredientName.split(' + ').map(ing => ing.trim());
+        console.log('🔗 Using "+" split fallback:', allIngredients);
+      }
+    }
+
+    const cardKey = `${selectedCategory}-${ingredientName}`;
+    const currentSelectedIngredient = selectedIngredient[cardKey] || allIngredients[0];
+    const isExpanded = expandedIngredients[cardKey] || false;
+    const currentQuality = getIngredientQuality(currentSelectedIngredient) || {
+      score: null,
+      description: 'Individual Choice - dosage and quality depend on specific product formulation',
+      benefits: ['May provide energy and performance benefits'],
+      drawbacks: ['Effects vary by individual'],
+      considerations: 'Multi-ingredient formulas require individual ingredient analysis'
+    };
 
     return (
       <div
@@ -65,32 +294,103 @@ export default function IngredientQualityComparison({ analyzedProducts = {} }) {
           background: 'rgba(30, 41, 59, 0.6)',
           backdropFilter: 'blur(16px)',
           borderRadius: '16px',
-          border: `2px solid ${getQualityColor(quality.score)}40`,
+          border: `2px solid ${getQualityColor(currentQuality?.score)}40`,
           padding: '1.5rem',
           marginBottom: '1rem',
           transition: 'all 0.3s ease'
         }}
       >
-        {/* Header with quality score */}
+        {/* Header with quality score and ingredient selector */}
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '1rem' }}>
-          <div>
-            <h3 style={{ 
-              margin: 0, 
-              fontSize: '1.25rem', 
-              fontWeight: '700', 
-              color: '#f1f5f9',
-              textTransform: 'capitalize' 
-            }}>
-              {ingredientName}
-            </h3>
+          <div style={{ flex: 1 }}>
+            {/* Interactive ingredient selector for multi-ingredient products */}
+            {isMultiIngredient ? (
+              <div>
+                <h3 style={{ 
+                  margin: 0, 
+                  fontSize: '1.25rem', 
+                  fontWeight: '700', 
+                  color: '#f1f5f9',
+                  textTransform: 'capitalize',
+                  marginBottom: '1rem'
+                }}>
+                  {currentSelectedIngredient}
+                </h3>
+                
+                {/* Ingredient selector - always visible */}
+                <div style={{
+                  background: 'rgba(15, 23, 42, 0.8)',
+                  borderRadius: '8px',
+                  padding: '0.5rem',
+                  marginBottom: '0.5rem',
+                  border: '1px solid rgba(56, 243, 171, 0.2)'
+                }}>
+                  {allIngredients.map(ingredient => (
+                    <div
+                      key={ingredient}
+                      onClick={() => {
+                        setSelectedIngredient(prev => ({
+                          ...prev,
+                          [cardKey]: ingredient
+                        }));
+                      }}
+                      style={{
+                        padding: '0.5rem',
+                        borderRadius: '4px',
+                        cursor: 'pointer',
+                        background: currentSelectedIngredient === ingredient ? 
+                          'rgba(56, 243, 171, 0.1)' : 'transparent',
+                        color: currentSelectedIngredient === ingredient ? 
+                          '#38f3ab' : '#cbd5e1',
+                        fontSize: '0.875rem',
+                        textTransform: 'capitalize',
+                        transition: 'all 0.2s ease'
+                      }}
+                      onMouseEnter={(e) => {
+                        if (currentSelectedIngredient !== ingredient) {
+                          e.target.style.background = 'rgba(56, 243, 171, 0.05)';
+                        }
+                      }}
+                      onMouseLeave={(e) => {
+                        if (currentSelectedIngredient !== ingredient) {
+                          e.target.style.background = 'transparent';
+                        }
+                      }}
+                    >
+                      {ingredient}
+                    </div>
+                  ))}
+                </div>
+                
+                <div style={{ 
+                  fontSize: '0.75rem', 
+                  color: '#94a3b8',
+                  marginBottom: '0.5rem'
+                }}>
+                  Multi-ingredient formula • Select an ingredient to analyze
+                </div>
+              </div>
+            ) : (
+              <h3 style={{ 
+                margin: 0, 
+                fontSize: '1.25rem', 
+                fontWeight: '700', 
+                color: '#f1f5f9',
+                textTransform: 'capitalize',
+                marginBottom: '0.5rem'
+              }}>
+                {ingredientName}
+              </h3>
+            )}
+
             <p style={{ 
               margin: 0, 
               fontSize: '0.875rem', 
-              color: getQualityColor(quality.score),
+              color: getQualityColor(currentQuality?.score),
               fontWeight: '600',
               marginTop: '0.25rem'
             }}>
-              {getQualityLabel(quality.score)} Quality
+              {getQualityLabel(currentQuality?.score)} Quality
             </p>
             {/* Show which products contain this ingredient */}
             {matchingProducts.length > 0 && (
@@ -104,8 +404,8 @@ export default function IngredientQualityComparison({ analyzedProducts = {} }) {
           
           {/* Quality Score Badge */}
           <div style={{
-            background: `linear-gradient(135deg, ${getQualityColor(quality.score)}20 0%, ${getQualityColor(quality.score)}40 100%)`,
-            border: `2px solid ${getQualityColor(quality.score)}`,
+            background: `linear-gradient(135deg, ${getQualityColor(currentQuality?.score)}20 0%, ${getQualityColor(currentQuality?.score)}40 100%)`,
+            border: `2px solid ${getQualityColor(currentQuality?.score)}`,
             borderRadius: '20px',
             padding: '0.75rem 1.5rem',
             display: 'flex',
@@ -113,14 +413,14 @@ export default function IngredientQualityComparison({ analyzedProducts = {} }) {
             alignItems: 'center'
           }}>
             <div style={{ 
-              fontSize: quality.score === null ? '0.875rem' : '1.5rem', 
+              fontSize: currentQuality?.score === null ? '0.875rem' : '1.5rem', 
               fontWeight: 'bold', 
-              color: getQualityColor(quality.score),
+              color: getQualityColor(currentQuality?.score),
               textAlign: 'center'
             }}>
-              {quality.score === null ? 'Individual\nChoice' : quality.score}
+              {currentQuality?.score === null ? 'Individual\nChoice' : currentQuality?.score}
             </div>
-            {quality.score !== null && (
+            {currentQuality?.score !== null && (
               <div style={{ 
                 fontSize: '0.75rem', 
                 color: '#94a3b8' 
@@ -131,7 +431,100 @@ export default function IngredientQualityComparison({ analyzedProducts = {} }) {
           </div>
         </div>
 
-        {/* Quality Details */}
+        {/* Enhanced Dosage Analysis for current ingredient */}
+        {matchingProducts.length > 0 && (
+          (() => {
+            const product = matchingProducts[0];
+            
+            // Try to get dosage from structured data first
+            let dosageToAnalyze = null;
+            
+            if (product.structuredIngredients?.ingredients) {
+              const ingredientKey = currentSelectedIngredient.toLowerCase().replace(/[-\s]/g, '_');
+              const structuredIngredient = product.structuredIngredients.ingredients[ingredientKey];
+              if (structuredIngredient?.dosage_mg) {
+                dosageToAnalyze = structuredIngredient.dosage_mg;
+              }
+            }
+            
+            // Fallback to regular dosage if no structured data
+            if (!dosageToAnalyze) {
+              dosageToAnalyze = product.dosagePerUnit || product.supplementInfo?.dosagePerUnit;
+            }
+            
+            const dosageAnalysis = analyzeDosage(
+              currentSelectedIngredient, 
+              dosageToAnalyze,
+              product.name
+            );
+
+            return (
+              <div style={{
+                background: `rgba(${dosageAnalysis.level === 'optimal' ? '34, 197, 94' : 
+                              dosageAnalysis.level === 'low' || dosageAnalysis.level === 'excessive' ? '239, 68, 68' :
+                              dosageAnalysis.level === 'high' ? '249, 115, 22' : '148, 163, 184'}, 0.1)`,
+                border: `1px solid ${dosageAnalysis.color}40`,
+                borderRadius: '12px',
+                padding: '1rem',
+                marginBottom: '1.5rem'
+              }}>
+                <h5 style={{ 
+                  color: dosageAnalysis.color, 
+                  fontSize: '0.875rem', 
+                  fontWeight: '600',
+                  marginBottom: '0.75rem',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '0.5rem'
+                }}>
+                  🎯 Dosage Analysis: {currentSelectedIngredient}
+                </h5>
+                <div style={{
+                  display: 'grid',
+                  gridTemplateColumns: '1fr 2fr',
+                  gap: '1rem',
+                  alignItems: 'center'
+                }}>
+                  <div style={{
+                    padding: '0.75rem',
+                    background: `${dosageAnalysis.color}20`,
+                    borderRadius: '8px',
+                    textAlign: 'center'
+                  }}>
+                    <div style={{ 
+                      color: dosageAnalysis.color, 
+                      fontSize: '1rem', 
+                      fontWeight: 'bold',
+                      textTransform: 'uppercase',
+                      letterSpacing: '0.5px'
+                    }}>
+                      {dosageAnalysis.message}
+                    </div>
+                  </div>
+                  <div>
+                    <div style={{ 
+                      color: '#f1f5f9', 
+                      fontSize: '0.875rem', 
+                      fontWeight: '600',
+                      marginBottom: '0.25rem'
+                    }}>
+                      Recommendation:
+                    </div>
+                    <div style={{ 
+                      color: '#cbd5e1', 
+                      fontSize: '0.75rem',
+                      lineHeight: '1.4'
+                    }}>
+                      {dosageAnalysis.recommendation}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            );
+          })()
+        )}
+
+        {/* Quality Details for current ingredient */}
         <div style={{ marginBottom: '1.5rem' }}>
           <p style={{ 
             color: '#cbd5e1', 
@@ -139,36 +532,38 @@ export default function IngredientQualityComparison({ analyzedProducts = {} }) {
             lineHeight: '1.6',
             marginBottom: '1rem' 
           }}>
-            {quality.description}
+            {currentQuality?.description}
           </p>
 
           {/* Quality Metrics */}
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '1rem', marginBottom: '1rem' }}>
-            <div style={{ textAlign: 'center' }}>
-              <div style={{ color: '#94a3b8', fontSize: '0.75rem', marginBottom: '0.25rem' }}>
-                Bioavailability
+          {currentQuality?.bioavailability && (
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '1rem', marginBottom: '1rem' }}>
+              <div style={{ textAlign: 'center' }}>
+                <div style={{ color: '#94a3b8', fontSize: '0.75rem', marginBottom: '0.25rem' }}>
+                  Bioavailability
+                </div>
+                <div style={{ color: '#f1f5f9', fontSize: '0.875rem', fontWeight: '600' }}>
+                  {currentQuality.bioavailability}
+                </div>
               </div>
-              <div style={{ color: '#f1f5f9', fontSize: '0.875rem', fontWeight: '600' }}>
-                {quality.bioavailability}
+              <div style={{ textAlign: 'center' }}>
+                <div style={{ color: '#94a3b8', fontSize: '0.75rem', marginBottom: '0.25rem' }}>
+                  Absorption
+                </div>
+                <div style={{ color: '#f1f5f9', fontSize: '0.875rem', fontWeight: '600' }}>
+                  {currentQuality.absorption}
+                </div>
+              </div>
+              <div style={{ textAlign: 'center' }}>
+                <div style={{ color: '#94a3b8', fontSize: '0.75rem', marginBottom: '0.25rem' }}>
+                  Side Effects
+                </div>
+                <div style={{ color: '#f1f5f9', fontSize: '0.875rem', fontWeight: '600' }}>
+                  {currentQuality.sideEffects}
+                </div>
               </div>
             </div>
-            <div style={{ textAlign: 'center' }}>
-              <div style={{ color: '#94a3b8', fontSize: '0.75rem', marginBottom: '0.25rem' }}>
-                Absorption
-              </div>
-              <div style={{ color: '#f1f5f9', fontSize: '0.875rem', fontWeight: '600' }}>
-                {quality.absorption}
-              </div>
-            </div>
-            <div style={{ textAlign: 'center' }}>
-              <div style={{ color: '#94a3b8', fontSize: '0.75rem', marginBottom: '0.25rem' }}>
-                Side Effects
-              </div>
-              <div style={{ color: '#f1f5f9', fontSize: '0.875rem', fontWeight: '600' }}>
-                {quality.sideEffects}
-              </div>
-            </div>
-          </div>
+          )}
         </div>
 
         {/* Enhanced Supplement Information */}
@@ -192,19 +587,79 @@ export default function IngredientQualityComparison({ analyzedProducts = {} }) {
                 dosage: '1000-4000 IU daily with fat-containing meal for optimal absorption.',
                 warnings: 'D3 (cholecalciferol) is superior to D2 (ergocalciferol). Monitor blood levels.',
                 inferiorForms: ['Vitamin D2 (ergocalciferol) - less effective at raising blood levels']
+              },
+              'caffeine': {
+                generalUsage: 'Central nervous system stimulant that increases alertness, energy, and fat oxidation. Most researched pre-workout ingredient.',
+                dosage: '100-200mg for beginners, 200-400mg for experienced users. Take 30-45 minutes before workout.',
+                warnings: 'Start low to assess tolerance. Avoid late in day to prevent sleep disruption. Can cause jitters and anxiety in sensitive individuals.',
+                inferiorForms: ['Caffeine from guarana (slower absorption)', 'Synthetic caffeine in excess (crash potential)']
+              },
+              'beta-alanine': {
+                generalUsage: 'Amino acid that increases muscle carnosine levels, reducing fatigue and improving endurance in 1-4 minute high-intensity exercise.',
+                dosage: '3-5g daily, split into 2-3 doses with meals to reduce tingling. Loading phase: 4-6 weeks for full benefits.',
+                warnings: 'Causes harmless tingling sensation (paresthesia). Take with food to minimize tingling. Effects build over weeks, not immediate.',
+                inferiorForms: ['Instant-release only (causes more tingling)', 'Under-dosed products (<2g per serving)']
+              },
+              'l-citrulline': {
+                generalUsage: 'Amino acid that converts to arginine, increasing nitric oxide production for better blood flow and muscle pumps.',
+                dosage: '6-8g for citrulline, 8-10g for citrulline malate. Take 30-45 minutes before workout on empty stomach.',
+                warnings: 'Citrulline malate (2:1 ratio) may be more effective than pure L-citrulline. Higher doses needed compared to arginine.',
+                inferiorForms: ['L-arginine (poor absorption)', 'Under-dosed citrulline (<4g)', 'Arginine HCl']
+              },
+              'creatine monohydrate': {
+                generalUsage: 'Most researched supplement for strength, power, and muscle mass. Increases phosphocreatine stores for rapid ATP regeneration.',
+                dosage: '5g daily, any time. Loading phase optional (20g/day for 5 days). Mix with warm water for better dissolution.',
+                warnings: 'Monohydrate is the gold standard - avoid expensive alternatives. Drink plenty of water. May cause initial weight gain from water retention.',
+                inferiorForms: ['Creatine HCl (no proven advantage)', 'Buffered creatine', 'Creatine ethyl ester', 'Liquid creatine (unstable)']
+              },
+              'taurine': {
+                generalUsage: 'Conditionally essential amino acid that supports muscle function, hydration, and may reduce exercise-induced oxidative stress.',
+                dosage: '1-3g daily. Often included in energy drinks and pre-workouts. Can be taken with or without food.',
+                warnings: 'Generally safe with minimal side effects. May have calming effects that could counteract stimulants.',
+                inferiorForms: ['Synthetic taurine in energy drinks (often under-dosed)', 'Low-quality generic taurine']
+              },
+              'l-tyrosine': {
+                generalUsage: 'Amino acid precursor to dopamine and norepinephrine. May improve focus and reduce stress-induced cognitive decline.',
+                dosage: '500mg-2g daily, preferably on empty stomach. Best taken away from protein meals for optimal absorption.',
+                warnings: 'May interact with thyroid medications. Effects are subtle and individual. Best during high-stress periods or sleep deprivation.',
+                inferiorForms: ['N-Acetyl L-Tyrosine (NALT) - lower conversion rate', 'Generic tyrosine (poor quality control)']
+              },
+              'l-theanine': {
+                generalUsage: 'Amino acid from tea that promotes relaxation without sedation. Often paired with caffeine to reduce jitters and crash.',
+                dosage: '100-200mg, typically with caffeine in 1:1 or 2:1 ratio (theanine:caffeine). Can be taken any time.',
+                warnings: 'Very safe with minimal side effects. May reduce effectiveness of stimulants if over-dosed. Natural from green tea preferred.',
+                inferiorForms: ['Synthetic theanine (less studied)', 'Under-dosed combination products']
+              },
+              'eaa': {
+                generalUsage: 'Essential amino acids that cannot be produced by the body. Complete protein building blocks for muscle protein synthesis.',
+                dosage: '10-15g during or around workouts. Can replace BCAA supplements with superior amino acid profile.',
+                warnings: 'EAAs are superior to BCAAs as they contain all essential amino acids. Look for proper ratios with high leucine content.',
+                inferiorForms: ['BCAA-only supplements (incomplete profile)', 'Low leucine EAA blends', 'Generic amino acid blends']
+              },
+              'bcaa': {
+                generalUsage: 'Branched-chain amino acids (leucine, isoleucine, valine) for muscle protein synthesis and recovery.',
+                dosage: '5-10g before, during, or after workouts. 2:1:1 leucine ratio preferred.',
+                warnings: '⚠️ EAAs are generally superior to BCAAs. BCAAs alone may impair protein synthesis without other essential amino acids.',
+                inferiorForms: ['Wrong ratios (not 2:1:1)', 'Under-dosed leucine content', 'Generic BCAA blends without quality testing']
+              },
+              'l-glutamine': {
+                generalUsage: 'Conditionally essential amino acid for gut health, immune function, and recovery. Most abundant amino acid in muscle.',
+                dosage: '5-15g daily, post-workout or before bed. Can be mixed with water or protein shakes.',
+                warnings: 'Benefits are subtle for healthy individuals. Most beneficial during high training volume or stress. Often over-hyped in marketing.',
+                inferiorForms: ['Generic L-glutamine (poor solubility)', 'Glutamine peptides (unnecessary premium)', 'Under-dosed products']
               }
             };
             
-            const key = ingredient?.toLowerCase();
+            const key = ingredient?.toLowerCase().replace(/\s+/g, ' ').trim();
             return supplementDB[key] || {
-              generalUsage: 'General supplement information not available in our database.',
-              dosage: 'Consult product label and healthcare provider for dosing guidance.',
-              warnings: 'Research this ingredient thoroughly before use.',
-              inferiorForms: []
+              generalUsage: `${ingredient} is a supplement ingredient. Research the specific benefits and mechanisms for this compound.`,
+              dosage: 'Consult product label and healthcare provider for proper dosing guidance. Follow manufacturer recommendations.',
+              warnings: 'Research this ingredient thoroughly before use. Check for potential interactions with medications or health conditions.',
+              inferiorForms: ['Generic or low-quality versions', 'Under-dosed products', 'Poor manufacturing standards']
             };
           };
 
-          const suppInfo = getSupplementInfo(ingredientName);
+          const suppInfo = getSupplementInfo(currentSelectedIngredient);
 
           return (
             <>
@@ -322,7 +777,7 @@ export default function IngredientQualityComparison({ analyzedProducts = {} }) {
         {/* End Enhanced Supplement Information */}
 
         {/* Pre-workout Considerations (for ingredients without scores) */}
-        {quality.score === null && quality.considerations && (
+        {currentQuality?.score === null && currentQuality?.considerations && (
           <div style={{ 
             background: 'rgba(139, 92, 246, 0.1)',
             border: '1px solid rgba(139, 92, 246, 0.2)',
@@ -347,7 +802,7 @@ export default function IngredientQualityComparison({ analyzedProducts = {} }) {
               lineHeight: '1.6',
               margin: 0
             }}>
-              {quality.considerations}
+              {currentQuality.considerations}
             </p>
           </div>
         )}
@@ -373,7 +828,7 @@ export default function IngredientQualityComparison({ analyzedProducts = {} }) {
               <CheckCircle size={14} />
               Benefits
             </h5>
-            {quality.benefits.map((benefit, idx) => (
+            {currentQuality?.benefits?.map((benefit, idx) => (
               <div key={idx} style={{ 
                 color: '#cbd5e1', 
                 fontSize: '0.75rem', 
@@ -407,7 +862,7 @@ export default function IngredientQualityComparison({ analyzedProducts = {} }) {
               <XCircle size={14} />
               Drawbacks
             </h5>
-            {quality.drawbacks.map((drawback, idx) => (
+            {currentQuality?.drawbacks?.map((drawback, idx) => (
               <div key={idx} style={{ 
                 color: '#cbd5e1', 
                 fontSize: '0.75rem', 
@@ -714,7 +1169,7 @@ export default function IngredientQualityComparison({ analyzedProducts = {} }) {
             color: '#f1f5f9',
             marginBottom: '1rem'
           }}>
-            🔬 Select supplement category to analyze:
+            🔬 Supplement categories available for analysis:
           </label>
           
           <div style={{ 
@@ -743,14 +1198,14 @@ export default function IngredientQualityComparison({ analyzedProducts = {} }) {
                   }}
                   onMouseEnter={(e) => {
                     if (selectedCategory !== category.key) {
-                      e.target.style.borderColor = 'rgba(102, 126, 234, 0.3)';
-                      e.target.style.background = 'rgba(102, 126, 234, 0.1)';
+                      e.currentTarget.style.borderColor = 'rgba(102, 126, 234, 0.3)';
+                      e.currentTarget.style.background = 'rgba(102, 126, 234, 0.1)';
                     }
                   }}
                   onMouseLeave={(e) => {
                     if (selectedCategory !== category.key) {
-                      e.target.style.borderColor = 'rgba(148, 163, 184, 0.1)';
-                      e.target.style.background = 'rgba(30, 41, 59, 0.6)';
+                      e.currentTarget.style.borderColor = 'rgba(148, 163, 184, 0.1)';
+                      e.currentTarget.style.background = 'rgba(30, 41, 59, 0.6)';
                     }
                   }}
                 >
@@ -807,7 +1262,7 @@ export default function IngredientQualityComparison({ analyzedProducts = {} }) {
       {selectedCategory && renderCategoryComparison()}
 
       {/* Individual Ingredient Cards */}
-      {selectedCategory && categoryIngredients.length > 0 && (
+      {selectedCategory && categoryProducts.length > 0 && (
         <div>
           <h3 style={{
             color: '#f1f5f9',
@@ -822,7 +1277,23 @@ export default function IngredientQualityComparison({ analyzedProducts = {} }) {
             Detailed Analysis
           </h3>
           
-          {categoryIngredients.map(ingredient => renderIngredientCard(ingredient))}
+          {categoryIngredients.length > 0 ? (
+            categoryIngredients.map(ingredient => renderIngredientCard(ingredient))
+          ) : (
+            <div style={{
+              background: 'rgba(249, 115, 22, 0.1)',
+              border: '1px solid rgba(249, 115, 22, 0.2)',
+              borderRadius: '12px',
+              padding: '1.5rem',
+              textAlign: 'center'
+            }}>
+              <h4 style={{ color: '#f97316', marginBottom: '0.5rem' }}>No ingredients found</h4>
+              <p style={{ color: '#cbd5e1', fontSize: '0.875rem', margin: 0 }}>
+                Products in this category don't have extractable ingredient data. 
+                Check console logs for debugging information.
+              </p>
+            </div>
+          )}
         </div>
       )}
     </div>

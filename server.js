@@ -32,7 +32,7 @@ const corsOptions = {
 };
 
 app.use(cors(corsOptions));
-app.use(express.json());
+app.use(express.json({ limit: '50mb' })); // Increase payload limit for large HTML extractions
 
 // Simple health check
 app.get('/', (req, res) => {
@@ -51,14 +51,134 @@ app.post('/api/extract-product', async (req, res) => {
   console.log('📨 Headers:', req.headers);
   console.log('📦 Body:', req.body);
   
-  const { url } = req.body;
+  const { url, method = 'hybrid' } = req.body;
 
   if (!url) {
     console.log('❌ No URL provided in request');
     return res.status(400).json({ success: false, error: 'URL is required' });
   }
 
-  console.log('🔍 Extracting product info from:', url);
+  // Try new multi-layer extraction system for structured method
+  if (method === 'structured') {
+    try {
+      console.log('🧬 Using new structured extraction system');
+      
+      // Setup DOM for server-side extraction
+      const { JSDOM } = await import('jsdom');
+      const { window } = new JSDOM('<!DOCTYPE html><html><head></head><body></body></html>');
+      global.window = window;
+      global.document = window.document;
+      global.DOMParser = window.DOMParser;
+      global.Node = window.Node;
+      global.Element = window.Element;
+      global.HTMLElement = window.HTMLElement;
+      
+      const { extractSupplementDataStructured } = await import('./src/extraction/multiLayerExtractor.js');
+      
+      // Get HTML using puppeteer 
+      const browser = await puppeteer.launch({
+        headless: true,
+        args: ['--no-sandbox', '--disable-setuid-sandbox']
+      });
+      const page = await browser.newPage();
+      await page.setViewport({ width: 1280, height: 800 });
+      await page.goto(url, { waitUntil: 'networkidle2', timeout: 30000 });
+      
+      // Handle Tillskottsbolaget read-more
+      try {
+        const readMoreButton = await page.$('.btn.sup-read-more-btn');
+        if (readMoreButton) {
+          await readMoreButton.click();
+          await page.waitForTimeout(2000);
+        }
+      } catch (e) {}
+      
+      const html = await page.content();
+      await browser.close();
+
+      console.log(`📄 Extracted HTML: ${html.length} characters`);
+      
+      const result = await extractSupplementDataStructured(html, url);
+      
+      if (result.success) {
+        return res.status(200).json({
+          success: true,
+          data: result.data,
+          structuredData: result.structuredData,
+          extraction_method: 'structured',
+          metadata: result.metadata
+        });
+      } else {
+        console.log('⚠️ Structured extraction failed, falling back to legacy');
+      }
+    } catch (error) {
+      console.error('❌ Structured extraction error:', error);
+      console.log('⚠️ Falling back to legacy extraction');
+    }
+  }
+  
+  // Try parallel extraction system (structured + legacy simultaneously)
+  if (method === 'parallel') {
+    try {
+      console.log('🚀 Using parallel extraction system (structured + legacy simultaneously)');
+      
+      // Setup DOM for server-side extraction
+      const { JSDOM } = await import('jsdom');
+      const { window } = new JSDOM('<!DOCTYPE html><html><head></head><body></body></html>');
+      global.window = window;
+      global.document = window.document;
+      global.DOMParser = window.DOMParser;
+      global.Node = window.Node;
+      global.Element = window.Element;
+      global.HTMLElement = window.HTMLElement;
+      
+      const { extractSupplementDataParallel } = await import('./src/extraction/multiLayerExtractor.js');
+      
+      // Get HTML using puppeteer 
+      const browser = await puppeteer.launch({
+        headless: true,
+        args: ['--no-sandbox', '--disable-setuid-sandbox']
+      });
+      const page = await browser.newPage();
+      await page.setViewport({ width: 1280, height: 800 });
+      await page.goto(url, { waitUntil: 'networkidle2', timeout: 30000 });
+      
+      // Handle Tillskottsbolaget read-more
+      try {
+        const readMoreButton = await page.$('.btn.sup-read-more-btn');
+        if (readMoreButton) {
+          console.log('🔽 Clicking on Tillskottsbolaget read-more button');
+          await readMoreButton.click();
+          await page.waitForTimeout(2000);
+        }
+      } catch (e) {}
+      
+      const html = await page.content();
+      await browser.close();
+
+      console.log(`📄 Extracted HTML: ${html.length} characters for parallel extraction`);
+      
+      const result = await extractSupplementDataParallel(html, url);
+      
+      if (result.success) {
+        console.log('✅ Parallel extraction completed successfully');
+        return res.status(200).json({
+          success: true,
+          data: result.data,
+          structuredData: result.structuredData,
+          extraction_method: 'parallel',
+          metadata: result.metadata
+        });
+      } else {
+        console.log('⚠️ Parallel extraction failed, falling back to legacy');
+      }
+    } catch (error) {
+      console.error('❌ Parallel extraction error:', error);
+      console.log('⚠️ Falling back to legacy extraction');
+    }
+  }
+
+  console.log('🔍 Using legacy extraction for:', url);
 
   try {
     console.log('🚀 Launching browser...');

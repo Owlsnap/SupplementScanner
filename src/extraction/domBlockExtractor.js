@@ -6,10 +6,10 @@
 // Keywords that indicate supplement-relevant content
 const RELEVANCE_KEYWORDS = {
   price: ['kr', 'sek', 'pris', 'kostnad', 'price', ':-', 'kostar'],
-  ingredients: ['mg', 'g', 'mcg', 'μg', 'iu', 'caps', 'kapslar', 'tabletter', 'tabletter', 'ingrediens', 'innehåll', 'ingredients', 'active', 'aktiv'],
-  dosage: ['dosering', 'portion', 'serving', 'daglig', 'daily', 'rekommenderad', 'recommended', 'dos', 'dose'],
-  quantity: ['antal', 'count', 'stycken', 'pieces', 'portioner', 'servings', 'kapslar', 'caps'],
-  nutritional: ['näringsdeklaration', 'nutrition', 'facts', 'innehåll', 'per', 'varje', 'each']
+  ingredients: ['mg', 'g', 'mcg', 'μg', 'iu', 'caps', 'kapslar', 'tabletter', 'tabletter', 'ingrediens', 'innehåll', 'ingredients', 'active', 'aktiv', 'citrullinmalat', 'beta-alanin', 'koffein', 'l-citrullin', 'taurin'],
+  dosage: ['dosering', 'portion', 'serving', 'daglig', 'daily', 'rekommenderad', 'recommended', 'dos', 'dose', 'mg', 'gram', 'g', 'mcg', 'per portion', 'innehåll per portion', 'per serving'],
+  quantity: ['antal', 'count', 'stycken', 'pieces', 'portioner', 'servings', 'kapslar', 'caps', 'tabletter'],
+  nutritional: ['näringsdeklaration', 'nutrition', 'facts', 'innehåll', 'per', 'varje', 'each', 'näringsinnehåll', 'nutritional information']
 };
 
 /**
