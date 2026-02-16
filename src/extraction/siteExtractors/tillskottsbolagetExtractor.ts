@@ -4,17 +4,27 @@
  */
 
 import { JSDOM } from 'jsdom';
+import { 
+  NutritionExtractionResultSchema,
+  StructuredSupplementDataSchema,
+  safeValidateStructuredData,
+} from '../../schemas/zodSchemas.js';
+import type { 
+  SiteExtractor, 
+  NutritionExtractionResult, 
+  StructuredSupplementData, 
+  ExtractedIngredient,
+  RawTableData 
+} from '../../types/index.js';
 
-export default class TillskottsbolagetExtractor {
-  constructor() {
-    this.siteDomain = 'tillskottsbolaget.se';
-  }
+export default class TillskottsbolagetExtractor implements SiteExtractor {
+  public readonly siteDomain = 'tillskottsbolaget.se';
 
-  canHandle(url) {
+  canHandle(url: string): boolean {
     return url && url.includes(this.siteDomain);
   }
 
-  extractNutritionTable(html) {
+  extractNutritionTable(html: string): NutritionExtractionResult {
     console.log('🍃 Starting DOM extraction for Tillskottsbolaget nutrition table...');
     
     const result = {
@@ -150,6 +160,16 @@ export default class TillskottsbolagetExtractor {
 
       if (Object.keys(result.ingredients).length > 0) {
         console.log(`✅ Extracted ${Object.keys(result.ingredients).length} ingredients from table`);
+        
+        // Validate the extraction result with Zod
+        try {
+          const validatedResult = NutritionExtractionResultSchema.parse(result);
+          console.log('✅ Extraction result validated successfully with Zod');
+          return validatedResult;
+        } catch (error) {
+          console.warn('⚠️ Extraction result validation failed:', error);
+          console.warn('📋 Proceeding with unvalidated result');
+        }
       }
       return result;
 
@@ -159,13 +179,13 @@ export default class TillskottsbolagetExtractor {
     }
   }
 
-  mapIngredientName(swedishName) {
+  mapIngredientName(swedishName: string): string | null {
     const normalized = swedishName.toLowerCase()
       .replace(/[-\s]/g, '')
       .replace(/®|™/g, '');
 
     // Direct mappings
-    const mappings = {
+    const mappings: Record<string, string> = {
       'koffein': 'caffeine',
       'betaalanin': 'beta_alanine',
       'citrullinmalat': 'l_citrulline',
@@ -191,7 +211,7 @@ export default class TillskottsbolagetExtractor {
     return mappings[normalized] || null;
   }
 
-  calculateTotalCaffeine(rawData) {
+  calculateTotalCaffeine(rawData: RawTableData[]): number {
     let total = 0;
     
     for (const item of rawData) {
@@ -217,8 +237,8 @@ export default class TillskottsbolagetExtractor {
     return Math.round(total);
   }
 
-  getCaffeineSources(rawData) {
-    const sources = [];
+  getCaffeineSources(rawData: RawTableData[]): string[] {
+    const sources: string[] = [];
     
     for (const item of rawData) {
       const name = item.ingredient.toLowerCase();
@@ -231,7 +251,7 @@ export default class TillskottsbolagetExtractor {
     return sources;
   }
 
-  extractPrice(doc, result) {
+  extractPrice(doc: Document, result: NutritionExtractionResult): void {
     console.log('💰 Starting Tillskottsbolaget-specific price extraction...');
     
     // Look specifically inside the PrisFalt element
@@ -357,7 +377,7 @@ export default class TillskottsbolagetExtractor {
     console.log('⚠️ No valid Tillskotts price found in #PrisFalt');
   }
 
-  extractQuantity(doc, result) {
+  extractQuantity(doc: Document, result: NutritionExtractionResult): void {
     console.log('⚖️ Starting quantity extraction...');
     
     // Look for weight/quantity in product title or description
@@ -483,7 +503,7 @@ export default class TillskottsbolagetExtractor {
   }
 
   // Convert to structured schema format
-  toStructuredFormat(extractedData) {
+  toStructuredFormat(extractedData: NutritionExtractionResult): StructuredSupplementData {
     // Calculate proper serving information
     const servingSizeNum = extractedData.servingSize ? parseFloat(extractedData.servingSize.replace(/[^\d.]/g, '')) : 20; // Default 20g
     const containerSize = extractedData.quantity || 400; // Use extracted quantity or default 400g
@@ -538,6 +558,15 @@ export default class TillskottsbolagetExtractor {
       structured.totalCaffeineContent_mg = structured.ingredients.caffeine.dosage_mg;
     }
 
-    return structured;
+    // Validate the structured result with Zod
+    const validationResult = safeValidateStructuredData(structured);
+    if (validationResult.success) {
+      console.log('✅ Structured supplement data validated successfully with Zod');
+      return validationResult.data;
+    } else {
+      console.warn('⚠️ Structured data validation failed:', validationResult.error);
+      console.warn('📋 Proceeding with unvalidated structured data');
+      return structured as StructuredSupplementData;
+    }
   }
 }

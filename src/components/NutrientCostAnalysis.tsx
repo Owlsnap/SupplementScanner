@@ -1,11 +1,26 @@
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { Calculator, TrendingUp, Award, AlertCircle, Info, DollarSign, Zap } from "lucide-react";
 import { parseSupplementInfo, calculateNutrientCost, compareSupplementValue, getQualityInsights, generateRecommendations } from '../utils/supplementAnalysis.js';
+import type { Product } from '../types/index.js';
 
-export default function NutrientCostAnalysis({ products }) {
-  const [analyzedData, setAnalyzedData] = useState({});
-  const [recommendations, setRecommendations] = useState([]);
-  const [selectedCategory, setSelectedCategory] = useState('');
+interface AnalyzedData {
+  [key: string]: any;
+}
+
+interface Recommendation {
+  type: string;
+  message: string;
+  product?: string;
+}
+
+interface NutrientCostAnalysisProps {
+  products: Product[];
+}
+
+export default function NutrientCostAnalysis({ products }: NutrientCostAnalysisProps): JSX.Element {
+  const [analyzedData, setAnalyzedData] = useState<AnalyzedData>({});
+  const [recommendations, setRecommendations] = useState<Recommendation[]>([]);
+  const [selectedCategory, setSelectedCategory] = useState<string>('');
 
   useEffect(() => {
     // Analyze all products when they change

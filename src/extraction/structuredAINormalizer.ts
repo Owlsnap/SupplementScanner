@@ -1,15 +1,38 @@
-import { supplementExtractionSchema, swedishIngredientMapping } from '../schemas/supplementSchema.js';
-import TillskottsbolagetExtractor from './siteExtractors/tillskottsbolagetExtractor.js';
+import { swedishIngredientMapping } from '../schemas/zodSchemas.js';
+import TillskottsbolagetExtractor from './siteExtractors/tillskottsbolagetExtractor';
+import type { 
+  StructuredSupplementData, 
+  ExtractedData, 
+  SiteExtractor,
+  NutritionExtractionResult 
+} from '../types/index.js';
 
 export default class StructuredAINormalizer {
+  private schema: StructuredSupplementData;
+  private siteExtractors: SiteExtractor[];
+
   constructor() {
-    this.schema = JSON.parse(JSON.stringify(supplementExtractionSchema)); // Deep copy
+    // Create default structured supplement data template
+    this.schema = {
+      productName: "",
+      servingSize: "",
+      servingsPerContainer: "",
+      ingredients: {},
+      unrecognizedIngredients: [],
+      totalCaffeineContent_mg: null,
+      extractionMetadata: {
+        tableFound: false,
+        ingredientListFound: false,
+        servingSizeFound: false,
+        confidence: 0.0
+      }
+    };
     this.siteExtractors = [
       new TillskottsbolagetExtractor()
     ];
   }
 
-  async normalizeData(extractedData, url = '') {
+  async normalizeData(extractedData: ExtractedData, url: string = ''): Promise<StructuredSupplementData> {
     console.log('🧠 Starting structured AI normalization for:', url);
     console.log('📋 ExtractedData structure:', {
       hasHtml: !!extractedData.html,
@@ -51,7 +74,7 @@ export default class StructuredAINormalizer {
             console.log(`📄 Using direct HTML content: ${html.length} characters`);
           } else if (extractedData.rankedBlocks) {
             // Concatenate all relevant blocks
-            const allBlocks = [];
+            const allBlocks: string[] = [];
             Object.values(extractedData.rankedBlocks).forEach(blocks => {
               if (Array.isArray(blocks)) {
                 blocks.forEach(block => {
@@ -101,7 +124,7 @@ export default class StructuredAINormalizer {
                   patternData.product_name || 
                   structuredResult.name ||
                   'Unknown Product';
-                structuredResult.productName = structuredResult.name; // Sync both fields
+                structuredResult.productName = structuredResult.name || 'Unknown Product'; // Sync both fields
               }
             }
             
@@ -280,14 +303,16 @@ ${JSON.stringify(this.schema, null, 2)}`;
   }
 
   // Convert structured data back to legacy format for compatibility
-  toLegacyFormat(structuredData) {
-    const activeIngredients = [];
+  toLegacyFormat(structuredData: StructuredSupplementData) {
+    const activeIngredients: string[] = [];
     let totalDosage = 0;
 
     Object.entries(structuredData.ingredients).forEach(([key, ingredient]) => {
-      if (ingredient.isIncluded && ingredient.dosage_mg) {
+      if (typeof ingredient === 'object' && ingredient !== null && 
+          'isIncluded' in ingredient && 'dosage_mg' in ingredient &&
+          ingredient.isIncluded && ingredient.dosage_mg) {
         activeIngredients.push(key.replace(/_/g, '-'));
-        totalDosage += ingredient.dosage_mg;
+        totalDosage += (ingredient as any).dosage_mg;
       }
     });
 

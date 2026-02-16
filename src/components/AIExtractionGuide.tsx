@@ -1,6 +1,7 @@
+import React from "react";
 import { Eye, Search, FileText, Table, Package, Info } from "lucide-react";
 
-export default function AIExtractionGuide() {
+export default function AIExtractionGuide(): JSX.Element {
   const searchAreas = [
     {
       icon: <FileText size={20} />,

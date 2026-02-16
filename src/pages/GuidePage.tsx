@@ -1,7 +1,12 @@
+import React from "react";
 import { ArrowLeft, Bot } from "lucide-react";
 import AIExtractionGuide from '../components/AIExtractionGuide';
 
-export default function GuidePage({ onBack }) {
+interface GuidePageProps {
+  onBack: () => void;
+}
+
+export default function GuidePage({ onBack }: GuidePageProps): JSX.Element {
   return (
     <div
       style={{

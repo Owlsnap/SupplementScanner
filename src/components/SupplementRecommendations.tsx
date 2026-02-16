@@ -1,10 +1,15 @@
-import { useState } from "react";
+import React, { useState } from "react";
 import { Target, Star, TrendingUp, Clock, DollarSign, Award, ChevronDown, ChevronUp, Info } from "lucide-react";
 import { healthGoalRecommendations, getRecommendationsForGoal } from '../data/supplementData.js';
+import type { Product, AnalyzedProduct } from '../types/index.js';
 
-export default function SupplementRecommendations({ analyzedProducts = {} }) {
-  const [selectedGoal, setSelectedGoal] = useState('');
-  const [expandedSupplement, setExpandedSupplement] = useState(null);
+interface SupplementRecommendationsProps {
+  analyzedProducts?: Record<string, AnalyzedProduct[]>;
+}
+
+export default function SupplementRecommendations({ analyzedProducts = {} }: SupplementRecommendationsProps): JSX.Element {
+  const [selectedGoal, setSelectedGoal] = useState<string>('');
+  const [expandedSupplement, setExpandedSupplement] = useState<string | null>(null);
 
   const goalOptions = [
     { key: 'better sleep', label: '🛌 Better Sleep', description: 'Natural sleep quality improvement' },
@@ -19,7 +24,7 @@ export default function SupplementRecommendations({ analyzedProducts = {} }) {
     const categoryProducts = analyzedProducts[category] || [];
     return categoryProducts.find(product => 
       product.name.toLowerCase().includes(supplementName.toLowerCase()) ||
-      product.supplementInfo?.activeIngredient.toLowerCase().includes(supplementName.toLowerCase())
+      (product.supplementInfo?.activeIngredient || product.activeIngredient)?.toLowerCase().includes(supplementName.toLowerCase())
     );
   };
 
@@ -361,14 +366,16 @@ export default function SupplementRecommendations({ analyzedProducts = {} }) {
               }}
               onMouseEnter={(e) => {
                 if (selectedGoal !== goal.key) {
-                  e.target.style.borderColor = 'rgba(56, 243, 171, 0.3)';
-                  e.target.style.background = 'rgba(56, 243, 171, 0.1)';
+                  const target = e.target as HTMLElement;
+                  target.style.borderColor = 'rgba(56, 243, 171, 0.3)';
+                  target.style.background = 'rgba(56, 243, 171, 0.1)';
                 }
               }}
               onMouseLeave={(e) => {
                 if (selectedGoal !== goal.key) {
-                  e.target.style.borderColor = 'rgba(148, 163, 184, 0.1)';
-                  e.target.style.background = 'rgba(30, 41, 59, 0.6)';
+                  const target = e.target as HTMLElement;
+                  target.style.borderColor = 'rgba(148, 163, 184, 0.1)';
+                  target.style.background = 'rgba(30, 41, 59, 0.6)';
                 }
               }}
             >

@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { Bot, Plus, Link, Trash2, Menu, Target } from "lucide-react";
 import CookieBanner from './CookieBanner';
 import IngredientQualityComparison from './IngredientQualityComparison';
@@ -6,12 +6,41 @@ import NutrientCostAnalysis from './NutrientCostAnalysis';
 import RecommendationsPage from '../pages/RecommendationsPage';
 import GuidePage from '../pages/GuidePage';
 import { compareSupplementValue } from '../utils/supplementAnalysis.js';
+import { 
+  validateSupplementProduct, 
+  analyzeSupplementURL, 
+  createValidationReport 
+} from '../utils/validationUtils.js';
+import { 
+  validateProduct, 
+  safeValidateProduct, 
+  validateAPIResponse, 
+  validateSwedishURL 
+} from '../types/index.js';
+import type { Product, StructuredSupplementData } from '../types/index.js';
+
+interface MultiLayerResponse {
+  data: any;
+  structuredData?: StructuredSupplementData;
+  success: boolean;
+  metadata?: {
+    structured_extraction?: boolean;
+    siteDomain?: string;
+    parallel_extraction?: boolean;
+  };
+}
+
+interface ActiveIngredient {
+  name: string;
+  dose_mg: number;
+  is_primary: boolean;
+}
 
 /**
  * Transform multi-layer extraction data to legacy format for compatibility
  * Also handles structured extraction data
  */
-function transformMultiLayerData(multiLayerResponse) {
+function transformMultiLayerData(multiLayerResponse: MultiLayerResponse) {
   const { data, structuredData, success, metadata } = multiLayerResponse;
   
   if (!success || !data) {
@@ -29,7 +58,7 @@ function transformMultiLayerData(multiLayerResponse) {
     });
     
     // Find active ingredients from structured data
-    const activeIngredients = [];
+    const activeIngredients: ActiveIngredient[] = [];
     Object.entries(structuredData.ingredients || {}).forEach(([key, ingredient]) => {
       if (ingredient.isIncluded && ingredient.dosage_mg) {
         activeIngredients.push({
@@ -92,24 +121,26 @@ function transformMultiLayerData(multiLayerResponse) {
   };
 }
 
-export default function SupplementAnalyzer() {
-  const [products, setProducts] = useState([
+export default function SupplementAnalyzer(): JSX.Element {
+  const [products, setProducts] = useState<Product[]>([
     {
       id: 1,
       name: "",
       price: "",
       quantity: "",
       unit: "",
+      activeIngredient: "",
+      dosagePerUnit: null,
       url: "",
     },
   ]);
-  const [nextId, setNextId] = useState(2);
-  const [toasts, setToasts] = useState([]);
-  const [extractingProducts, setExtractingProducts] = useState(new Set());
-  const [analyzedSupplements, setAnalyzedSupplements] = useState({});
-  const [bestValueProduct, setBestValueProduct] = useState(null);
-  const [currentPage, setCurrentPage] = useState('scanner');
-  const [showMenu, setShowMenu] = useState(false);
+  const [nextId, setNextId] = useState<number>(2);
+  const [toasts, setToasts] = useState<Array<{id: number, message: string, type: string}>>([]);
+  const [extractingProducts, setExtractingProducts] = useState<Set<number>>(new Set());
+  const [analyzedSupplements, setAnalyzedSupplements] = useState<Record<string, Product[]>>({});
+  const [bestValueProduct, setBestValueProduct] = useState<Product | null>(null);
+  const [currentPage, setCurrentPage] = useState<string>('scanner');
+  const [showMenu, setShowMenu] = useState<boolean>(false);
 
   // Close menu when clicking outside
   useEffect(() => {
@@ -147,8 +178,20 @@ export default function SupplementAnalyzer() {
     setNextId(nextId + 1);
   };
 
-  const extractProductInfo = async (productId, url) => {
+  const extractProductInfo = async (productId: number, url: string) => {
     if (!url.trim()) return;
+
+    // Validate Swedish supplement URL using Zod and analyze URL
+    try {
+      validateSwedishURL(url);
+      console.log('✅ URL validated as Swedish supplement site');
+    } catch (error) {
+      console.warn('⚠️ URL validation warning:', error);
+      // Continue with extraction but log the warning
+    }
+
+    const urlAnalysis = analyzeSupplementURL(url);
+    console.log('📊 URL Analysis:', urlAnalysis);
 
     setExtractingProducts(prev => new Set([...prev, productId]));
     
@@ -161,32 +204,112 @@ export default function SupplementAnalyzer() {
     try {
       // Call backend API (local dev or production)
       const apiUrl = import.meta.env.VITE_API_URL || "http://localhost:3001";
-      
+
+      console.log('🚀 Using Enhanced Scraper (Claude) with database saving...');
+
       const response = await fetch(
-        `${apiUrl}/api/extract-product`,
+        `${apiUrl}/api/ingest/url`,
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ 
-            url,
-            method: extractionMethod
-          }),
+          body: JSON.stringify({ url }),
         }
       );
-      
+
       const responseData = await response.json();
 
-      // Handle both new multi-layer and legacy extraction formats
+      // Log enhanced extraction results
+      if (responseData.success) {
+        console.log('✨ Enhanced extraction successful:', {
+          method: responseData.extraction?.method,
+          completeness: responseData.extraction?.completeness + '%',
+          savedToDatabase: true,
+          barcode: responseData.barcode
+        });
+      }
+
+      // Validate API response with Zod
+      try {
+        const validatedResponse = validateAPIResponse(responseData);
+        console.log('✅ API response validated successfully with Zod');
+      } catch (error) {
+        console.warn('⚠️ API response validation failed:', error);
+        console.warn('📋 Proceeding with unvalidated response');
+      }
+
+      // Handle enhanced ingestion response (SupplementSchemaV1 format)
       let extractedData;
-      if (responseData.extraction_method?.includes('multi-layer') || 
-          responseData.extraction_method === 'structured' || 
+      if (responseData.barcode && responseData.data) {
+        // New enhanced ingestion format - transform to legacy UI format
+        const supplement = responseData.data;
+        const primaryIngredient = supplement.ingredients?.[0];
+
+        extractedData = {
+          success: true,
+          name: supplement.productName,
+          price: supplement.price?.value || "",
+          quantity: supplement.servingsPerContainer || "",
+          unit: supplement.form === 'capsule' ? 'capsules' :
+                supplement.form === 'tablet' ? 'tablets' :
+                supplement.form === 'powder' ? 'g' : supplement.form,
+          activeIngredient: supplement.ingredients?.map(i => i.name).join(' + ') || "",
+          dosagePerUnit: primaryIngredient?.dosage || "",
+          servingSize: supplement.servingSize?.amount || "",
+          servingsPerContainer: supplement.servingsPerContainer || "",
+          // Enhanced metadata
+          extractionMethod: 'enhanced_claude',
+          confidence: responseData.extraction?.completeness || 100,
+          completeness: responseData.extraction?.completeness || 100,
+          barcode: responseData.barcode,
+          savedToDatabase: true,
+          // Store full supplement data
+          fullSupplementData: supplement
+        };
+
+        console.log('✨ Enhanced data transformed:', {
+          name: extractedData.name,
+          price: extractedData.price,
+          completeness: extractedData.completeness,
+          savedToDatabase: true
+        });
+      } else if (responseData.extraction_method?.includes('multi-layer') ||
+          responseData.extraction_method === 'structured' ||
           responseData.extraction_method === 'parallel') {
+        // Legacy multi-layer format
         extractedData = transformMultiLayerData(responseData);
       } else {
+        // Legacy simple format
         extractedData = responseData;
       }
 
 
+
+      console.log('🔍 EXTRACTION DEBUGGING - Full response data:', {
+        responseData: {
+          success: responseData.success,
+          hasData: !!responseData.data,
+          hasStructuredData: !!responseData.structuredData,
+          extractionMethod: responseData.extraction_method,
+          metadata: responseData.metadata,
+          structuredDataIngredients: responseData.structuredData?.ingredients ? Object.keys(responseData.structuredData.ingredients) : null,
+          // Log the full response structure
+          fullResponseKeys: Object.keys(responseData),
+          dataStructure: responseData.data ? {
+            hasStructuredIngredients: 'structuredIngredients' in responseData.data,
+            hasStructuredData: 'structuredData' in responseData.data,
+            dataKeys: Object.keys(responseData.data)
+          } : null
+        },
+        extractedData: {
+          success: extractedData.success,
+          hasStructuredIngredients: !!extractedData.structuredIngredients,
+          structuredIngredientsKeys: extractedData.structuredIngredients?.ingredients ? Object.keys(extractedData.structuredIngredients.ingredients) : null,
+          name: extractedData.name,
+          price: extractedData.price,
+          // Log what extractedData contains
+          extractedDataKeys: Object.keys(extractedData)
+        }
+      });
 
       if (extractedData.success) {
         // Update all fields at once to avoid React state batching issues
@@ -213,8 +336,11 @@ export default function SupplementAnalyzer() {
 
             console.log('💾 Updated product with structured data:', {
               name: updatedProduct.name,
-              structuredIngredients: updatedProduct.structuredIngredients,
-              extractionMethod: updatedProduct.extractionMethod
+              hasStructuredIngredients: !!updatedProduct.structuredIngredients,
+              structuredKeys: updatedProduct.structuredIngredients?.ingredients ? Object.keys(updatedProduct.structuredIngredients.ingredients) : 'none',
+              extractionMethod: updatedProduct.extractionMethod,
+              extractedDataStructured: !!extractedData.structuredIngredients,
+              responseDataStructured: !!responseData.structuredData
             });
 
             // Recalculate price per unit
@@ -232,12 +358,29 @@ export default function SupplementAnalyzer() {
           return product;
         });
         
-        setProducts(updatedProducts);
+        // Validate products with enhanced Zod validation before setting state
+        const validatedProducts = updatedProducts.map(product => {
+          const validationResult = validateSupplementProduct(product);
+          if (validationResult.success) {
+            console.log(`✅ Product "${product.name}" validated successfully with enhanced rules`);
+            return validationResult.data;
+          } else {
+            console.warn(`⚠️ Product "${product.name}" validation failed:`, validationResult.error);
+            
+            // Create validation report for debugging
+            const report = createValidationReport(product);
+            console.warn(`📋 Validation report:`, report);
+            
+            return product; // Use original if validation fails
+          }
+        });
+        
+        setProducts(validatedProducts);
         
         // Update supplement analysis
-        console.log('🔍 Updated products for analysis check:', updatedProducts);
-        console.log('🔍 Total products:', updatedProducts.length);
-        const validProducts = updatedProducts.filter(p => {
+        console.log('🔍 Updated products for analysis check:', validatedProducts);
+        console.log('🔍 Total products:', validatedProducts.length);
+        const validProducts = validatedProducts.filter(p => {
           const isValid = p.name && p.name.trim() && p.price && p.price.toString().trim() && p.quantity && p.quantity.toString().trim();
           console.log(`Product "${p.name}": name=${!!p.name}, price=${!!p.price}, quantity=${!!p.quantity}, activeIngredient=${!!p.activeIngredient}, dosagePerUnit=${!!p.dosagePerUnit}, isValid=${isValid}`);
           console.log(`  → Full product data:`, {
@@ -275,7 +418,12 @@ export default function SupplementAnalyzer() {
           setAnalyzedSupplements({});
         }
         
-        showToast(`✅ Product info extracted successfully! Found ${extractedData.name}`, 'success');
+        // Show enhanced success message with database save confirmation
+        if (extractedData.savedToDatabase && extractedData.barcode) {
+          showToast(`✅ ${extractedData.name} extracted & saved to database! (Barcode: ${extractedData.barcode.substring(0, 12)}...)`, 'success');
+        } else {
+          showToast(`✅ Product info extracted successfully! Found ${extractedData.name}`, 'success');
+        }
       } else {
         // Handle partial extraction from multi-layer system
         if (responseData.extraction_method?.includes('multi-layer') && responseData.partial_data) {

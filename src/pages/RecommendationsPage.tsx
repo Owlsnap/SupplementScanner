@@ -1,10 +1,16 @@
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { ArrowLeft, Target } from "lucide-react";
 import SupplementRecommendations from '../components/SupplementRecommendations';
 import { compareSupplementValue } from '../utils/supplementAnalysis.js';
+import type { Product } from '../types/index.js';
 
-export default function RecommendationsPage({ onBack, products = [] }) {
-  const [analyzedSupplements, setAnalyzedSupplements] = useState({});
+interface RecommendationsPageProps {
+  onBack: () => void;
+  products?: Product[];
+}
+
+export default function RecommendationsPage({ onBack, products = [] }: RecommendationsPageProps): JSX.Element {
+  const [analyzedSupplements, setAnalyzedSupplements] = useState<Record<string, Product[]>>({});
 
   useEffect(() => {
     // Analyze products when they change

@@ -1,9 +1,23 @@
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Cookie, Shield, X, Settings } from 'lucide-react';
 
-export default function CookieBanner() {
-  const [showBanner, setShowBanner] = useState(false);
-  const [showPreferences, setShowPreferences] = useState(false);
+declare global {
+  interface Window {
+    Cookiebot?: {
+      hasResponse: boolean;
+      consent: {
+        necessary: boolean;
+        preferences: boolean;
+        statistics: boolean;
+        marketing: boolean;
+      };
+    };
+  }
+}
+
+export default function CookieBanner(): JSX.Element | null {
+  const [showBanner, setShowBanner] = useState<boolean>(false);
+  const [showPreferences, setShowPreferences] = useState<boolean>(false);
 
   useEffect(() => {
     // Check if CookieBot is loaded and if consent is needed

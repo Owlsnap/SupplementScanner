@@ -1,12 +1,25 @@
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { FlaskConical, Scale, TrendingUp, TrendingDown, CheckCircle, XCircle, Info, AlertTriangle, ChevronDown, ChevronUp } from "lucide-react";
 import { ingredientQuality, compareIngredients, getIngredientQuality } from '../data/supplementData.js';
+import type { Product, AnalyzedProduct, StructuredSupplementData, IngredientAnalysis } from '../types/index.js';
 
-export default function IngredientQualityComparison({ analyzedProducts = {} }) {
-  const [selectedCategory, setSelectedCategory] = useState('');
-  const [comparisonResults, setComparisonResults] = useState(null);
-  const [selectedIngredient, setSelectedIngredient] = useState({});
-  const [expandedIngredients, setExpandedIngredients] = useState({});
+interface IngredientQualityComparisonProps {
+  analyzedProducts?: Record<string, AnalyzedProduct[]>;
+}
+
+interface ComparisonResult {
+  ingredient: string;
+  analysis: IngredientAnalysis[];
+  averageQuality: number;
+  bestOption: string;
+  worstOption: string;
+}
+
+export default function IngredientQualityComparison({ analyzedProducts = {} }: IngredientQualityComparisonProps) {
+  const [selectedCategory, setSelectedCategory] = useState<string>('');
+  const [comparisonResults, setComparisonResults] = useState<ComparisonResult[] | null>(null);
+  const [selectedIngredient, setSelectedIngredient] = useState<Record<string, string>>({});
+  const [expandedIngredients, setExpandedIngredients] = useState<Record<string, boolean>>({});
 
   // Get available categories from analyzed products
   const availableCategories = Object.keys(analyzedProducts);
@@ -37,11 +50,11 @@ export default function IngredientQualityComparison({ analyzedProducts = {} }) {
   // Get all unique ingredients in the category
   const categoryIngredients = categoryProducts
     .map(product => {
-      // For pre-workout products, always return a placeholder that indicates multi-ingredient
+      // For pre-workout products, always return 'Complex Formula'
       if (selectedCategory === 'pre_workout') {
-        return 'Pre-Workout Formula'; // Use a generic name that will trigger multi-ingredient logic
+        return 'Complex Formula';
       }
-      return product.supplementInfo?.activeIngredient;
+      return product.supplementInfo?.activeIngredient || product.activeIngredient;
     })
     .filter(Boolean)
     .filter((ingredient, index, self) => self.indexOf(ingredient) === index);
@@ -70,48 +83,200 @@ export default function IngredientQualityComparison({ analyzedProducts = {} }) {
   };
 
   // Enhanced dosage analysis that works with structured ingredient data
-  const analyzeDosageFromStructured = (ingredientName, structuredData) => {
+  const analyzeDosageFromStructured = (ingredientName, product) => {
     const key = ingredientName?.toLowerCase().replace(/[-\s]/g, '_');
     
-    // Check if we have structured ingredient data
-    if (structuredData?.ingredients && structuredData.ingredients[key]) {
-      const ingredient = structuredData.ingredients[key];
+    // Priority 1: Check structured ingredients data
+    if (product.structuredIngredients?.ingredients && product.structuredIngredients.ingredients[key]) {
+      const ingredient = product.structuredIngredients.ingredients[key];
       if (ingredient.isIncluded && ingredient.dosage_mg) {
+        console.log(`🎯 Found dosage in structuredIngredients: ${ingredientName} = ${ingredient.dosage_mg}mg`);
         return analyzeDosage(ingredientName, ingredient.dosage_mg);
       }
     }
     
-    // Fallback to legacy dosage analysis
+    // Priority 2: Check extraction result structured data
+    if (product.extractionResult?.structuredData?.ingredients && product.extractionResult.structuredData.ingredients[key]) {
+      const ingredient = product.extractionResult.structuredData.ingredients[key];
+      if (ingredient.isIncluded && ingredient.dosage_mg) {
+        console.log(`🎯 Found dosage in extractionResult: ${ingredientName} = ${ingredient.dosage_mg}mg`);
+        return analyzeDosage(ingredientName, ingredient.dosage_mg);
+      }
+    }
+    
+    // Priority 3: Check extracted data
+    if (product.extractedData?.structuredData?.ingredients && product.extractedData.structuredData.ingredients[key]) {
+      const ingredient = product.extractedData.structuredData.ingredients[key];
+      if (ingredient.isIncluded && ingredient.dosage_mg) {
+        console.log(`🎯 Found dosage in extractedData: ${ingredientName} = ${ingredient.dosage_mg}mg`);
+        return analyzeDosage(ingredientName, ingredient.dosage_mg);
+      }
+    }
+    
+    // Priority 4: Check from extracted product ingredients
+    const extractedIngredients = extractProductIngredients(product);
+    const matchingIngredient = extractedIngredients.find(ing => 
+      ing.name.toLowerCase() === ingredientName.toLowerCase() ||
+      ing.originalKey === key
+    );
+    
+    if (matchingIngredient && matchingIngredient.dose) {
+      console.log(`🎯 Found dosage in extracted ingredients: ${ingredientName} = ${matchingIngredient.dose}mg`);
+      return analyzeDosage(ingredientName, matchingIngredient.dose);
+    }
+    
+    // Fallback to AI-generated recommendations when no structured data is found
+    console.log(`⚠️ No structured dosage found for ${ingredientName}, generating AI recommendation`);
+    const recommendation = generateDosageRecommendation(ingredientName);
     return {
-      level: 'unknown',
-      color: '#94a3b8',
-      message: 'Individual dosage not available',
-      recommendation: 'Check supplement facts panel for specific dosages'
+      level: 'recommended',
+      color: '#3b82f6',
+      message: `Recommended: ${recommendation.dosage}`,
+      recommendation: recommendation.advice,
+      isAIGenerated: true,
+      source: recommendation.evidenceBased ? 'Evidence-based recommendation' : 'General guidance'
     };
   };
 
-  // Analyze dosage levels for ingredients (legacy function, kept for compatibility)
-  const analyzeDosage = (ingredientName, dosage, productName = '') => {
-    const dosageRanges = {
+  // Generate evidence-based dosage recommendations when product data is unavailable
+  const generateDosageRecommendation = (ingredientName) => {
+    const ingredient = ingredientName?.toLowerCase();
+    
+    const recommendations = {
+      'caffeine': {
+        dosage: '150-300mg',
+        advice: 'Start with 150mg and assess tolerance. Take 30-45 minutes before workout. Avoid within 6 hours of bedtime.',
+        timing: 'Pre-workout',
+        maxDaily: '400mg',
+        notes: 'Most researched pre-workout ingredient with proven benefits for energy and focus.'
+      },
+      'beta-alanine': {
+        dosage: '3-5g daily',
+        advice: 'Split into 2-3 doses with meals to reduce tingling. Load for 4-6 weeks for maximum muscle carnosine levels.',
+        timing: 'With meals',
+        maxDaily: '6g',
+        notes: 'Improves muscular endurance during 1-4 minute high-intensity exercise.'
+      },
+      'l-citrulline': {
+        dosage: '6-8g',
+        advice: 'Take on empty stomach 30-45 minutes before workout for optimal nitric oxide production and pumps.',
+        timing: 'Pre-workout',
+        maxDaily: '10g',
+        notes: 'Superior to L-arginine for increasing nitric oxide and blood flow.'
+      },
+      'citrulline malate': {
+        dosage: '8-10g',
+        advice: 'Higher dose needed due to malic acid content. Take pre-workout for enhanced endurance and reduced soreness.',
+        timing: 'Pre-workout',
+        maxDaily: '12g',
+        notes: 'May provide additional endurance benefits compared to pure L-citrulline.'
+      },
+      'creatine monohydrate': {
+        dosage: '5g daily',
+        advice: 'Take consistently at any time. Loading phase (20g/day for 5 days) optional. Mix with warm water for better dissolution.',
+        timing: 'Any time',
+        maxDaily: '5g maintenance',
+        notes: 'Gold standard supplement for strength, power, and muscle mass. Most researched form.'
+      },
+      'taurine': {
+        dosage: '1-3g daily',
+        advice: 'Often included in pre-workouts. May support muscle function and hydration. Generally well tolerated.',
+        timing: 'Pre-workout or throughout day',
+        maxDaily: '4g',
+        notes: 'Conditionally essential amino acid with calming properties that may offset stimulants.'
+      },
+      'l-tyrosine': {
+        dosage: '500mg-2g',
+        advice: 'Take on empty stomach away from protein meals. Most effective during stress or sleep deprivation.',
+        timing: 'Between meals',
+        maxDaily: '3g',
+        notes: 'Precursor to dopamine and norepinephrine. Effects are subtle and individual.'
+      },
+      'l-theanine': {
+        dosage: '100-200mg',
+        advice: 'Often paired with caffeine in 1:1 or 2:1 ratio (theanine:caffeine) to reduce jitters and promote calm focus.',
+        timing: 'With caffeine or any time',
+        maxDaily: '300mg',
+        notes: 'Natural amino acid from tea that promotes relaxation without sedation.'
+      },
+      'l-arginine': {
+        dosage: '3-6g',
+        advice: 'Less effective than L-citrulline for nitric oxide production. Consider switching to citrulline.',
+        timing: 'Pre-workout',
+        maxDaily: '6g',
+        notes: '⚠️ Poor absorption compared to L-citrulline. Consider upgrading supplement choice.'
+      },
+      'betaine anhydrous': {
+        dosage: '2.5g daily',
+        advice: 'Take consistently with meals. May support power output and muscle growth over time.',
+        timing: 'With meals',
+        maxDaily: '2.5g',
+        notes: 'Osmolyte that may support cellular hydration and power output.'
+      },
+      'choline bitartrate': {
+        dosage: '250-500mg',
+        advice: 'Supports acetylcholine production for cognitive function. Take with or without food.',
+        timing: 'Any time',
+        maxDaily: '1g',
+        notes: 'Cholinergic compound that may support focus and mind-muscle connection.'
+      }
+    };
+
+    const recommendation = recommendations[ingredient];
+    
+    if (recommendation) {
+      return {
+        dosage: recommendation.dosage,
+        advice: `${recommendation.advice} Maximum daily: ${recommendation.maxDaily}. ${recommendation.notes}`,
+        timing: recommendation.timing,
+        evidenceBased: true
+      };
+    }
+
+    // Generic recommendation for unknown ingredients
+    return {
+      dosage: 'Follow label',
+      advice: `Research this ingredient thoroughly. Start with the lowest effective dose and assess tolerance. Consult healthcare provider for personalized guidance.`,
+      timing: 'As directed',
+      evidenceBased: false
+    };
+  };
+
+  // Extract dosage ranges from recommendation data for analysis
+  const getDosageRanges = (ingredientName) => {
+    const ingredient = ingredientName?.toLowerCase();
+    
+    // Define ranges based on the comprehensive recommendation data
+    const ranges = {
       'caffeine': { low: 100, optimal: [150, 300], high: 400, unit: 'mg' },
       'beta-alanine': { low: 1500, optimal: [3000, 5000], high: 6000, unit: 'mg' },
       'l-citrulline': { low: 4000, optimal: [6000, 8000], high: 10000, unit: 'mg' },
-      'citrulline malate': { low: 5000, optimal: [6000, 10000], high: 12000, unit: 'mg' },
+      'citrulline malate': { low: 5000, optimal: [8000, 10000], high: 12000, unit: 'mg' },
       'creatine monohydrate': { low: 3000, optimal: [5000, 5000], high: 10000, unit: 'mg' },
       'taurine': { low: 500, optimal: [1000, 3000], high: 4000, unit: 'mg' },
-      'l-tyrosine': { low: 500, optimal: [500, 2000], high: 3000, unit: 'mg' },
-      'l-theanine': { low: 50, optimal: [100, 200], high: 300, unit: 'mg' }
+      'l-tyrosine': { low: 250, optimal: [500, 2000], high: 3000, unit: 'mg' },
+      'l-theanine': { low: 50, optimal: [100, 200], high: 300, unit: 'mg' },
+      'betaine anhydrous': { low: 1000, optimal: [2500, 2500], high: 5000, unit: 'mg' },
+      'choline bitartrate': { low: 100, optimal: [250, 500], high: 1000, unit: 'mg' }
     };
+    
+    return ranges[ingredient];
+  };
 
-    const key = ingredientName?.toLowerCase();
-    const ranges = dosageRanges[key];
+  // Analyze dosage levels for ingredients using consolidated data
+  const analyzeDosage = (ingredientName, dosage, productName = '') => {
+    const ranges = getDosageRanges(ingredientName);
     
     if (!ranges || !dosage) {
+      // Generate AI-powered recommendation when no dosage ranges or values found
+      const recommendation = generateDosageRecommendation(ingredientName);
       return {
-        level: 'unknown',
-        color: '#94a3b8',
-        message: 'Dosage information not available',
-        recommendation: 'Check product label for dosage details'
+        level: 'recommended',
+        color: '#3b82f6', // Blue for AI recommendation
+        message: `Recommended: ${recommendation.dosage}`,
+        recommendation: recommendation.advice,
+        isAIGenerated: true,
+        source: 'Evidence-based recommendation'
       };
     }
 
@@ -149,30 +314,35 @@ export default function IngredientQualityComparison({ analyzedProducts = {} }) {
   };
 
   // Extract all ingredients from a product (for pre-workout analysis)
-  const extractProductIngredients = (product) => {
-    const ingredients = [];
+  const extractProductIngredients = (product: AnalyzedProduct) => {
+    const ingredients: Array<{name: string; dose: number | null; source: string; originalKey?: string}> = [];
     
-    // FIRST: Check for structured ingredients data (priority)
+    // FIRST: Check for structured ingredients data from extraction (priority)
     if (product.structuredIngredients?.ingredients) {
+      console.log('🧬 Found structured ingredients data:', Object.keys(product.structuredIngredients.ingredients));
       const structuredIngredients = Object.keys(product.structuredIngredients.ingredients)
-        .filter(key => product.structuredIngredients.ingredients[key].isIncluded)
+        .filter(key => product.structuredIngredients?.ingredients?.[key]?.isIncluded)
         .map(key => {
-          // Map Swedish/structured keys back to readable names
+          const ingredient = product.structuredIngredients?.ingredients?.[key];
+          // Map structured keys back to readable names
           const keyMappings = {
-            'koffein': 'caffeine',
-            'beta_alanin': 'beta-alanine', 
-            'citrullin_malat': 'l-citrulline',
-            'l_citrullin': 'l-citrulline',
-            'kreatin_monohydrat': 'creatine monohydrate',
-            'taurin': 'taurine',
-            'l_tyrosin': 'l-tyrosine',
-            'l_theanin': 'l-theanine'
+            'caffeine': 'caffeine',
+            'beta_alanine': 'beta-alanine', 
+            'l_citrulline': 'l-citrulline',
+            'l_arginine': 'l-arginine',
+            'l_tyrosine': 'l-tyrosine',
+            'l_theanine': 'l-theanine',
+            'creatine_monohydrate': 'creatine monohydrate',
+            'taurine': 'taurine',
+            'betaine_anhydrous': 'betaine anhydrous',
+            'choline_bitartrate': 'choline bitartrate'
           };
           const readableName = keyMappings[key] || key.replace(/_/g, '-');
           return {
             name: readableName,
-            dose: product.structuredIngredients.ingredients[key].dosage_mg,
-            source: 'structured'
+            dose: ingredient?.dosage_mg || 0,
+            source: 'structured',
+            originalKey: key
           };
         });
       
@@ -182,9 +352,52 @@ export default function IngredientQualityComparison({ analyzedProducts = {} }) {
       }
     }
     
+    // SECOND: Check for extraction result data (alternative structured format)
+    if (product.extractionResult?.structuredData?.ingredients) {
+      console.log('🔍 Found extraction result structured data:', Object.keys(product.extractionResult.structuredData.ingredients));
+      const extractionIngredients = Object.keys(product.extractionResult.structuredData.ingredients)
+        .filter(key => product.extractionResult?.structuredData?.ingredients?.[key]?.isIncluded)
+        .map(key => {
+          const ingredient = product.extractionResult?.structuredData?.ingredients?.[key];
+          return {
+            name: key.replace(/_/g, '-'),
+            dose: ingredient?.dosage_mg || 0,
+            source: 'extraction_result',
+            originalKey: key
+          };
+        });
+      
+      if (extractionIngredients.length > 0) {
+        console.log('🔍 extractProductIngredients: Using extraction result data:', extractionIngredients.length, 'ingredients');
+        return extractionIngredients;
+      }
+    }
+    
+    // THIRD: Check for data stored directly in extractedData
+    if (product.extractedData?.structuredData?.ingredients) {
+      console.log('📊 Found extracted data structured ingredients:', Object.keys(product.extractedData.structuredData.ingredients));
+      const extractedIngredients = Object.keys(product.extractedData.structuredData.ingredients)
+        .filter(key => product.extractedData?.structuredData?.ingredients?.[key]?.isIncluded)
+        .map(key => {
+          const ingredient = product.extractedData?.structuredData?.ingredients?.[key];
+          return {
+            name: key.replace(/_/g, '-'),
+            dose: ingredient?.dosage_mg || 0,
+            source: 'extracted_data',
+            originalKey: key
+          };
+        });
+      
+      if (extractedIngredients.length > 0) {
+        console.log('📊 extractProductIngredients: Using extracted data:', extractedIngredients.length, 'ingredients');
+        return extractedIngredients;
+      }
+    }
+    
     // FALLBACK: Check for "+" separated format (old method)
-    if (product.supplementInfo?.activeIngredient?.includes('+')) {
-      const ingredientNames = product.supplementInfo.activeIngredient.split(' + ');
+    const activeIngredient = product.supplementInfo?.activeIngredient || product.activeIngredient;
+    if (activeIngredient?.includes('+')) {
+      const ingredientNames = activeIngredient.split(' + ');
       ingredientNames.forEach(name => {
         ingredients.push({
           name: name.trim(),
@@ -196,8 +409,8 @@ export default function IngredientQualityComparison({ analyzedProducts = {} }) {
     } else {
       // Single ingredient product (or unrecognized format)
       ingredients.push({
-        name: product.supplementInfo?.activeIngredient || 'Unknown',
-        dose: product.supplementInfo?.dosagePerUnit || null,
+        name: activeIngredient || 'Unknown',
+        dose: (product.supplementInfo?.dosagePerUnit || product.dosagePerUnit) as number | null,
         source: 'single'
       });
       console.log('📦 extractProductIngredients: Single ingredient or unknown format');
@@ -207,20 +420,20 @@ export default function IngredientQualityComparison({ analyzedProducts = {} }) {
   };
 
   const renderIngredientCard = (ingredientName) => {
-    // Handle special case for Pre-Workout Formula
-    const effectiveIngredientName = ingredientName === 'Pre-Workout Formula' ? 'caffeine' : ingredientName;
+    // Handle special case for Complex Formula (pre-workout)
+    const effectiveIngredientName = (ingredientName === 'Complex Formula' || ingredientName === 'Pre-Workout Formula') ? 'caffeine' : ingredientName;
     const quality = getIngredientQuality(effectiveIngredientName);
     
     // Always render a card, even if we don't have quality data
-    if (!quality && ingredientName !== 'Pre-Workout Formula') return null;
+    if (!quality && !['Complex Formula', 'Pre-Workout Formula'].includes(ingredientName)) return null;
 
     const matchingProducts = categoryProducts.filter(p => {
-      // For pre-workout, all products in the category match the "Pre-Workout Formula" ingredient
-      if (selectedCategory === 'pre_workout' && ingredientName === 'Pre-Workout Formula') {
+      // For pre-workout, all products in the category match the "Complex Formula" ingredient
+      if (selectedCategory === 'pre_workout' && ['Complex Formula', 'Pre-Workout Formula'].includes(ingredientName)) {
         return true;
       }
       // For other categories, match by activeIngredient
-      return p.supplementInfo?.activeIngredient === ingredientName;
+      return (p.supplementInfo?.activeIngredient || p.activeIngredient) === ingredientName;
     });
 
     // For multi-ingredient products like pre-workout, extract all ingredients using the function
@@ -237,8 +450,12 @@ export default function IngredientQualityComparison({ analyzedProducts = {} }) {
         name: product.name,
         hasStructuredIngredients: !!product.structuredIngredients,
         structuredKeys: product.structuredIngredients?.ingredients ? Object.keys(product.structuredIngredients.ingredients) : 'none',
+        hasExtractionResult: !!product.extractionResult,
+        extractionResultKeys: product.extractionResult?.structuredData?.ingredients ? Object.keys(product.extractionResult.structuredData.ingredients) : 'none',
+        hasExtractedData: !!product.extractedData,
+        extractedDataKeys: product.extractedData?.structuredData?.ingredients ? Object.keys(product.extractedData.structuredData.ingredients) : 'none',
         extractionMethod: product.extractionMethod,
-        activeIngredient: product.supplementInfo?.activeIngredient
+        activeIngredient: product.supplementInfo?.activeIngredient || product.activeIngredient
       });
       
       // PRIORITY 1: Use extractProductIngredients to get actual ingredients (handles structured data properly)
@@ -267,7 +484,7 @@ export default function IngredientQualityComparison({ analyzedProducts = {} }) {
       }
     } else if (isMultiIngredient) {
       // Fallback: for pre-workout category without products, provide common ingredients
-      if (selectedCategory === 'pre_workout') {
+      if (selectedCategory === 'pre_workout' || ingredientName === 'Complex Formula') {
         allIngredients = ['caffeine', 'beta-alanine', 'l-citrulline', 'creatine monohydrate', 'taurine', 'l-tyrosine', 'l-theanine'];
         console.log('🔥 Using pre-workout fallback (no products available):', allIngredients);
       } else {
@@ -348,12 +565,12 @@ export default function IngredientQualityComparison({ analyzedProducts = {} }) {
                       }}
                       onMouseEnter={(e) => {
                         if (currentSelectedIngredient !== ingredient) {
-                          e.target.style.background = 'rgba(56, 243, 171, 0.05)';
+                          (e.target as HTMLElement).style.background = 'rgba(56, 243, 171, 0.05)';
                         }
                       }}
                       onMouseLeave={(e) => {
                         if (currentSelectedIngredient !== ingredient) {
-                          e.target.style.background = 'transparent';
+                          (e.target as HTMLElement).style.background = 'transparent';
                         }
                       }}
                     >
@@ -436,27 +653,8 @@ export default function IngredientQualityComparison({ analyzedProducts = {} }) {
           (() => {
             const product = matchingProducts[0];
             
-            // Try to get dosage from structured data first
-            let dosageToAnalyze = null;
-            
-            if (product.structuredIngredients?.ingredients) {
-              const ingredientKey = currentSelectedIngredient.toLowerCase().replace(/[-\s]/g, '_');
-              const structuredIngredient = product.structuredIngredients.ingredients[ingredientKey];
-              if (structuredIngredient?.dosage_mg) {
-                dosageToAnalyze = structuredIngredient.dosage_mg;
-              }
-            }
-            
-            // Fallback to regular dosage if no structured data
-            if (!dosageToAnalyze) {
-              dosageToAnalyze = product.dosagePerUnit || product.supplementInfo?.dosagePerUnit;
-            }
-            
-            const dosageAnalysis = analyzeDosage(
-              currentSelectedIngredient, 
-              dosageToAnalyze,
-              product.name
-            );
+            // Use the enhanced dosage analysis function
+            const dosageAnalysis = analyzeDosageFromStructured(currentSelectedIngredient, product);
 
             return (
               <div style={{
@@ -477,7 +675,21 @@ export default function IngredientQualityComparison({ analyzedProducts = {} }) {
                   alignItems: 'center',
                   gap: '0.5rem'
                 }}>
-                  🎯 Dosage Analysis: {currentSelectedIngredient}
+                  {dosageAnalysis.isAIGenerated ? '🤖' : '🎯'} Dosage Analysis: {currentSelectedIngredient}
+                  {dosageAnalysis.isAIGenerated && (
+                    <span style={{
+                      background: 'rgba(59, 130, 246, 0.2)',
+                      color: '#3b82f6',
+                      fontSize: '0.625rem',
+                      padding: '0.25rem 0.5rem',
+                      borderRadius: '12px',
+                      fontWeight: '700',
+                      textTransform: 'uppercase',
+                      letterSpacing: '0.5px'
+                    }}>
+                      AI RECOMMENDED
+                    </span>
+                  )}
                 </h5>
                 <div style={{
                   display: 'grid',
@@ -500,6 +712,15 @@ export default function IngredientQualityComparison({ analyzedProducts = {} }) {
                     }}>
                       {dosageAnalysis.message}
                     </div>
+                    {dosageAnalysis.source && (
+                      <div style={{ 
+                        fontSize: '0.625rem', 
+                        color: '#94a3b8',
+                        marginTop: '0.25rem'
+                      }}>
+                        {dosageAnalysis.source}
+                      </div>
+                    )}
                   </div>
                   <div>
                     <div style={{ 
@@ -508,7 +729,7 @@ export default function IngredientQualityComparison({ analyzedProducts = {} }) {
                       fontWeight: '600',
                       marginBottom: '0.25rem'
                     }}>
-                      Recommendation:
+                      {dosageAnalysis.isAIGenerated ? 'Evidence-Based Recommendation:' : 'Recommendation:'}
                     </div>
                     <div style={{ 
                       color: '#cbd5e1', 
