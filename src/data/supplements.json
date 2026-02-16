@@ -1,0 +1,1079 @@
+[
+  {
+    "_schemaVersion": 1,
+    "barcode": "7350094821979",
+    "productName": "Whey Protein Isolate - Chocolate Brownie",
+    "brand": "Solid Nutrition",
+    "category": "supplement",
+    "subCategory": "protein",
+    "form": "powder",
+    "servingsPerContainer": 30,
+    "servingSize": {
+      "amount": 30,
+      "unit": "g"
+    },
+    "ingredients": [
+      {
+        "name": "Whey Protein Isolate",
+        "amount": 25,
+        "unit": "g",
+        "dailyValue": null
+      },
+      {
+        "name": "Cocoa Powder",
+        "amount": 2,
+        "unit": "g",
+        "dailyValue": null
+      },
+      {
+        "name": "Natural Flavoring",
+        "amount": null,
+        "unit": null,
+        "dailyValue": null
+      },
+      {
+        "name": "Stevia",
+        "amount": null,
+        "unit": null,
+        "dailyValue": null
+      }
+    ],
+    "price": {
+      "value": 449,
+      "currency": "SEK",
+      "pricePerServing": 14.97
+    },
+    "quality": {
+      "underDosed": false,
+      "overDosed": false,
+      "fillerRisk": "low",
+      "bioavailability": "high"
+    },
+    "meta": {
+      "source": "manual",
+      "verified": true,
+      "lastUpdated": "2026-01-17T10:00:00.000Z",
+      "sourceMap": {
+        "manual": true
+      }
+    }
+  },
+  {
+    "_schemaVersion": 1,
+    "barcode": "7340001803914",
+    "productName": "Vassleprotein Vanilj",
+    "brand": "Tyngre",
+    "category": "supplement",
+    "subCategory": "protein",
+    "form": "powder",
+    "servingsPerContainer": 33,
+    "servingSize": {
+      "amount": 30,
+      "unit": "g"
+    },
+    "ingredients": [
+      {
+        "name": "Whey Protein Concentrate",
+        "amount": 24,
+        "unit": "g",
+        "dailyValue": null
+      },
+      {
+        "name": "Natural Vanilla Flavoring",
+        "amount": null,
+        "unit": null,
+        "dailyValue": null
+      },
+      {
+        "name": "Sucralose",
+        "amount": null,
+        "unit": null,
+        "dailyValue": null
+      }
+    ],
+    "price": {
+      "value": 299,
+      "currency": "SEK",
+      "pricePerServing": 9.06
+    },
+    "quality": {
+      "underDosed": false,
+      "overDosed": false,
+      "fillerRisk": "low",
+      "bioavailability": "medium"
+    },
+    "meta": {
+      "source": "manual",
+      "verified": true,
+      "lastUpdated": "2026-01-17T10:00:00.000Z",
+      "sourceMap": {
+        "manual": true
+      }
+    }
+  },
+  {
+    "_schemaVersion": 1,
+    "barcode": "7350123456789",
+    "productName": "Magnesium Glycinate 200mg",
+    "brand": "Healthwell",
+    "category": "supplement",
+    "subCategory": "magnesium",
+    "form": "capsule",
+    "servingsPerContainer": 90,
+    "servingSize": {
+      "amount": 2,
+      "unit": "capsules"
+    },
+    "ingredients": [
+      {
+        "name": "Magnesium Glycinate",
+        "amount": 200,
+        "unit": "mg",
+        "dailyValue": 53
+      },
+      {
+        "name": "Vegetable Cellulose (capsule)",
+        "amount": null,
+        "unit": null,
+        "dailyValue": null
+      },
+      {
+        "name": "Rice Flour",
+        "amount": null,
+        "unit": null,
+        "dailyValue": null
+      }
+    ],
+    "price": {
+      "value": 189,
+      "currency": "SEK",
+      "pricePerServing": 2.1
+    },
+    "quality": {
+      "underDosed": false,
+      "overDosed": false,
+      "fillerRisk": "low",
+      "bioavailability": "excellent"
+    },
+    "meta": {
+      "source": "manual",
+      "verified": true,
+      "lastUpdated": "2026-01-17T10:00:00.000Z",
+      "sourceMap": {
+        "manual": true
+      }
+    }
+  },
+  {
+    "_schemaVersion": 1,
+    "barcode": "7350987654321",
+    "productName": "Magnesium Oxide 400mg",
+    "brand": "Bättre Hälsa",
+    "category": "supplement",
+    "subCategory": "magnesium",
+    "form": "tablet",
+    "servingsPerContainer": 120,
+    "servingSize": {
+      "amount": 1,
+      "unit": "tablet"
+    },
+    "ingredients": [
+      {
+        "name": "Magnesium Oxide",
+        "amount": 400,
+        "unit": "mg",
+        "dailyValue": 107
+      },
+      {
+        "name": "Microcrystalline Cellulose",
+        "amount": null,
+        "unit": null,
+        "dailyValue": null
+      },
+      {
+        "name": "Magnesium Stearate",
+        "amount": null,
+        "unit": null,
+        "dailyValue": null
+      },
+      {
+        "name": "Silicon Dioxide",
+        "amount": null,
+        "unit": null,
+        "dailyValue": null
+      }
+    ],
+    "price": {
+      "value": 79,
+      "currency": "SEK",
+      "pricePerServing": 0.66
+    },
+    "quality": {
+      "underDosed": false,
+      "overDosed": true,
+      "fillerRisk": "medium",
+      "bioavailability": "poor"
+    },
+    "meta": {
+      "source": "manual",
+      "verified": true,
+      "lastUpdated": "2026-01-17T10:00:00.000Z",
+      "sourceMap": {
+        "manual": true
+      }
+    }
+  },
+  {
+    "_schemaVersion": 1,
+    "barcode": "7351234567890",
+    "productName": "Vitamin D3 4000 IU",
+    "brand": "Nordic Naturals",
+    "category": "supplement",
+    "subCategory": "vitamin-d",
+    "form": "softgel",
+    "servingsPerContainer": 60,
+    "servingSize": {
+      "amount": 1,
+      "unit": "softgel"
+    },
+    "ingredients": [
+      {
+        "name": "Vitamin D3 (Cholecalciferol)",
+        "amount": 100,
+        "unit": "mcg",
+        "dailyValue": 500
+      },
+      {
+        "name": "Organic Extra Virgin Olive Oil",
+        "amount": null,
+        "unit": null,
+        "dailyValue": null
+      },
+      {
+        "name": "Softgel Capsule (gelatin, glycerin, water)",
+        "amount": null,
+        "unit": null,
+        "dailyValue": null
+      }
+    ],
+    "price": {
+      "value": 149,
+      "currency": "SEK",
+      "pricePerServing": 2.48
+    },
+    "quality": {
+      "underDosed": false,
+      "overDosed": false,
+      "fillerRisk": "low",
+      "bioavailability": "high"
+    },
+    "meta": {
+      "source": "manual",
+      "verified": true,
+      "lastUpdated": "2026-01-17T10:00:00.000Z",
+      "sourceMap": {
+        "manual": true
+      }
+    }
+  },
+  {
+    "_schemaVersion": 1,
+    "barcode": "7359876543210",
+    "productName": "Omega-3 1000mg",
+    "brand": "Möller's",
+    "category": "supplement",
+    "subCategory": "omega-3",
+    "form": "softgel",
+    "servingsPerContainer": 60,
+    "servingSize": {
+      "amount": 2,
+      "unit": "capsules"
+    },
+    "ingredients": [
+      {
+        "name": "Fish Oil",
+        "amount": 2000,
+        "unit": "mg",
+        "dailyValue": null
+      },
+      {
+        "name": "EPA (Eicosapentaenoic Acid)",
+        "amount": 600,
+        "unit": "mg",
+        "dailyValue": null
+      },
+      {
+        "name": "DHA (Docosahexaenoic Acid)",
+        "amount": 400,
+        "unit": "mg",
+        "dailyValue": null
+      },
+      {
+        "name": "Vitamin E (tocopherol)",
+        "amount": 10,
+        "unit": "mg",
+        "dailyValue": 83
+      }
+    ],
+    "price": {
+      "value": 199,
+      "currency": "SEK",
+      "pricePerServing": 3.32
+    },
+    "quality": {
+      "underDosed": false,
+      "overDosed": false,
+      "fillerRisk": "low",
+      "bioavailability": "high"
+    },
+    "meta": {
+      "source": "manual",
+      "verified": true,
+      "lastUpdated": "2026-01-17T10:00:00.000Z",
+      "sourceMap": {
+        "manual": true
+      }
+    }
+  },
+  {
+    "_schemaVersion": 1,
+    "barcode": "7352468135790",
+    "productName": "Zinc Picolinate 25mg",
+    "brand": "Healthwell",
+    "category": "supplement",
+    "subCategory": "zinc",
+    "form": "tablet",
+    "servingsPerContainer": 100,
+    "servingSize": {
+      "amount": 1,
+      "unit": "tablet"
+    },
+    "ingredients": [
+      {
+        "name": "Zinc Picolinate",
+        "amount": 25,
+        "unit": "mg",
+        "dailyValue": 250
+      },
+      {
+        "name": "Microcrystalline Cellulose",
+        "amount": null,
+        "unit": null,
+        "dailyValue": null
+      }
+    ],
+    "price": {
+      "value": 129,
+      "currency": "SEK",
+      "pricePerServing": 1.29
+    },
+    "quality": {
+      "underDosed": false,
+      "overDosed": false,
+      "fillerRisk": "low",
+      "bioavailability": "high"
+    },
+    "meta": {
+      "source": "manual",
+      "verified": true,
+      "lastUpdated": "2026-01-17T10:00:00.000Z",
+      "sourceMap": {
+        "manual": true
+      }
+    }
+  },
+  {
+    "_schemaVersion": 1,
+    "barcode": "7358765432109",
+    "productName": "Multivitamin Daily Essentials",
+    "brand": "Tyngre",
+    "category": "supplement",
+    "subCategory": "multivitamin",
+    "form": "tablet",
+    "servingsPerContainer": 90,
+    "servingSize": {
+      "amount": 1,
+      "unit": "tablet"
+    },
+    "ingredients": [
+      {
+        "name": "Vitamin A",
+        "amount": 800,
+        "unit": "mcg",
+        "dailyValue": 100
+      },
+      {
+        "name": "Vitamin D3",
+        "amount": 20,
+        "unit": "mcg",
+        "dailyValue": 400
+      },
+      {
+        "name": "Vitamin E",
+        "amount": 12,
+        "unit": "mg",
+        "dailyValue": 100
+      },
+      {
+        "name": "Vitamin C",
+        "amount": 80,
+        "unit": "mg",
+        "dailyValue": 100
+      },
+      {
+        "name": "Vitamin B6",
+        "amount": 1.4,
+        "unit": "mg",
+        "dailyValue": 100
+      },
+      {
+        "name": "Vitamin B12",
+        "amount": 2.5,
+        "unit": "mcg",
+        "dailyValue": 100
+      },
+      {
+        "name": "Folate",
+        "amount": 200,
+        "unit": "mcg",
+        "dailyValue": 100
+      },
+      {
+        "name": "Magnesium",
+        "amount": 60,
+        "unit": "mg",
+        "dailyValue": 16
+      },
+      {
+        "name": "Zinc",
+        "amount": 10,
+        "unit": "mg",
+        "dailyValue": 100
+      }
+    ],
+    "price": {
+      "value": 169,
+      "currency": "SEK",
+      "pricePerServing": 1.88
+    },
+    "quality": {
+      "underDosed": true,
+      "overDosed": false,
+      "fillerRisk": "medium",
+      "bioavailability": "medium"
+    },
+    "meta": {
+      "source": "manual",
+      "verified": true,
+      "lastUpdated": "2026-01-17T10:00:00.000Z",
+      "sourceMap": {
+        "manual": true
+      }
+    }
+  },
+  {
+    "_schemaVersion": 1,
+    "barcode": "7350111222333",
+    "productName": "Creatine Monohydrate 500g",
+    "brand": "Solid Nutrition",
+    "category": "supplement",
+    "subCategory": "creatine",
+    "form": "powder",
+    "servingsPerContainer": 100,
+    "servingSize": {
+      "amount": 5,
+      "unit": "g"
+    },
+    "ingredients": [
+      {
+        "name": "Creatine Monohydrate",
+        "amount": 5,
+        "unit": "g",
+        "dailyValue": null
+      }
+    ],
+    "price": {
+      "value": 249,
+      "currency": "SEK",
+      "pricePerServing": 2.49
+    },
+    "quality": {
+      "underDosed": false,
+      "overDosed": false,
+      "fillerRisk": "none",
+      "bioavailability": "high"
+    },
+    "meta": {
+      "source": "manual",
+      "verified": true,
+      "lastUpdated": "2026-01-17T10:00:00.000Z",
+      "sourceMap": {
+        "manual": true
+      }
+    }
+  },
+  {
+    "_schemaVersion": 1,
+    "barcode": "7350444555666",
+    "productName": "Vitamin C 1000mg Timed Release",
+    "brand": "Bättre Hälsa",
+    "category": "supplement",
+    "subCategory": "vitamin-c",
+    "form": "tablet",
+    "servingsPerContainer": 90,
+    "servingSize": {
+      "amount": 1,
+      "unit": "tablet"
+    },
+    "ingredients": [
+      {
+        "name": "Vitamin C (Ascorbic Acid)",
+        "amount": 1000,
+        "unit": "mg",
+        "dailyValue": 1250
+      },
+      {
+        "name": "Citrus Bioflavonoids",
+        "amount": 25,
+        "unit": "mg",
+        "dailyValue": null
+      },
+      {
+        "name": "Microcrystalline Cellulose",
+        "amount": null,
+        "unit": null,
+        "dailyValue": null
+      },
+      {
+        "name": "Hydroxypropyl Methylcellulose (coating)",
+        "amount": null,
+        "unit": null,
+        "dailyValue": null
+      }
+    ],
+    "price": {
+      "value": 99,
+      "currency": "SEK",
+      "pricePerServing": 1.1
+    },
+    "quality": {
+      "underDosed": false,
+      "overDosed": true,
+      "fillerRisk": "low",
+      "bioavailability": "medium"
+    },
+    "meta": {
+      "source": "manual",
+      "verified": true,
+      "lastUpdated": "2026-01-17T10:00:00.000Z",
+      "sourceMap": {
+        "manual": true
+      }
+    }
+  },
+  {
+    "_schemaVersion": 1,
+    "barcode": "7350777888999",
+    "productName": "Ashwagandha KSM-66 600mg",
+    "brand": "Healthwell",
+    "category": "supplement",
+    "subCategory": "adaptogen",
+    "form": "capsule",
+    "servingsPerContainer": 60,
+    "servingSize": {
+      "amount": 2,
+      "unit": "capsules"
+    },
+    "ingredients": [
+      {
+        "name": "Ashwagandha Root Extract KSM-66",
+        "amount": 600,
+        "unit": "mg",
+        "dailyValue": null
+      },
+      {
+        "name": "Withanolides",
+        "amount": 30,
+        "unit": "mg",
+        "dailyValue": null
+      },
+      {
+        "name": "Vegetable Cellulose (capsule)",
+        "amount": null,
+        "unit": null,
+        "dailyValue": null
+      }
+    ],
+    "price": {
+      "value": 249,
+      "currency": "SEK",
+      "pricePerServing": 4.15
+    },
+    "quality": {
+      "underDosed": false,
+      "overDosed": false,
+      "fillerRisk": "none",
+      "bioavailability": "excellent"
+    },
+    "meta": {
+      "source": "manual",
+      "verified": true,
+      "lastUpdated": "2026-01-17T10:00:00.000Z",
+      "sourceMap": {
+        "manual": true
+      }
+    }
+  },
+  {
+    "_schemaVersion": 1,
+    "barcode": "7351010101010",
+    "productName": "B-Complex High Potency",
+    "brand": "Nordic Naturals",
+    "category": "supplement",
+    "subCategory": "vitamin-b",
+    "form": "capsule",
+    "servingsPerContainer": 90,
+    "servingSize": {
+      "amount": 1,
+      "unit": "capsule"
+    },
+    "ingredients": [
+      {
+        "name": "Vitamin B1 (Thiamine)",
+        "amount": 50,
+        "unit": "mg",
+        "dailyValue": 4545
+      },
+      {
+        "name": "Vitamin B2 (Riboflavin)",
+        "amount": 50,
+        "unit": "mg",
+        "dailyValue": 3571
+      },
+      {
+        "name": "Vitamin B3 (Niacin)",
+        "amount": 50,
+        "unit": "mg",
+        "dailyValue": 313
+      },
+      {
+        "name": "Vitamin B6 (Pyridoxine HCl)",
+        "amount": 50,
+        "unit": "mg",
+        "dailyValue": 3571
+      },
+      {
+        "name": "Vitamin B12 (Methylcobalamin)",
+        "amount": 100,
+        "unit": "mcg",
+        "dailyValue": 4000
+      },
+      {
+        "name": "Folate (5-MTHF)",
+        "amount": 400,
+        "unit": "mcg",
+        "dailyValue": 200
+      },
+      {
+        "name": "Biotin",
+        "amount": 300,
+        "unit": "mcg",
+        "dailyValue": 600
+      },
+      {
+        "name": "Pantothenic Acid",
+        "amount": 50,
+        "unit": "mg",
+        "dailyValue": 833
+      }
+    ],
+    "price": {
+      "value": 199,
+      "currency": "SEK",
+      "pricePerServing": 2.21
+    },
+    "quality": {
+      "underDosed": false,
+      "overDosed": true,
+      "fillerRisk": "low",
+      "bioavailability": "excellent"
+    },
+    "meta": {
+      "source": "manual",
+      "verified": true,
+      "lastUpdated": "2026-01-17T10:00:00.000Z",
+      "sourceMap": {
+        "manual": true
+      }
+    }
+  },
+  {
+    "_schemaVersion": 1,
+    "barcode": "7352020202020",
+    "productName": "Iron Bisglycinate 28mg",
+    "brand": "Healthwell",
+    "category": "supplement",
+    "subCategory": "iron",
+    "form": "capsule",
+    "servingsPerContainer": 90,
+    "servingSize": {
+      "amount": 1,
+      "unit": "capsule"
+    },
+    "ingredients": [
+      {
+        "name": "Iron Bisglycinate",
+        "amount": 28,
+        "unit": "mg",
+        "dailyValue": 200
+      },
+      {
+        "name": "Vitamin C (for absorption)",
+        "amount": 70,
+        "unit": "mg",
+        "dailyValue": 88
+      },
+      {
+        "name": "Vegetable Cellulose (capsule)",
+        "amount": null,
+        "unit": null,
+        "dailyValue": null
+      }
+    ],
+    "price": {
+      "value": 139,
+      "currency": "SEK",
+      "pricePerServing": 1.54
+    },
+    "quality": {
+      "underDosed": false,
+      "overDosed": false,
+      "fillerRisk": "none",
+      "bioavailability": "excellent"
+    },
+    "meta": {
+      "source": "manual",
+      "verified": true,
+      "lastUpdated": "2026-01-17T10:00:00.000Z",
+      "sourceMap": {
+        "manual": true
+      }
+    }
+  },
+  {
+    "_schemaVersion": 1,
+    "barcode": "7353030303030",
+    "productName": "Probiotics 10 Billion CFU",
+    "brand": "Möller's",
+    "category": "supplement",
+    "subCategory": "probiotic",
+    "form": "capsule",
+    "servingsPerContainer": 30,
+    "servingSize": {
+      "amount": 1,
+      "unit": "capsule"
+    },
+    "ingredients": [
+      {
+        "name": "Lactobacillus acidophilus",
+        "amount": 5,
+        "unit": "billion CFU",
+        "dailyValue": null
+      },
+      {
+        "name": "Bifidobacterium lactis",
+        "amount": 3,
+        "unit": "billion CFU",
+        "dailyValue": null
+      },
+      {
+        "name": "Lactobacillus plantarum",
+        "amount": 2,
+        "unit": "billion CFU",
+        "dailyValue": null
+      },
+      {
+        "name": "Vegetable Cellulose (capsule)",
+        "amount": null,
+        "unit": null,
+        "dailyValue": null
+      },
+      {
+        "name": "Inulin (prebiotic)",
+        "amount": 100,
+        "unit": "mg",
+        "dailyValue": null
+      }
+    ],
+    "price": {
+      "value": 229,
+      "currency": "SEK",
+      "pricePerServing": 7.63
+    },
+    "quality": {
+      "underDosed": false,
+      "overDosed": false,
+      "fillerRisk": "none",
+      "bioavailability": "high"
+    },
+    "meta": {
+      "source": "manual",
+      "verified": true,
+      "lastUpdated": "2026-01-17T10:00:00.000Z",
+      "sourceMap": {
+        "manual": true
+      }
+    }
+  },
+  {
+    "_schemaVersion": 1,
+    "barcode": "7354040404040",
+    "productName": "Collagen Peptides Powder",
+    "brand": "Tyngre",
+    "category": "supplement",
+    "subCategory": "collagen",
+    "form": "powder",
+    "servingsPerContainer": 30,
+    "servingSize": {
+      "amount": 10,
+      "unit": "g"
+    },
+    "ingredients": [
+      {
+        "name": "Hydrolyzed Collagen Peptides (bovine)",
+        "amount": 10,
+        "unit": "g",
+        "dailyValue": null
+      },
+      {
+        "name": "Glycine",
+        "amount": 2200,
+        "unit": "mg",
+        "dailyValue": null
+      },
+      {
+        "name": "Proline",
+        "amount": 1300,
+        "unit": "mg",
+        "dailyValue": null
+      },
+      {
+        "name": "Hydroxyproline",
+        "amount": 1000,
+        "unit": "mg",
+        "dailyValue": null
+      }
+    ],
+    "price": {
+      "value": 349,
+      "currency": "SEK",
+      "pricePerServing": 11.63
+    },
+    "quality": {
+      "underDosed": false,
+      "overDosed": false,
+      "fillerRisk": "none",
+      "bioavailability": "high"
+    },
+    "meta": {
+      "source": "manual",
+      "verified": true,
+      "lastUpdated": "2026-01-17T10:00:00.000Z",
+      "sourceMap": {
+        "manual": true
+      }
+    }
+  },
+  {
+    "_schemaVersion": 1,
+    "barcode": "7350089431169",
+    "productName": "clean drink",
+    "brand": "Unknown Brand",
+    "category": "supplement",
+    "subCategory": "other",
+    "form": "other",
+    "servingsPerContainer": null,
+    "servingSize": {
+      "amount": null,
+      "unit": null
+    },
+    "ingredients": [],
+    "price": {
+      "value": null,
+      "currency": null,
+      "pricePerServing": null
+    },
+    "quality": {
+      "underDosed": null,
+      "overDosed": null,
+      "fillerRisk": null,
+      "bioavailability": null
+    },
+    "meta": {
+      "source": "openfoodfacts_basic",
+      "verified": false,
+      "lastUpdated": "2026-01-30T15:35:10.672Z",
+      "sourceMap": {
+        "openfoodfacts": "7350089431169",
+        "tillskottsblagetURL": null,
+        "aiExtraction": false
+      }
+    }
+  },
+  {
+    "_schemaVersion": 1,
+    "barcode": "URL-aHR0cHM6Ly93",
+    "productName": "SOLID Nutrition Magnesium Bisglycinate, 90 caps",
+    "brand": "SOLID Nutrition",
+    "category": "mineral",
+    "subCategory": "magnesium",
+    "form": "capsule",
+    "servingsPerContainer": 90,
+    "servingSize": {
+      "amount": 1,
+      "unit": "kapslar"
+    },
+    "ingredients": [
+      {
+        "name": "Magnesium bisglycinate",
+        "dosage": 700,
+        "unit": "mg",
+        "form": "bisglycinate"
+      },
+      {
+        "name": "Magnesium (elemental)",
+        "dosage": 80,
+        "unit": "mg",
+        "form": "bisglycinate"
+      }
+    ],
+    "price": {
+      "value": 179,
+      "currency": "SEK",
+      "pricePerServing": 1.988888888888889
+    },
+    "quality": {
+      "underDosed": false,
+      "overDosed": false,
+      "fillerRisk": "low",
+      "bioavailability": "medium"
+    },
+    "meta": {
+      "source": "url_enhanced_claude",
+      "verified": false,
+      "lastUpdated": "2026-02-07T11:49:52.764Z",
+      "sourceMap": {
+        "sourceURL": "https://www.tillskottsbolaget.se/sv/solid-nutrition-magnesium-bisglycinate-90-caps",
+        "extractionMethod": "puppeteer_claude"
+      }
+    }
+  },
+  {
+    "_schemaVersion": 1,
+    "barcode": "URL-7d339a3230b5",
+    "productName": "SOLID Nutrition PWO, 230 g",
+    "brand": "SOLID Nutrition",
+    "category": "supplement",
+    "subCategory": "preworkout",
+    "form": "powder",
+    "servingsPerContainer": 20,
+    "servingSize": {
+      "amount": 1,
+      "unit": "skopa"
+    },
+    "ingredients": [
+      {
+        "name": "Beta-alanin",
+        "dosage": 3500,
+        "unit": "mg",
+        "form": null
+      },
+      {
+        "name": "Citrullinmalat",
+        "dosage": 0,
+        "unit": "mg",
+        "form": "malat"
+      },
+      {
+        "name": "L-arginin",
+        "dosage": 0,
+        "unit": "mg",
+        "form": null
+      },
+      {
+        "name": "Koffein",
+        "dosage": 250,
+        "unit": "mg",
+        "form": null
+      }
+    ],
+    "price": {
+      "value": 179,
+      "currency": "SEK",
+      "pricePerServing": 8.95
+    },
+    "quality": {
+      "underDosed": false,
+      "overDosed": false,
+      "fillerRisk": "low",
+      "bioavailability": "medium"
+    },
+    "meta": {
+      "source": "url_enhanced_claude",
+      "verified": false,
+      "lastUpdated": "2026-02-07T12:05:17.876Z",
+      "sourceMap": {
+        "sourceURL": "https://www.tillskottsbolaget.se/sv/solid-pwo-230-g",
+        "extractionMethod": "puppeteer_claude"
+      }
+    }
+  },
+  {
+    "_schemaVersion": 1,
+    "barcode": "URL-1966101c60fb",
+    "productName": "SOLID Nutrition Casein, 750 g",
+    "brand": "SOLID Nutrition",
+    "category": "supplement",
+    "subCategory": "protein",
+    "form": "powder",
+    "servingsPerContainer": 25,
+    "servingSize": {
+      "amount": 30,
+      "unit": "g"
+    },
+    "ingredients": [
+      {
+        "name": "Micellärt kasein",
+        "dosage": 22.5,
+        "unit": "g",
+        "form": "micellar casein"
+      },
+      {
+        "name": "Protein",
+        "dosage": 23,
+        "unit": "g",
+        "form": null
+      }
+    ],
+    "price": {
+      "value": 229,
+      "currency": "SEK",
+      "pricePerServing": 9.16
+    },
+    "quality": {
+      "underDosed": false,
+      "overDosed": false,
+      "fillerRisk": "low",
+      "bioavailability": "medium"
+    },
+    "meta": {
+      "source": "url_enhanced_claude",
+      "verified": false,
+      "lastUpdated": "2026-02-16T00:30:44.764Z",
+      "sourceMap": {
+        "sourceURL": "https://www.tillskottsbolaget.se/sv/solid-nutrition-casein-750-g?variant=SOLIDCASEIN1-17",
+        "extractionMethod": "puppeteer_claude"
+      }
+    }
+  }
+]
