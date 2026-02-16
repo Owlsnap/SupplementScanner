@@ -98,8 +98,6 @@ export class EnhancedSupplementScraper {
       'Du kanske också gillar',
       'Andra köpte också',
       'Relaterade produkter',
-      'Supplement Needs',  // Start of related products
-      'Star Nutrition',    // Related product brand
       'Recensions' // Reviews section
     ];
 
@@ -262,6 +260,46 @@ export class EnhancedSupplementScraper {
               description: {
                 type: 'string',
                 description: 'Brief product description or benefits'
+              },
+              nutritionalFacts: {
+                type: 'object',
+                description: 'Macro nutritional table data (Näringsvärde). For products like protein powders, fat burners, etc. that have a nutritional facts table with "Per 100 g" and "Per portion/serving" columns.',
+                properties: {
+                  per100g: {
+                    type: 'object',
+                    properties: {
+                      servingSize: { type: 'string', description: 'Always "100 g" for this column' },
+                      energy_kj: { type: 'number' },
+                      energy_kcal: { type: 'number' },
+                      protein_g: { type: 'number' },
+                      fat_g: { type: 'number' },
+                      saturatedFat_g: { type: 'number' },
+                      carbohydrates_g: { type: 'number' },
+                      sugars_g: { type: 'number' },
+                      fiber_g: { type: 'number' },
+                      salt_g: { type: 'number' }
+                    }
+                  },
+                  perServing: {
+                    type: 'object',
+                    properties: {
+                      servingSize: { type: 'string', description: 'Serving size like "30 g" or "1 skopa (30 g)"' },
+                      energy_kj: { type: 'number' },
+                      energy_kcal: { type: 'number' },
+                      protein_g: { type: 'number' },
+                      fat_g: { type: 'number' },
+                      saturatedFat_g: { type: 'number' },
+                      carbohydrates_g: { type: 'number' },
+                      sugars_g: { type: 'number' },
+                      fiber_g: { type: 'number' },
+                      salt_g: { type: 'number' }
+                    }
+                  }
+                }
+              },
+              ingredientListText: {
+                type: 'string',
+                description: 'The full ingredient list text (usually starts with "Ingredienser:" and lists all raw ingredients). Copy it verbatim.'
               }
             },
             required: ['productName', 'ingredients', 'price']
@@ -287,27 +325,39 @@ CRITICAL EXTRACTION RULES:
    - The product price is usually a 2-3 digit number followed by "kr" or "SEK"
    - Example: "179 kr" = 179, NOT 500 or other random numbers
 
-2. **INGREDIENTS**:
+2. **INGREDIENTS** (active ingredients like vitamins, minerals, caffeine, creatine, etc.):
    - Look for "Innehåll per portion", "Per kapsel", "Per dos", "Näringsdeklaration"
    - Extract the specific chemical form (e.g., "bisglycinate", "citrate", "D3")
    - Include dosage per serving
+   - These are typically listed with mg, mcg, or IU units
 
-3. **SERVING SIZE**:
+3. **NUTRITIONAL FACTS TABLE** (Näringsvärde / Näring & ingredienser):
+   - Many products (protein powders, weight gainers, meal replacements, fat burners) have a macro nutrition table
+   - This table typically has columns: nutrient name | Per 100 g | Per serving/portion
+   - Extract energy (kJ and kcal), protein, fat (total and saturated), carbohydrates (total and sugars), fiber, salt
+   - Put these in the nutritionalFacts object with per100g and perServing sub-objects
+   - This is DIFFERENT from the active ingredients list
+
+4. **INGREDIENT LIST TEXT**:
+   - Look for "Ingredienser:" followed by the raw ingredient list
+   - Copy it verbatim into ingredientListText
+
+5. **SERVING SIZE**:
    - "Rekommenderad dosering" = recommended serving
    - Look for "daglig dos", "ta X kapslar"
    - Usually 1-3 capsules/tablets/scoops
 
-4. **FORM**:
+6. **FORM**:
    - kapslar = capsule
    - tabletter = tablet
    - pulver = powder
    - vätska/flytande = liquid
 
-5. **BRAND**:
+7. **BRAND**:
    - Often at the start of product name
    - Examples: "SOLID Nutrition", "Thorne", "NOW Foods"
 
-6. **IGNORE COMPLETELY**:
+8. **IGNORE COMPLETELY**:
    - Navigation menus and category links
    - Shipping and delivery information
    - "Över 500kr" or similar promotional text
@@ -471,6 +521,8 @@ Extract only accurate information from the product page content. If unsure, omit
         pricePerServing: pricePerServing
       },
       description: extractedData.description || null,
+      nutritionalFacts: extractedData.nutritionalFacts || null,
+      ingredientListText: extractedData.ingredientListText || null,
       meta: {
         source: 'jina_claude',
         sourceURL: url,
@@ -491,11 +543,12 @@ Extract only accurate information from the product page content. If unsure, omit
 
     // Check required fields
     if (!data.productName) issues.push('Missing product name');
-    if (!data.ingredients || data.ingredients.length === 0) {
-      issues.push('No ingredients extracted');
+    if ((!data.ingredients || data.ingredients.length === 0) && !data.nutritionalFacts) {
+      issues.push('No ingredients or nutritional facts extracted');
     }
     if (!data.price?.value) warnings.push('Missing price');
     if (!data.servingsPerContainer) warnings.push('Missing servings per container');
+    if (!data.nutritionalFacts && data.form === 'powder') warnings.push('Missing nutritional facts for powder product');
 
     // Check ingredient quality
     if (data.ingredients) {
@@ -525,12 +578,14 @@ Extract only accurate information from the product page content. If unsure, omit
       productName: 10,
       brand: 5,
       price: 15,
-      ingredients: 30,
+      ingredients: 20,
       servingsPerContainer: 10,
       servingSize: 10,
       form: 5,
       description: 5,
-      ingredientForms: 10
+      ingredientForms: 5,
+      nutritionalFacts: 10,
+      ingredientListText: 5
     };
 
     if (data.productName) score += weights.productName;
@@ -547,6 +602,21 @@ Extract only accurate information from the product page content. If unsure, omit
     if (ingredientsWithForms > 0) {
       score += weights.ingredientForms * (ingredientsWithForms / (data.ingredients?.length || 1));
     }
+
+    // Nutritional facts completeness
+    if (data.nutritionalFacts) {
+      const nf = data.nutritionalFacts;
+      const hasPer100g = nf.per100g && Object.keys(nf.per100g).length > 0;
+      const hasPerServing = nf.perServing && Object.keys(nf.perServing).length > 0;
+      if (hasPer100g && hasPerServing) {
+        score += weights.nutritionalFacts;
+      } else if (hasPer100g || hasPerServing) {
+        score += weights.nutritionalFacts * 0.5;
+      }
+    }
+
+    // Ingredient list text
+    if (data.ingredientListText) score += weights.ingredientListText;
 
     return Math.round(score);
   }

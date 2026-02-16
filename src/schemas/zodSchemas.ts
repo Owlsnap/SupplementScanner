@@ -44,6 +44,8 @@ export const StructuredSupplementDataSchema = z.object({
   extractionMetadata: ExtractionMetadataSchema,
   activeIngredient: z.string().optional(),
   dosagePerUnit: z.number().nullable().optional(),
+  nutritionalFacts: NutritionalFactsSchema.optional(),
+  ingredientListText: z.string().optional(),
 });
 
 // Product validation schema
@@ -65,6 +67,25 @@ export const ProductSchema = z.object({
   confidence: z.number().optional(),
 });
 
+// Nutritional facts schemas (for macro nutrition tables like protein powders)
+export const NutritionalFactsPerServingSchema = z.object({
+  servingSize: z.string().optional(),
+  energy_kj: z.number().min(0).optional(),
+  energy_kcal: z.number().min(0).optional(),
+  protein_g: z.number().min(0).optional(),
+  fat_g: z.number().min(0).optional(),
+  saturatedFat_g: z.number().min(0).optional(),
+  carbohydrates_g: z.number().min(0).optional(),
+  sugars_g: z.number().min(0).optional(),
+  fiber_g: z.number().min(0).optional(),
+  salt_g: z.number().min(0).optional(),
+});
+
+export const NutritionalFactsSchema = z.object({
+  per100g: NutritionalFactsPerServingSchema.optional(),
+  perServing: NutritionalFactsPerServingSchema.optional(),
+});
+
 // Raw extraction data schemas
 export const RawTableDataSchema = z.object({
   ingredient: z.string(),
@@ -80,6 +101,8 @@ export const NutritionExtractionResultSchema = z.object({
   price: z.number().min(0).nullable().optional(),
   quantity: z.number().min(0).nullable().optional(),
   unit: z.string().nullable().optional(),
+  nutritionalFacts: NutritionalFactsSchema.optional(),
+  ingredientListText: z.string().optional(),
 });
 
 // Quality analysis schemas
@@ -164,6 +187,8 @@ export type RawTableData = z.infer<typeof RawTableDataSchema>;
 export type NutritionExtractionResult = z.infer<typeof NutritionExtractionResultSchema>;
 export type QualityScore = z.infer<typeof QualityScoreSchema>;
 export type IngredientAnalysis = z.infer<typeof IngredientAnalysisSchema>;
+export type NutritionalFactsPerServing = z.infer<typeof NutritionalFactsPerServingSchema>;
+export type NutritionalFacts = z.infer<typeof NutritionalFactsSchema>;
 
 // Validation helper functions
 export function validateProduct(data: unknown): Product {

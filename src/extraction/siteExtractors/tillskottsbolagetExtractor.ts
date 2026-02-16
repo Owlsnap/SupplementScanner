@@ -4,18 +4,22 @@
  */
 
 import { JSDOM } from 'jsdom';
-import { 
+import {
   NutritionExtractionResultSchema,
   StructuredSupplementDataSchema,
   safeValidateStructuredData,
 } from '../../schemas/zodSchemas.js';
-import type { 
-  SiteExtractor, 
-  NutritionExtractionResult, 
-  StructuredSupplementData, 
+import type {
+  SiteExtractor,
+  NutritionExtractionResult,
+  StructuredSupplementData,
   ExtractedIngredient,
-  RawTableData 
+  RawTableData,
+  NutritionalFacts,
+  NutritionalFactsPerServing,
 } from '../../types/index.js';
+
+type TableType = 'nutritional' | 'supplement' | 'unknown';
 
 export default class TillskottsbolagetExtractor implements SiteExtractor {
   public readonly siteDomain = 'tillskottsbolaget.se';
@@ -24,32 +28,212 @@ export default class TillskottsbolagetExtractor implements SiteExtractor {
     return url && url.includes(this.siteDomain);
   }
 
+  /**
+   * Analyze a table to determine if it contains nutritional macros or supplement active ingredients.
+   */
+  analyzeTableStructure(table: Element): { type: TableType; columnHeaders: string[]; per100gCol: number; perServingCol: number } {
+    const rows = table.querySelectorAll('tr');
+    const columnHeaders: string[] = [];
+    let per100gCol = -1;
+    let perServingCol = -1;
+
+    // Check header row for column labels
+    if (rows.length > 0) {
+      const headerCells = rows[0].querySelectorAll('td, th');
+      headerCells.forEach((cell, idx) => {
+        const text = cell.textContent.trim().toLowerCase();
+        columnHeaders.push(text);
+        if (text.includes('100') && (text.includes('g') || text.includes('ml'))) {
+          per100gCol = idx;
+        }
+        if (text.includes('portion') || text.includes('skopa') || text.includes('serving') || text.match(/per\s+\d+\s*g/)) {
+          perServingCol = idx;
+        }
+      });
+    }
+
+    // Scan row labels for nutritional macro keywords
+    const macroKeywords = ['energi', 'protein', 'fett', 'kolhydrat', 'fiber', 'salt', 'socker'];
+    const supplementKeywords = ['koffein', 'kreatin', 'beta-alanin', 'citrullin', 'taurin', 'l-tyrosin', 'l-teanin'];
+    let macroCount = 0;
+    let supplementCount = 0;
+
+    for (let i = 0; i < rows.length; i++) {
+      const firstCell = rows[i].querySelector('td, th');
+      if (!firstCell) continue;
+      const label = firstCell.textContent.trim().toLowerCase();
+
+      for (const kw of macroKeywords) {
+        if (label.includes(kw)) { macroCount++; break; }
+      }
+      for (const kw of supplementKeywords) {
+        if (label.includes(kw)) { supplementCount++; break; }
+      }
+    }
+
+    let type: TableType = 'unknown';
+    if (macroCount >= 3) type = 'nutritional';
+    else if (supplementCount >= 2) type = 'supplement';
+    else if (macroCount > supplementCount) type = 'nutritional';
+    else if (supplementCount > 0) type = 'supplement';
+
+    console.log(`📊 Table analysis: type=${type}, macros=${macroCount}, supplements=${supplementCount}, cols=[${columnHeaders.join(', ')}]`);
+    return { type, columnHeaders, per100gCol, perServingCol };
+  }
+
+  /**
+   * Parse a numeric value from a cell text, handling Swedish decimals (comma) and units like g, mg, kJ, kcal.
+   */
+  parseNutrientValue(text: string): number | null {
+    if (!text) return null;
+    // Match number with optional comma/dot decimal, possibly followed by a unit
+    const match = text.match(/([\d]+(?:[.,]\d+)?)/);
+    if (!match) return null;
+    return parseFloat(match[1].replace(',', '.'));
+  }
+
+  /**
+   * Extract macro nutritional facts from a nutritional table (protein, carbs, fat, energy, etc.).
+   */
+  extractNutritionalFacts(table: Element, per100gCol: number, perServingCol: number): NutritionalFacts {
+    const rows = table.querySelectorAll('tr');
+    const per100g: NutritionalFactsPerServing = {};
+    const perServing: NutritionalFactsPerServing = {};
+
+    // Try to extract serving size from header
+    if (rows.length > 0) {
+      const headerCells = rows[0].querySelectorAll('td, th');
+      headerCells.forEach((cell) => {
+        const text = cell.textContent.trim();
+        const servingMatch = text.match(/per\s+(?:portion|skopa)?\s*\(?\s*(\d+(?:[.,]\d+)?)\s*g\s*\)?/i)
+          || text.match(/(\d+(?:[.,]\d+)?)\s*g/i);
+        if (servingMatch && !text.toLowerCase().includes('100')) {
+          perServing.servingSize = `${servingMatch[1].replace(',', '.')} g`;
+        }
+      });
+    }
+
+    const nutrientMap: Record<string, keyof NutritionalFactsPerServing> = {
+      'energi': 'energy_kj', // will disambiguate kJ vs kcal below
+      'protein': 'protein_g',
+      'fett': 'fat_g',
+      'mättat fett': 'saturatedFat_g',
+      'mättade fettsyror': 'saturatedFat_g',
+      'varav mättat': 'saturatedFat_g',
+      'kolhydrat': 'carbohydrates_g',
+      'socker': 'sugars_g',
+      'varav sockerarter': 'sugars_g',
+      'fiber': 'fiber_g',
+      'salt': 'salt_g',
+    };
+
+    for (let i = 1; i < rows.length; i++) {
+      const cells = rows[i].querySelectorAll('td, th');
+      if (cells.length < 2) continue;
+
+      const label = cells[0].textContent.trim().toLowerCase().replace(/\s+/g, ' ');
+
+      // Determine which nutrient this row is
+      let fieldKey: keyof NutritionalFactsPerServing | null = null;
+      let isEnergyRow = false;
+
+      for (const [keyword, key] of Object.entries(nutrientMap)) {
+        if (label.includes(keyword)) {
+          fieldKey = key;
+          if (keyword === 'energi') isEnergyRow = true;
+          break;
+        }
+      }
+
+      if (!fieldKey) continue;
+
+      // Extract values from per100g and perServing columns
+      const extractFromCol = (colIdx: number, target: NutritionalFactsPerServing) => {
+        if (colIdx < 0 || colIdx >= cells.length) return;
+        const text = cells[colIdx].textContent.trim();
+
+        if (isEnergyRow) {
+          // Energy row may contain both kJ and kcal: "1580 kJ / 373 kcal"
+          const kjMatch = text.match(/([\d]+(?:[.,]\d+)?)\s*kJ/i);
+          const kcalMatch = text.match(/([\d]+(?:[.,]\d+)?)\s*kcal/i);
+          if (kjMatch) target.energy_kj = parseFloat(kjMatch[1].replace(',', '.'));
+          if (kcalMatch) target.energy_kcal = parseFloat(kcalMatch[1].replace(',', '.'));
+        } else {
+          const val = this.parseNutrientValue(text);
+          if (val !== null) {
+            (target as any)[fieldKey!] = val;
+          }
+        }
+      };
+
+      extractFromCol(per100gCol, per100g);
+      extractFromCol(perServingCol, perServing);
+    }
+
+    console.log('🥗 Extracted nutritional facts:', { per100g, perServing });
+    return { per100g, perServing };
+  }
+
+  /**
+   * Extract the ingredient list text (e.g. "Ingredienser: ...") from below the nutrition table.
+   */
+  extractIngredientListText(nutritionDiv: Element): string | undefined {
+    // Look for text containing "Ingredienser:" in the nutrition div or its siblings
+    const allText = nutritionDiv.textContent || '';
+    const ingredientMatch = allText.match(/Ingredienser\s*:\s*(.+?)(?:\n\n|\r\n\r\n|$)/is);
+    if (ingredientMatch) {
+      const text = ingredientMatch[1].trim();
+      console.log('📜 Found ingredient list text:', text.substring(0, 100) + '...');
+      return text;
+    }
+
+    // Also check sibling elements after the nutrition div
+    let sibling = nutritionDiv.nextElementSibling;
+    while (sibling) {
+      const sibText = sibling.textContent || '';
+      const sibMatch = sibText.match(/Ingredienser\s*:\s*(.+?)(?:\n\n|\r\n\r\n|$)/is);
+      if (sibMatch) {
+        const text = sibMatch[1].trim();
+        console.log('📜 Found ingredient list text in sibling:', text.substring(0, 100) + '...');
+        return text;
+      }
+      // Also check if the entire sibling is the ingredient list (starts with "Ingredienser")
+      if (sibText.trim().toLowerCase().startsWith('ingredienser')) {
+        const text = sibText.replace(/^ingredienser\s*:?\s*/i, '').trim();
+        if (text.length > 10) {
+          console.log('📜 Found ingredient list in sibling element:', text.substring(0, 100) + '...');
+          return text;
+        }
+      }
+      sibling = sibling.nextElementSibling;
+    }
+
+    return undefined;
+  }
+
   extractNutritionTable(html: string): NutritionExtractionResult {
     console.log('🍃 Starting DOM extraction for Tillskottsbolaget nutrition table...');
-    
-    const result = {
+
+    const result: NutritionExtractionResult = {
       ingredients: {},
       servingSize: null,
       productName: null,
       rawTableData: [],
       price: null,
       quantity: null,
-      unit: null
+      unit: null,
     };
 
     try {
-      // Parse HTML using jsdom for Node.js environment
       const dom = new JSDOM(html);
       const doc = dom.window.document;
-      
-      console.log('🍃 Starting DOM extraction for Tillskottsbolaget nutrition table...');
+
       console.log('📄 Parsed HTML document with jsdom, searching for nutrition div...');
-      
+
       // Find the nutrition section
       const nutritionDiv = doc.querySelector('div.JS-CleaningFunc__nutrition');
       if (!nutritionDiv) {
-        console.warn('⚠️ Nutrition div not found - checking if it exists with different selector');
-        // Try alternative selectors
+        console.warn('⚠️ Nutrition div not found - checking alternative selectors');
         const altDiv = doc.querySelector('[class*="nutrition"]') || doc.querySelector('[class*="CleaningFunc"]');
         if (altDiv) {
           console.log('🔍 Found potential nutrition div with class:', altDiv.className);
@@ -61,114 +245,67 @@ export default class TillskottsbolagetExtractor implements SiteExtractor {
 
       console.log('✅ Found nutrition div:', nutritionDiv.className);
 
-      // Extract product name from title or heading
+      // Extract product name
       const productTitle = doc.querySelector('h1') || doc.querySelector('.product-title') || doc.querySelector('[class*="title"]');
       if (productTitle) {
-        result.productName = productTitle.textContent.trim();
+        result.productName = productTitle.textContent!.trim();
         console.log('🏷️ Found product name:', result.productName);
       }
 
-      // Extract price
+      // Extract price & quantity
       this.extractPrice(doc, result);
-      
-      // Extract quantity/weight
       this.extractQuantity(doc, result);
 
-      // Find the table inside the nutrition div
+      // Find the table
       const table = nutritionDiv.querySelector('table');
       if (!table) {
         console.warn('⚠️ Table not found in nutrition div');
-        console.log('🔍 Nutrition div content:', nutritionDiv.innerHTML.slice(0, 200) + '...');
         return result;
       }
 
       console.log('✅ Found nutrition table with', table.querySelectorAll('tr').length, 'rows');
 
-      // Extract table rows
-      const rows = table.querySelectorAll('tr');
-      
-      for (let i = 0; i < rows.length; i++) {
-        const row = rows[i];
-        const cells = row.querySelectorAll('td, th');
-        
-        if (cells.length >= 2) {
-          const ingredientName = cells[0].textContent.trim();
-          const dosageText = cells[1].textContent.trim();
-          
-          console.log(`🔍 Row ${i}: "${ingredientName}" | "${dosageText}"`);
-          
-          // Skip header row if it contains "Näringsvärde" or similar
-          if (ingredientName.toLowerCase().includes('näringsvärde') || 
-              ingredientName.toLowerCase().includes('per skopa')) {
-            // Extract serving size from header if available
-            const servingMatch = dosageText.match(/per\s+skopa\s*\((\d+)\s*g\)|(\d+)\s*g/i);
-            if (servingMatch) {
-              result.servingSize = `${servingMatch[1] || servingMatch[2]} g`;
-              console.log(`📏 Found serving size: ${result.servingSize}`);
-            }
-            continue;
-          }
+      // Analyze the table structure to determine its type
+      const { type, per100gCol, perServingCol } = this.analyzeTableStructure(table);
 
-          // Extract dosage amount
-          const dosageMatch = dosageText.match(/(\d+(?:\.\d+)?)\s*mg/);
-          if (dosageMatch) {
-            const dosageMg = parseFloat(dosageMatch[1]);
-            
-            console.log(`💊 Extracted ingredient: ${ingredientName} = ${dosageMg}mg`);
-            
-            // Store raw data
-            result.rawTableData.push({
-              ingredient: ingredientName,
-              dosage: dosageMg,
-              unit: 'mg'
-            });
+      if (type === 'nutritional') {
+        // Extract macro nutritional facts
+        result.nutritionalFacts = this.extractNutritionalFacts(table, per100gCol, perServingCol);
 
-            // Map Swedish ingredient names to standard keys
-            const mappedIngredient = this.mapIngredientName(ingredientName);
-            console.log(`🗺️ Mapped "${ingredientName}" to "${mappedIngredient}"`);
-            
-            if (mappedIngredient) {
-              if (!result.ingredients[mappedIngredient]) {
-                result.ingredients[mappedIngredient] = {
-                  isIncluded: true,
-                  dosage_mg: dosageMg,
-                  sources: [ingredientName],
-                  rawName: ingredientName
-                };
-              } else {
-                // If ingredient already exists, add to dosage (for multiple sources)
-                result.ingredients[mappedIngredient].dosage_mg += dosageMg;
-                result.ingredients[mappedIngredient].sources.push(ingredientName);
-              }
-            }
-          } else {
-            console.log(`❌ No dosage match for: "${ingredientName}" | "${dosageText}"`);
-          }
+        // Extract serving size from the nutritional facts
+        if (result.nutritionalFacts.perServing?.servingSize) {
+          result.servingSize = result.nutritionalFacts.perServing.servingSize;
         }
       }
 
-      // Handle special cases for caffeine (sum all caffeine sources)
+      // Always attempt supplement-style ingredient extraction (rows with mg dosages)
+      this.extractSupplementIngredients(table, result);
+
+      // Extract ingredient list text
+      result.ingredientListText = this.extractIngredientListText(nutritionDiv);
+
+      // Handle caffeine totalling
       const caffeineTotal = this.calculateTotalCaffeine(result.rawTableData);
       if (caffeineTotal > 0) {
         result.ingredients.caffeine = {
           isIncluded: true,
           dosage_mg: caffeineTotal,
           sources: this.getCaffeineSources(result.rawTableData),
-          calculated: true
+          calculated: true,
         };
       }
 
-      if (Object.keys(result.ingredients).length > 0) {
-        console.log(`✅ Extracted ${Object.keys(result.ingredients).length} ingredients from table`);
-        
-        // Validate the extraction result with Zod
+      const hasIngredients = Object.keys(result.ingredients).length > 0;
+      const hasNutrition = !!result.nutritionalFacts;
+
+      if (hasIngredients || hasNutrition) {
+        console.log(`✅ Extracted ${Object.keys(result.ingredients).length} ingredients, nutritionalFacts=${hasNutrition}`);
         try {
           const validatedResult = NutritionExtractionResultSchema.parse(result);
           console.log('✅ Extraction result validated successfully with Zod');
           return validatedResult;
         } catch (error) {
           console.warn('⚠️ Extraction result validation failed:', error);
-          console.warn('📋 Proceeding with unvalidated result');
         }
       }
       return result;
@@ -176,6 +313,96 @@ export default class TillskottsbolagetExtractor implements SiteExtractor {
     } catch (error) {
       console.error('❌ Error extracting nutrition table:', error);
       return result;
+    }
+  }
+
+  /**
+   * Extract supplement-style active ingredients (mg dosages) from table rows.
+   */
+  extractSupplementIngredients(table: Element, result: NutritionExtractionResult): void {
+    const rows = table.querySelectorAll('tr');
+
+    for (let i = 0; i < rows.length; i++) {
+      const row = rows[i];
+      const cells = row.querySelectorAll('td, th');
+
+      if (cells.length < 2) continue;
+
+      const ingredientName = cells[0].textContent!.trim();
+      // Try all value columns (cells[1], cells[2], etc.) for a mg dosage
+      let dosageMg: number | null = null;
+      let dosageUnit: string | null = null;
+
+      for (let c = 1; c < cells.length; c++) {
+        const dosageText = cells[c].textContent!.trim();
+
+        // Match mg dosages
+        const mgMatch = dosageText.match(/(\d+(?:[.,]\d+)?)\s*mg/i);
+        if (mgMatch) {
+          dosageMg = parseFloat(mgMatch[1].replace(',', '.'));
+          dosageUnit = 'mg';
+          break;
+        }
+
+        // Match g dosages (for ingredients specified in grams, convert to mg)
+        const gMatch = dosageText.match(/(\d+(?:[.,]\d+)?)\s*g\b/i);
+        if (gMatch && !dosageText.match(/kcal|kJ|100/i)) {
+          const grams = parseFloat(gMatch[1].replace(',', '.'));
+          // Only treat as supplement ingredient if it's a small amount (< 50g)
+          // Large gram amounts are likely macros handled by nutritional facts
+          if (grams < 50) {
+            dosageMg = grams * 1000;
+            dosageUnit = 'mg';
+            break;
+          }
+        }
+      }
+
+      if (dosageMg === null) continue;
+
+      // Skip known macro/header rows
+      const lowerName = ingredientName.toLowerCase();
+      if (lowerName.includes('näringsvärde') || lowerName.includes('per skopa') ||
+          lowerName.includes('energi') || lowerName.includes('protein') ||
+          lowerName.includes('kolhydrat') || lowerName.includes('fett') ||
+          lowerName.includes('fiber') || lowerName.includes('salt') ||
+          lowerName.includes('socker')) {
+        // Check for serving size in header rows
+        if (lowerName.includes('näringsvärde') || lowerName.includes('per skopa')) {
+          for (let c = 1; c < cells.length; c++) {
+            const text = cells[c].textContent!.trim();
+            const servingMatch = text.match(/per\s+skopa\s*\((\d+)\s*g\)|(\d+)\s*g/i);
+            if (servingMatch) {
+              result.servingSize = `${servingMatch[1] || servingMatch[2]} g`;
+              console.log(`📏 Found serving size: ${result.servingSize}`);
+            }
+          }
+        }
+        continue;
+      }
+
+      console.log(`💊 Extracted ingredient: ${ingredientName} = ${dosageMg}mg`);
+
+      result.rawTableData.push({
+        ingredient: ingredientName,
+        dosage: dosageMg,
+        unit: dosageUnit!,
+      });
+
+      const mappedIngredient = this.mapIngredientName(ingredientName);
+      if (mappedIngredient) {
+        if (!result.ingredients[mappedIngredient]) {
+          result.ingredients[mappedIngredient] = {
+            isIncluded: true,
+            dosage_mg: dosageMg,
+            sources: [ingredientName],
+            rawName: ingredientName,
+          };
+        } else {
+          result.ingredients[mappedIngredient].dosage_mg += dosageMg;
+          result.ingredients[mappedIngredient].sources!.push(ingredientName);
+        }
+      }
     }
   }
 
@@ -508,8 +735,11 @@ export default class TillskottsbolagetExtractor implements SiteExtractor {
     const servingSizeNum = extractedData.servingSize ? parseFloat(extractedData.servingSize.replace(/[^\d.]/g, '')) : 20; // Default 20g
     const containerSize = extractedData.quantity || 400; // Use extracted quantity or default 400g
     const servingsPerContainer = Math.floor(containerSize / servingSizeNum);
-    
-    const structured = {
+
+    const hasIngredients = Object.keys(extractedData.ingredients).length > 0;
+    const hasNutrition = !!extractedData.nutritionalFacts;
+
+    const structured: Record<string, any> = {
       name: extractedData.productName || 'Unknown Product',
       price: extractedData.price || '',
       quantity: extractedData.quantity || '',
@@ -521,16 +751,26 @@ export default class TillskottsbolagetExtractor implements SiteExtractor {
       unrecognizedIngredients: [],
       totalCaffeineContent_mg: null,
       extractionMetadata: {
-        tableFound: Object.keys(extractedData.ingredients).length > 0,
+        tableFound: hasIngredients || hasNutrition,
         ingredientListFound: true,
         servingSizeFound: !!extractedData.servingSize,
         priceFound: !!extractedData.price,
         quantityFound: !!extractedData.quantity,
-        confidence: 0.9,
+        confidence: hasNutrition ? 0.95 : 0.9,
         siteDomain: this.siteDomain,
         extractorUsed: 'tillskottsbolaget_specific'
       }
     };
+
+    // Include nutritional facts if present
+    if (extractedData.nutritionalFacts) {
+      structured.nutritionalFacts = extractedData.nutritionalFacts;
+    }
+
+    // Include ingredient list text if present
+    if (extractedData.ingredientListText) {
+      structured.ingredientListText = extractedData.ingredientListText;
+    }
 
     // Map extracted ingredients to schema
     for (const [key, data] of Object.entries(extractedData.ingredients)) {

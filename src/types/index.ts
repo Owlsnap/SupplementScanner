@@ -8,6 +8,8 @@ import type {
   NutritionExtractionResult,
   QualityScore,
   IngredientAnalysis,
+  NutritionalFacts,
+  NutritionalFactsPerServing,
 } from '../schemas/zodSchemas.js';
 
 // Re-export all types from Zod schemas for consistency
@@ -21,6 +23,8 @@ export type {
   NutritionExtractionResult,
   QualityScore,
   IngredientAnalysis,
+  NutritionalFacts,
+  NutritionalFactsPerServing,
 } from '../schemas/zodSchemas.js';
 
 // Re-export validation functions
