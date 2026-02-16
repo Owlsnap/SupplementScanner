@@ -205,6 +205,15 @@ async function handleParallelExtraction(url, res) {
     // Run parallel extraction
     const extractionResult = await extractSupplementDataParallel(html, url);
     
+    console.log('🔍 PARALLEL EXTRACTION RESULT:', {
+      success: extractionResult.success,
+      hasData: !!extractionResult.data,
+      hasStructuredData: !!extractionResult.structuredData,
+      structuredDataIngredients: extractionResult.structuredData?.ingredients ? Object.keys(extractionResult.structuredData.ingredients) : null,
+      dataKeys: extractionResult.data ? Object.keys(extractionResult.data) : null,
+      metadata: extractionResult.metadata
+    });
+    
     if (extractionResult.success && extractionResult.data) {
       console.log('✅ Parallel extraction completed successfully');
       
