@@ -1,4 +1,397 @@
 import { ingredientQuality, supplementCategories, getIngredientQuality } from '../data/supplementData.js';
+import { CategoryDetector } from '../services/categoryDetector.js';
+
+// Enhanced supplement analysis with category-specific insights
+
+/**
+ * Enhanced analysis that combines existing 0-100 scoring with category insights
+ */
+export const analyzeSupplementQuality = (supplement) => {
+  // Preserve existing 0-100 scoring system
+  const traditionalScore = calculateTraditionalScore(supplement);
+  
+  // Add new category-specific analysis
+  const categoryInsights = analyzeCategorySpecific(supplement);
+  
+  // Add neutral dosage analysis
+  const dosageAnalysis = analyzeDosages(supplement);
+  
+  return {
+    // Keep existing score unchanged
+    overallScore: traditionalScore.score,
+    overallGrade: traditionalScore.grade,
+    
+    // Add enhanced category analysis
+    categoryInsights,
+    dosageAnalysis,
+    
+    // Preserve existing fields for backward compatibility
+    costAnalysis: traditionalScore.costAnalysis,
+    strengths: traditionalScore.strengths,
+    warnings: traditionalScore.warnings,
+    recommendations: traditionalScore.recommendations
+  };
+};
+
+/**
+ * Preserve existing 0-100 scoring logic
+ */
+function calculateTraditionalScore(supplement) {
+  let totalScore = 0;
+  let maxPossibleScore = 0;
+  const analysis = {
+    strengths: [],
+    warnings: [],
+    recommendations: [],
+    costAnalysis: null
+  };
+  
+  // Analyze each ingredient using existing logic
+  if (supplement.ingredients) {
+    supplement.ingredients.forEach(ingredient => {
+      const quality = CategoryDetector.getIngredientQuality(ingredient.name);
+      if (quality && quality.score !== null) {
+        totalScore += quality.score;
+        maxPossibleScore += 100;
+        
+        // Add existing analysis logic
+        if (quality.score >= 90) {
+          analysis.strengths.push(`${ingredient.name}: Premium form (${quality.bioavailability} bioavailability)`);
+        } else if (quality.score <= 40) {
+          analysis.warnings.push(`${ingredient.name}: Poor form (${quality.bioavailability} bioavailability)`);
+          analysis.recommendations.push(`Consider switching to ${quality.category === 'magnesium' ? 'magnesium bisglycinate' : 'a higher quality form'}`);
+        }
+      }
+    });
+  }
+  
+  const finalScore = maxPossibleScore > 0 ? Math.round((totalScore / maxPossibleScore) * 100) : 0;
+  
+  return {
+    score: finalScore,
+    grade: getGrade(finalScore),
+    strengths: analysis.strengths,
+    warnings: analysis.warnings,
+    recommendations: analysis.recommendations,
+    costAnalysis: calculateCostEffectiveness(supplement)
+  };
+}
+
+/**
+ * NEW: Category-specific analysis with neutral insights
+ */
+function analyzeCategorySpecific(supplement) {
+  const insights = {
+    category: supplement.category,
+    subCategory: supplement.subCategory,
+    categoryScore: 0,
+    specificInsights: [],
+    formAnalysis: null
+  };
+  
+  switch (supplement.category) {
+    case 'vitamin':
+      insights.specificInsights = analyzeVitaminSupplement(supplement);
+      break;
+    case 'supplement':
+      insights.specificInsights = analyzeGeneralSupplement(supplement);
+      break;
+    case 'herb':
+      insights.specificInsights = analyzeHerbSupplement(supplement);
+      break;
+  }
+  
+  // Form-specific analysis
+  insights.formAnalysis = analyzeSupplementForm(supplement.form, supplement.ingredients);
+  
+  return insights;
+}
+
+/**
+ * NEW: Neutral dosage analysis based on evidence
+ */
+function analyzeDosages(supplement) {
+  const analysis = {
+    dosageStatus: 'unknown',
+    findings: [],
+    recommendations: [],
+    evidence: []
+  };
+  
+  if (!supplement.ingredients || supplement.ingredients.length === 0) {
+    return analysis;
+  }
+  
+  let underDosedCount = 0;
+  let optimalCount = 0;
+  let overDosedCount = 0;
+  
+  supplement.ingredients.forEach(ingredient => {
+    if (!ingredient.dosage) return;
+    
+    const dosageInfo = getDosageReference(ingredient.name);
+    if (!dosageInfo) return;
+    
+    const status = evaluateDosage(ingredient.dosage, dosageInfo, ingredient.unit);
+    
+    switch (status.level) {
+      case 'under':
+        underDosedCount++;
+        analysis.findings.push(`${ingredient.name}: ${ingredient.dosage}${ingredient.unit} (below typical range of ${dosageInfo.optimalRange})`);
+        analysis.recommendations.push(`Consider products with ${dosageInfo.optimalRange} of ${ingredient.name}`);
+        break;
+      case 'optimal':
+        optimalCount++;
+        analysis.findings.push(`${ingredient.name}: ${ingredient.dosage}${ingredient.unit} (within typical range)`);
+        break;
+      case 'high':
+        overDosedCount++;
+        analysis.findings.push(`${ingredient.name}: ${ingredient.dosage}${ingredient.unit} (above typical range of ${dosageInfo.optimalRange})`);
+        analysis.recommendations.push(`High dosage - ensure this aligns with your specific needs`);
+        break;
+    }
+    
+    if (dosageInfo.evidenceNote) {
+      analysis.evidence.push(`${ingredient.name}: ${dosageInfo.evidenceNote}`);
+    }
+  });
+  
+  // Overall dosage status
+  if (underDosedCount > optimalCount && underDosedCount > overDosedCount) {
+    analysis.dosageStatus = 'generally_under';
+  } else if (overDosedCount > optimalCount && overDosedCount > underDosedCount) {
+    analysis.dosageStatus = 'generally_over';
+  } else if (optimalCount > 0) {
+    analysis.dosageStatus = 'generally_optimal';
+  }
+  
+  return analysis;
+}
+
+/**
+ * Vitamin-specific analysis
+ */
+function analyzeVitaminSupplement(supplement) {
+  const insights = [];
+  
+  if (supplement.subCategory === 'single-vitamin') {
+    insights.push('Single vitamin supplements allow for precise dosing');
+    insights.push('Check for synergistic nutrients (e.g., Vitamin D with K2, Magnesium)');
+  } else if (supplement.subCategory === 'multivitamin') {
+    insights.push('Multivitamins provide broad coverage but may have lower individual doses');
+    insights.push('Consider individual supplements for nutrients where you have specific needs');
+  }
+  
+  // Check for fat-soluble vitamins
+  const fatSoluble = supplement.ingredients?.filter(ing => 
+    ing.name.toLowerCase().includes('vitamin d') ||
+    ing.name.toLowerCase().includes('vitamin a') ||
+    ing.name.toLowerCase().includes('vitamin e') ||
+    ing.name.toLowerCase().includes('vitamin k')
+  );
+  
+  if (fatSoluble && fatSoluble.length > 0) {
+    insights.push('Contains fat-soluble vitamins - take with meals containing healthy fats for better absorption');
+  }
+  
+  return insights;
+}
+
+/**
+ * General supplement analysis
+ */
+function analyzeGeneralSupplement(supplement) {
+  const insights = [];
+  
+  if (supplement.subCategory === 'protein') {
+    insights.push('Protein supplements support muscle protein synthesis');
+    insights.push('Timing: Most effective around workouts or to meet daily protein targets');
+    
+    const proteinTypes = supplement.ingredients?.filter(ing => 
+      ing.name.toLowerCase().includes('whey') ||
+      ing.name.toLowerCase().includes('casein') ||
+      ing.name.toLowerCase().includes('protein')
+    );
+    
+    proteinTypes?.forEach(protein => {
+      if (protein.name.toLowerCase().includes('whey isolate')) {
+        insights.push('Whey isolate: Fast absorption, low lactose content');
+      } else if (protein.name.toLowerCase().includes('whey')) {
+        insights.push('Whey protein: Fast absorption, ideal post-workout');
+      } else if (protein.name.toLowerCase().includes('casein')) {
+        insights.push('Casein protein: Slow absorption, good for sustained release');
+      }
+    });
+  }
+  
+  if (supplement.subCategory === 'preworkout') {
+    insights.push('Pre-workout supplements are designed to enhance exercise performance');
+    insights.push('Timing: Take 15-30 minutes before training');
+    
+    // Check for common pre-workout ingredients
+    const caffeine = supplement.ingredients?.find(ing => 
+      ing.name.toLowerCase().includes('caffeine')
+    );
+    if (caffeine && caffeine.dosage) {
+      if (caffeine.dosage > 300) {
+        insights.push('High caffeine content - assess your tolerance');
+      } else if (caffeine.dosage < 100) {
+        insights.push('Moderate caffeine content - suitable for most users');
+      }
+    }
+  }
+  
+  return insights;
+}
+
+/**
+ * Herb supplement analysis
+ */
+function analyzeHerbSupplement(supplement) {
+  const insights = [];
+  
+  insights.push('Herbal supplements can vary significantly in potency');
+  insights.push('Look for standardized extracts with specified active compounds');
+  
+  if (supplement.herbData?.standardization) {
+    insights.push(`Standardized to: ${supplement.herbData.standardization}`);
+  } else {
+    insights.push('Consider standardized extracts for consistent potency');
+  }
+  
+  if (supplement.herbData?.extractRatio) {
+    insights.push(`Extract ratio: ${supplement.herbData.extractRatio}`);
+  }
+  
+  // Adaptogen-specific insights
+  if (supplement.subCategory === 'adaptogen') {
+    insights.push('Adaptogens may help the body manage stress');
+    insights.push('Effects often develop gradually with consistent use');
+  }
+  
+  return insights;
+}
+
+/**
+ * Form-specific analysis
+ */
+function analyzeSupplementForm(form, ingredients) {
+  const formInsights = {
+    form,
+    advantages: [],
+    considerations: []
+  };
+  
+  switch (form) {
+    case 'capsule':
+      formInsights.advantages.push('Precise dosing', 'No taste', 'Good stability');
+      formInsights.considerations.push('May take longer to absorb than powders');
+      break;
+    case 'tablet':
+      formInsights.advantages.push('Precise dosing', 'Long shelf life', 'Portable');
+      formInsights.considerations.push('May contain more fillers', 'Harder to break down');
+      break;
+    case 'powder':
+      formInsights.advantages.push('Fast absorption', 'Flexible dosing', 'Often pure');
+      formInsights.considerations.push('Taste may vary', 'Requires mixing', 'Less convenient');
+      break;
+    case 'liquid':
+      formInsights.advantages.push('Fastest absorption', 'Easy to take', 'Flexible dosing');
+      formInsights.considerations.push('Shorter shelf life', 'May need refrigeration', 'Taste considerations');
+      break;
+    case 'gummy':
+      formInsights.advantages.push('Taste', 'Easy to take', 'No water needed');
+      formInsights.considerations.push('Added sugars', 'Limited nutrient density', 'Potential for overconsumption');
+      break;
+  }
+  
+  return formInsights;
+}
+
+/**
+ * Get dosage reference information
+ */
+function getDosageReference(ingredientName) {
+  const normalized = ingredientName.toLowerCase();
+  
+  // Map to supplementCategories data
+  for (const [category, info] of Object.entries(supplementCategories)) {
+    const activeIng = info.activeIngredient.toLowerCase();
+    if (normalized.includes(activeIng) || activeIng.includes(normalized)) {
+      return {
+        optimalRange: info.optimalDailyDose,
+        maxSafe: info.maxSafeDose,
+        evidenceNote: `Based on common usage patterns for ${category}`
+      };
+    }
+  }
+  
+  // Fallback to specific ingredient knowledge
+  if (normalized.includes('caffeine')) {
+    return {
+      optimalRange: '150-300mg',
+      maxSafe: '400mg',
+      evidenceNote: 'FDA considers up to 400mg daily safe for most adults'
+    };
+  }
+  
+  if (normalized.includes('vitamin d')) {
+    return {
+      optimalRange: '2000-4000 IU',
+      maxSafe: '10000 IU',
+      evidenceNote: 'Based on current research for maintaining optimal blood levels'
+    };
+  }
+  
+  return null;
+}
+
+/**
+ * Evaluate if dosage is under/optimal/over
+ */
+function evaluateDosage(dosage, reference, unit) {
+  // Simple heuristic - would need more sophisticated parsing in production
+  const optimalStr = reference.optimalRange.toString();
+  const rangeMatch = optimalStr.match(/(\\d+)-(\\d+)/);
+  
+  if (!rangeMatch) return { level: 'unknown' };
+  
+  const minOptimal = parseInt(rangeMatch[1]);
+  const maxOptimal = parseInt(rangeMatch[2]);
+  
+  if (dosage < minOptimal * 0.7) return { level: 'under' };
+  if (dosage > maxOptimal * 1.5) return { level: 'high' };
+  return { level: 'optimal' };
+}
+
+/**
+ * Calculate cost effectiveness (preserve existing logic)
+ */
+function calculateCostEffectiveness(supplement) {
+  if (!supplement.price?.value || !supplement.servingsPerContainer) {
+    return null;
+  }
+  
+  const costPerServing = supplement.price.value / supplement.servingsPerContainer;
+  
+  return {
+    costPerServing: costPerServing.toFixed(2),
+    currency: supplement.price.currency || 'SEK',
+    assessment: costPerServing < 5 ? 'good value' : costPerServing < 10 ? 'moderate' : 'premium'
+  };
+}
+
+/**
+ * Get grade from score (preserve existing logic)
+ */
+function getGrade(score) {
+  if (score >= 90) return 'A+';
+  if (score >= 80) return 'A';
+  if (score >= 70) return 'B';
+  if (score >= 60) return 'C';
+  if (score >= 50) return 'D';
+  return 'F';
+}
 
 // Utility functions for supplement analysis and cost calculations
 

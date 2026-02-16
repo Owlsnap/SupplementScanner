@@ -19,11 +19,12 @@ const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
 });
 
-// CORS configuration for production
+// CORS configuration for production and mobile
 const corsOptions = {
   origin: [
     'http://localhost:5173',
-    'http://localhost:3000', 
+    'http://localhost:3000',
+    'http://localhost:8081', // Expo development server
     'https://supp-scanner.vercel.app',
     'https://supplementscanner.io',
     'https://www.supplementscanner.io'
@@ -31,7 +32,12 @@ const corsOptions = {
   credentials: true
 };
 
-app.use(cors(corsOptions));
+// Allow all origins in development (for mobile app on local network)
+if (process.env.NODE_ENV !== 'production') {
+  app.use(cors());
+} else {
+  app.use(cors(corsOptions));
+}
 app.use(express.json({ limit: '50mb' })); // Increase payload limit for large HTML extractions
 
 // Simple health check
@@ -39,10 +45,89 @@ app.get('/', (req, res) => {
   res.json({ message: 'AI Product Extraction API is running!' });
 });
 
+// Health check endpoint for mobile app
+app.get('/api/health', (req, res) => {
+  console.log('🏥 Health check from:', req.headers['origin'] || req.headers['host']);
+  res.json({
+    success: true,
+    status: 'healthy',
+    message: 'API is running',
+    timestamp: new Date().toISOString(),
+    version: '1.0.0'
+  });
+});
+
 // Test endpoint to verify API is reachable
 app.get('/api/test', (req, res) => {
   console.log('🧪 Test endpoint hit from:', req.headers['origin'] || req.headers['host']);
   res.json({ success: true, message: 'API is working!', timestamp: new Date().toISOString() });
+});
+
+// Enhanced extraction endpoint using Jina + Claude pipeline
+app.post('/api/extract-product-enhanced', async (req, res) => {
+  console.log('✨ POST /api/extract-product-enhanced - Request received (Jina + Claude)');
+  console.log('📨 Body:', req.body);
+
+  const { url } = req.body;
+
+  if (!url) {
+    console.log('❌ No URL provided in request');
+    return res.status(400).json({ success: false, error: 'URL is required' });
+  }
+
+  try {
+    // Initialize the enhanced scraper
+    const scraper = new EnhancedSupplementScraper(process.env.ANTHROPIC_API_KEY);
+
+    console.log('🚀 Starting Jina + Claude extraction for:', url);
+
+    // Run the complete pipeline
+    const result = await scraper.scrapeAndExtract(url);
+
+    if (!result.success) {
+      return res.status(500).json({
+        success: false,
+        error: result.error,
+        method: 'jina_claude'
+      });
+    }
+
+    // Validate the extraction
+    const validation = scraper.validateExtraction(result.data);
+
+    console.log('📊 Extraction validation:', {
+      isValid: validation.isValid,
+      completeness: validation.completeness + '%',
+      issues: validation.issues,
+      warnings: validation.warnings
+    });
+
+    return res.status(200).json({
+      success: true,
+      data: result.data,
+      extraction_method: 'jina_claude',
+      validation: {
+        isValid: validation.isValid,
+        completeness: validation.completeness,
+        issues: validation.issues,
+        warnings: validation.warnings
+      },
+      rawExtraction: result.rawExtraction
+    });
+
+  } catch (error) {
+    console.error('❌ Enhanced extraction error:', {
+      message: error.message,
+      stack: error.stack?.substring(0, 500),
+      url: url
+    });
+
+    return res.status(500).json({
+      success: false,
+      error: `Enhanced extraction failed: ${error.message}`,
+      method: 'jina_claude'
+    });
+  }
 });
 
 // Product extraction endpoint
@@ -469,7 +554,563 @@ function validateAndCleanData(data) {
   return cleaned;
 }
 
-app.listen(PORT, () => {
+// Import our barcode ingestion functionality
+import { DatabaseService } from './src/services/dbService.js';
+import { OpenFoodFactsService } from './src/services/openFoodFacts.js';
+import { CategoryDetector } from './src/services/categoryDetector.js';
+import { TillskottsblagetSearchService } from './src/services/tillskottsblagetSearch.js';
+import { QualityAnalyzer } from './src/services/qualityAnalyzer.js';
+import { EnhancedSupplementScraper } from './src/services/enhancedScraper.js';
+
+// Initialize database on server start
+DatabaseService.initialize().then(result => {
+  if (result.success) {
+    console.log('✅ Database initialized successfully');
+  } else {
+    console.error('❌ Database initialization failed:', result.error);
+  }
+});
+
+// POST /api/ingest/url - Ingest product from URL using enhanced scraper
+app.post('/api/ingest/url', async (req, res) => {
+  console.log('🔗 POST /api/ingest/url - Request received');
+
+  try {
+    const { url } = req.body;
+
+    if (!url) {
+      return res.status(400).json({
+        success: false,
+        error: 'URL is required'
+      });
+    }
+
+    console.log('🚀 Starting enhanced extraction for:', url);
+
+    // Use enhanced scraper (Puppeteer + Claude)
+    const scraper = new EnhancedSupplementScraper(process.env.ANTHROPIC_API_KEY);
+    const extractionResult = await scraper.scrapeAndExtract(url);
+
+    if (!extractionResult.success) {
+      return res.status(500).json({
+        success: false,
+        error: extractionResult.error || 'Extraction failed'
+      });
+    }
+
+    const extractedData = extractionResult.data;
+    console.log('✅ Enhanced extraction successful:', extractedData.productName);
+
+    // Detect category
+    const category = CategoryDetector.detectCategory(
+      extractedData.productName,
+      extractedData.ingredients || []
+    );
+
+    // Create supplement object (SupplementSchemaV1)
+    const supplementData = {
+      productName: extractedData.productName,
+      brand: extractedData.brand || 'Unknown',
+      category: category.category,
+      subCategory: category.subCategory,
+      form: extractedData.form || 'other',
+      servingsPerContainer: extractedData.servingsPerContainer || null,
+      servingSize: extractedData.servingSize || { amount: null, unit: null },
+      ingredients: extractedData.ingredients || [],
+      price: extractedData.price || { value: null, currency: 'SEK', pricePerServing: null },
+      quality: {
+        underDosed: null,
+        overDosed: null,
+        fillerRisk: null,
+        bioavailability: null
+      },
+      meta: {
+        source: 'url_enhanced_claude',
+        verified: false,
+        sourceMap: {
+          sourceURL: url,
+          extractionMethod: extractionResult.method
+        },
+        lastUpdated: new Date().toISOString()
+      }
+    };
+
+    // Run quality analysis
+    const qualityAnalysis = QualityAnalyzer.analyzeQuality(supplementData);
+    supplementData.quality = {
+      underDosed: qualityAnalysis.underDosed,
+      overDosed: qualityAnalysis.overDosed,
+      fillerRisk: qualityAnalysis.fillerRisk,
+      bioavailability: qualityAnalysis.bioavailability
+    };
+
+    // Generate barcode (use crypto hash of URL for uniqueness)
+    const crypto = await import('crypto');
+    const urlHash = crypto.createHash('sha256').update(url).digest('hex').substring(0, 12);
+    const barcode = `URL-${urlHash}`;
+
+    // Save to database
+    const saveResult = await DatabaseService.getOrCreateSupplement(barcode, supplementData);
+
+    if (saveResult.success) {
+      console.log('✅ Supplement saved to database with barcode:', barcode);
+
+      const validation = scraper.validateExtraction(extractedData);
+
+      res.json({
+        success: true,
+        data: saveResult.data,
+        barcode: barcode,
+        extraction: {
+          method: extractionResult.method,
+          completeness: validation.completeness,
+          validation: validation
+        },
+        message: 'Product successfully extracted and saved to database'
+      });
+    } else {
+      console.error('❌ Failed to save supplement:', saveResult.error);
+      res.status(500).json({
+        success: false,
+        error: 'Failed to save supplement to database',
+        extractedData: extractedData // Return extracted data anyway
+      });
+    }
+
+  } catch (error) {
+    console.error('💥 URL ingestion error:', error);
+    res.status(500).json({
+      success: false,
+      error: `Internal server error: ${error.message}`
+    });
+  }
+});
+
+// GET /api/find-product-url/:barcode - Find product URL on tillskottsbolaget.se
+app.get('/api/find-product-url/:barcode', async (req, res) => {
+  console.log('🔍 GET /api/find-product-url/' + req.params.barcode + ' - Request received');
+  
+  try {
+    const { barcode } = req.params;
+    
+    // Step 1: Get product info from OpenFoodFacts
+    const ofResult = await OpenFoodFactsService.getProduct(barcode);
+    if (!ofResult.success) {
+      return res.status(404).json({
+        success: false,
+        error: 'Product not found in OpenFoodFacts database'
+      });
+    }
+
+    const product = ofResult.data;
+    const productName = product.product_name;
+    const brand = product.brands?.split(',')[0]?.trim();
+    
+    console.log(`📦 Product: "${productName}" by "${brand}"`);
+    
+    // Step 2: Search tillskottsbolaget.se with AI-enhanced matching
+    const searchResult = await TillskottsblagetSearchService.findProductURL(productName, brand, product);
+    
+    if (searchResult.success) {
+      res.json({
+        success: true,
+        data: {
+          barcode,
+          productName,
+          brand,
+          tillskottsblagetURL: searchResult.data.url,
+          searchTitle: searchResult.data.title,
+          relevanceScore: searchResult.data.relevanceScore,
+          allResults: searchResult.data.allResults
+        }
+      });
+    } else {
+      res.status(404).json({
+        success: false,
+        error: searchResult.error,
+        productInfo: { productName, brand }
+      });
+    }
+    
+  } catch (error) {
+    console.error('💥 Find product URL error:', error);
+    res.status(500).json({
+      success: false,
+      error: 'Internal server error during URL search'
+    });
+  }
+});
+
+// POST /api/ingest/barcode/:barcode - Full barcode ingestion pipeline
+app.post('/api/ingest/barcode/:barcode', async (req, res) => {
+  console.log('🔍 POST /api/ingest/barcode/' + req.params.barcode + ' - Request received');
+  
+  try {
+    const { barcode } = req.params;
+    
+    // Handle manual data merging if provided
+    if (req.body.manualData) {
+      console.log('📝 Manual data provided, merging with existing product...');
+      
+      // Get existing product from database
+      const existingResult = await DatabaseService.getByBarcode(barcode);
+      if (!existingResult.success || !existingResult.data) {
+        return res.status(404).json({
+          success: false,
+          error: 'Product not found in database for manual update'
+        });
+      }
+      
+      const existingProduct = existingResult.data;
+      
+      // Merge manual data with existing product
+      const updatedProduct = {
+        ...existingProduct,
+        ...req.body.manualData,
+        meta: {
+          ...existingProduct.meta,
+          manuallyUpdated: true,
+          lastManualUpdate: new Date().toISOString()
+        }
+      };
+      
+      // Save updated product to database
+      const saveResult = await DatabaseService.updateSupplement(barcode, updatedProduct);
+      if (!saveResult.success) {
+        return res.status(500).json({
+          success: false,
+          error: 'Failed to save manually updated product'
+        });
+      }
+      
+      console.log('✅ Product manually updated successfully');
+      return res.json({
+        success: true,
+        data: updatedProduct,
+        source: 'manual_update'
+      });
+    }
+    
+    // Step 1: Check if supplement already exists
+    const existingResult = await DatabaseService.getByBarcode(barcode);
+    if (existingResult.success && existingResult.data) {
+      console.log('✅ Supplement found in database');
+      return res.json({
+        success: true,
+        data: existingResult.data,
+        source: 'database'
+      });
+    }
+
+    // Step 2: Get basic product info from OpenFoodFacts
+    console.log('🔍 Fetching from OpenFoodFacts...');
+    const ofResult = await OpenFoodFactsService.getProduct(barcode);
+    if (!ofResult.success) {
+      return res.status(404).json({
+        success: false,
+        error: 'Product not found in OpenFoodFacts database'
+      });
+    }
+
+    const product = ofResult.data;
+    const productName = product.product_name;
+    const brand = product.brands?.split(',')[0]?.trim();
+    
+    console.log(`📦 Product found: "${productName}" by "${brand}"`);
+
+    // Step 3: Find product on tillskottsbolaget.se with AI-enhanced matching
+    console.log('🔍 Searching tillskottsbolaget.se...');
+    const searchResult = await TillskottsblagetSearchService.findProductURL(productName, brand, product);
+    
+    let extractionResult = null;
+    let aiExtractionSuccess = false;
+    
+    if (searchResult.success) {
+      // Step 4: Run AI extraction on tillskottsbolaget.se URL
+      console.log('🤖 Running AI extraction on tillskottsbolaget.se...');
+      
+      try {
+        const extractionResponse = await fetch(`http://localhost:${PORT}/api/extract-product`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            url: searchResult.data.url,
+            targetSite: 'tillskottsbolaget'
+          })
+        });
+
+        if (extractionResponse.ok) {
+          extractionResult = await extractionResponse.json();
+          aiExtractionSuccess = !!(extractionResult.productName && extractionResult.ingredients);
+          console.log(aiExtractionSuccess ? '✅ AI extraction successful' : '⚠️ AI extraction partial');
+        }
+      } catch (extractionError) {
+        console.log('❌ AI extraction failed:', extractionError.message);
+      }
+    }
+
+    // Step 5: Fallback to OpenFoodFacts data if AI extraction failed
+    if (!aiExtractionSuccess) {
+      console.log('📋 Using OpenFoodFacts data as fallback');
+      extractionResult = {
+        productName: productName,
+        brand: brand,
+        ingredients: [],
+        form: 'other',
+        servingsPerContainer: null,
+        servingSize: { amount: null, unit: null },
+        price: { value: null, currency: null, pricePerServing: null }
+      };
+    }
+
+    // Step 6: Category detection
+    const category = CategoryDetector.detectCategory(
+      extractionResult.productName || productName,
+      extractionResult.ingredients || []
+    );
+
+    // Step 7: Create supplement object (SupplementSchemaV1)
+    const supplementData = {
+      productName: extractionResult.productName || productName,
+      brand: extractionResult.brand || brand || 'Unknown Brand',
+      category: category.category,
+      subCategory: category.subCategory,
+      form: extractionResult.form || 'other',
+      servingsPerContainer: extractionResult.servingsPerContainer || null,
+      servingSize: extractionResult.servingSize || { amount: null, unit: null },
+      ingredients: extractionResult.ingredients || [],
+      price: extractionResult.price || { value: null, currency: null, pricePerServing: null },
+      quality: {
+        underDosed: null,
+        overDosed: null,
+        fillerRisk: null,
+        bioavailability: null
+      },
+      meta: {
+        source: aiExtractionSuccess ? 'tillskottsbolaget_ai' : 'openfoodfacts_basic',
+        verified: false,
+        sourceMap: {
+          openfoodfacts: barcode,
+          tillskottsblagetURL: searchResult.success ? searchResult.data.url : null,
+          aiExtraction: aiExtractionSuccess
+        }
+      }
+    };
+
+    // Step 7.1: Run quality analysis
+    const qualityAnalysis = QualityAnalyzer.analyzeQuality(supplementData);
+    supplementData.quality = {
+      underDosed: qualityAnalysis.underDosed,
+      overDosed: qualityAnalysis.overDosed,
+      fillerRisk: qualityAnalysis.fillerRisk,
+      bioavailability: qualityAnalysis.bioavailability
+    };
+
+    // Add category-specific data
+    if (category.category === 'supplement' && category.subCategory === 'preworkout') {
+      supplementData.preWorkoutData = extractionResult.structuredIngredients || null;
+    }
+
+    // Step 8: Save to database
+    const saveResult = await DatabaseService.getOrCreateSupplement(barcode, supplementData);
+    
+    // Step 9: Check for missing fields and prepare response
+    const requiredFields = [];
+    if (!supplementData.price.value) requiredFields.push('price');
+    if (!supplementData.ingredients || supplementData.ingredients.length === 0) requiredFields.push('ingredients');
+    if (!supplementData.servingsPerContainer) requiredFields.push('servingsPerContainer');
+    
+    if (saveResult.success) {
+      console.log('✅ Supplement saved to database');
+      res.json({
+        success: true,
+        data: saveResult.data,
+        source: aiExtractionSuccess ? 'tillskottsbolaget_ai' : 'openfoodfacts_basic',
+        backupCreated: saveResult.backupCreated,
+        requiredFields: requiredFields.length > 0 ? requiredFields : undefined,
+        searchInfo: searchResult.success ? {
+          tillskottsblagetURL: searchResult.data.url,
+          relevanceScore: searchResult.data.relevanceScore
+        } : null
+      });
+    } else {
+      console.error('❌ Failed to save supplement:', saveResult.error);
+      res.status(500).json({
+        success: false,
+        error: 'Failed to save supplement to database'
+      });
+    }
+
+  } catch (error) {
+    console.error('💥 Barcode ingestion error:', error);
+    res.status(500).json({
+      success: false,
+      error: 'Internal server error during barcode processing'
+    });
+  }
+});
+
+// Get supplement by barcode
+app.get('/api/product/:barcode', async (req, res) => {
+  console.log('📖 GET /api/product/' + req.params.barcode + ' - Request received');
+  
+  try {
+    const { barcode } = req.params;
+    const result = await DatabaseService.getByBarcode(barcode);
+    
+    if (result.success && result.data) {
+      res.json({
+        success: true,
+        data: result.data
+      });
+    } else {
+      res.status(404).json({
+        success: false,
+        error: 'Supplement not found'
+      });
+    }
+  } catch (error) {
+    console.error('💥 Get product error:', error);
+    res.status(500).json({
+      success: false,
+      error: 'Internal server error'
+    });
+  }
+});
+
+// POST /api/correction/:barcode - Manual correction endpoint
+app.post('/api/correction/:barcode', async (req, res) => {
+  console.log('✏️ POST /api/correction/' + req.params.barcode + ' - Request received');
+  
+  try {
+    const { barcode } = req.params;
+    const corrections = req.body;
+    
+    // Get existing supplement
+    const existingResult = await DatabaseService.getByBarcode(barcode);
+    if (!existingResult.success || !existingResult.data) {
+      return res.status(404).json({
+        success: false,
+        error: 'Supplement not found for correction'
+      });
+    }
+    
+    // Apply corrections (merge with existing data)
+    const correctedData = {
+      ...existingResult.data,
+      ...corrections,
+      meta: {
+        ...existingResult.data.meta,
+        verified: true, // Mark as verified after manual correction
+        lastUpdated: new Date().toISOString()
+      }
+    };
+    
+    // Update in database
+    const updateResult = await DatabaseService.updateSupplement(barcode, correctedData);
+    
+    if (updateResult.success) {
+      console.log('✅ Supplement corrected successfully');
+      res.json({
+        success: true,
+        data: updateResult.data,
+        message: 'Supplement data corrected and verified'
+      });
+    } else {
+      res.status(500).json({
+        success: false,
+        error: updateResult.error
+      });
+    }
+    
+  } catch (error) {
+    console.error('💥 Correction error:', error);
+    res.status(500).json({
+      success: false,
+      error: 'Internal server error during correction'
+    });
+  }
+});
+
+// Search supplements
+app.get('/api/search', async (req, res) => {
+  console.log('🔍 GET /api/search - Request received');
+  
+  try {
+    const { q: query, category, brand, verified, limit, offset } = req.query;
+    
+    const searchOptions = {};
+    if (category) searchOptions.category = category;
+    if (brand) searchOptions.brand = brand;
+    if (verified !== undefined) searchOptions.verified = verified === 'true';
+    if (limit) searchOptions.limit = parseInt(limit);
+    if (offset) searchOptions.offset = parseInt(offset);
+
+    const result = await DatabaseService.search(query || '', searchOptions);
+    
+    if (result.success) {
+      res.json({
+        success: true,
+        data: result.data
+      });
+    } else {
+      res.status(500).json({
+        success: false,
+        error: result.error
+      });
+    }
+  } catch (error) {
+    console.error('💥 Search error:', error);
+    res.status(500).json({
+      success: false,
+      error: 'Internal server error'
+    });
+  }
+});
+
+// Get database stats
+app.get('/api/stats', async (req, res) => {
+  console.log('📊 GET /api/stats - Request received');
+  
+  try {
+    const result = await DatabaseService.getStats();
+    
+    if (result.success) {
+      res.json({
+        success: true,
+        data: result.data
+      });
+    } else {
+      res.status(500).json({
+        success: false,
+        error: result.error
+      });
+    }
+  } catch (error) {
+    console.error('💥 Stats error:', error);
+    res.status(500).json({
+      success: false,
+      error: 'Internal server error'
+    });
+  }
+});
+
+app.listen(PORT, '0.0.0.0', () => {
   console.log(`🚀 AI Extraction API running on http://localhost:${PORT}`);
+  console.log(`🌐 Available on network: http://192.168.0.31:${PORT}`);
   console.log(`📝 OpenAI API Key loaded: ${process.env.OPENAI_API_KEY ? 'Yes' : 'No'}`);
+  console.log('\n📋 Available endpoints:');
+  console.log('  GET  /api/health - API health check');
+  console.log('  ✨ POST /api/extract-product-enhanced - Enhanced extraction (Jina + Claude) ✨');
+  console.log('  POST /api/extract-product - Legacy extraction (Puppeteer + OpenAI)');
+  console.log('  GET  /api/find-product-url/{barcode} - Find tillskottsbolaget.se product URL');
+  console.log('  POST /api/ingest/barcode/{barcode} - Full barcode scanning pipeline + manual data merging');
+  console.log('  POST /api/ingest/url - Ingest product from URL');
+  console.log('  POST /api/ingest/manual - Add product manually');
+  console.log('  GET  /api/product/{barcode} - Retrieve supplement by barcode');
+  console.log('  POST /api/correction/{barcode} - Manual data correction');
+  console.log('  GET  /api/search - Search supplements database');
+  console.log('  GET  /api/stats - Database statistics');
+  console.log('\n🎯 SupplementScanner Mobile API Ready!');
+  console.log('🔑 Anthropic API Key loaded:', process.env.ANTHROPIC_API_KEY ? 'Yes ✨' : 'No (enhanced extraction disabled)');
 });
