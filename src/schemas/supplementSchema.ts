@@ -30,13 +30,6 @@ export const IngredientSchema = z.object({
   standardizedTo: z.string().nullable().optional()
 });
 
-// Price schema
-export const PriceSchema = z.object({
-  value: z.number().nullable(),
-  currency: z.string().nullable(),
-  pricePerServing: z.number().nullable()
-});
-
 // Quality analysis schema
 export const QualitySchema = z.object({
   underDosed: z.boolean().nullable(),
@@ -92,7 +85,6 @@ export const SupplementSchemaV1 = z.object({
   servingsPerContainer: z.number().nullable(),
   servingSize: ServingSizeSchema,
   ingredients: z.array(IngredientSchema),
-  price: PriceSchema,
   quality: QualitySchema,
   meta: MetaSchema,
   

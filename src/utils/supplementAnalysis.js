@@ -26,7 +26,6 @@ export const analyzeSupplementQuality = (supplement) => {
     dosageAnalysis,
     
     // Preserve existing fields for backward compatibility
-    costAnalysis: traditionalScore.costAnalysis,
     strengths: traditionalScore.strengths,
     warnings: traditionalScore.warnings,
     recommendations: traditionalScore.recommendations
@@ -42,8 +41,7 @@ function calculateTraditionalScore(supplement) {
   const analysis = {
     strengths: [],
     warnings: [],
-    recommendations: [],
-    costAnalysis: null
+    recommendations: []
   };
   
   // Analyze each ingredient using existing logic
@@ -72,8 +70,7 @@ function calculateTraditionalScore(supplement) {
     grade: getGrade(finalScore),
     strengths: analysis.strengths,
     warnings: analysis.warnings,
-    recommendations: analysis.recommendations,
-    costAnalysis: calculateCostEffectiveness(supplement)
+    recommendations: analysis.recommendations
   };
 }
 
@@ -365,23 +362,6 @@ function evaluateDosage(dosage, reference, unit) {
 }
 
 /**
- * Calculate cost effectiveness (preserve existing logic)
- */
-function calculateCostEffectiveness(supplement) {
-  if (!supplement.price?.value || !supplement.servingsPerContainer) {
-    return null;
-  }
-  
-  const costPerServing = supplement.price.value / supplement.servingsPerContainer;
-  
-  return {
-    costPerServing: costPerServing.toFixed(2),
-    currency: supplement.price.currency || 'SEK',
-    assessment: costPerServing < 5 ? 'good value' : costPerServing < 10 ? 'moderate' : 'premium'
-  };
-}
-
-/**
  * Get grade from score (preserve existing logic)
  */
 function getGrade(score) {
@@ -521,213 +501,6 @@ export const parseSupplementInfo = (productName, unit, quantity) => {
   return null; // No supplement pattern found
 };
 
-/**
- * Calculate cost per active ingredient
- * @param {number} price - Total price
- * @param {object} supplementInfo - Parsed supplement information
- * @returns {object} - Cost analysis
- */
-export const calculateNutrientCost = (price, supplementInfo) => {
-  console.log('🧮 calculateNutrientCost input:', { price, supplementInfo });
-  
-  if (!supplementInfo || !supplementInfo.dosagePerUnit || !supplementInfo.totalDosage) {
-    console.log('❌ Missing required supplement info for cost calculation');
-    return null;
-  }
-
-  const costPerMg = price / supplementInfo.totalDosage; // Cost per mg/IU
-  const costPer100mg = costPerMg * 100; // Standardized cost per 100mg
-  const costPerUnit = costPerMg * supplementInfo.dosagePerUnit; // Cost per capsule/tablet
-  const valueScore = calculateValueScore(costPerMg, supplementInfo.quality?.score || 50);
-  
-  const result = {
-    costPerMg,
-    costPer100mg,
-    costPerUnit,
-    totalActiveIngredient: supplementInfo.totalDosage,
-    valueScore
-  };
-  
-  console.log('🧮 Calculated nutrient cost:', result);
-  return result;
-};
-
-/**
- * Calculate overall value score (considers both price and quality)
- * @param {number} costPerMg - Cost per mg of active ingredient
- * @param {number} qualityScore - Quality score (0-100)
- * @returns {number} - Value score (higher is better)
- */
-const calculateValueScore = (costPerMg, qualityScore) => {
-  // Normalize cost (lower cost = higher value)
-  const costScore = Math.max(0, 100 - (costPerMg * 1000)); // Scale cost appropriately
-  
-  // Combine quality and cost (60% quality, 40% cost)
-  return (qualityScore * 0.6) + (costScore * 0.4);
-};
-
-/**
- * Compare supplements by their nutrient value
- * @param {array} products - Array of product objects with price, name, quantity, unit
- * @returns {object} - Products grouped by category with analysis
- */
-export const compareSupplementValue = (products) => {
-  
-  const analyzed = products
-    .map(product => {
-      // Try AI-extracted data first, then fall back to regex parsing
-      let supplementInfo = null;
-      let nutrientCost = null;
-      
-      // Handle structured extraction data (priority over regular extraction)
-      if (product.structuredIngredients && product.structuredIngredients.ingredients) {
-        const structured = product.structuredIngredients;
-        
-        // Find the most prominent ingredient for categorization
-        const activeIngredients = Object.entries(structured.ingredients)
-          .filter(([key, data]) => data.isIncluded && data.dosage_mg)
-          .sort(([,a], [,b]) => b.dosage_mg - a.dosage_mg);
-          
-        if (activeIngredients.length > 0) {
-          const [primaryKey, primaryData] = activeIngredients[0];
-          const primaryIngredient = primaryKey.replace(/_/g, '-');
-          
-          supplementInfo = {
-            activeIngredient: primaryIngredient,
-            dosagePerUnit: primaryData.dosage_mg,
-            category: 'pre_workout', // Structured data is primarily for pre-workouts
-            quality: getIngredientQuality(primaryIngredient) || {
-              score: null,
-              description: 'Individual choice supplement',
-              bioavailability: 'Variable',
-              absorption: 'Variable',
-              sideEffects: 'Variable',
-              benefits: ['Varies by ingredient'],
-              drawbacks: ['Varies by ingredient'],
-              considerations: 'Evaluate each ingredient individually based on your goals and tolerance'
-            }
-          };
-          
-          nutrientCost = calculateNutrientCost(parseFloat(product.price), supplementInfo);
-        }
-      }
-      
-      // Regular extraction processing (fallback)
-      else if (product.activeIngredient && product.dosagePerUnit && 
-          product.dosagePerUnit !== 'N/A' && product.dosagePerUnit !== '' && 
-          product.dosagePerUnit !== 'null' && product.dosagePerUnit !== null) {
-        // Use AI-extracted supplement data
-        const dosage = parseFloat(product.dosagePerUnit);
-        const ingredient = product.activeIngredient.toLowerCase();
-        const quantity = parseFloat(product.quantity) || 1;
-        const servingSize = parseFloat(product.servingSize) || 1;
-        const servingsPerContainer = parseFloat(product.servingsPerContainer) || quantity;
-        
-        console.log('🔍 RAW VALUES FROM AI:', {
-          rawDosagePerUnit: product.dosagePerUnit,
-          rawServingSize: product.servingSize,
-          rawServingsPerContainer: product.servingsPerContainer,
-          rawQuantity: product.quantity
-        });
-        
-        console.log('Parsed values:', { dosage, ingredient, quantity, servingSize, servingsPerContainer });
-        
-        // Check if dosage is valid after parsing
-        if (isNaN(dosage) || dosage <= 0) {
-          console.log('❌ Invalid dosage after parsing, falling back to regex extraction');
-          supplementInfo = parseSupplementInfo(product.name, product.unit, product.quantity);
-          nutrientCost = supplementInfo ? calculateNutrientCost(parseFloat(product.price), supplementInfo) : null;
-          console.log('Regex fallback supplementInfo:', supplementInfo);
-          console.log('Regex fallback nutrientCost:', nutrientCost);
-        } else {
-          const calculatedTotalDosage = dosage * servingsPerContainer;
-          console.log('🧮 DOSAGE CALCULATION:', {
-            dosagePerUnit: dosage,
-            servingsPerContainer: servingsPerContainer,
-            totalDosage: calculatedTotalDosage,
-            calculation: `${dosage} × ${servingsPerContainer} = ${calculatedTotalDosage}`
-          });
-
-          let category = 'other';
-          const productNameLower = product.name.toLowerCase();
-          
-          // PRIORITY: Check for pre-workout first (PWO products often contain multiple ingredients)
-          if (productNameLower.includes('pwo') || productNameLower.includes('pre-workout') || productNameLower.includes('preworkout') ||
-              ingredient.includes('caffeine') || ingredient.includes('beta-alanine') || ingredient.includes('citrulline') || 
-              ingredient.includes('pre-workout') || ingredient.includes('pwo') || productNameLower.includes('koffein')) {
-            category = 'pre_workout';
-          }
-          // Then check other categories
-          else if (ingredient.includes('magnesium') || productNameLower.includes('magnesium')) category = 'magnesium';
-          else if (ingredient.includes('protein') || ingredient.includes('whey') || ingredient.includes('casein') || productNameLower.includes('protein') || productNameLower.includes('whey')) category = 'protein';
-          else if (ingredient.includes('vitamin d') || ingredient.includes('d-vitamin') || ingredient.includes('cholecalciferol') || productNameLower.includes('vitamin d') || productNameLower.includes('d-vitamin')) category = 'vitamin_d';
-          else if (ingredient.includes('omega') || ingredient.includes('fiskolja') || ingredient.includes('epa') || ingredient.includes('dha') || productNameLower.includes('omega') || productNameLower.includes('fiskolja')) category = 'omega_3';
-          else if (ingredient.includes('kreatin') || ingredient.includes('creatine') || productNameLower.includes('kreatin') || productNameLower.includes('creatine')) category = 'creatine';
-          else if (ingredient.includes('essential amino acids') || ingredient.includes('eaa') || ingredient.includes('aminosyror') || productNameLower.includes('eaa') || productNameLower.includes('essential amino')) category = 'amino_acids';
-          else if (ingredient.includes('branched chain amino acids') || ingredient.includes('bcaa') || ingredient.includes('grenade kedjeaminosyror') || productNameLower.includes('bcaa')) category = 'amino_acids';
-          
-          const quality = getIngredientQuality(ingredient) || { 
-            score: 70, 
-            description: 'Standard quality supplement',
-            bioavailability: 'Good',
-            absorption: '~70%',
-            sideEffects: 'Low',
-            benefits: ['Standard benefits'],
-            drawbacks: ['Standard drawbacks'],
-            category: category
-          };
-
-          supplementInfo = {
-            category,
-            activeIngredient: product.activeIngredient,
-            dosagePerUnit: dosage,
-            servingSize: servingSize,
-            totalDosage: calculatedTotalDosage,
-            totalServings: servingsPerContainer,
-            unit: product.unit,
-            quality
-          };
-          
-          console.log('✅ FINAL supplementInfo:', supplementInfo);
-          
-          nutrientCost = calculateNutrientCost(parseFloat(product.price), supplementInfo);
-          console.log('Calculated nutrientCost:', nutrientCost);
-        }
-      } else {
-        // Fall back to regex parsing for products without AI data
-        supplementInfo = parseSupplementInfo(product.name, product.unit, product.quantity);
-        nutrientCost = supplementInfo ? calculateNutrientCost(parseFloat(product.price), supplementInfo) : null;
-      }
-      
-      const result = {
-        ...product,
-        supplementInfo,
-        nutrientCost,
-        pricePerUnit: parseFloat(product.price) / parseFloat(product.quantity)
-      };
-      
-      return result;
-    })
-    .filter(product => {
-      const hasData = product.supplementInfo && product.nutrientCost;
-      return hasData;
-    });
-    
-  // Group by supplement category
-  const byCategory = analyzed.reduce((acc, product) => {
-    const category = product.supplementInfo.category;
-    if (!acc[category]) acc[category] = [];
-    acc[category].push(product);
-    return acc;
-  }, {});
-
-  // Sort each category by value score
-  Object.keys(byCategory).forEach(category => {
-    byCategory[category].sort((a, b) => b.nutrientCost.valueScore - a.nutrientCost.valueScore);
-  });
-
-  return byCategory;
-};
 
 /**
  * Get quality warnings and recommendations
@@ -821,26 +594,23 @@ export const generateRecommendations = (analyzedProducts) => {
   Object.entries(analyzedProducts).forEach(([category, products]) => {
     if (products.length === 0) return;
 
-    const bestValue = products[0]; // Already sorted by value score
-    const worstValue = products[products.length - 1];
+    const bestQuality = products[0];
     const categoryData = supplementCategories[category];
 
-    // Best value recommendation
+    // Best quality recommendation
     recommendations.push({
-      type: 'best_value',
+      type: 'best_quality',
       category,
-      product: bestValue,
-      message: `Best ${category} value: ${bestValue.name}`,
+      product: bestQuality,
+      message: `Best ${category} quality: ${bestQuality.name}`,
       details: {
-        costPerMg: bestValue.nutrientCost.costPerMg.toFixed(6),
-        qualityScore: bestValue.supplementInfo.quality.score,
-        valueScore: bestValue.nutrientCost.valueScore.toFixed(1)
+        qualityScore: bestQuality.supplementInfo.quality.score
       }
     });
 
     // Quality upgrade recommendation
-    if (bestValue.supplementInfo.quality.score < 80 && products.length > 1) {
-      const betterQuality = products.find(p => p.supplementInfo.quality.score > bestValue.supplementInfo.quality.score);
+    if (bestQuality.supplementInfo.quality.score < 80 && products.length > 1) {
+      const betterQuality = products.find(p => p.supplementInfo.quality.score > bestQuality.supplementInfo.quality.score);
       if (betterQuality) {
         recommendations.push({
           type: 'quality_upgrade',
@@ -848,8 +618,7 @@ export const generateRecommendations = (analyzedProducts) => {
           product: betterQuality,
           message: `Consider upgrading to ${betterQuality.supplementInfo.activeIngredient} for better absorption`,
           details: {
-            qualityImprovement: betterQuality.supplementInfo.quality.score - bestValue.supplementInfo.quality.score,
-            costIncrease: ((betterQuality.nutrientCost.costPerMg / bestValue.nutrientCost.costPerMg - 1) * 100).toFixed(1)
+            qualityImprovement: betterQuality.supplementInfo.quality.score - bestQuality.supplementInfo.quality.score
           }
         });
       }

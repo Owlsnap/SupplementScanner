@@ -617,7 +617,6 @@ app.post('/api/ingest/url', async (req, res) => {
       servingsPerContainer: extractedData.servingsPerContainer || null,
       servingSize: extractedData.servingSize || { amount: null, unit: null },
       ingredients: extractedData.ingredients || [],
-      price: extractedData.price || { value: null, currency: 'SEK', pricePerServing: null },
       quality: {
         underDosed: null,
         overDosed: null,
@@ -859,7 +858,6 @@ app.post('/api/ingest/barcode/:barcode', async (req, res) => {
         form: 'other',
         servingsPerContainer: null,
         servingSize: { amount: null, unit: null },
-        price: { value: null, currency: null, pricePerServing: null }
       };
     }
 
@@ -879,7 +877,6 @@ app.post('/api/ingest/barcode/:barcode', async (req, res) => {
       servingsPerContainer: extractionResult.servingsPerContainer || null,
       servingSize: extractionResult.servingSize || { amount: null, unit: null },
       ingredients: extractionResult.ingredients || [],
-      price: extractionResult.price || { value: null, currency: null, pricePerServing: null },
       quality: {
         underDosed: null,
         overDosed: null,

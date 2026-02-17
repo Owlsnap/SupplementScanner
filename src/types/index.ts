@@ -58,16 +58,12 @@ export interface AnalyzedProduct extends Product {
       ingredients?: Record<string, any>;
     };
   };
-  nutrientCost?: {
-    costPerMg: number;
-    valueScore: number;
-  };
 }
 
 // Additional interfaces not covered by Zod schemas
 export interface PatternData {
   html?: string;
-  price?: number;
+
   product_name?: string;
   dosage_blocks?: number;
   quantities_found?: number;
@@ -82,7 +78,6 @@ export interface DOMBlock {
 }
 
 export interface RankedBlocks {
-  price_blocks: DOMBlock[];
   ingredient_blocks: DOMBlock[];
   dosage_blocks: DOMBlock[];
   quantity_blocks: DOMBlock[];

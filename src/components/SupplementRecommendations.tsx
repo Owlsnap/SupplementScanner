@@ -271,22 +271,6 @@ export default function SupplementRecommendations({ analyzedProducts = {} }: Sup
                       {productMatch.supplementInfo?.quality?.score || 'Unknown'}/100
                     </div>
                   </div>
-                  {productMatch.nutrientCost && (
-                    <>
-                      <div>
-                        <span style={{ color: '#94a3b8', fontSize: '0.75rem' }}>Cost per mg:</span>
-                        <div style={{ color: '#f1f5f9', fontSize: '0.875rem', fontWeight: '500' }}>
-                          {productMatch.nutrientCost.costPerMg.toFixed(4)} kr
-                        </div>
-                      </div>
-                      <div>
-                        <span style={{ color: '#94a3b8', fontSize: '0.75rem' }}>Value Score:</span>
-                        <div style={{ color: '#f1f5f9', fontSize: '0.875rem', fontWeight: '500' }}>
-                          {productMatch.nutrientCost.valueScore.toFixed(1)}/100
-                        </div>
-                      </div>
-                    </>
-                  )}
                 </div>
               </div>
             )}

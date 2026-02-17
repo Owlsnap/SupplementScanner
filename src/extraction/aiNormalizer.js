@@ -12,9 +12,6 @@ You always respond with VALID JSON only, no explanation text.
 
 Here are the extracted text blocks ranked by relevance:
 
-PRICE BLOCKS:
-${formatBlocksForPrompt(rankedBlocks.price_blocks)}
-
 INGREDIENT BLOCKS:
 ${formatBlocksForPrompt(rankedBlocks.ingredient_blocks)}
 
@@ -28,7 +25,6 @@ NUTRITIONAL BLOCKS:
 ${formatBlocksForPrompt(rankedBlocks.nutritional_blocks)}
 
 Here is the partial extraction from regex patterns:
-- price: ${patternExtraction.price || 'null'}
 - dosages: ${JSON.stringify((patternExtraction.dosages || []).slice(0, 5))}
 - quantities: ${JSON.stringify((patternExtraction.quantities || []).slice(0, 3))}
 - serving_sizes: ${JSON.stringify((patternExtraction.serving_sizes || []).slice(0, 3))}
@@ -42,12 +38,10 @@ Your task:
 4) Calculate total servings from quantity and serving size
 5) Ignore marketing text and focus on factual data
 6) If serving size is unclear, infer from table structure or product type
-7) Ensure price is in SEK (Swedish Krona)
 
 REQUIRED JSON schema (respond with JSON only):
 {
   "name": "string - product name",
-  "price_sek": number - price in Swedish Krona,
   "total_servings": number - how many servings/doses in the package,
   "serving_size": "string - size of one serving (e.g. '2 capsules', '5g powder')",
   "active_ingredients": [
@@ -67,8 +61,7 @@ IMPORTANT RULES:
 - Mark the most prominent ingredient as is_primary: true
 - If unclear between similar values, choose the more conservative/realistic one
 - For protein powders, serving size is usually per scoop (around 30g)
-- For capsules/tablets, serving size is usually 1-3 units
-- Price should be a clean number without currency symbols`;
+- For capsules/tablets, serving size is usually 1-3 units`;
 }
 
 /**
@@ -110,7 +103,6 @@ export async function normalizeWithAI(rankedBlocks, patternExtraction) {
         prompt,
         pattern_extraction: patternExtraction,
         blocks_summary: {
-          price_blocks: rankedBlocks?.price_blocks?.length || 0,
           ingredient_blocks: rankedBlocks?.ingredient_blocks?.length || 0,
           dosage_blocks: rankedBlocks?.dosage_blocks?.length || 0,
           quantity_blocks: rankedBlocks?.quantity_blocks?.length || 0
@@ -131,7 +123,6 @@ export async function normalizeWithAI(rankedBlocks, patternExtraction) {
       console.log('✅ Layer 3: AI normalization successful');
       console.log('📊 Normalized data:', {
         name: normalizedData.name?.substring(0, 30) + '...',
-        price: normalizedData.price_sek,
         servings: normalizedData.total_servings,
         ingredients: normalizedData.active_ingredients?.length || 0,
         confidence: normalizedData.confidence
@@ -177,10 +168,6 @@ function validateNormalizedData(data) {
     errors.push('Product name is missing or invalid');
   }
 
-  if (!data.price_sek || typeof data.price_sek !== 'number' || data.price_sek <= 0) {
-    errors.push('Price is missing or invalid');
-  }
-
   if (!data.total_servings || typeof data.total_servings !== 'number' || data.total_servings <= 0) {
     errors.push('Total servings is missing or invalid');
   }
@@ -224,10 +211,6 @@ function validateNormalizedData(data) {
   }
 
   // Value range checks
-  if (data.price_sek && (data.price_sek < 10 || data.price_sek > 5000)) {
-    warnings.push(`Price seems unusual: ${data.price_sek} SEK`);
-  }
-
   if (data.total_servings && (data.total_servings < 1 || data.total_servings > 1000)) {
     warnings.push(`Serving count seems unusual: ${data.total_servings}`);
   }
@@ -248,7 +231,6 @@ export function createFallbackData(patternExtraction, rankedBlocks) {
 
   const fallbackData = {
     name: patternExtraction.product_name || 'Unknown Product',
-    price_sek: patternExtraction.price || null,
     total_servings: null,
     serving_size: null,
     active_ingredients: [],
@@ -308,7 +290,7 @@ export function createFallbackData(patternExtraction, rankedBlocks) {
   }
 
   // Increase confidence if we have good data
-  if (fallbackData.price_sek && fallbackData.active_ingredients.length > 0) {
+  if (fallbackData.active_ingredients.length > 0) {
     fallbackData.confidence = 50;
   }
   if (fallbackData.total_servings && fallbackData.serving_size) {
@@ -316,7 +298,6 @@ export function createFallbackData(patternExtraction, rankedBlocks) {
   }
 
   console.log('📋 Fallback data created:', {
-    hasPrice: !!fallbackData.price_sek,
     ingredients: fallbackData.active_ingredients.length,
     hasServings: !!fallbackData.total_servings,
     confidence: fallbackData.confidence

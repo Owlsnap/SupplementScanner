@@ -20,7 +20,7 @@ export const ExtractionMetadataSchema = z.object({
   tableFound: z.boolean(),
   ingredientListFound: z.boolean(),
   servingSizeFound: z.boolean(),
-  priceFound: z.boolean().optional(),
+
   quantityFound: z.boolean().optional(),
   confidence: z.number().min(0).max(1),
   siteDomain: z.string().optional(),
@@ -28,43 +28,6 @@ export const ExtractionMetadataSchema = z.object({
   extractedAt: z.string().optional(),
   method: z.string().optional(),
   version: z.string().optional(),
-});
-
-export const StructuredSupplementDataSchema = z.object({
-  name: z.string().optional(),
-  price: z.union([z.number(), z.string()]).optional(),
-  quantity: z.union([z.number(), z.string()]).optional(),
-  unit: z.string().optional(),
-  productName: z.string(),
-  servingSize: z.string(),
-  servingsPerContainer: z.string(),
-  ingredients: z.record(z.string(), ExtractedIngredientSchema),
-  unrecognizedIngredients: z.array(UnrecognizedIngredientSchema),
-  totalCaffeineContent_mg: z.number().min(0).nullable(),
-  extractionMetadata: ExtractionMetadataSchema,
-  activeIngredient: z.string().optional(),
-  dosagePerUnit: z.number().nullable().optional(),
-  nutritionalFacts: NutritionalFactsSchema.optional(),
-  ingredientListText: z.string().optional(),
-});
-
-// Product validation schema
-export const ProductSchema = z.object({
-  id: z.number(),
-  name: z.string(),
-  price: z.union([z.string(), z.number()]),
-  quantity: z.union([z.string(), z.number()]),
-  unit: z.string(),
-  activeIngredient: z.string(),
-  dosagePerUnit: z.union([z.string(), z.number()]).nullable(),
-  pricePerUnit: z.number().nullable().optional(),
-  servingSize: z.union([z.string(), z.number()]).optional(),
-  servingsPerContainer: z.union([z.string(), z.number()]).optional(),
-  structuredIngredients: StructuredSupplementDataSchema.optional(),
-  extractionMethod: z.string().optional(),
-  url: z.string().optional(),
-  completeness: z.number().optional(),
-  confidence: z.number().optional(),
 });
 
 // Nutritional facts schemas (for macro nutrition tables like protein powders)
@@ -86,6 +49,40 @@ export const NutritionalFactsSchema = z.object({
   perServing: NutritionalFactsPerServingSchema.optional(),
 });
 
+export const StructuredSupplementDataSchema = z.object({
+  name: z.string().optional(),
+  quantity: z.union([z.number(), z.string()]).optional(),
+  unit: z.string().optional(),
+  productName: z.string(),
+  servingSize: z.string(),
+  servingsPerContainer: z.string(),
+  ingredients: z.record(z.string(), ExtractedIngredientSchema),
+  unrecognizedIngredients: z.array(UnrecognizedIngredientSchema),
+  totalCaffeineContent_mg: z.number().min(0).nullable(),
+  extractionMetadata: ExtractionMetadataSchema,
+  activeIngredient: z.string().optional(),
+  dosagePerUnit: z.number().nullable().optional(),
+  nutritionalFacts: NutritionalFactsSchema.optional(),
+  ingredientListText: z.string().optional(),
+});
+
+// Product validation schema
+export const ProductSchema = z.object({
+  id: z.number(),
+  name: z.string(),
+  quantity: z.union([z.string(), z.number()]),
+  unit: z.string(),
+  activeIngredient: z.string(),
+  dosagePerUnit: z.union([z.string(), z.number()]).nullable(),
+  servingSize: z.union([z.string(), z.number()]).optional(),
+  servingsPerContainer: z.union([z.string(), z.number()]).optional(),
+  structuredIngredients: StructuredSupplementDataSchema.optional(),
+  extractionMethod: z.string().optional(),
+  url: z.string().optional(),
+  completeness: z.number().optional(),
+  confidence: z.number().optional(),
+});
+
 // Raw extraction data schemas
 export const RawTableDataSchema = z.object({
   ingredient: z.string(),
@@ -98,7 +95,6 @@ export const NutritionExtractionResultSchema = z.object({
   servingSize: z.string().nullable(),
   productName: z.string().nullable(),
   rawTableData: z.array(RawTableDataSchema),
-  price: z.number().min(0).nullable().optional(),
   quantity: z.number().min(0).nullable().optional(),
   unit: z.string().nullable().optional(),
   nutritionalFacts: NutritionalFactsSchema.optional(),

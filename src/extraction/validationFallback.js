@@ -85,7 +85,6 @@ export async function validateWithFallbacks(rankedBlocks, patternExtraction) {
 function validateRequiredFields(data) {
   const required = {
     name: !!data.name && data.name.length > 2,
-    price_sek: !!data.price_sek && data.price_sek > 0,
     total_servings: !!data.total_servings && data.total_servings > 0,
     serving_size: !!data.serving_size && data.serving_size.length > 2,
     active_ingredients: !!data.active_ingredients && data.active_ingredients.length > 0,
@@ -112,7 +111,6 @@ function identifyMissingFields(data) {
   const missing = [];
   
   if (!data.name || data.name.length < 3) missing.push('name');
-  if (!data.price_sek || data.price_sek <= 0) missing.push('price_sek');
   if (!data.total_servings || data.total_servings <= 0) missing.push('total_servings');
   if (!data.serving_size || data.serving_size.length < 2) missing.push('serving_size');
   if (!data.active_ingredients || data.active_ingredients.length === 0) missing.push('active_ingredients');
@@ -133,15 +131,6 @@ function identifyUserInputNeeds(missingFields, rankedBlocks) {
       prompt: 'What is the product name?',
       type: 'text',
       suggestion: getProductNameSuggestion(rankedBlocks)
-    });
-  }
-
-  if (missingFields.includes('price_sek')) {
-    prompts.push({
-      field: 'price_sek',
-      prompt: 'What is the price in Swedish Krona (SEK)?',
-      type: 'number',
-      suggestion: getPriceSuggestion(rankedBlocks)
     });
   }
 
@@ -285,7 +274,6 @@ function mergeFallbackData(patternData, visionData) {
 function createMinimalStructure(rankedBlocks) {
   return {
     name: getProductNameSuggestion(rankedBlocks) || 'Unknown Product',
-    price_sek: null,
     total_servings: null,
     serving_size: null,
     active_ingredients: [],
@@ -300,13 +288,6 @@ function createMinimalStructure(rankedBlocks) {
 function getProductNameSuggestion(rankedBlocks) {
   const headers = rankedBlocks.other_blocks?.filter(block => block.element.startsWith('h'));
   return headers.length > 0 ? headers[0].text : null;
-}
-
-function getPriceSuggestion(rankedBlocks) {
-  // Try to find any number that might be a price
-  const priceBlocks = rankedBlocks.price_blocks || [];
-  const priceMatch = priceBlocks[0]?.text.match(/(\d+)/);
-  return priceMatch ? parseInt(priceMatch[1]) : null;
 }
 
 function getServingSuggestion(rankedBlocks) {

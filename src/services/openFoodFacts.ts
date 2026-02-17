@@ -123,11 +123,6 @@ export class OpenFoodFactsService {
           unit: servingInfo.servingSize.unit as "capsule" | "tablet" | "g" | "mg" | "mcg" | "IU" | "ml" | "scoop" | "%" | null
         },
         ingredients,
-        price: {
-          value: null, // OpenFoodFacts doesn't have price data
-          currency: null,
-          pricePerServing: null
-        },
         quality: {
           underDosed: null,
           overDosed: null,
@@ -446,11 +441,6 @@ export class OpenFoodFactsService {
       }
       
       merged.ingredients = mergedIngredients;
-    }
-    
-    // Prefer AI data for price information
-    if (aiData.price?.value) {
-      merged.price = aiData.price;
     }
     
     // Prefer AI data for serving container info

@@ -114,10 +114,6 @@ export default class StructuredAINormalizer {
               const patternData = extractedData.patternData;
               
               // Add basic product information to top-level for compatibility
-              if (patternData.price && !structuredResult.price) {
-                structuredResult.price = patternData.price;
-              }
-              
               // Try to extract product name from URL first, then pattern data
               if (!structuredResult.name || structuredResult.name === 'Unknown Product') {
                 structuredResult.name = this.extractProductNameFromUrl(url) || 
@@ -139,7 +135,6 @@ export default class StructuredAINormalizer {
             // Log final extracted data for debugging
             console.log(`📝 Final extraction result:`, {
               name: structuredResult.name,
-              price: structuredResult.price,
               quantity: structuredResult.quantity,
               unit: structuredResult.unit,
               ingredientCount: Object.keys(structuredResult.ingredients || {}).length

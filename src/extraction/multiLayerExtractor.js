@@ -59,7 +59,7 @@ export async function extractSupplementDataParallel(html, url = null) {
     const combinedResult = {
       success: structuredResult.success || legacyResult.success,
       data: {
-        // Use legacy for basic product info (name, price, quality analysis)
+        // Use legacy for basic product info (name, quality analysis)
         ...legacyResult.data,
         // Enhance with structured ingredient data
         structuredIngredients: structuredResult.structuredData,
@@ -82,7 +82,7 @@ export async function extractSupplementDataParallel(html, url = null) {
     const totalTime = performance.now() - startTime;
     console.log(`🚀 Parallel extraction completed in ${totalTime.toFixed(1)}ms`);
     console.log(`📊 Combined result quality:`, {
-      hasBasicInfo: !!(combinedResult.data.name && combinedResult.data.price),
+      hasBasicInfo: !!combinedResult.data.name,
       hasStructuredIngredients: !!combinedResult.structuredData?.ingredients,
       structuredSuccess: structuredResult.success,
       legacySuccess: legacyResult.success
@@ -437,7 +437,6 @@ export function getExtractionSummary(extractionResult) {
   if (extractionResult.layers.layer1_blocks) {
     const blocks = extractionResult.layers.layer1_blocks;
     summary.blocks_found = {
-      price_blocks: blocks.price_blocks?.length || 0,
       ingredient_blocks: blocks.ingredient_blocks?.length || 0,
       dosage_blocks: blocks.dosage_blocks?.length || 0,
       quantity_blocks: blocks.quantity_blocks?.length || 0,
@@ -450,7 +449,6 @@ export function getExtractionSummary(extractionResult) {
   if (extractionResult.layers.layer2_patterns) {
     const patterns = extractionResult.layers.layer2_patterns;
     summary.patterns_found = {
-      price: !!patterns.price,
       dosages: patterns.dosages?.length || 0,
       quantities: patterns.quantities?.length || 0,
       ingredients: patterns.ingredients?.length || 0,
@@ -462,7 +460,6 @@ export function getExtractionSummary(extractionResult) {
   if (extractionResult.data) {
     summary.final_data = {
       has_name: !!extractionResult.data.name,
-      has_price: !!extractionResult.data.price_sek,
       has_servings: !!extractionResult.data.total_servings,
       has_serving_size: !!extractionResult.data.serving_size,
       ingredient_count: extractionResult.data.active_ingredients?.length || 0,

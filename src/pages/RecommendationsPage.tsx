@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { ArrowLeft, Target } from "lucide-react";
 import SupplementRecommendations from '../components/SupplementRecommendations';
-import { compareSupplementValue } from '../utils/supplementAnalysis.js';
 import type { Product } from '../types/index.js';
 
 interface RecommendationsPageProps {
@@ -13,11 +12,16 @@ export default function RecommendationsPage({ onBack, products = [] }: Recommend
   const [analyzedSupplements, setAnalyzedSupplements] = useState<Record<string, Product[]>>({});
 
   useEffect(() => {
-    // Analyze products when they change
-    const validProducts = products.filter(p => p.name && p.price && p.quantity);
+    // Group products by name/category when they change
+    const validProducts = products.filter(p => p.name && p.quantity);
     if (validProducts.length > 0) {
-      const analysis = compareSupplementValue(validProducts);
-      setAnalyzedSupplements(analysis);
+      const grouped: Record<string, Product[]> = {};
+      validProducts.forEach(p => {
+        const key = p.activeIngredient || p.name || 'other';
+        if (!grouped[key]) grouped[key] = [];
+        grouped[key].push(p);
+      });
+      setAnalyzedSupplements(grouped);
     } else {
       setAnalyzedSupplements({});
     }

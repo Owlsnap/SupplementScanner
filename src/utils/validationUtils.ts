@@ -15,13 +15,6 @@ export const EnhancedProductSchema = ProductSchema.extend({
   // Add custom validations
 }).refine(
   (data) => {
-    // Price should be reasonable for supplements (10-5000 kr)
-    const price = typeof data.price === 'string' ? parseFloat(data.price) : data.price;
-    return price >= 10 && price <= 5000;
-  },
-  { message: "Price should be between 10-5000 kr for supplements" }
-).refine(
-  (data) => {
     // Quantity should be reasonable (10g - 5kg)
     const quantity = typeof data.quantity === 'string' ? parseFloat(data.quantity) : data.quantity;
     return quantity >= 10 && quantity <= 5000;
@@ -202,7 +195,7 @@ export function createValidationReport(data: unknown): {
   if (typeof data === 'object' && data !== null) {
     const obj = data as any;
     
-    if ('id' in obj && 'name' in obj && 'price' in obj) {
+    if ('id' in obj && 'name' in obj) {
       // Looks like a Product
       const result = validateSupplementProduct(data);
       return {

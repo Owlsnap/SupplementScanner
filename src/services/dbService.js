@@ -90,7 +90,6 @@ export class DatabaseService {
         servingsPerContainer: supplementData.servingsPerContainer || null,
         servingSize: supplementData.servingSize || { amount: null, unit: null },
         ingredients: supplementData.ingredients || [],
-        price: supplementData.price || { value: null, currency: null, pricePerServing: null },
         quality: supplementData.quality || { 
           underDosed: null, 
           overDosed: null, 

@@ -163,7 +163,7 @@ export class EnhancedSupplementScraper {
 
     let cleaned = filteredLines.join('\n');
 
-    // Strategy 4: Remove price filter patterns
+    // Strategy 4: Remove numeric range filter patterns
     cleaned = cleaned.replace(/\d+\s*-\s*\d+\s*kr/gi, ''); // "500-1000 kr" filter ranges
 
     // Strategy 5: Clean up excessive whitespace
@@ -199,20 +199,6 @@ export class EnhancedSupplementScraper {
               brand: {
                 type: 'string',
                 description: 'Brand/manufacturer name'
-              },
-              price: {
-                type: 'object',
-                properties: {
-                  value: {
-                    type: 'number',
-                    description: 'Current selling price (not old/crossed-out price)'
-                  },
-                  currency: {
-                    type: 'string',
-                    description: 'Currency code (SEK, EUR, etc.)'
-                  }
-                },
-                required: ['value', 'currency']
               },
               servingsPerContainer: {
                 type: 'number',
@@ -302,7 +288,7 @@ export class EnhancedSupplementScraper {
                 description: 'The full ingredient list text (usually starts with "Ingredienser:" and lists all raw ingredients). Copy it verbatim.'
               }
             },
-            required: ['productName', 'ingredients', 'price']
+            required: ['productName', 'ingredients']
           }
         }],
         tool_choice: { type: 'tool', name: 'extract_supplement_data' },
@@ -317,50 +303,41 @@ ${markdown}
 
 CRITICAL EXTRACTION RULES:
 
-1. **PRICE** - MOST IMPORTANT:
-   - Find the ACTUAL PRODUCT PRICE, not shipping thresholds or promotional messages
-   - Look for price near "Lägg i varukorg" (Add to cart) button
-   - IGNORE: "Gratis frakt över 500kr", "fri frakt", navigation prices
-   - IGNORE: "tidigare pris" (old price), crossed-out prices
-   - The product price is usually a 2-3 digit number followed by "kr" or "SEK"
-   - Example: "179 kr" = 179, NOT 500 or other random numbers
-
-2. **INGREDIENTS** (active ingredients like vitamins, minerals, caffeine, creatine, etc.):
+1. **INGREDIENTS** (active ingredients like vitamins, minerals, caffeine, creatine, etc.):
    - Look for "Innehåll per portion", "Per kapsel", "Per dos", "Näringsdeklaration"
    - Extract the specific chemical form (e.g., "bisglycinate", "citrate", "D3")
    - Include dosage per serving
    - These are typically listed with mg, mcg, or IU units
 
-3. **NUTRITIONAL FACTS TABLE** (Näringsvärde / Näring & ingredienser):
+2. **NUTRITIONAL FACTS TABLE** (Näringsvärde / Näring & ingredienser):
    - Many products (protein powders, weight gainers, meal replacements, fat burners) have a macro nutrition table
    - This table typically has columns: nutrient name | Per 100 g | Per serving/portion
    - Extract energy (kJ and kcal), protein, fat (total and saturated), carbohydrates (total and sugars), fiber, salt
    - Put these in the nutritionalFacts object with per100g and perServing sub-objects
    - This is DIFFERENT from the active ingredients list
 
-4. **INGREDIENT LIST TEXT**:
+3. **INGREDIENT LIST TEXT**:
    - Look for "Ingredienser:" followed by the raw ingredient list
    - Copy it verbatim into ingredientListText
 
-5. **SERVING SIZE**:
+4. **SERVING SIZE**:
    - "Rekommenderad dosering" = recommended serving
    - Look for "daglig dos", "ta X kapslar"
    - Usually 1-3 capsules/tablets/scoops
 
-6. **FORM**:
+5. **FORM**:
    - kapslar = capsule
    - tabletter = tablet
    - pulver = powder
    - vätska/flytande = liquid
 
-7. **BRAND**:
+6. **BRAND**:
    - Often at the start of product name
    - Examples: "SOLID Nutrition", "Thorne", "NOW Foods"
 
-8. **IGNORE COMPLETELY**:
+7. **IGNORE COMPLETELY**:
    - Navigation menus and category links
    - Shipping and delivery information
-   - "Över 500kr" or similar promotional text
    - Cookie messages
    - Footer content
 
@@ -379,8 +356,7 @@ Extract only accurate information from the product page content. If unsure, omit
       console.log('✅ Claude extraction successful');
       console.log('📊 Extracted:', {
         product: extractedData.productName,
-        ingredients: extractedData.ingredients?.length || 0,
-        price: extractedData.price?.value || 'N/A'
+        ingredients: extractedData.ingredients?.length || 0
       });
 
       return extractedData;
@@ -497,12 +473,6 @@ Extract only accurate information from the product page content. If unsure, omit
    * @returns {Object} - Schema-compliant supplement data
    */
   transformToSchema(extractedData, url) {
-    // Calculate price per serving if we have the data
-    let pricePerServing = null;
-    if (extractedData.price?.value && extractedData.servingsPerContainer) {
-      pricePerServing = extractedData.price.value / extractedData.servingsPerContainer;
-    }
-
     return {
       productName: extractedData.productName,
       brand: extractedData.brand || 'Unknown',
@@ -515,11 +485,6 @@ Extract only accurate information from the product page content. If unsure, omit
         unit: ing.unit,
         form: ing.form || null
       })),
-      price: {
-        value: extractedData.price?.value || null,
-        currency: extractedData.price?.currency || 'SEK',
-        pricePerServing: pricePerServing
-      },
       description: extractedData.description || null,
       nutritionalFacts: extractedData.nutritionalFacts || null,
       ingredientListText: extractedData.ingredientListText || null,
@@ -546,7 +511,6 @@ Extract only accurate information from the product page content. If unsure, omit
     if ((!data.ingredients || data.ingredients.length === 0) && !data.nutritionalFacts) {
       issues.push('No ingredients or nutritional facts extracted');
     }
-    if (!data.price?.value) warnings.push('Missing price');
     if (!data.servingsPerContainer) warnings.push('Missing servings per container');
     if (!data.nutritionalFacts && data.form === 'powder') warnings.push('Missing nutritional facts for powder product');
 
@@ -575,10 +539,9 @@ Extract only accurate information from the product page content. If unsure, omit
   calculateCompleteness(data) {
     let score = 0;
     const weights = {
-      productName: 10,
+      productName: 15,
       brand: 5,
-      price: 15,
-      ingredients: 20,
+      ingredients: 25,
       servingsPerContainer: 10,
       servingSize: 10,
       form: 5,
@@ -590,7 +553,6 @@ Extract only accurate information from the product page content. If unsure, omit
 
     if (data.productName) score += weights.productName;
     if (data.brand && data.brand !== 'Unknown') score += weights.brand;
-    if (data.price?.value) score += weights.price;
     if (data.ingredients?.length > 0) score += weights.ingredients;
     if (data.servingsPerContainer) score += weights.servingsPerContainer;
     if (data.servingSize?.amount) score += weights.servingSize;

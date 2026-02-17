@@ -1,9 +1,9 @@
 import React from 'react';
-import PricePerUnitCalculator from './components/PricePerUnitCalculator';
+import SupplementAnalyzer from './components/SupplementAnalyzer';
 
 function App(): JSX.Element {
   return (
-    <PricePerUnitCalculator />
+    <SupplementAnalyzer />
   );
 }
 

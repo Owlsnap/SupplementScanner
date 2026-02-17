@@ -2,7 +2,6 @@
  * Main scraper orchestrator that coordinates site-specific extraction
  */
 
-import { PriceExtractor } from './extractors/priceExtractor.js';
 import { IngredientExtractor } from './extractors/ingredientExtractor.js';
 import { DosageExtractor } from './extractors/dosageExtractor.js';
 
@@ -44,13 +43,11 @@ export class SwedishSupplementScraper {
       siteName: 'Generic',
       domain: hostname,
       selectors: {
-        price: ['.price', '[class*="price"]'],
         quantity: ['h1', '.product-title', '[class*="size"]'],
         info: ['.product-info', '.description'],
         name: ['h1', '.product-title']
       },
       instructions: {
-        price: 'Find the main product price that customers pay.',
         quantity: 'Keep original units - extract number and unit separately.'
       },
       swedishTerms: {
@@ -71,7 +68,6 @@ export class SwedishSupplementScraper {
   generateExtractionPrompt(url) {
     const siteConfig = this.getSiteConfig(url);
     
-    const priceExtractor = new PriceExtractor(siteConfig);
     const ingredientExtractor = new IngredientExtractor(siteConfig);
     const dosageExtractor = new DosageExtractor(siteConfig);
 
@@ -80,8 +76,7 @@ Analyze this Swedish supplement product page and extract the following informati
 
 {
   "name": "product name",
-  "price": "price as number (remove kr/SEK)",
-  "quantity": "quantity as number", 
+  "quantity": "quantity as number",
   "unit": "unit (kapslar, tabletter, g, ml, etc.)",
   "activeIngredient": "main active ingredient with form",
   "dosagePerUnit": "dosage per unit as NUMBER ONLY (e.g., 200, not 200mg)",
@@ -90,8 +85,6 @@ Analyze this Swedish supplement product page and extract the following informati
 }
 
 === SITE-SPECIFIC INSTRUCTIONS for ${siteConfig.siteName} ===
-
-${priceExtractor.generatePricePrompt()}
 
 ${ingredientExtractor.generateIngredientPrompt()}
 
@@ -103,13 +96,11 @@ ${dosageExtractor.generateDosagePrompt()}
 ${siteConfig.targetSections ? siteConfig.targetSections.map(s => `   - ${s}`).join('\n') : '   - Focus on product description and supplement facts'}
 
 2. 📊 EXPECTED FORMAT:
-   - Price: Extract only numeric value (e.g., "299" from "299 kr")
    - Quantity: Separate number and unit (e.g., "500" and "g" from "500g")  
    - Ingredients: Include specific forms (e.g., "magnesium bisglycinate")
    - Dosage: NUMBERS ONLY (e.g., "400" from "400mg per kapsel", NOT "400mg")
 
 3. ⚠️ VALIDATION RULES:
-   - PRICE VERIFICATION REQUIRED: Quote the exact text you found, then extract the number
    - Ignore URL numbers and product codes
    - Focus on customer-facing information
    - Return empty strings if data not found
@@ -132,8 +123,7 @@ Return only valid JSON without additional text.
       prompt,
       siteConfig,
       extractors: {
-        price: priceExtractor,
-        ingredient: ingredientExtractor, 
+        ingredient: ingredientExtractor,
         dosage: dosageExtractor
       }
     };
@@ -173,30 +163,8 @@ Return only valid JSON without additional text.
       isValid: true,
       errors: [],
       warnings: [],
-      priceVerification: null,
       cleanedData: { ...extractedData }
     };
-
-    // Validate and verify price
-    if (extractedData.price) {
-      // Basic price validation
-      if (!extractors.price.validatePrice(extractedData.price)) {
-        validation.errors.push(`Invalid price format: ${extractedData.price}`);
-        validation.cleanedData.price = null;
-      } else if (pageText) {
-        // Verify price can be found in source text
-        const priceVerification = extractors.price.verifyPriceSource(extractedData.price, pageText);
-        validation.priceVerification = priceVerification;
-        
-        if (!priceVerification.isValid) {
-          validation.warnings.push(priceVerification.recommendation);
-        } else if (priceVerification.confidence === 'low') {
-          validation.warnings.push(`Low confidence in price extraction: ${priceVerification.recommendation}`);
-        }
-        
-        console.log(`💰 Price verification for ${extractedData.price}:`, priceVerification.recommendation);
-      }
-    }
 
     // Validate quantity info  
     const quantityInfo = {

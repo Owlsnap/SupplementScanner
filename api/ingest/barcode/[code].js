@@ -85,18 +85,12 @@ export default async function handler(req, res) {
                 amount: parseFloat(aiResult.extractedData?.servingSize) || null,
                 unit: 'g'
               },
-              price: {
-                value: aiResult.extractedData?.price || null,
-                currency: 'SEK',
-                pricePerServing: null
-              },
               meta: {
                 source: 'ai',
                 verified: false,
                 lastUpdated: new Date().toISOString(),
                 sourceMap: {
                   ingredients: 'ai',
-                  price: 'ai',
                   servingSize: 'ai'
                 }
               }

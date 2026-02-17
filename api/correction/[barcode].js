@@ -61,7 +61,7 @@ export default async function handler(req, res) {
     // Update source tracking for corrected fields
     const userCorrectedFields = [
       'productName', 'brand', 'category', 'subCategory', 'form',
-      'servingsPerContainer', 'servingSize', 'ingredients', 'price'
+      'servingsPerContainer', 'servingSize', 'ingredients'
     ];
     
     for (const field of userCorrectedFields) {
@@ -164,10 +164,6 @@ function calculateImprovements(before, after) {
   const afterDosages = after.ingredients.filter(ing => ing.dosage).length;
   if (afterDosages > beforeDosages) {
     improvements.push(`Added dosage information for ${afterDosages - beforeDosages} ingredients`);
-  }
-  
-  if (!before.price.value && after.price.value) {
-    improvements.push('Added price information');
   }
   
   // Check for accuracy improvements

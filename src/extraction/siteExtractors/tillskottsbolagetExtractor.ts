@@ -219,7 +219,6 @@ export default class TillskottsbolagetExtractor implements SiteExtractor {
       servingSize: null,
       productName: null,
       rawTableData: [],
-      price: null,
       quantity: null,
       unit: null,
     };
@@ -252,8 +251,7 @@ export default class TillskottsbolagetExtractor implements SiteExtractor {
         console.log('🏷️ Found product name:', result.productName);
       }
 
-      // Extract price & quantity
-      this.extractPrice(doc, result);
+      // Extract quantity
       this.extractQuantity(doc, result);
 
       // Find the table
@@ -478,132 +476,6 @@ export default class TillskottsbolagetExtractor implements SiteExtractor {
     return sources;
   }
 
-  extractPrice(doc: Document, result: NutritionExtractionResult): void {
-    console.log('💰 Starting Tillskottsbolaget-specific price extraction...');
-    
-    // Look specifically inside the PrisFalt element
-    const prisFalt = doc.querySelector('#PrisFalt');
-    if (!prisFalt) {
-      console.log('⚠️ #PrisFalt element not found');
-      return;
-    }
-    
-    console.log('✅ Found #PrisFalt element');
-    console.log('🔍 PrisFalt innerHTML preview:', prisFalt.innerHTML.slice(0, 300));
-    
-    // Check for current price in span.prisREA or span.prisBOLD (ignore crossed-out prices)
-    const priceSelectors = ['span.prisREA', 'span.prisBOLD'];
-    
-    for (const selector of priceSelectors) {
-      const priceElement = prisFalt.querySelector(selector);
-      if (priceElement) {
-        console.log(`✅ Found ${selector} element`);
-        
-        // Skip if this element or its parent has strikethrough styling (crossed-out price)
-        const style = priceElement.style;
-        const computedStyle = doc.defaultView?.getComputedStyle ? doc.defaultView.getComputedStyle(priceElement) : null;
-        
-        const isStrikethrough = 
-          style.textDecoration?.includes('line-through') ||
-          computedStyle?.textDecoration?.includes('line-through') ||
-          priceElement.classList.contains('strikethrough') ||
-          priceElement.classList.contains('crossed-out') ||
-          priceElement.classList.contains('old-price');
-          
-        if (isStrikethrough) {
-          console.log(`⚠️ Skipping crossed-out price in ${selector}`);
-          continue;
-        }
-        
-        // Get text content and also check text nodes
-        const priceText = priceElement.textContent.trim();
-        console.log(`🎯 ${selector} text content: "${priceText}"`);
-        
-        // Also check for direct text nodes within the element
-        const textNodes = [];
-        const walker = doc.createTreeWalker(
-          priceElement,
-          doc.defaultView?.NodeFilter?.TEXT_NODE || 4, // NodeFilter.SHOW_TEXT
-          null,
-          false
-        );
-        
-        let node;
-        while (node = walker.nextNode()) {
-          if (node.nodeValue.trim()) {
-            textNodes.push(node.nodeValue.trim());
-          }
-        }
-        
-        if (textNodes.length > 0) {
-          console.log(`📄 Text nodes in ${selector}:`, textNodes);
-        }
-        
-        // Try to extract price from all available text
-        const allTexts = [priceText, ...textNodes];
-        
-        for (const text of allTexts) {
-          if (text) {
-            // More precise extraction patterns for Tillskottsbolaget
-            const pricePatterns = [
-              /(\d+)\s*kr/i,           // "249 kr"
-              /(\d+)\s*:-/i,           // "249 :-"
-              /kr\s*(\d+)/i,           // "kr 249"
-              /(\d+(?:[.,]\d+)?)/      // Just the number
-            ];
-            
-            for (const pattern of pricePatterns) {
-              const priceMatch = text.match(pattern);
-              if (priceMatch) {
-                const price = parseFloat(priceMatch[1].replace(',', '.'));
-                
-                // Validate reasonable price range for supplements
-                if (price >= 50 && price <= 2000) {
-                  result.price = price;
-                  console.log('✅ Extracted exact Tillskotts price:', result.price, 'kr from', selector, 'pattern:', pattern.source, 'text:', text);
-                  return;
-                } else {
-                  console.log(`⚠️ Price ${price} outside reasonable range (50-2000 kr)`);
-                }
-              }
-            }
-          }
-        }
-      } else {
-        console.log(`❌ ${selector} not found in #PrisFalt`);
-      }
-    }
-    
-    // Fallback: look for any price-like text in PrisFalt
-    if (!result.price) {
-      console.log('🔍 Fallback: searching all text in #PrisFalt...');
-      const allPrisFaltText = prisFalt.textContent.trim();
-      console.log('📄 Full PrisFalt text:', allPrisFaltText);
-      
-      const fallbackPatterns = [
-        /(\d+)\s*kr/gi,
-        /(\d+)\s*:-/gi,
-        /kr\s*(\d+)/gi
-      ];
-      
-      for (const pattern of fallbackPatterns) {
-        const matches = [...allPrisFaltText.matchAll(pattern)];
-        console.log(`Pattern ${pattern.source} found ${matches.length} matches in PrisFalt`);
-        
-        for (const match of matches) {
-          const price = parseFloat(match[1]);
-          if (price >= 50 && price <= 2000) {
-            result.price = price;
-            console.log('✅ Found fallback price in PrisFalt:', result.price, 'kr');
-            return;
-          }
-        }
-      }
-    }
-    
-    console.log('⚠️ No valid Tillskotts price found in #PrisFalt');
-  }
-
   extractQuantity(doc: Document, result: NutritionExtractionResult): void {
     console.log('⚖️ Starting quantity extraction...');
     
@@ -741,7 +613,6 @@ export default class TillskottsbolagetExtractor implements SiteExtractor {
 
     const structured: Record<string, any> = {
       name: extractedData.productName || 'Unknown Product',
-      price: extractedData.price || '',
       quantity: extractedData.quantity || '',
       unit: extractedData.unit || 'g',
       productName: extractedData.productName || 'Unknown Product',
@@ -754,7 +625,6 @@ export default class TillskottsbolagetExtractor implements SiteExtractor {
         tableFound: hasIngredients || hasNutrition,
         ingredientListFound: true,
         servingSizeFound: !!extractedData.servingSize,
-        priceFound: !!extractedData.price,
         quantityFound: !!extractedData.quantity,
         confidence: hasNutrition ? 0.95 : 0.9,
         siteDomain: this.siteDomain,

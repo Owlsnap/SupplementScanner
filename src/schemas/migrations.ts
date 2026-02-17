@@ -73,11 +73,6 @@ export class SchemaMigrator {
         unit: this.parseServingUnit(legacyData.servingSize)
       },
       ingredients: this.transformIngredients(legacyData.ingredients || {}),
-      price: {
-        value: this.parseNumber(legacyData.price),
-        currency: 'SEK', // Default for Swedish sites
-        pricePerServing: null
-      },
       quality: {
         underDosed: null,
         overDosed: null,

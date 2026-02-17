@@ -75,11 +75,6 @@ export default async function handler(req, res) {
         isStandardized: ing.isStandardized || false,
         standardizedTo: ing.standardizedTo || null
       })),
-      price: {
-        value: manualData.price?.value || null,
-        currency: manualData.price?.currency || 'SEK',
-        pricePerServing: manualData.price?.pricePerServing || null
-      },
       quality: {
         underDosed: null,
         overDosed: null,
@@ -104,12 +99,6 @@ export default async function handler(req, res) {
       fillerRisk: qualityAnalysis.fillerRisk,
       bioavailability: qualityAnalysis.bioavailability
     };
-
-    // Calculate price per serving if possible
-    if (supplementData.price.value && supplementData.servingsPerContainer) {
-      supplementData.price.pricePerServing =
-        Math.round((supplementData.price.value / supplementData.servingsPerContainer) * 100) / 100;
-    }
 
     // Validate with Zod schema
     try {

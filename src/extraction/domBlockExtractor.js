@@ -5,7 +5,6 @@
 
 // Keywords that indicate supplement-relevant content
 const RELEVANCE_KEYWORDS = {
-  price: ['kr', 'sek', 'pris', 'kostnad', 'price', ':-', 'kostar'],
   ingredients: ['mg', 'g', 'mcg', 'μg', 'iu', 'caps', 'kapslar', 'tabletter', 'tabletter', 'ingrediens', 'innehåll', 'ingredients', 'active', 'aktiv', 'citrullinmalat', 'beta-alanin', 'koffein', 'l-citrullin', 'taurin'],
   dosage: ['dosering', 'portion', 'serving', 'daglig', 'daily', 'rekommenderad', 'recommended', 'dos', 'dose', 'mg', 'gram', 'g', 'mcg', 'per portion', 'innehåll per portion', 'per serving'],
   quantity: ['antal', 'count', 'stycken', 'pieces', 'portioner', 'servings', 'kapslar', 'caps', 'tabletter'],
@@ -144,7 +143,6 @@ function containsRelevantKeywords(text) {
  */
 export function rankBlocksByRelevance(blocks) {
   const rankedBlocks = {
-    price_blocks: [],
     ingredient_blocks: [],
     dosage_blocks: [],
     quantity_blocks: [],
@@ -166,9 +164,6 @@ export function rankBlocksByRelevance(blocks) {
 
     // Add to appropriate category
     switch (category) {
-      case 'price':
-        rankedBlocks.price_blocks.push(enrichedBlock);
-        break;
       case 'ingredients':
         rankedBlocks.ingredient_blocks.push(enrichedBlock);
         break;
@@ -244,7 +239,7 @@ function calculateRelevanceScore(block) {
   // Class/ID relevance (for divs and spans)
   if (block.className || block.id) {
     const classText = `${block.className || ''} ${block.id || ''}`.toLowerCase();
-    const classKeywords = ['price', 'pris', 'ingredient', 'innehåll', 'nutrition', 'dosage', 'serving'];
+    const classKeywords = ['ingredient', 'innehåll', 'nutrition', 'dosage', 'serving'];
     const classMatches = classKeywords.filter(keyword => classText.includes(keyword));
     const classScore = classMatches.length * 8;
     total += classScore;
@@ -259,11 +254,6 @@ function calculateRelevanceScore(block) {
  */
 function categorizeBlock(block) {
   const text = block.text.toLowerCase();
-
-  // Price indicators
-  if (RELEVANCE_KEYWORDS.price.some(keyword => text.includes(keyword))) {
-    return 'price';
-  }
 
   // Ingredient indicators
   if (RELEVANCE_KEYWORDS.ingredients.some(keyword => text.includes(keyword))) {
@@ -306,7 +296,6 @@ export function extractAndRankBlocks(html) {
   console.log('🎯 Layer 1: Ranking blocks by relevance...');
   const rankedBlocks = rankBlocksByRelevance(blocks);
   console.log('📊 Ranked blocks:', {
-    price_blocks: rankedBlocks.price_blocks.length,
     ingredient_blocks: rankedBlocks.ingredient_blocks.length,
     dosage_blocks: rankedBlocks.dosage_blocks.length,
     quantity_blocks: rankedBlocks.quantity_blocks.length,

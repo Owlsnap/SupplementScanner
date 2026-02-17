@@ -90,7 +90,6 @@ export default async function handler(req, res) {
     console.log('✅ AI normalization successful');
     console.log('📋 Normalized product:', {
       name: normalizedData.name?.substring(0, 50),
-      price: normalizedData.price_sek,
       ingredients: normalizedData.active_ingredients?.length || 0,
       confidence: normalizedData.confidence
     });

@@ -445,8 +445,7 @@ async function handleLegacyExtraction(url, res) {
       console.log(`✅ Validation result for ${siteConfig.siteName}:`, {
         isValid: validation.isValid,
         errors: validation.errors,
-        warnings: validation.warnings,
-        priceVerification: validation.priceVerification
+        warnings: validation.warnings
       });
       
       return res.status(200).json({

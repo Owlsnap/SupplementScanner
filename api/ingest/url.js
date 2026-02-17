@@ -87,11 +87,6 @@ export default async function handler(req, res) {
         unit: extractedData.servingSizeUnit || 'g'
       },
       ingredients,
-      price: {
-        value: extractedData.price || null,
-        currency: extractedData.currency || 'SEK',
-        pricePerServing: null
-      },
       quality: {
         underDosed: null,
         overDosed: null,
@@ -117,13 +112,7 @@ export default async function handler(req, res) {
       bioavailability: qualityAnalysis.bioavailability
     };
 
-    // Step 4: Calculate price per serving if possible
-    if (supplementData.price.value && supplementData.servingsPerContainer) {
-      supplementData.price.pricePerServing =
-        Math.round((supplementData.price.value / supplementData.servingsPerContainer) * 100) / 100;
-    }
-
-    // Step 5: Save to database
+    // Step 4: Save to database
     let saveResult;
     if (barcode) {
       // If barcode provided, use it as key

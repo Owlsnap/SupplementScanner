@@ -5,14 +5,6 @@
 
 // Regex patterns for different data types
 const PATTERNS = {
-  price: {
-    // Swedish price patterns
-    swedish_kr: /(\d{1,4}(?:[.,]\d{2})?)\s*kr\b/gi,
-    swedish_sek: /(\d{1,4}(?:[.,]\d{2})?)\s*sek\b/gi,
-    swedish_colon: /(\d{1,4})\s*:-/g,
-    generic_price: /(?:pris|price|kostnad|kostar)[\s:]*(\d{1,4}(?:[.,]\d{2})?)/gi
-  },
-  
   dosage: {
     // Dosage with units
     mg_dosage: /(\d+(?:[.,]\d+)?)\s*mg\b/gi,
@@ -59,7 +51,6 @@ export function extractWithPatterns(rankedBlocks) {
   console.log('🔍 Layer 2: Starting pattern-based extraction...');
   
   const extraction = {
-    price: null,
     dosages: [],
     quantities: [],
     serving_sizes: [],
@@ -69,7 +60,6 @@ export function extractWithPatterns(rankedBlocks) {
   };
 
   // Extract from each block category
-  extractPrices(rankedBlocks.price_blocks, extraction);
   extractDosages(rankedBlocks.ingredient_blocks.concat(rankedBlocks.nutritional_blocks), extraction);
   extractQuantities(rankedBlocks.quantity_blocks, extraction);
   extractServingSizes(rankedBlocks.dosage_blocks.concat(rankedBlocks.nutritional_blocks), extraction);
@@ -80,7 +70,6 @@ export function extractWithPatterns(rankedBlocks) {
   calculateConfidenceScores(extraction);
 
   console.log('📊 Layer 2: Pattern extraction results:', {
-    price: extraction.price,
     dosages_found: extraction.dosages.length,
     quantities_found: extraction.quantities.length,
     ingredients_found: extraction.ingredients.length,
@@ -88,37 +77,6 @@ export function extractWithPatterns(rankedBlocks) {
   });
 
   return extraction;
-}
-
-/**
- * Extract price information
- */
-function extractPrices(priceBlocks, extraction) {
-  const prices = [];
-  
-  priceBlocks.forEach(block => {
-    Object.entries(PATTERNS.price).forEach(([pattern_name, regex]) => {
-      const matches = [...block.text.matchAll(regex)];
-      matches.forEach(match => {
-        const price = parseFloat(match[1].replace(',', '.'));
-        if (price > 0 && price < 10000) { // Reasonable price range
-          prices.push({
-            value: price,
-            source: pattern_name,
-            context: match[0],
-            block_score: block.relevance_score
-          });
-        }
-      });
-    });
-  });
-
-  // Select most likely price (highest scoring block with reasonable value)
-  if (prices.length > 0) {
-    prices.sort((a, b) => b.block_score - a.block_score);
-    extraction.price = prices[0].value;
-    extraction.confidence_scores.price = Math.min(95, 60 + (prices[0].block_score * 2));
-  }
 }
 
 /**
@@ -296,8 +254,6 @@ function extractProductName(rankedBlocks, extraction) {
  * Calculate confidence scores for extraction
  */
 function calculateConfidenceScores(extraction) {
-  // Price confidence (already calculated above)
-  
   // Ingredients confidence
   if (extraction.ingredients.length > 0) {
     const hasAmounts = extraction.ingredients.filter(i => i.amount).length;

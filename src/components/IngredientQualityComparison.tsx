@@ -1124,11 +1124,6 @@ export default function IngredientQualityComparison({ analyzedProducts = {} }: I
                 <div style={{ color: '#f1f5f9', fontSize: '0.875rem', fontWeight: '500' }}>
                   {product.name}
                 </div>
-                {product.nutrientCost && (
-                  <div style={{ color: '#94a3b8', fontSize: '0.75rem' }}>
-                    {product.nutrientCost.costPerMg.toFixed(4)} kr/mg • Value Score: {product.nutrientCost.valueScore.toFixed(1)}/100
-                  </div>
-                )}
               </div>
             ))}
           </div>
@@ -1334,7 +1329,7 @@ export default function IngredientQualityComparison({ analyzedProducts = {} }: I
             </div>
             <p style={{ color: '#cbd5e1', fontSize: '0.875rem', margin: 0 }}>
               {isSameScore 
-                ? 'Both options have identical quality scores - choose based on price or preference'
+                ? 'Both options have identical quality scores - choose based on preference'
                 : isCloseComparison 
                   ? 'Both options are high quality with minimal difference in effectiveness'
                   : 'This represents a significant difference in bioavailability and effectiveness'

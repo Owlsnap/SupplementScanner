@@ -2,20 +2,18 @@ import React, { useState, useEffect } from "react";
 import { Bot, Plus, Link, Trash2, Menu, Target } from "lucide-react";
 import CookieBanner from './CookieBanner';
 import IngredientQualityComparison from './IngredientQualityComparison';
-import NutrientCostAnalysis from './NutrientCostAnalysis';
 import RecommendationsPage from '../pages/RecommendationsPage';
 import GuidePage from '../pages/GuidePage';
-import { compareSupplementValue } from '../utils/supplementAnalysis.js';
-import { 
-  validateSupplementProduct, 
-  analyzeSupplementURL, 
-  createValidationReport 
+import {
+  validateSupplementProduct,
+  analyzeSupplementURL,
+  createValidationReport
 } from '../utils/validationUtils.js';
-import { 
-  validateProduct, 
-  safeValidateProduct, 
-  validateAPIResponse, 
-  validateSwedishURL 
+import {
+  validateProduct,
+  safeValidateProduct,
+  validateAPIResponse,
+  validateSwedishURL
 } from '../types/index.js';
 import type { Product, StructuredSupplementData } from '../types/index.js';
 
@@ -42,7 +40,7 @@ interface ActiveIngredient {
  */
 function transformMultiLayerData(multiLayerResponse: MultiLayerResponse) {
   const { data, structuredData, success, metadata } = multiLayerResponse;
-  
+
   if (!success || !data) {
     return { success: false, error: 'Multi-layer extraction failed' };
   }
@@ -56,7 +54,7 @@ function transformMultiLayerData(multiLayerResponse: MultiLayerResponse) {
       confidence: structuredData.extractionMetadata?.confidence,
       hasLegacyQuality: metadata?.parallel_extraction && !!data.name
     });
-    
+
     // Find active ingredients from structured data
     const activeIngredients: ActiveIngredient[] = [];
     Object.entries(structuredData.ingredients || {}).forEach(([key, ingredient]) => {
@@ -70,13 +68,12 @@ function transformMultiLayerData(multiLayerResponse: MultiLayerResponse) {
     });
 
     const primaryIngredient = activeIngredients.find(ing => ing.is_primary) || activeIngredients[0];
-    
+
     const result = {
       success: true,
       name: structuredData.productName || data.name,
-      price: data.price_sek,
       quantity: data.total_servings,
-      unit: data.product_type === 'capsules' ? 'capsules' : 
+      unit: data.product_type === 'capsules' ? 'capsules' :
             data.product_type === 'tablets' ? 'tablets' :
             data.product_type === 'powder' ? 'g' : '_',
       activeIngredient: activeIngredients.map(ing => ing.name).join(' + '),
@@ -89,7 +86,7 @@ function transformMultiLayerData(multiLayerResponse: MultiLayerResponse) {
       extractionMethod: metadata?.parallel_extraction ? 'parallel' : 'structured',
       allIngredients: activeIngredients
     };
-    
+
     console.log('🧬 Structured transform result:', {
       name: result.name,
       servingSize: result.servingSize,
@@ -102,13 +99,12 @@ function transformMultiLayerData(multiLayerResponse: MultiLayerResponse) {
 
   // Handle legacy multi-layer format
   const primaryIngredient = data.active_ingredients?.find(ing => ing.is_primary) || data.active_ingredients?.[0];
-  
+
   return {
     success: true,
     name: data.name,
-    price: data.price_sek,
     quantity: data.total_servings,
-    unit: data.product_type === 'capsules' ? 'capsules' : 
+    unit: data.product_type === 'capsules' ? 'capsules' :
           data.product_type === 'tablets' ? 'tablets' :
           data.product_type === 'powder' ? 'g' : '_',
     activeIngredient: primaryIngredient?.name || 'Unknown',
@@ -126,7 +122,6 @@ export default function SupplementAnalyzer(): JSX.Element {
     {
       id: 1,
       name: "",
-      price: "",
       quantity: "",
       unit: "",
       activeIngredient: "",
@@ -138,7 +133,6 @@ export default function SupplementAnalyzer(): JSX.Element {
   const [toasts, setToasts] = useState<Array<{id: number, message: string, type: string}>>([]);
   const [extractingProducts, setExtractingProducts] = useState<Set<number>>(new Set());
   const [analyzedSupplements, setAnalyzedSupplements] = useState<Record<string, Product[]>>({});
-  const [bestValueProduct, setBestValueProduct] = useState<Product | null>(null);
   const [currentPage, setCurrentPage] = useState<string>('scanner');
   const [showMenu, setShowMenu] = useState<boolean>(false);
 
@@ -169,7 +163,6 @@ export default function SupplementAnalyzer(): JSX.Element {
       {
         id: nextId,
         name: "",
-        price: "",
         quantity: "",
         unit: "",
         url: "",
@@ -194,39 +187,30 @@ export default function SupplementAnalyzer(): JSX.Element {
     console.log('📊 URL Analysis:', urlAnalysis);
 
     setExtractingProducts(prev => new Set([...prev, productId]));
-    
+
     // Choose extraction method based on URL
     let extractionMethod = "hybrid"; // Default
     if (url.includes('tillskottsbolaget.se')) {
       extractionMethod = "parallel"; // Use parallel for Tillskottsbolaget (structured ingredients + legacy AI quality analysis)
     }
-    
+
     try {
       // Call backend API (local dev or production)
       const apiUrl = import.meta.env.VITE_API_URL || "http://localhost:3001";
 
-      console.log('🚀 Using Enhanced Scraper (Claude) with database saving...');
-
       const response = await fetch(
-        `${apiUrl}/api/ingest/url`,
+        `${apiUrl}/api/extract-product`,
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ url }),
+          body: JSON.stringify({
+            url,
+            method: extractionMethod
+          }),
         }
       );
 
       const responseData = await response.json();
-
-      // Log enhanced extraction results
-      if (responseData.success) {
-        console.log('✨ Enhanced extraction successful:', {
-          method: responseData.extraction?.method,
-          completeness: responseData.extraction?.completeness + '%',
-          savedToDatabase: true,
-          barcode: responseData.barcode
-        });
-      }
 
       // Validate API response with Zod
       try {
@@ -237,52 +221,15 @@ export default function SupplementAnalyzer(): JSX.Element {
         console.warn('📋 Proceeding with unvalidated response');
       }
 
-      // Handle enhanced ingestion response (SupplementSchemaV1 format)
+      // Handle both new multi-layer and legacy extraction formats
       let extractedData;
-      if (responseData.barcode && responseData.data) {
-        // New enhanced ingestion format - transform to legacy UI format
-        const supplement = responseData.data;
-        const primaryIngredient = supplement.ingredients?.[0];
-
-        extractedData = {
-          success: true,
-          name: supplement.productName,
-          price: supplement.price?.value || "",
-          quantity: supplement.servingsPerContainer || "",
-          unit: supplement.form === 'capsule' ? 'capsules' :
-                supplement.form === 'tablet' ? 'tablets' :
-                supplement.form === 'powder' ? 'g' : supplement.form,
-          activeIngredient: supplement.ingredients?.map(i => i.name).join(' + ') || "",
-          dosagePerUnit: primaryIngredient?.dosage || "",
-          servingSize: supplement.servingSize?.amount || "",
-          servingsPerContainer: supplement.servingsPerContainer || "",
-          // Enhanced metadata
-          extractionMethod: 'enhanced_claude',
-          confidence: responseData.extraction?.completeness || 100,
-          completeness: responseData.extraction?.completeness || 100,
-          barcode: responseData.barcode,
-          savedToDatabase: true,
-          // Store full supplement data
-          fullSupplementData: supplement
-        };
-
-        console.log('✨ Enhanced data transformed:', {
-          name: extractedData.name,
-          price: extractedData.price,
-          completeness: extractedData.completeness,
-          savedToDatabase: true
-        });
-      } else if (responseData.extraction_method?.includes('multi-layer') ||
+      if (responseData.extraction_method?.includes('multi-layer') ||
           responseData.extraction_method === 'structured' ||
           responseData.extraction_method === 'parallel') {
-        // Legacy multi-layer format
         extractedData = transformMultiLayerData(responseData);
       } else {
-        // Legacy simple format
         extractedData = responseData;
       }
-
-
 
       console.log('🔍 EXTRACTION DEBUGGING - Full response data:', {
         responseData: {
@@ -292,7 +239,6 @@ export default function SupplementAnalyzer(): JSX.Element {
           extractionMethod: responseData.extraction_method,
           metadata: responseData.metadata,
           structuredDataIngredients: responseData.structuredData?.ingredients ? Object.keys(responseData.structuredData.ingredients) : null,
-          // Log the full response structure
           fullResponseKeys: Object.keys(responseData),
           dataStructure: responseData.data ? {
             hasStructuredIngredients: 'structuredIngredients' in responseData.data,
@@ -305,8 +251,6 @@ export default function SupplementAnalyzer(): JSX.Element {
           hasStructuredIngredients: !!extractedData.structuredIngredients,
           structuredIngredientsKeys: extractedData.structuredIngredients?.ingredients ? Object.keys(extractedData.structuredIngredients.ingredients) : null,
           name: extractedData.name,
-          price: extractedData.price,
-          // Log what extractedData contains
           extractedDataKeys: Object.keys(extractedData)
         }
       });
@@ -318,7 +262,6 @@ export default function SupplementAnalyzer(): JSX.Element {
             const updatedProduct = {
               ...product,
               name: extractedData.name || "",
-              price: extractedData.price || "",
               quantity: extractedData.quantity || "",
               unit: extractedData.unit || "_",
               // Enhanced data from extraction
@@ -343,21 +286,11 @@ export default function SupplementAnalyzer(): JSX.Element {
               responseDataStructured: !!responseData.structuredData
             });
 
-            // Recalculate price per unit
-            const price = parseFloat(updatedProduct.price) || 0;
-            const quantity = parseFloat(updatedProduct.quantity) || 0;
-
-            if (price > 0 && quantity > 0) {
-              updatedProduct.pricePerUnit = price / quantity;
-            } else {
-              updatedProduct.pricePerUnit = null;
-            }
-
             return updatedProduct;
           }
           return product;
         });
-        
+
         // Validate products with enhanced Zod validation before setting state
         const validatedProducts = updatedProducts.map(product => {
           const validationResult = validateSupplementProduct(product);
@@ -366,64 +299,33 @@ export default function SupplementAnalyzer(): JSX.Element {
             return validationResult.data;
           } else {
             console.warn(`⚠️ Product "${product.name}" validation failed:`, validationResult.error);
-            
+
             // Create validation report for debugging
             const report = createValidationReport(product);
             console.warn(`📋 Validation report:`, report);
-            
+
             return product; // Use original if validation fails
           }
         });
-        
+
         setProducts(validatedProducts);
-        
+
         // Update supplement analysis
-        console.log('🔍 Updated products for analysis check:', validatedProducts);
-        console.log('🔍 Total products:', validatedProducts.length);
-        const validProducts = validatedProducts.filter(p => {
-          const isValid = p.name && p.name.trim() && p.price && p.price.toString().trim() && p.quantity && p.quantity.toString().trim();
-          console.log(`Product "${p.name}": name=${!!p.name}, price=${!!p.price}, quantity=${!!p.quantity}, activeIngredient=${!!p.activeIngredient}, dosagePerUnit=${!!p.dosagePerUnit}, isValid=${isValid}`);
-          console.log(`  → Full product data:`, {
-            id: p.id,
-            name: p.name,
-            price: p.price,
-            quantity: p.quantity,
-            activeIngredient: p.activeIngredient,
-            structuredIngredients: !!p.structuredIngredients,
-            extractionMethod: p.extractionMethod
-          });
-          return isValid;
-        });
-        console.log('🔍 Valid products for analysis:', validProducts.length, 'out of', updatedProducts.length);
+        const validProducts = validatedProducts.filter(p => p.name && p.name.trim() && p.quantity && p.quantity.toString().trim());
         if (validProducts.length > 0) {
-          console.log('🧪 Starting supplement analysis...');
-          // Debug: Check what's in each product before analysis
-          validProducts.forEach((product, index) => {
-            console.log(`🔍 Product ${index + 1} data:`, {
-              name: product.name,
-              hasStructuredIngredients: !!product.structuredIngredients,
-              structuredKeys: product.structuredIngredients?.ingredients ? Object.keys(product.structuredIngredients.ingredients) : 'none',
-              extractionMethod: product.extractionMethod,
-              activeIngredient: product.activeIngredient
-            });
+          // Group products by category/ingredient for analysis
+          const grouped: Record<string, Product[]> = {};
+          validProducts.forEach(p => {
+            const key = p.activeIngredient || p.name || 'other';
+            if (!grouped[key]) grouped[key] = [];
+            grouped[key].push(p);
           });
-          
-          const analysis = compareSupplementValue(validProducts);
-          console.log('📊 Supplement analysis result:', analysis);
-          console.log('📊 Analysis keys:', Object.keys(analysis));
-          console.log('📊 Total categories found:', Object.keys(analysis).length);
-          setAnalyzedSupplements(analysis);
+          setAnalyzedSupplements(grouped);
         } else {
-          console.log('❌ No valid products found for analysis');
           setAnalyzedSupplements({});
         }
-        
-        // Show enhanced success message with database save confirmation
-        if (extractedData.savedToDatabase && extractedData.barcode) {
-          showToast(`✅ ${extractedData.name} extracted & saved to database! (Barcode: ${extractedData.barcode.substring(0, 12)}...)`, 'success');
-        } else {
-          showToast(`✅ Product info extracted successfully! Found ${extractedData.name}`, 'success');
-        }
+
+        showToast(`✅ Product info extracted successfully! Found ${extractedData.name}`, 'success');
       } else {
         // Handle partial extraction from multi-layer system
         if (responseData.extraction_method?.includes('multi-layer') && responseData.partial_data) {
@@ -433,14 +335,13 @@ export default function SupplementAnalyzer(): JSX.Element {
             success: false,
             metadata: responseData.metadata
           });
-          
+
           // Update with partial data
           const updatedProducts = products.map((product) => {
             if (product.id === productId) {
               return {
                 ...product,
                 name: partialData.name || product.name || "",
-                price: partialData.price || product.price || "",
                 quantity: partialData.quantity || product.quantity || "",
                 unit: partialData.unit || product.unit || "_",
                 activeIngredient: partialData.activeIngredient || product.activeIngredient || "",
@@ -453,7 +354,7 @@ export default function SupplementAnalyzer(): JSX.Element {
             }
             return product;
           });
-          
+
           setProducts(updatedProducts);
           showToast(`⚠️ Partial extraction completed. Missing: ${(responseData.missing_fields || []).join(', ')}`, "warning");
         } else {
@@ -485,30 +386,19 @@ export default function SupplementAnalyzer(): JSX.Element {
       }
       return product;
     });
-    
+
     setProducts(updatedProducts);
-    
-    // Calculate best value product (lowest price per unit)
-    const productsWithPricePerUnit = updatedProducts.filter(p => p.price && p.quantity && p.unit)
-      .map(p => ({
-        ...p,
-        pricePerUnit: parseFloat(p.price) / parseFloat(p.quantity)
-      }));
-    
-    if (productsWithPricePerUnit.length > 0) {
-      const bestValue = productsWithPricePerUnit.reduce((best, current) => 
-        current.pricePerUnit < best.pricePerUnit ? current : best
-      );
-      setBestValueProduct(bestValue);
-    } else {
-      setBestValueProduct(null);
-    }
-    
+
     // Update supplement analysis when products change
-    const validProducts = updatedProducts.filter(p => p.name && p.price && p.quantity);
+    const validProducts = updatedProducts.filter(p => p.name && p.quantity);
     if (validProducts.length > 0) {
-      const analysis = compareSupplementValue(validProducts);
-      setAnalyzedSupplements(analysis);
+      const grouped: Record<string, Product[]> = {};
+      validProducts.forEach(p => {
+        const key = p.activeIngredient || p.name || 'other';
+        if (!grouped[key]) grouped[key] = [];
+        grouped[key].push(p);
+      });
+      setAnalyzedSupplements(grouped);
     } else {
       setAnalyzedSupplements({});
     }
@@ -517,8 +407,8 @@ export default function SupplementAnalyzer(): JSX.Element {
   // Handle page navigation
   if (currentPage === 'recommendations') {
     return (
-      <RecommendationsPage 
-        onBack={() => setCurrentPage('scanner')} 
+      <RecommendationsPage
+        onBack={() => setCurrentPage('scanner')}
         products={products}
       />
     );
@@ -526,8 +416,8 @@ export default function SupplementAnalyzer(): JSX.Element {
 
   if (currentPage === 'guide') {
     return (
-      <GuidePage 
-        onBack={() => setCurrentPage('scanner')} 
+      <GuidePage
+        onBack={() => setCurrentPage('scanner')}
       />
     );
   }
@@ -536,7 +426,7 @@ export default function SupplementAnalyzer(): JSX.Element {
     <>
       {/* Backdrop Overlay */}
       {showMenu && (
-        <div 
+        <div
           style={{
             position: 'fixed',
             top: 0,
@@ -552,7 +442,7 @@ export default function SupplementAnalyzer(): JSX.Element {
       )}
 
       {/* Modern Navbar */}
-      <div 
+      <div
         style={{
           position: 'fixed',
           top: 0,
@@ -567,7 +457,7 @@ export default function SupplementAnalyzer(): JSX.Element {
       >
         <div style={{ maxWidth: '1200px', margin: '0 auto', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
-            <div 
+            <div
               style={{
                 background: 'linear-gradient(135deg, #38f3ab 0%, #1dd1a1 50%, #0891b2 100%)',
                 borderRadius: '12px',
@@ -582,9 +472,9 @@ export default function SupplementAnalyzer(): JSX.Element {
               <Bot size={24} color="#0f172a" />
             </div>
             <div>
-              <h1 style={{ 
-                margin: 0, 
-                fontSize: '1.5rem', 
+              <h1 style={{
+                margin: 0,
+                fontSize: '1.5rem',
                 fontWeight: 'bold',
                 background: 'linear-gradient(135deg, #38f3ab 0%, #1dd1a1 100%)',
                 WebkitBackgroundClip: 'text',
@@ -669,20 +559,18 @@ export default function SupplementAnalyzer(): JSX.Element {
                     onMouseEnter={(e) => {
                       const button = e.currentTarget;
                       button.style.background = 'rgba(56, 243, 171, 0.1)';
-                      // Apply hover color to all text elements
                       const textElements = button.querySelectorAll('div');
                       textElements.forEach(el => el.style.color = '#38f3ab');
                     }}
                     onMouseLeave={(e) => {
                       const button = e.currentTarget;
                       button.style.background = 'transparent';
-                      // Reset colors for text elements
                       const textElements = button.querySelectorAll('div');
                       textElements.forEach(el => {
                         if (el.style.fontSize === '0.75rem') {
-                          el.style.color = '#94a3b8'; // Secondary text color
+                          el.style.color = '#94a3b8';
                         } else {
-                          el.style.color = '#f1f5f9'; // Primary text color
+                          el.style.color = '#f1f5f9';
                         }
                       });
                     }}
@@ -719,20 +607,18 @@ export default function SupplementAnalyzer(): JSX.Element {
                     onMouseEnter={(e) => {
                       const button = e.currentTarget;
                       button.style.background = 'rgba(56, 243, 171, 0.1)';
-                      // Apply hover color to all text elements
                       const textElements = button.querySelectorAll('div');
                       textElements.forEach(el => el.style.color = '#38f3ab');
                     }}
                     onMouseLeave={(e) => {
                       const button = e.currentTarget;
                       button.style.background = 'transparent';
-                      // Reset colors for text elements
                       const textElements = button.querySelectorAll('div');
                       textElements.forEach(el => {
                         if (el.style.fontSize === '0.75rem') {
-                          el.style.color = '#94a3b8'; // Secondary text color
+                          el.style.color = '#94a3b8';
                         } else {
-                          el.style.color = '#f1f5f9'; // Primary text color
+                          el.style.color = '#f1f5f9';
                         }
                       });
                     }}
@@ -756,10 +642,10 @@ export default function SupplementAnalyzer(): JSX.Element {
       <div
         style={{
           background: 'linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #0f172a 100%)',
-          minHeight: 'calc(100vh + 100px)', // Account for mobile browser bars
+          minHeight: 'calc(100vh + 100px)',
           padding: '1rem',
           paddingTop: '120px',
-          paddingBottom: '120px', // Much more bottom padding for mobile
+          paddingBottom: '120px',
           position: 'relative',
           filter: showMenu ? 'blur(3px)' : 'none',
           transition: 'filter 0.3s ease'
@@ -775,11 +661,11 @@ export default function SupplementAnalyzer(): JSX.Element {
           background: 'radial-gradient(circle at 20% 50%, rgba(56, 243, 171, 0.1) 0%, transparent 50%), radial-gradient(circle at 80% 50%, rgba(8, 145, 178, 0.1) 0%, transparent 50%)',
           pointerEvents: 'none'
         }} />
-        
-        <div style={{ 
-          position: 'relative', 
-          zIndex: 1, 
-          maxWidth: '1200px', 
+
+        <div style={{
+          position: 'relative',
+          zIndex: 1,
+          maxWidth: '1200px',
           margin: '0 auto',
           width: '100%',
           padding: window.innerWidth < 768 ? '0 1rem' : '0 2rem',
@@ -818,53 +704,6 @@ export default function SupplementAnalyzer(): JSX.Element {
             <p style={{ color: '#94a3b8', fontSize: '1rem', margin: 0 }}>
               Paste product URLs to extract information and analyze ingredient quality
             </p>
-            
-            {/* Best Value Quick Access */}
-            {bestValueProduct && (
-              <div style={{
-                background: 'linear-gradient(135deg, rgba(251, 191, 36, 0.2) 0%, rgba(245, 158, 11, 0.2) 100%)',
-                border: '2px solid rgba(251, 191, 36, 0.4)',
-                borderRadius: '16px',
-                padding: '1rem',
-                marginTop: '1rem',
-                display: 'inline-flex',
-                alignItems: 'center',
-                gap: '1rem'
-              }}>
-                <div>
-                  <div style={{ color: '#fbbf24', fontWeight: '700', fontSize: '0.875rem' }}>
-                    🏆 BEST VALUE FOUND
-                  </div>
-                  <div style={{ color: '#f1f5f9', fontSize: '0.875rem' }}>
-                    Product #{bestValueProduct.id}: {bestValueProduct.name || 'Unnamed Product'}
-                  </div>
-                  <div style={{ color: '#94a3b8', fontSize: '0.75rem' }}>
-                    {bestValueProduct.pricePerUnit?.toFixed(2)} kr per {bestValueProduct.unit}
-                  </div>
-                </div>
-                {bestValueProduct.url && (
-                  <button
-                    onClick={() => window.open(bestValueProduct.url, '_blank')}
-                    style={{
-                      padding: '0.75rem 1.5rem',
-                      background: 'linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%)',
-                      color: '#0f172a',
-                      border: 'none',
-                      borderRadius: '12px',
-                      fontSize: '0.875rem',
-                      fontWeight: '700',
-                      cursor: 'pointer',
-                      display: 'flex',
-                      alignItems: 'center',
-                      gap: '0.5rem',
-                      whiteSpace: 'nowrap'
-                    }}
-                  >
-                    🛒 Buy Best Value
-                  </button>
-                )}
-              </div>
-            )}
           </div>
 
           {/* Product Input Cards */}
@@ -890,10 +729,10 @@ export default function SupplementAnalyzer(): JSX.Element {
                 }}
               >
                 {/* Product Header */}
-                <div style={{ 
-                  display: 'flex', 
-                  alignItems: 'center', 
-                  justifyContent: 'center', 
+                <div style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
                   marginBottom: '1.5rem',
                   gap: '1rem',
                   flexWrap: 'wrap'
@@ -902,39 +741,20 @@ export default function SupplementAnalyzer(): JSX.Element {
                     style={{
                       padding: "0.75rem 1.5rem",
                       borderRadius: "50px",
-                      background: bestValueProduct?.id === product.id 
-                        ? 'linear-gradient(135deg, #38f3ab 0%, #1dd1a1 100%)'
-                        : 'rgba(102, 126, 234, 0.2)',
+                      background: 'rgba(102, 126, 234, 0.2)',
                       backdropFilter: 'blur(16px)',
-                      border: bestValueProduct?.id === product.id 
-                        ? '2px solid #38f3ab'
-                        : '1px solid rgba(118, 75, 162, 0.3)',
-                      color: bestValueProduct?.id === product.id ? '#0f172a' : '#e0e7ff',
+                      border: '1px solid rgba(118, 75, 162, 0.3)',
+                      color: '#e0e7ff',
                       fontWeight: '700',
                       fontSize: '1rem'
                     }}
                   >
                     Product #{product.id}
                   </div>
-                  {bestValueProduct?.id === product.id && (
-                    <div style={{
-                      padding: "0.5rem 1rem",
-                      borderRadius: "25px",
-                      background: 'linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%)',
-                      color: '#0f172a',
-                      fontWeight: '700',
-                      fontSize: '0.75rem',
-                      display: 'flex',
-                      alignItems: 'center',
-                      gap: '0.25rem'
-                    }}>
-                      🏆 BEST VALUE
-                    </div>
-                  )}
                 </div>
 
                 {/* URL Input */}
-                <div style={{ 
+                <div style={{
                   marginBottom: '1.5rem',
                   background: 'linear-gradient(135deg, rgba(56, 243, 171, 0.1) 0%, rgba(29, 209, 161, 0.1) 100%)',
                   border: '2px solid rgba(56, 243, 171, 0.3)',
@@ -950,9 +770,9 @@ export default function SupplementAnalyzer(): JSX.Element {
                     marginBottom: '0.75rem'
                   }}>
                     <Bot size={20} style={{ marginRight: '0.5rem' }} />
-                    🚀 Paste Product URL
+                    Paste Product URL
                   </label>
-                  
+
                   <div style={{ display: 'flex', gap: '0.75rem', alignItems: 'end' }}>
                     <input
                       type="url"
@@ -991,7 +811,7 @@ export default function SupplementAnalyzer(): JSX.Element {
                       }}
                     >
                       {extractingProducts.has(product.id) ? (
-                        <>⏳ Extracting...</>
+                        <>Extracting...</>
                       ) : (
                         <>
                           <Bot size={18} />
@@ -1008,13 +828,12 @@ export default function SupplementAnalyzer(): JSX.Element {
                     background: 'rgba(15, 23, 42, 0.8)',
                     borderRadius: '12px',
                     padding: '1rem',
-                    marginBottom: '1rem',
-                    border: bestValueProduct?.id === product.id ? '2px solid rgba(56, 243, 171, 0.3)' : 'none'
+                    marginBottom: '1rem'
                   }}>
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '0.75rem' }}>
-                      <h3 style={{ 
-                        color: '#f1f5f9', 
-                        fontSize: '1.125rem', 
+                      <h3 style={{
+                        color: '#f1f5f9',
+                        fontSize: '1.125rem',
                         fontWeight: '600',
                         margin: 0,
                         flex: 1
@@ -1038,24 +857,20 @@ export default function SupplementAnalyzer(): JSX.Element {
                             gap: '0.25rem'
                           }}
                         >
-                          🛒 Buy
+                          View Product
                         </button>
                       )}
                     </div>
-                    
-                    <div style={{ 
-                      display: 'grid', 
-                      gridTemplateColumns: window.innerWidth < 768 ? 'repeat(2, 1fr)' : 'repeat(4, 1fr)', 
-                      gap: '0.75rem', 
-                      fontSize: '0.875rem' 
+
+                    <div style={{
+                      display: 'grid',
+                      gridTemplateColumns: window.innerWidth < 768 ? 'repeat(2, 1fr)' : 'repeat(3, 1fr)',
+                      gap: '0.75rem',
+                      fontSize: '0.875rem'
                     }}>
                       <div>
                         <span style={{ color: '#94a3b8' }}>Product #:</span>
                         <div style={{ color: '#a855f7', fontWeight: '700' }}>#{product.id}</div>
-                      </div>
-                      <div>
-                        <span style={{ color: '#94a3b8' }}>Price:</span>
-                        <div style={{ color: '#f1f5f9', fontWeight: '600' }}>{product.price} kr</div>
                       </div>
                       <div>
                         <span style={{ color: '#94a3b8' }}>Quantity:</span>
@@ -1124,10 +939,6 @@ export default function SupplementAnalyzer(): JSX.Element {
           </div>
         </div>
 
-        {/* Comprehensive Analysis Components */}
-        {/* Cost Analysis - Shows price efficiency per nutrient */}
-        <NutrientCostAnalysis products={products} />
-        
         {/* Quality Analysis - Shows ingredient forms and bioavailability */}
         <IngredientQualityComparison analyzedProducts={analyzedSupplements} />
         </div>
@@ -1150,7 +961,7 @@ export default function SupplementAnalyzer(): JSX.Element {
           <div
             key={toast.id}
             style={{
-              background: toast.type === 'success' 
+              background: toast.type === 'success'
                 ? 'linear-gradient(135deg, #10b981 0%, #059669 100%)'
                 : 'linear-gradient(135deg, #ef4444 0%, #dc2626 100%)',
               color: 'white',
