@@ -188,102 +188,63 @@ export default function SupplementAnalyzer(): JSX.Element {
 
     setExtractingProducts(prev => new Set([...prev, productId]));
 
-    // Choose extraction method based on URL
-    let extractionMethod = "hybrid"; // Default
-    if (url.includes('tillskottsbolaget.se')) {
-      extractionMethod = "parallel"; // Use parallel for Tillskottsbolaget (structured ingredients + legacy AI quality analysis)
-    }
-
     try {
       // Call backend API (local dev or production)
       const apiUrl = import.meta.env.VITE_API_URL || "http://localhost:3001";
 
       const response = await fetch(
-        `${apiUrl}/api/extract-product`,
+        `${apiUrl}/api/ingest/url`,
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            url,
-            method: extractionMethod
-          }),
+          body: JSON.stringify({ url }),
         }
       );
 
       const responseData = await response.json();
 
-      // Validate API response with Zod
-      try {
-        const validatedResponse = validateAPIResponse(responseData);
-        console.log('✅ API response validated successfully with Zod');
-      } catch (error) {
-        console.warn('⚠️ API response validation failed:', error);
-        console.warn('📋 Proceeding with unvalidated response');
-      }
-
-      // Handle both new multi-layer and legacy extraction formats
-      let extractedData;
-      if (responseData.extraction_method?.includes('multi-layer') ||
-          responseData.extraction_method === 'structured' ||
-          responseData.extraction_method === 'parallel') {
-        extractedData = transformMultiLayerData(responseData);
-      } else {
-        extractedData = responseData;
-      }
-
-      console.log('🔍 EXTRACTION DEBUGGING - Full response data:', {
-        responseData: {
-          success: responseData.success,
-          hasData: !!responseData.data,
-          hasStructuredData: !!responseData.structuredData,
-          extractionMethod: responseData.extraction_method,
-          metadata: responseData.metadata,
-          structuredDataIngredients: responseData.structuredData?.ingredients ? Object.keys(responseData.structuredData.ingredients) : null,
-          fullResponseKeys: Object.keys(responseData),
-          dataStructure: responseData.data ? {
-            hasStructuredIngredients: 'structuredIngredients' in responseData.data,
-            hasStructuredData: 'structuredData' in responseData.data,
-            dataKeys: Object.keys(responseData.data)
-          } : null
-        },
-        extractedData: {
-          success: extractedData.success,
-          hasStructuredIngredients: !!extractedData.structuredIngredients,
-          structuredIngredientsKeys: extractedData.structuredIngredients?.ingredients ? Object.keys(extractedData.structuredIngredients.ingredients) : null,
-          name: extractedData.name,
-          extractedDataKeys: Object.keys(extractedData)
-        }
+      console.log('🔍 /api/ingest/url response:', {
+        success: responseData.success,
+        hasData: !!responseData.data,
+        hasQualityAnalysis: !!responseData.qualityAnalysis,
+        dataKeys: responseData.data ? Object.keys(responseData.data) : null
       });
 
-      if (extractedData.success) {
-        // Update all fields at once to avoid React state batching issues
+      if (responseData.success && responseData.data) {
+        const data = responseData.data;
+
+        // Map ingest/url response to product state structure
         const updatedProducts = products.map((product) => {
           if (product.id === productId) {
             const updatedProduct = {
               ...product,
-              name: extractedData.name || "",
-              quantity: extractedData.quantity || "",
-              unit: extractedData.unit || "_",
-              // Enhanced data from extraction
-              activeIngredient: extractedData.activeIngredient || "",
-              dosagePerUnit: extractedData.dosagePerUnit || "",
-              servingSize: extractedData.servingSize || "",
-              servingsPerContainer: extractedData.servingsPerContainer || "",
-              // Include structured ingredients data if available
-              structuredIngredients: extractedData.structuredIngredients || responseData.structuredData,
-              // New multi-layer metadata
-              extractionMethod: responseData.extraction_method,
-              confidence: responseData.metadata?.final_confidence,
-              completeness: responseData.metadata?.completeness
+              name: data.productName || "",
+              quantity: data.servingsPerContainer || "",
+              unit: data.form || "servings",
+              activeIngredient: (data.ingredients || []).map(i => i.name).join(', ') || data.subCategory || "",
+              dosagePerUnit: data.ingredients?.[0]?.dosage || "",
+              servingSize: data.servingSize?.amount || "",
+              servingsPerContainer: data.servingsPerContainer || "",
+              // Pass through quality analysis data (including protein quality)
+              qualityAnalysis: responseData.qualityAnalysis || null,
+              proteinQuality: responseData.qualityAnalysis?.proteinQuality || data.quality?.proteinQuality || null,
+              // Category info
+              category: data.category || null,
+              subCategory: data.subCategory || null,
+              // Ingredient list text for protein products
+              ingredientListText: data.ingredientListText || null,
+              // Extraction metadata
+              extractionMethod: responseData.extraction?.method || 'enhanced_claude',
+              confidence: responseData.extraction?.completeness || null,
             };
 
-            console.log('💾 Updated product with structured data:', {
+            console.log('💾 Updated product from /api/ingest/url:', {
               name: updatedProduct.name,
-              hasStructuredIngredients: !!updatedProduct.structuredIngredients,
-              structuredKeys: updatedProduct.structuredIngredients?.ingredients ? Object.keys(updatedProduct.structuredIngredients.ingredients) : 'none',
-              extractionMethod: updatedProduct.extractionMethod,
-              extractedDataStructured: !!extractedData.structuredIngredients,
-              responseDataStructured: !!responseData.structuredData
+              category: updatedProduct.category,
+              subCategory: updatedProduct.subCategory,
+              hasProteinQuality: !!updatedProduct.proteinQuality,
+              proteinScore: updatedProduct.proteinQuality?.score,
+              ingredientCount: data.ingredients?.length
             });
 
             return updatedProduct;
@@ -291,32 +252,15 @@ export default function SupplementAnalyzer(): JSX.Element {
           return product;
         });
 
-        // Validate products with enhanced Zod validation before setting state
-        const validatedProducts = updatedProducts.map(product => {
-          const validationResult = validateSupplementProduct(product);
-          if (validationResult.success) {
-            console.log(`✅ Product "${product.name}" validated successfully with enhanced rules`);
-            return validationResult.data;
-          } else {
-            console.warn(`⚠️ Product "${product.name}" validation failed:`, validationResult.error);
-
-            // Create validation report for debugging
-            const report = createValidationReport(product);
-            console.warn(`📋 Validation report:`, report);
-
-            return product; // Use original if validation fails
-          }
-        });
-
-        setProducts(validatedProducts);
+        setProducts(updatedProducts);
 
         // Update supplement analysis
-        const validProducts = validatedProducts.filter(p => p.name && p.name.trim() && p.quantity && p.quantity.toString().trim());
+        const validProducts = updatedProducts.filter(p => p.name && p.name.trim());
         if (validProducts.length > 0) {
-          // Group products by category/ingredient for analysis
           const grouped: Record<string, Product[]> = {};
           validProducts.forEach(p => {
-            const key = p.activeIngredient || p.name || 'other';
+            // Use subCategory for grouping if available, otherwise fall back to activeIngredient/name
+            const key = p.subCategory || p.activeIngredient || p.name || 'other';
             if (!grouped[key]) grouped[key] = [];
             grouped[key].push(p);
           });
@@ -325,47 +269,14 @@ export default function SupplementAnalyzer(): JSX.Element {
           setAnalyzedSupplements({});
         }
 
-        showToast(`✅ Product info extracted successfully! Found ${extractedData.name}`, 'success');
+        showToast(`Product info extracted successfully! Found ${data.productName}`, 'success');
       } else {
-        // Handle partial extraction from multi-layer system
-        if (responseData.extraction_method?.includes('multi-layer') && responseData.partial_data) {
-          console.log('⚠️ Partial extraction - some fields missing');
-          const partialData = transformMultiLayerData({
-            data: responseData.partial_data,
-            success: false,
-            metadata: responseData.metadata
-          });
-
-          // Update with partial data
-          const updatedProducts = products.map((product) => {
-            if (product.id === productId) {
-              return {
-                ...product,
-                name: partialData.name || product.name || "",
-                quantity: partialData.quantity || product.quantity || "",
-                unit: partialData.unit || product.unit || "_",
-                activeIngredient: partialData.activeIngredient || product.activeIngredient || "",
-                dosagePerUnit: partialData.dosagePerUnit || product.dosagePerUnit || "",
-                // Mark as partial
-                isPartial: true,
-                missingFields: responseData.missing_fields || [],
-                confidence: partialData.confidence || 30
-              };
-            }
-            return product;
-          });
-
-          setProducts(updatedProducts);
-          showToast(`⚠️ Partial extraction completed. Missing: ${(responseData.missing_fields || []).join(', ')}`, "warning");
-        } else {
-          console.log('❌ Extraction failed completely');
-          console.error('❌ Extraction failed:', extractedData.error);
-          showToast(`❌ Could not extract product info: ${extractedData.error}`, 'error');
-        }
+        console.error('Extraction failed:', responseData.error);
+        showToast(`Could not extract product info: ${responseData.error}`, 'error');
       }
     } catch (error) {
-      console.error('🚨 Network/API Error:', error);
-      showToast('❌ Error: Make sure the backend server is running! Run: node server.js', 'error');
+      console.error('Network/API Error:', error);
+      showToast('Error: Make sure the backend server is running! Run: node server.js', 'error');
     } finally {
       setExtractingProducts(prev => {
         const newSet = new Set(prev);

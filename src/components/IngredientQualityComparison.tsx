@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { FlaskConical, Scale, TrendingUp, TrendingDown, CheckCircle, XCircle, Info, AlertTriangle, ChevronDown, ChevronUp } from "lucide-react";
+import { FlaskConical, Scale, TrendingUp, TrendingDown, CheckCircle, XCircle, Info, AlertTriangle, ChevronDown, ChevronUp, Shield, AlertCircle } from "lucide-react";
 import { ingredientQuality, compareIngredients, getIngredientQuality } from '../data/supplementData.js';
 import type { Product, AnalyzedProduct, StructuredSupplementData, IngredientAnalysis } from '../types/index.js';
 
@@ -1341,6 +1341,339 @@ export default function IngredientQualityComparison({ analyzedProducts = {} }: I
     );
   };
 
+  // Check if any product has protein quality data
+  const getProteinQualityData = () => {
+    for (const products of Object.values(analyzedProducts)) {
+      for (const product of products as any[]) {
+        if (product.proteinQuality) return { quality: product.proteinQuality, product };
+        if (product.qualityAnalysis?.proteinQuality) return { quality: product.qualityAnalysis.proteinQuality, product };
+      }
+    }
+    return null;
+  };
+
+  const proteinData = getProteinQualityData();
+
+  const getScoreColor = (score: number) => {
+    if (score >= 8) return '#22c55e';
+    if (score >= 6) return '#84cc16';
+    if (score >= 4) return '#eab308';
+    if (score >= 3) return '#f97316';
+    return '#ef4444';
+  };
+
+  const getScoreLabel = (score: number) => {
+    if (score >= 8) return 'Excellent';
+    if (score >= 6) return 'Good';
+    if (score >= 4) return 'Average';
+    if (score >= 3) return 'Below Average';
+    return 'Poor';
+  };
+
+  const renderProteinQualitySection = () => {
+    if (!proteinData) return null;
+    const { quality, product } = proteinData;
+    const scoreColor = getScoreColor(quality.score);
+
+    return (
+      <div style={{
+        background: 'rgba(15, 23, 42, 0.8)',
+        backdropFilter: 'blur(20px)',
+        borderRadius: '20px',
+        padding: '2rem',
+        border: `2px solid ${scoreColor}40`,
+        boxShadow: `0 20px 60px rgba(0, 0, 0, 0.3), 0 0 40px ${scoreColor}10`,
+        marginBottom: '2rem'
+      }}>
+        {/* Header */}
+        <div style={{ marginBottom: '2rem', textAlign: 'center' }}>
+          <h2 style={{
+            fontSize: '2rem',
+            fontWeight: 'bold',
+            background: `linear-gradient(135deg, ${scoreColor} 0%, #38f3ab 100%)`,
+            WebkitBackgroundClip: 'text',
+            WebkitTextFillColor: 'transparent',
+            backgroundClip: 'text',
+            margin: 0,
+            marginBottom: '0.5rem',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            gap: '0.75rem'
+          }}>
+            <Shield size={32} />
+            Protein Quality Analysis
+          </h2>
+          <p style={{ color: '#94a3b8', fontSize: '1rem', margin: 0 }}>
+            {(product as any).name || 'Protein Product'}
+          </p>
+        </div>
+
+        {/* Score Display */}
+        <div style={{
+          display: 'flex',
+          justifyContent: 'center',
+          marginBottom: '2rem'
+        }}>
+          <div style={{
+            background: `linear-gradient(135deg, ${scoreColor}15 0%, ${scoreColor}30 100%)`,
+            border: `3px solid ${scoreColor}`,
+            borderRadius: '24px',
+            padding: '1.5rem 3rem',
+            display: 'flex',
+            alignItems: 'center',
+            gap: '1.5rem'
+          }}>
+            <div style={{ textAlign: 'center' }}>
+              <div style={{
+                fontSize: '3.5rem',
+                fontWeight: '800',
+                color: scoreColor,
+                lineHeight: 1
+              }}>
+                {quality.score}
+              </div>
+              <div style={{ fontSize: '1rem', color: '#94a3b8', fontWeight: '600' }}>/10</div>
+            </div>
+            <div>
+              <div style={{
+                fontSize: '1.25rem',
+                fontWeight: '700',
+                color: scoreColor,
+                marginBottom: '0.25rem'
+              }}>
+                {getScoreLabel(quality.score)}
+              </div>
+              <div style={{ fontSize: '0.875rem', color: '#94a3b8' }}>
+                Quality Score
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Protein Sources */}
+        {quality.proteinSources && quality.proteinSources.length > 0 && (
+          <div style={{
+            background: 'rgba(56, 243, 171, 0.08)',
+            border: '1px solid rgba(56, 243, 171, 0.2)',
+            borderRadius: '16px',
+            padding: '1.25rem',
+            marginBottom: '1.5rem'
+          }}>
+            <h4 style={{
+              color: '#38f3ab',
+              fontSize: '1rem',
+              fontWeight: '700',
+              marginBottom: '1rem',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '0.5rem'
+            }}>
+              <FlaskConical size={18} />
+              Protein Sources
+            </h4>
+            {quality.proteinSources.map((source: any, idx: number) => (
+              <div key={idx} style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: '0.75rem',
+                marginBottom: '0.75rem',
+                padding: '0.75rem',
+                background: 'rgba(15, 23, 42, 0.5)',
+                borderRadius: '10px'
+              }}>
+                <div style={{
+                  width: '8px',
+                  height: '8px',
+                  borderRadius: '50%',
+                  background: source.quality === 'excellent' ? '#22c55e' :
+                              source.quality === 'good' ? '#84cc16' :
+                              source.quality === 'decent' ? '#eab308' : '#ef4444',
+                  flexShrink: 0
+                }} />
+                <div>
+                  <div style={{ color: '#f1f5f9', fontWeight: '600', fontSize: '0.875rem' }}>
+                    {source.name}
+                  </div>
+                  <div style={{ color: '#94a3b8', fontSize: '0.75rem' }}>
+                    {source.reason}
+                  </div>
+                </div>
+                <div style={{
+                  marginLeft: 'auto',
+                  padding: '0.25rem 0.75rem',
+                  borderRadius: '20px',
+                  fontSize: '0.7rem',
+                  fontWeight: '700',
+                  textTransform: 'uppercase',
+                  background: source.quality === 'excellent' ? 'rgba(34, 197, 94, 0.2)' :
+                              source.quality === 'good' ? 'rgba(132, 204, 22, 0.2)' :
+                              source.quality === 'decent' ? 'rgba(234, 179, 8, 0.2)' : 'rgba(239, 68, 68, 0.2)',
+                  color: source.quality === 'excellent' ? '#22c55e' :
+                         source.quality === 'good' ? '#84cc16' :
+                         source.quality === 'decent' ? '#eab308' : '#ef4444'
+                }}>
+                  {source.quality}
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+
+        {/* Concerns and Positives Grid */}
+        <div style={{
+          display: 'grid',
+          gridTemplateColumns: quality.concerns?.length > 0 && quality.positives?.length > 0 ? '1fr 1fr' : '1fr',
+          gap: '1.5rem',
+          marginBottom: '1.5rem'
+        }}>
+          {/* Concerns / Sketchy Ingredients */}
+          {quality.concerns && quality.concerns.length > 0 && (
+            <div style={{
+              background: 'rgba(239, 68, 68, 0.08)',
+              border: '1px solid rgba(239, 68, 68, 0.2)',
+              borderRadius: '16px',
+              padding: '1.25rem'
+            }}>
+              <h4 style={{
+                color: '#ef4444',
+                fontSize: '1rem',
+                fontWeight: '700',
+                marginBottom: '1rem',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '0.5rem'
+              }}>
+                <AlertCircle size={18} />
+                Sketchy Ingredients ({quality.concerns.length})
+              </h4>
+              {quality.concerns.map((concern: any, idx: number) => (
+                <div key={idx} style={{
+                  marginBottom: '0.75rem',
+                  padding: '0.75rem',
+                  background: 'rgba(15, 23, 42, 0.5)',
+                  borderRadius: '10px',
+                  borderLeft: `3px solid ${concern.severity === 'high' ? '#ef4444' : concern.severity === 'medium' ? '#f97316' : '#eab308'}`
+                }}>
+                  <div style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'space-between',
+                    marginBottom: '0.25rem'
+                  }}>
+                    <span style={{ color: '#f1f5f9', fontWeight: '600', fontSize: '0.875rem' }}>
+                      {concern.name}
+                    </span>
+                    <span style={{
+                      padding: '0.15rem 0.5rem',
+                      borderRadius: '12px',
+                      fontSize: '0.625rem',
+                      fontWeight: '700',
+                      textTransform: 'uppercase',
+                      background: concern.severity === 'high' ? 'rgba(239, 68, 68, 0.2)' :
+                                  concern.severity === 'medium' ? 'rgba(249, 115, 22, 0.2)' : 'rgba(234, 179, 8, 0.2)',
+                      color: concern.severity === 'high' ? '#ef4444' :
+                             concern.severity === 'medium' ? '#f97316' : '#eab308'
+                    }}>
+                      {concern.severity}
+                    </span>
+                  </div>
+                  <div style={{ color: '#94a3b8', fontSize: '0.75rem', lineHeight: '1.4' }}>
+                    {concern.reason}
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+
+          {/* Positive Ingredients */}
+          {quality.positives && quality.positives.length > 0 && (
+            <div style={{
+              background: 'rgba(34, 197, 94, 0.08)',
+              border: '1px solid rgba(34, 197, 94, 0.2)',
+              borderRadius: '16px',
+              padding: '1.25rem'
+            }}>
+              <h4 style={{
+                color: '#22c55e',
+                fontSize: '1rem',
+                fontWeight: '700',
+                marginBottom: '1rem',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '0.5rem'
+              }}>
+                <CheckCircle size={18} />
+                Good Ingredients ({quality.positives.length})
+              </h4>
+              {quality.positives.map((positive: any, idx: number) => (
+                <div key={idx} style={{
+                  marginBottom: '0.75rem',
+                  padding: '0.75rem',
+                  background: 'rgba(15, 23, 42, 0.5)',
+                  borderRadius: '10px',
+                  borderLeft: '3px solid #22c55e'
+                }}>
+                  <div style={{ color: '#f1f5f9', fontWeight: '600', fontSize: '0.875rem', marginBottom: '0.25rem' }}>
+                    {positive.name}
+                  </div>
+                  <div style={{ color: '#94a3b8', fontSize: '0.75rem', lineHeight: '1.4' }}>
+                    {positive.reason}
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+
+        {/* Full Ingredient Breakdown */}
+        {quality.ingredientBreakdown && quality.ingredientBreakdown.length > 0 && (
+          <div style={{
+            background: 'rgba(30, 41, 59, 0.5)',
+            borderRadius: '16px',
+            padding: '1.25rem',
+            border: '1px solid rgba(148, 163, 184, 0.1)'
+          }}>
+            <h4 style={{
+              color: '#f1f5f9',
+              fontSize: '1rem',
+              fontWeight: '700',
+              marginBottom: '1rem',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '0.5rem'
+            }}>
+              <Info size={18} />
+              Ingredient Breakdown
+            </h4>
+            <div style={{
+              display: 'flex',
+              flexWrap: 'wrap',
+              gap: '0.5rem'
+            }}>
+              {quality.ingredientBreakdown.map((item: any, idx: number) => (
+                <span key={idx} style={{
+                  padding: '0.4rem 0.75rem',
+                  borderRadius: '20px',
+                  fontSize: '0.75rem',
+                  fontWeight: '600',
+                  background: item.category === 'good' ? 'rgba(34, 197, 94, 0.15)' :
+                              item.category === 'sketchy' ? 'rgba(239, 68, 68, 0.15)' : 'rgba(148, 163, 184, 0.15)',
+                  color: item.category === 'good' ? '#22c55e' :
+                         item.category === 'sketchy' ? '#ef4444' : '#94a3b8',
+                  border: `1px solid ${item.category === 'good' ? 'rgba(34, 197, 94, 0.3)' :
+                           item.category === 'sketchy' ? 'rgba(239, 68, 68, 0.3)' : 'rgba(148, 163, 184, 0.2)'}`
+                }}>
+                  {item.category === 'good' ? '+ ' : item.category === 'sketchy' ? '- ' : ''}{item.name}
+                </span>
+              ))}
+            </div>
+          </div>
+        )}
+      </div>
+    );
+  };
+
   return (
     <div style={{
       background: 'rgba(15, 23, 42, 0.8)',
@@ -1351,6 +1684,9 @@ export default function IngredientQualityComparison({ analyzedProducts = {} }: I
       boxShadow: '0 20px 60px rgba(0, 0, 0, 0.3)',
       marginBottom: '2rem'
     }}>
+      {/* Protein Quality Section - Render first if protein product detected */}
+      {renderProteinQualitySection()}
+
       {/* Header */}
       <div style={{ marginBottom: '2rem', textAlign: 'center' }}>
         <h2 style={{

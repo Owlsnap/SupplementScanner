@@ -1075,5 +1075,149 @@
         "extractionMethod": "puppeteer_claude"
       }
     }
+  },
+  {
+    "_schemaVersion": 1,
+    "barcode": "URL-03303efb5bea",
+    "productName": "Scitec 100% Whey Protein Professional, 5 kg",
+    "brand": "Scitec Nutrition",
+    "category": "supplement",
+    "subCategory": "protein",
+    "form": "powder",
+    "servingsPerContainer": 166,
+    "servingSize": {
+      "amount": 1,
+      "unit": "skopa (30 g)"
+    },
+    "ingredients": [
+      {
+        "name": "Protein",
+        "dosage": 22,
+        "unit": "g",
+        "form": null
+      },
+      {
+        "name": "Kalium",
+        "dosage": 161.001,
+        "unit": "mg",
+        "form": null
+      },
+      {
+        "name": "Kolesterol",
+        "dosage": 52,
+        "unit": "mg",
+        "form": null
+      },
+      {
+        "name": "Aminosyramix (L-leucin, L-glutamin, taurin)",
+        "dosage": 1300,
+        "unit": "mg",
+        "form": null
+      },
+      {
+        "name": "Matsmältningsenzymer (bromelain, papain)",
+        "dosage": 24,
+        "unit": "mg",
+        "form": null
+      }
+    ],
+    "quality": {
+      "underDosed": null,
+      "overDosed": null,
+      "fillerRisk": "medium",
+      "bioavailability": null,
+      "proteinQuality": {
+        "score": 6.3,
+        "concerns": [
+          {
+            "name": "Acesulfame-K",
+            "reason": "Artificial sweetener linked to potential gut microbiome disruption",
+            "severity": "medium"
+          },
+          {
+            "name": "Dextrose",
+            "reason": "Added simple sugar that spikes blood glucose",
+            "severity": "low"
+          }
+        ],
+        "positives": [
+          {
+            "name": "Bromelain",
+            "reason": "Digestive enzyme that aids protein absorption"
+          },
+          {
+            "name": "Papain",
+            "reason": "Digestive enzyme from papaya for better protein digestion"
+          },
+          {
+            "name": "L-Glutamine",
+            "reason": "Supports gut health and muscle recovery"
+          },
+          {
+            "name": "L-Leucine",
+            "reason": "Key amino acid that triggers muscle protein synthesis"
+          },
+          {
+            "name": "Taurine",
+            "reason": "Supports muscle function and antioxidant defense"
+          },
+          {
+            "name": "Immunoglobulin Fractions",
+            "reason": "Immune-supporting protein fractions"
+          }
+        ],
+        "proteinSources": [],
+        "ingredientBreakdown": [
+          {
+            "name": "Acesulfame-K",
+            "category": "sketchy",
+            "severity": "medium"
+          },
+          {
+            "name": "Dextrose",
+            "category": "sketchy",
+            "severity": "low"
+          },
+          {
+            "name": "Bromelain",
+            "category": "good"
+          },
+          {
+            "name": "Papain",
+            "category": "good"
+          },
+          {
+            "name": "L-Glutamine",
+            "category": "good"
+          },
+          {
+            "name": "L-Leucine",
+            "category": "good"
+          },
+          {
+            "name": "Taurine",
+            "category": "good"
+          },
+          {
+            "name": "Immunoglobulin Fractions",
+            "category": "good"
+          },
+          {
+            "name": "Vanilla",
+            "category": "neutral"
+          }
+        ],
+        "ingredientListText": "Ingredienser Banan: Proteinblandning av vassleproteinkoncentrat och vassleproteinisolat från MJÖLK (innehållande laktoglobulin, laktoferrin, laktalbumin och immunoglobulin proteinfraktioner), taurin, smak (banan, grädde), dextros, smakförstärkare (natriumklorid), l-glutamin, konsistensgivare (xantangummi), artificiella sötningsmedel (acesulfam-k, sukralos), l-leucin, matsmältningsenzymer (bromelain, papain).\n\nIngredienser Cappuccino: Proteinblandning av vassleproteinkoncentrat och vassleproteinisolat från MJÖLK (innehållande laktoglobulin, laktoferrin, laktalbumin och immunoglobulin proteinfraktioner), taurin, kakaopulver (10-12%), smak (cappuccino, grädde), dextros, smakförstärkare (natriumklorid), l-glutamin, konsistensgivare (xantangummi), artificiella sötningsmedel (acesulfam-k, sukralos), l-leucin, matsmältningsenzymer (bromelain, papain).\n\nIngredienser Caramel: Proteinblandning av vassleproteinkoncentrat och vassleproteinisolat från MJÖLK (innehållande laktoglobulin, laktoferrin, laktalbumin och immunoglobulin proteinfraktioner), taurin, kakaopulver (10-12%), smak (MJÖLKkaramell, grädde), dextros, smakförstärkare (natriumklorid), l-glutamin, konsistensgivare (xantangummi), artificiella sötningsmedel (acesulfam-k, sukralos), l-leucin, matsmältningsenzymer (bromelain, papain).\n\nIngredienser Chocolate Coconut: Proteinblandning av vassleproteinkoncentrat och vassleproteinisolat från MJÖLK (innehållande laktoglobulin, laktoferrin, laktalbumin och immunoglobulin proteinfraktioner), taurin, kakaopulver (10-12%), smak (choklad, kokos, vanilj), dextros, smakförstärkare (natriumklorid), l-glutamin, konsistensgivare (xantangummi), artificiella sötningsmedel (acesulfam-k, sukralos), l-leucin, matsmältningsenzymer (bromelain, papain).\n\nIngredienser Chocolate: Proteinblandning av vassleproteinkoncentrat och vassleproteinisolat från MJÖLK (innehållande laktoglobulin, laktoferrin, laktalbumin och immunoglobulin proteinfraktioner), Fettreducerat Kakaopulver (10-12%), Taurin, Smak (Choklad, Grädde), dextros, smakförstärkare (natriumklorid), L-Glutamin, Konsistensgivare (Xantangummi), Sötningsmedel (Acesulfam K, Sukralos), L-Leucin, matsmältningsenzymer (bromelain, papain).\n\nIngredienser Chocolate Hazelnut: Proteinblandning av vassleproteinkoncentrat och vassleproteinisolat från MJÖLK (innehållande laktoglobulin, laktoferrin, laktalbumin och immunoglobulin proteinfraktioner), taurin, kakaopulver (10-12%), smak (choklad, HASSELNÖT, krämig vanilj), dextros, smakförstärkare (natriumklorid), l-glutamin, konsistensgivare (xantangummi), artificiella sötningsmedel (acesulfam-k, sukralos), l-leucin, matsmältningsenzymer (bromelain, papain).\n\nIngredienser Chocolate Peanut Butter: Proteinblandning av vassleproteinkoncentrat och vassleproteinisolat från MJÖLK (innehållande laktoglobulin, laktoferrin, laktalbumin och immunoglobulin proteinfraktioner), taurin, kakaopulver (10-12%), smak (JORDNÖTssmör, choklad), dextros, smakförstärkare (natriumklorid), l-glutamin, konsistensgivare (xantangummi), artificiella sötningsmedel (acesulfam-k, sukralos), l-leucin, matsmältningsenzymer (bromelain, papain).\n\nIngredienser White Chocolate Mocha: Proteinblandning av vassleproteinkoncentrat och vassleproteinisolat från MJÖLK (innehållande laktoglobulin, laktoferrin, laktalbumin och immunoglobulin proteinfraktioner), taurin, kakaopulver (10-12%), smak (cappuccino, vit choklad, krämig vanilj, kanel), dextros, smakförstärkare (natriumklorid), l-glutamin, konsistensgivare (xantangummi), artificiella sötningsmedel (acesulfam-k, sukralos), l-leucin, matsmältningsenzymer (bromelain, papain).\n\nIngredienser Strawberry White Chocolate: Proteinblandning av vassleproteinkoncentrat och vassleproteinisolat från MJÖLK (innehållande laktoglobulin, laktoferrin, laktalbumin och immunoglobulin proteinfraktioner), taurin, smak (vit choklad, jordgubb), dextros, smakförstärkare (natriumklorid), l-glutamin, konsistensgivare (xantangummi), artificiella sötningsmedel (acesulfam-k, sukralos), l-leucin, matsmältningsenzymer (bromelain, papain).\n\nIngredienser Vanilla Very Berry: Proteinblandning av vassleproteinkoncentrat och vassleproteinisolat från MJÖLK (innehållande laktoglobulin, laktoferrin, laktalbumin och immunoglobulin proteinfraktioner), taurin, smak (krämig vanilj, hallon, vilda bär), dextros, smakförstärkare (natriumklorid), l-glutamin, konsistensgivare (xantangummi), artificiella sötningsmedel (acesulfam-k, sukralos), l-leucin, matsmältningsenzymer (bromelain, papain)."
+      }
+    },
+    "meta": {
+      "source": "url_enhanced_claude",
+      "verified": false,
+      "lastUpdated": "2026-02-17T06:52:02.831Z",
+      "sourceMap": {
+        "sourceURL": "https://www.tillskottsbolaget.se/sv/scitec-100-whey-protein-professional-5kg",
+        "extractionMethod": "puppeteer_claude"
+      }
+    }
   }
 ]

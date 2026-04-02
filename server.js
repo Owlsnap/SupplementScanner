@@ -3,6 +3,7 @@ import cors from 'cors';
 import OpenAI from 'openai';
 import puppeteer from 'puppeteer';
 import dotenv from 'dotenv';
+import { createClient } from '@supabase/supabase-js';
 
 // Load environment variables
 dotenv.config({ path: '.env.local' });
@@ -39,6 +40,42 @@ if (process.env.NODE_ENV !== 'production') {
   app.use(cors(corsOptions));
 }
 app.use(express.json({ limit: '50mb' })); // Increase payload limit for large HTML extractions
+
+// Lazy Supabase clients (env vars aren't available until dotenv.config runs)
+let _supabaseAuth = null;
+let _supabaseService = null;
+
+function getSupabaseAuth() {
+  if (!_supabaseAuth) {
+    _supabaseAuth = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_ANON_KEY);
+  }
+  return _supabaseAuth;
+}
+
+function getSupabaseService() {
+  if (!_supabaseService) {
+    _supabaseService = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_SERVICE_ROLE_KEY);
+  }
+  return _supabaseService;
+}
+
+// Auth middleware: verifies Bearer token via Supabase and sets req.user
+async function requireAuth(req, res, next) {
+  const authHeader = req.headers.authorization;
+  if (!authHeader || !authHeader.startsWith('Bearer ')) {
+    return res.status(401).json({ success: false, error: 'Missing or invalid authorization header' });
+  }
+
+  const token = authHeader.slice(7);
+  const { data: { user }, error } = await getSupabaseAuth().auth.getUser(token);
+
+  if (error || !user) {
+    return res.status(401).json({ success: false, error: 'Invalid or expired token' });
+  }
+
+  req.user = user;
+  next();
+}
 
 // Simple health check
 app.get('/', (req, res) => {
@@ -617,6 +654,7 @@ app.post('/api/ingest/url', async (req, res) => {
       servingsPerContainer: extractedData.servingsPerContainer || null,
       servingSize: extractedData.servingSize || { amount: null, unit: null },
       ingredients: extractedData.ingredients || [],
+      ingredientListText: extractedData.ingredientListText || null,
       quality: {
         underDosed: null,
         overDosed: null,
@@ -634,13 +672,14 @@ app.post('/api/ingest/url', async (req, res) => {
       }
     };
 
-    // Run quality analysis
+    // Run quality analysis (passes category/subCategory/ingredientListText for protein analysis)
     const qualityAnalysis = QualityAnalyzer.analyzeQuality(supplementData);
     supplementData.quality = {
       underDosed: qualityAnalysis.underDosed,
       overDosed: qualityAnalysis.overDosed,
       fillerRisk: qualityAnalysis.fillerRisk,
-      bioavailability: qualityAnalysis.bioavailability
+      bioavailability: qualityAnalysis.bioavailability,
+      proteinQuality: qualityAnalysis.proteinQuality || null
     };
 
     // Generate barcode (use crypto hash of URL for uniqueness)
@@ -665,6 +704,7 @@ app.post('/api/ingest/url', async (req, res) => {
           completeness: validation.completeness,
           validation: validation
         },
+        qualityAnalysis: qualityAnalysis,
         message: 'Product successfully extracted and saved to database'
       });
     } else {
@@ -1092,6 +1132,182 @@ app.get('/api/stats', async (req, res) => {
   }
 });
 
+// ====== USER ENDPOINTS (require auth) ======
+
+// GET /api/user/profile - Get current user's profile
+app.get('/api/user/profile', requireAuth, async (req, res) => {
+  try {
+    const { data, error } = await getSupabaseService()
+      .from('profiles')
+      .select('*')
+      .eq('id', req.user.id)
+      .single();
+
+    if (error) throw error;
+
+    res.json({ success: true, data });
+  } catch (error) {
+    console.error('Profile fetch error:', error);
+    res.status(500).json({ success: false, error: 'Failed to fetch profile' });
+  }
+});
+
+// PUT /api/user/profile - Update current user's profile
+app.put('/api/user/profile', requireAuth, async (req, res) => {
+  try {
+    const { display_name, avatar_url } = req.body;
+    const updates = {};
+    if (display_name !== undefined) updates.display_name = display_name;
+    if (avatar_url !== undefined) updates.avatar_url = avatar_url;
+
+    const { data, error } = await getSupabaseService()
+      .from('profiles')
+      .update(updates)
+      .eq('id', req.user.id)
+      .select()
+      .single();
+
+    if (error) throw error;
+
+    res.json({ success: true, data });
+  } catch (error) {
+    console.error('Profile update error:', error);
+    res.status(500).json({ success: false, error: 'Failed to update profile' });
+  }
+});
+
+// GET /api/user/scans - Get user's saved scans
+app.get('/api/user/scans', requireAuth, async (req, res) => {
+  try {
+    const { data, error } = await getSupabaseService()
+      .from('saved_scans')
+      .select('*, products(product_name, brand, category)')
+      .eq('user_id', req.user.id)
+      .order('scanned_at', { ascending: false });
+
+    if (error) throw error;
+
+    res.json({ success: true, data });
+  } catch (error) {
+    console.error('Scans fetch error:', error);
+    res.status(500).json({ success: false, error: 'Failed to fetch scans' });
+  }
+});
+
+// POST /api/user/scans - Save a scan
+app.post('/api/user/scans', requireAuth, async (req, res) => {
+  try {
+    const { product_id, barcode, notes } = req.body;
+
+    if (!barcode) {
+      return res.status(400).json({ success: false, error: 'barcode is required' });
+    }
+
+    const { data, error } = await getSupabaseService()
+      .from('saved_scans')
+      .upsert(
+        {
+          user_id: req.user.id,
+          product_id: product_id || null,
+          barcode,
+          notes: notes || null,
+          scanned_at: new Date().toISOString()
+        },
+        { onConflict: 'user_id,barcode' }
+      )
+      .select()
+      .single();
+
+    if (error) throw error;
+
+    res.json({ success: true, data });
+  } catch (error) {
+    console.error('Scan save error:', error);
+    res.status(500).json({ success: false, error: 'Failed to save scan' });
+  }
+});
+
+// DELETE /api/user/scans/:barcode - Delete a saved scan
+app.delete('/api/user/scans/:barcode', requireAuth, async (req, res) => {
+  try {
+    const { error } = await getSupabaseService()
+      .from('saved_scans')
+      .delete()
+      .eq('user_id', req.user.id)
+      .eq('barcode', req.params.barcode);
+
+    if (error) throw error;
+
+    res.json({ success: true, message: 'Scan deleted' });
+  } catch (error) {
+    console.error('Scan delete error:', error);
+    res.status(500).json({ success: false, error: 'Failed to delete scan' });
+  }
+});
+
+// GET /api/user/favorites - Get user's favorites
+app.get('/api/user/favorites', requireAuth, async (req, res) => {
+  try {
+    const { data, error } = await getSupabaseService()
+      .from('favorites')
+      .select('*, products(product_name, brand, category, barcode)')
+      .eq('user_id', req.user.id)
+      .order('created_at', { ascending: false });
+
+    if (error) throw error;
+
+    res.json({ success: true, data });
+  } catch (error) {
+    console.error('Favorites fetch error:', error);
+    res.status(500).json({ success: false, error: 'Failed to fetch favorites' });
+  }
+});
+
+// POST /api/user/favorites - Add a favorite
+app.post('/api/user/favorites', requireAuth, async (req, res) => {
+  try {
+    const { product_id } = req.body;
+
+    if (!product_id) {
+      return res.status(400).json({ success: false, error: 'product_id is required' });
+    }
+
+    const { data, error } = await getSupabaseService()
+      .from('favorites')
+      .upsert(
+        { user_id: req.user.id, product_id },
+        { onConflict: 'user_id,product_id' }
+      )
+      .select()
+      .single();
+
+    if (error) throw error;
+
+    res.json({ success: true, data });
+  } catch (error) {
+    console.error('Favorite add error:', error);
+    res.status(500).json({ success: false, error: 'Failed to add favorite' });
+  }
+});
+
+// DELETE /api/user/favorites/:productId - Remove a favorite
+app.delete('/api/user/favorites/:productId', requireAuth, async (req, res) => {
+  try {
+    const { error } = await getSupabaseService()
+      .from('favorites')
+      .delete()
+      .eq('user_id', req.user.id)
+      .eq('product_id', req.params.productId);
+
+    if (error) throw error;
+
+    res.json({ success: true, message: 'Favorite removed' });
+  } catch (error) {
+    console.error('Favorite delete error:', error);
+    res.status(500).json({ success: false, error: 'Failed to remove favorite' });
+  }
+});
+
 app.listen(PORT, '0.0.0.0', () => {
   console.log(`🚀 AI Extraction API running on http://localhost:${PORT}`);
   console.log(`🌐 Available on network: http://192.168.0.31:${PORT}`);
@@ -1108,6 +1324,10 @@ app.listen(PORT, '0.0.0.0', () => {
   console.log('  POST /api/correction/{barcode} - Manual data correction');
   console.log('  GET  /api/search - Search supplements database');
   console.log('  GET  /api/stats - Database statistics');
+  console.log('  🔐 GET/PUT /api/user/profile - User profile (auth required)');
+  console.log('  🔐 GET/POST/DELETE /api/user/scans - Saved scans (auth required)');
+  console.log('  🔐 GET/POST/DELETE /api/user/favorites - Favorites (auth required)');
   console.log('\n🎯 SupplementScanner Mobile API Ready!');
   console.log('🔑 Anthropic API Key loaded:', process.env.ANTHROPIC_API_KEY ? 'Yes ✨' : 'No (enhanced extraction disabled)');
+  console.log('🗄️ Supabase:', process.env.SUPABASE_URL ? 'Configured ✨' : 'Not configured');
 });

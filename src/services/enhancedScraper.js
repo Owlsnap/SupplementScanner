@@ -17,11 +17,13 @@ import Anthropic from '@anthropic-ai/sdk';
 export class EnhancedSupplementScraper {
   constructor(apiKey) {
     this.anthropic = new Anthropic({
-      apiKey: apiKey || process.env.ANTHROPIC_API_KEY
+      apiKey: apiKey || process.env.ANTHROPIC_API_KEY,
+      dangerouslyAllowBrowser: true // Safe: runs on Node.js server, but JSDOM globals trigger browser detection
     });
 
-    // Jina Reader API endpoint (free)
+    // Jina Reader API endpoint
     this.jinaBaseURL = 'https://r.jina.ai/';
+    this.jinaApiKey = process.env.JINA_API_KEY || null;
   }
 
   /**
@@ -35,14 +37,18 @@ export class EnhancedSupplementScraper {
 
       console.log('🔍 Fetching with Jina Reader:', url);
 
-      const response = await fetch(jinaUrl, {
-        headers: {
-          'Accept': 'text/plain',
-          'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
-          'X-Return-Format': 'markdown',
-          'X-With-Generated-Alt': 'true' // Include image alt text
-        }
-      });
+      const headers = {
+        'Accept': 'text/plain',
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+        'X-Return-Format': 'markdown',
+        'X-With-Generated-Alt': 'true'
+      };
+
+      if (this.jinaApiKey) {
+        headers['Authorization'] = `Bearer ${this.jinaApiKey}`;
+      }
+
+      const response = await fetch(jinaUrl, { headers });
 
       if (!response.ok) {
         throw new Error(`Jina Reader failed: ${response.status} ${response.statusText}`);
