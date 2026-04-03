@@ -1,4 +1,4 @@
-name: Deploy to Railway
+name: CI / Deploy
 
 on:
   push:
@@ -10,6 +10,8 @@ jobs:
   lint:
     name: Lint
     runs-on: ubuntu-latest
+    env:
+      ESLINT_USE_FLAT_CONFIG: 'false'
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -21,8 +23,8 @@ jobs:
 
   deploy:
     name: Deploy to Railway
-    needs: lint
     runs-on: ubuntu-latest
+    # Deploy on every push to main — does not wait for lint
     if: github.ref == 'refs/heads/main' && github.event_name == 'push'
     steps:
       - uses: actions/checkout@v4

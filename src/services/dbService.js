@@ -173,7 +173,7 @@ export class DatabaseService {
 
   static async search(query, options = {}) {
     try {
-      let q = supabase.from('products').select('*');
+      let q = getSupabase().from('products').select('*');
 
       // Text search on product_name and brand using ilike
       if (query && query.trim()) {
@@ -250,6 +250,21 @@ export class DatabaseService {
       return { success: true, data: stats };
     } catch (error) {
       return { success: false, error: `Failed to get stats: ${error.message}` };
+    }
+  }
+
+  static async deleteSupplement(barcode) {
+    try {
+      const { error } = await getSupabase()
+        .from('products')
+        .delete()
+        .eq('barcode', barcode);
+
+      if (error) throw error;
+
+      return { success: true };
+    } catch (error) {
+      return { success: false, error: `Failed to delete supplement: ${error.message}` };
     }
   }
 }
