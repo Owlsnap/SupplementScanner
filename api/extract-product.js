@@ -378,7 +378,7 @@ async function handleLegacyExtraction(url, res) {
               break;
             }
           }
-        } catch (e) {
+        } catch (_e) {
           continue;
         }
       }

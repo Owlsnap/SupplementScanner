@@ -4,6 +4,13 @@ import rateLimit from 'express-rate-limit';
 import OpenAI from 'openai';
 import puppeteer from 'puppeteer';
 import dotenv from 'dotenv';
+
+// Use system Chromium on Railway (set PUPPETEER_EXECUTABLE_PATH env var), fall back to bundled
+const PUPPETEER_LAUNCH_OPTS = {
+  headless: true,
+  args: ['--no-sandbox', '--disable-setuid-sandbox', '--disable-dev-shm-usage'],
+  ...(process.env.PUPPETEER_EXECUTABLE_PATH ? { executablePath: process.env.PUPPETEER_EXECUTABLE_PATH } : {})
+};
 import { createClient } from '@supabase/supabase-js';
 
 // Load environment variables
@@ -205,10 +212,7 @@ app.post('/api/extract-product', async (req, res) => {
       const { extractSupplementDataStructured } = await import('./src/extraction/multiLayerExtractor.js');
       
       // Get HTML using puppeteer 
-      const browser = await puppeteer.launch({
-        headless: true,
-        args: ['--no-sandbox', '--disable-setuid-sandbox']
-      });
+      const browser = await puppeteer.launch(PUPPETEER_LAUNCH_OPTS);
       const page = await browser.newPage();
       await page.setViewport({ width: 1280, height: 800 });
       await page.goto(url, { waitUntil: 'networkidle2', timeout: 30000 });
@@ -264,10 +268,7 @@ app.post('/api/extract-product', async (req, res) => {
       const { extractSupplementDataParallel } = await import('./src/extraction/multiLayerExtractor.js');
       
       // Get HTML using puppeteer 
-      const browser = await puppeteer.launch({
-        headless: true,
-        args: ['--no-sandbox', '--disable-setuid-sandbox']
-      });
+      const browser = await puppeteer.launch(PUPPETEER_LAUNCH_OPTS);
       const page = await browser.newPage();
       await page.setViewport({ width: 1280, height: 800 });
       await page.goto(url, { waitUntil: 'networkidle2', timeout: 30000 });
@@ -312,16 +313,7 @@ app.post('/api/extract-product', async (req, res) => {
   try {
     console.log('🚀 Launching browser...');
     // Launch browser and take screenshot
-    const browser = await puppeteer.launch({ 
-      headless: true,
-      args: [
-        '--no-sandbox', 
-        '--disable-setuid-sandbox', 
-        '--disable-blink-features=AutomationControlled',
-        '--disable-dev-shm-usage',
-        '--disable-gpu'
-      ]
-    });
+    const browser = await puppeteer.launch(PUPPETEER_LAUNCH_OPTS);
     console.log('✅ Browser launched successfully');
     const page = await browser.newPage();
     

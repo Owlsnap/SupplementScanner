@@ -56,7 +56,7 @@ export default async function handler(req, res) {
     const correctionData = { ...updates };
     
     // Track which fields are being corrected
-    const sourceMap = { ...existing.data.meta.sourceMap } || {};
+    const sourceMap = { ...(existing.data.meta.sourceMap || {}) };
     
     // Update source tracking for corrected fields
     const userCorrectedFields = [
@@ -65,7 +65,7 @@ export default async function handler(req, res) {
     ];
     
     for (const field of userCorrectedFields) {
-      if (correctionData.hasOwnProperty(field)) {
+      if (Object.prototype.hasOwnProperty.call(correctionData, field)) {
         sourceMap[field] = 'user';
       }
     }
