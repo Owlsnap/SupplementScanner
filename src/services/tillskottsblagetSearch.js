@@ -13,9 +13,10 @@ export class TillskottsblagetSearchService {
     try {
       console.log(`🔍 Searching tillskottsbolaget.se for: "${productName}" by "${brand || 'any brand'}"`);
       
-      browser = await puppeteer.launch({ 
+      browser = await puppeteer.launch({
         headless: true,
-        args: ['--no-sandbox', '--disable-setuid-sandbox']
+        args: ['--no-sandbox', '--disable-setuid-sandbox'],
+        ...(process.env.PUPPETEER_EXECUTABLE_PATH ? { executablePath: process.env.PUPPETEER_EXECUTABLE_PATH } : {})
       });
       
       const page = await browser.newPage();
