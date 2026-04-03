@@ -1,5 +1,6 @@
 import express from 'express';
 import cors from 'cors';
+import rateLimit from 'express-rate-limit';
 import OpenAI from 'openai';
 import puppeteer from 'puppeteer';
 import dotenv from 'dotenv';
@@ -40,6 +41,12 @@ if (process.env.NODE_ENV !== 'production') {
   app.use(cors(corsOptions));
 }
 app.use(express.json({ limit: '50mb' })); // Increase payload limit for large HTML extractions
+
+// Rate limiting
+const generalLimiter = rateLimit({ windowMs: 15 * 60 * 1000, max: 100, standardHeaders: true, legacyHeaders: false });
+const ingestLimiter = rateLimit({ windowMs: 15 * 60 * 1000, max: 10, standardHeaders: true, legacyHeaders: false, message: { success: false, error: 'Too many requests, try again later.' } });
+app.use('/api', generalLimiter);
+app.use('/api/ingest', ingestLimiter);
 
 // Lazy Supabase clients (env vars aren't available until dotenv.config runs)
 let _supabaseAuth = null;
