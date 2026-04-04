@@ -1,53 +1,47 @@
-/**
- * Below are the colors that are used in the app. The colors are defined in the light and dark mode.
- * There are many other ways to style your app. For example, [Nativewind](https://www.nativewind.dev/), [Tamagui](https://tamagui.dev/), [unistyles](https://reactnativeunistyles.vercel.app), etc.
- */
-
-import { Platform } from 'react-native';
-
-const tintColorLight = '#0a7ea4';
-const tintColorDark = '#fff';
-
 export const Colors = {
+  primary: '#00685f',
+  primaryContainer: '#008378',
+  primaryFixed: '#89f5e7',
+  primaryFixedDim: '#6bd8cb',
+  onPrimary: '#ffffff',
+  onPrimaryFixed: '#00201d',
+  onPrimaryFixedVariant: '#005049',
+  surface: '#f5faf8',
+  surfaceContainerLowest: '#ffffff',
+  surfaceContainerLow: '#f0f5f2',
+  surfaceContainer: '#eaefed',
+  surfaceContainerHigh: '#e4e9e7',
+  surfaceContainerHighest: '#dee4e1',
+  onSurface: '#171d1c',
+  onSurfaceVariant: '#3d4947',
+  outline: '#6d7a77',
+  outlineVariant: '#bcc9c6',
+  secondary: '#3f6560',
+  secondaryContainer: '#c2ebe3',
+  onSecondaryContainer: '#456b66',
+  tertiary: '#924628',
+  tertiaryFixed: '#ffdbce',
+  tertiaryFixedDim: '#ffb59a',
+  onTertiaryFixed: '#370e00',
+  onTertiaryFixedVariant: '#773215',
+  error: '#ba1a1a',
+  errorContainer: '#ffdad6',
+  onErrorContainer: '#93000a',
+  // Legacy shape for backward compat
   light: {
-    text: '#11181C',
-    background: '#fff',
-    tint: tintColorLight,
-    icon: '#687076',
-    tabIconDefault: '#687076',
-    tabIconSelected: tintColorLight,
+    text: '#171d1c',
+    background: '#f5faf8',
+    tint: '#00685f',
+    icon: '#6d7a77',
+    tabIconDefault: '#6d7a77',
+    tabIconSelected: '#00685f',
   },
   dark: {
     text: '#ECEDEE',
     background: '#151718',
-    tint: tintColorDark,
+    tint: '#6bd8cb',
     icon: '#9BA1A6',
     tabIconDefault: '#9BA1A6',
-    tabIconSelected: tintColorDark,
+    tabIconSelected: '#6bd8cb',
   },
 };
-
-export const Fonts = Platform.select({
-  ios: {
-    /** iOS `UIFontDescriptorSystemDesignDefault` */
-    sans: 'system-ui',
-    /** iOS `UIFontDescriptorSystemDesignSerif` */
-    serif: 'ui-serif',
-    /** iOS `UIFontDescriptorSystemDesignRounded` */
-    rounded: 'ui-rounded',
-    /** iOS `UIFontDescriptorSystemDesignMonospaced` */
-    mono: 'ui-monospace',
-  },
-  default: {
-    sans: 'normal',
-    serif: 'serif',
-    rounded: 'normal',
-    mono: 'monospace',
-  },
-  web: {
-    sans: "system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif",
-    serif: "Georgia, 'Times New Roman', serif",
-    rounded: "'SF Pro Rounded', 'Hiragino Maru Gothic ProN', Meiryo, 'MS PGothic', sans-serif",
-    mono: "SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace",
-  },
-});
