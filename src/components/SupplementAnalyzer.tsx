@@ -1,9 +1,15 @@
 import React, { useState, useEffect } from "react";
-import { Bot, Plus, Link, Trash2, Menu, Target } from "lucide-react";
+import { Robot, Plus, LinkSimple, Trash, List, Target, BookOpen, Books } from "@phosphor-icons/react";
 import CookieBanner from './CookieBanner';
 import IngredientQualityComparison from './IngredientQualityComparison';
 import RecommendationsPage from '../pages/RecommendationsPage';
 import GuidePage from '../pages/GuidePage';
+import EncyclopediaPage from '../pages/EncyclopediaPage';
+import SupplementInfoPage from '../pages/SupplementInfoPage';
+import DeepDivePage from '../pages/DeepDivePage';
+import { encyclopediaSupplements } from '../data/encyclopediaData';
+import { LOGO_ICON_URI } from '../constants/logos';
+import type { EncyclopedialSupplement } from '../data/encyclopediaData';
 import {
   validateSupplementProduct,
   analyzeSupplementURL,
@@ -133,8 +139,11 @@ export default function SupplementAnalyzer(): JSX.Element {
   const [toasts, setToasts] = useState<Array<{id: number, message: string, type: string}>>([]);
   const [extractingProducts, setExtractingProducts] = useState<Set<number>>(new Set());
   const [analyzedSupplements, setAnalyzedSupplements] = useState<Record<string, Product[]>>({});
-  const [currentPage, setCurrentPage] = useState<string>('scanner');
+  const [currentPage, setCurrentPage] = useState<string>('encyclopedia');
   const [showMenu, setShowMenu] = useState<boolean>(false);
+  const [deepDiveSlug, setDeepDiveSlug] = useState<string | null>(null);
+  const [deepDiveSupp, setDeepDiveSupp] = useState<EncyclopedialSupplement | null>(null);
+  const [infoSupp, setInfoSupp] = useState<EncyclopedialSupplement | null>(null);
 
   // Close menu when clicking outside
   useEffect(() => {
@@ -315,230 +324,129 @@ export default function SupplementAnalyzer(): JSX.Element {
     }
   };
 
-  // Handle page navigation
-  if (currentPage === 'recommendations') {
-    return (
-      <RecommendationsPage
-        onBack={() => setCurrentPage('scanner')}
-        products={products}
-      />
-    );
-  }
-
-  if (currentPage === 'guide') {
-    return (
-      <GuidePage
-        onBack={() => setCurrentPage('scanner')}
-      />
-    );
-  }
+  const encyclopediaActive = currentPage === 'encyclopedia' || currentPage === 'suppinfo' || currentPage === 'deepdive';
 
   return (
     <>
       {/* Backdrop Overlay */}
       {showMenu && (
         <div
-          style={{
-            position: 'fixed',
-            top: 0,
-            left: 0,
-            right: 0,
-            bottom: 0,
-            background: 'rgba(0, 0, 0, 0.2)',
-            zIndex: 999,
-            transition: 'all 0.3s ease'
-          }}
+          style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, background: 'rgba(0,0,0,0.2)', zIndex: 999 }}
           onClick={() => setShowMenu(false)}
         />
       )}
 
-      {/* Modern Navbar */}
-      <div
-        style={{
-          position: 'fixed',
-          top: 0,
-          left: 0,
-          right: 0,
-          zIndex: 1000,
-          background: 'rgba(13, 17, 28, 0.8)',
-          backdropFilter: 'blur(20px)',
-          borderBottom: '1px solid rgba(56, 243, 171, 0.1)',
-          padding: '1rem 2rem'
-        }}
-      >
-        <div style={{ maxWidth: '1200px', margin: '0 auto', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
-            <div
+      {/* Navbar — always visible */}
+      <div style={{
+        position: 'fixed', top: 0, left: 0, right: 0, zIndex: 1000,
+        background: '#ffffff', borderBottom: '1px solid #bcc9c6',
+        padding: '0.625rem 1.5rem',
+      }}>
+        <div style={{ maxWidth: '1200px', margin: '0 auto', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '1rem' }}>
+          {/* Logo */}
+          <button
+            onClick={() => setCurrentPage('encyclopedia')}
+            style={{ background: 'none', border: 'none', cursor: 'pointer', padding: 0, display: 'flex', alignItems: 'center', gap: '0.625rem', flexShrink: 0 }}
+          >
+            <img src={LOGO_ICON_URI} alt="SuppScanner" style={{ height: '44px', width: 'auto' }} />
+            <span style={{ fontFamily: "'Manrope', sans-serif", fontWeight: 800, fontSize: '1.3125rem', color: '#085C44', letterSpacing: '-0.4px' }}>
+              SuppScanner
+            </span>
+          </button>
+
+          {/* Tab buttons */}
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.375rem', flexWrap: 'nowrap' }}>
+            <button
+              onClick={() => { setCurrentPage('encyclopedia'); setShowMenu(false); }}
               style={{
-                background: 'linear-gradient(135deg, #38f3ab 0%, #1dd1a1 50%, #0891b2 100%)',
-                borderRadius: '12px',
-                padding: '0.75rem',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                width: '48px',
-                height: '48px'
+                display: 'flex', alignItems: 'center', gap: '0.375rem',
+                padding: '0.5rem 0.875rem', borderRadius: '28px',
+                border: encyclopediaActive ? 'none' : '1.5px solid #bcc9c6',
+                background: encyclopediaActive ? '#00685f' : 'transparent',
+                color: encyclopediaActive ? '#ffffff' : '#6d7a77',
+                fontFamily: "'Inter', sans-serif", fontWeight: 600,
+                fontSize: '0.875rem', cursor: 'pointer',
+                transition: 'all 0.15s ease', whiteSpace: 'nowrap',
               }}
             >
-              <Bot size={24} color="#0f172a" />
-            </div>
-            <div>
-              <h1 style={{
-                margin: 0,
-                fontSize: '1.5rem',
-                fontWeight: 'bold',
-                background: 'linear-gradient(135deg, #38f3ab 0%, #1dd1a1 100%)',
-                WebkitBackgroundClip: 'text',
-                WebkitTextFillColor: 'transparent',
-                backgroundClip: 'text'
-              }}>
-                SupplementScanner
-              </h1>
-              <p style={{ margin: 0, fontSize: '0.875rem', color: '#94a3b8' }}>
-                Quality & Dosage Analyzer
-              </p>
-            </div>
-          </div>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
-            {/* Menu Dropdown */}
-            <div style={{ position: 'relative' }} data-menu>
+              <Books size={15} />
+              <span>Encyclopedia</span>
+            </button>
+
+            <button
+              onClick={() => { setCurrentPage('scanner'); setShowMenu(false); }}
+              style={{
+                display: 'flex', alignItems: 'center', gap: '0.375rem',
+                padding: '0.5rem 0.875rem', borderRadius: '28px',
+                border: currentPage === 'scanner' ? 'none' : '1.5px solid #bcc9c6',
+                background: currentPage === 'scanner' ? '#00685f' : 'transparent',
+                color: currentPage === 'scanner' ? '#ffffff' : '#6d7a77',
+                fontFamily: "'Inter', sans-serif", fontWeight: 600,
+                fontSize: '0.875rem', cursor: 'pointer',
+                transition: 'all 0.15s ease', whiteSpace: 'nowrap',
+              }}
+            >
+              <LinkSimple size={15} />
+              <span>URL Scanner</span>
+            </button>
+
+            <button
+              onClick={() => { setCurrentPage('recommendations'); setShowMenu(false); }}
+              style={{
+                display: 'flex', alignItems: 'center', gap: '0.375rem',
+                padding: '0.5rem 0.875rem', borderRadius: '28px',
+                border: currentPage === 'recommendations' ? 'none' : '1.5px solid #bcc9c6',
+                background: currentPage === 'recommendations' ? '#00685f' : 'transparent',
+                color: currentPage === 'recommendations' ? '#ffffff' : '#6d7a77',
+                fontFamily: "'Inter', sans-serif", fontWeight: 600,
+                fontSize: '0.875rem', cursor: 'pointer',
+                transition: 'all 0.15s ease', whiteSpace: 'nowrap',
+              }}
+            >
+              <Target size={15} />
+              <span>Goals</span>
+            </button>
+
+            {/* Guide — menu icon */}
+            <div style={{ position: 'relative', marginLeft: '0.25rem' }} data-menu>
               <button
                 onClick={() => setShowMenu(!showMenu)}
                 style={{
-                  background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-                  border: 'none',
-                  borderRadius: '12px',
-                  padding: '1.25rem',
-                  color: '#ffffff',
-                  fontWeight: 'bold',
-                  cursor: 'pointer',
-                  fontSize: '0.875rem',
-                  transition: 'all 0.3s ease',
-                  boxShadow: '0 4px 20px rgba(102, 126, 234, 0.3)',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center'
+                  display: 'flex', alignItems: 'center', justifyContent: 'center',
+                  width: '36px', height: '36px', borderRadius: '999px',
+                  border: '1.5px solid #bcc9c6', background: 'transparent',
+                  color: '#6d7a77', cursor: 'pointer', transition: 'all 0.15s ease',
                 }}
-                onMouseEnter={(e) => {
-                  e.target.style.transform = 'translateY(-2px)';
-                  e.target.style.boxShadow = '0 8px 32px rgba(102, 126, 234, 0.4)';
-                }}
-                onMouseLeave={(e) => {
-                  e.target.style.transform = 'translateY(0)';
-                  e.target.style.boxShadow = '0 4px 20px rgba(102, 126, 234, 0.3)';
-                }}
+                onMouseEnter={e => { (e.currentTarget as HTMLButtonElement).style.borderColor = '#00685f'; (e.currentTarget as HTMLButtonElement).style.color = '#00685f'; }}
+                onMouseLeave={e => { (e.currentTarget as HTMLButtonElement).style.borderColor = '#bcc9c6'; (e.currentTarget as HTMLButtonElement).style.color = '#6d7a77'; }}
               >
-                <Menu size={16} />
+                <List size={16} />
               </button>
-
-              {/* Dropdown Menu */}
               {showMenu && (
                 <div style={{
-                  position: 'absolute',
-                  top: '100%',
-                  right: 0,
-                  marginTop: '0.75rem',
-                  background: 'rgba(15, 23, 42, 0.95)',
-                  backdropFilter: 'blur(20px)',
-                  borderRadius: '16px',
-                  border: '1px solid rgba(148, 163, 184, 0.1)',
-                  boxShadow: '0 20px 60px rgba(0, 0, 0, 0.5)',
-                  overflow: 'hidden',
-                  minWidth: '280px',
-                  zIndex: 1001
+                  position: 'absolute', top: 'calc(100% + 0.5rem)', right: 0,
+                  background: '#ffffff', border: '1px solid #e4e9e7',
+                  borderRadius: '16px', boxShadow: '0 8px 24px rgba(0,0,0,0.12)',
+                  overflow: 'hidden', minWidth: '220px', zIndex: 1001,
                 }}>
                   <button
-                    onClick={() => {
-                      setCurrentPage('recommendations');
-                      setShowMenu(false);
-                    }}
+                    onClick={() => { setCurrentPage('guide'); setShowMenu(false); }}
                     style={{
-                      width: '100%',
-                      padding: '1.5rem 2rem',
-                      background: 'transparent',
-                      border: 'none',
-                      color: '#f1f5f9',
-                      fontSize: '1rem',
-                      fontWeight: '600',
-                      cursor: 'pointer',
-                      display: 'flex',
-                      alignItems: 'center',
-                      gap: '1rem',
-                      transition: 'all 0.3s ease',
-                      textAlign: 'left'
+                      width: '100%', padding: '1rem 1.25rem',
+                      background: 'transparent', border: 'none', color: '#171d1c',
+                      fontSize: '0.9375rem', fontFamily: "'Inter', sans-serif",
+                      fontWeight: 600, cursor: 'pointer',
+                      display: 'flex', alignItems: 'center', gap: '0.75rem',
+                      textAlign: 'left', transition: 'background 0.15s ease',
                     }}
-                    onMouseEnter={(e) => {
-                      const button = e.currentTarget;
-                      button.style.background = 'rgba(56, 243, 171, 0.1)';
-                      const textElements = button.querySelectorAll('div');
-                      textElements.forEach(el => el.style.color = '#38f3ab');
-                    }}
-                    onMouseLeave={(e) => {
-                      const button = e.currentTarget;
-                      button.style.background = 'transparent';
-                      const textElements = button.querySelectorAll('div');
-                      textElements.forEach(el => {
-                        if (el.style.fontSize === '0.75rem') {
-                          el.style.color = '#94a3b8';
-                        } else {
-                          el.style.color = '#f1f5f9';
-                        }
-                      });
-                    }}
+                    onMouseEnter={e => { (e.currentTarget as HTMLButtonElement).style.background = '#f0f5f2'; }}
+                    onMouseLeave={e => { (e.currentTarget as HTMLButtonElement).style.background = 'transparent'; }}
                   >
-                    <Target size={20} />
+                    <Robot size={18} color="#6d7a77" />
                     <div>
-                      <div style={{ marginBottom: '0.25rem' }}>Supplement Recommendations</div>
-                      <div style={{ fontSize: '0.75rem', color: '#94a3b8', fontWeight: '400' }}>
-                        Find supplements for your health goals
-                      </div>
-                    </div>
-                  </button>
-
-                  <button
-                    onClick={() => {
-                      setCurrentPage('guide');
-                      setShowMenu(false);
-                    }}
-                    style={{
-                      width: '100%',
-                      padding: '1.5rem 2rem',
-                      background: 'transparent',
-                      border: 'none',
-                      color: '#f1f5f9',
-                      fontSize: '1rem',
-                      fontWeight: '600',
-                      cursor: 'pointer',
-                      display: 'flex',
-                      alignItems: 'center',
-                      gap: '1rem',
-                      transition: 'all 0.3s ease',
-                      textAlign: 'left'
-                    }}
-                    onMouseEnter={(e) => {
-                      const button = e.currentTarget;
-                      button.style.background = 'rgba(56, 243, 171, 0.1)';
-                      const textElements = button.querySelectorAll('div');
-                      textElements.forEach(el => el.style.color = '#38f3ab');
-                    }}
-                    onMouseLeave={(e) => {
-                      const button = e.currentTarget;
-                      button.style.background = 'transparent';
-                      const textElements = button.querySelectorAll('div');
-                      textElements.forEach(el => {
-                        if (el.style.fontSize === '0.75rem') {
-                          el.style.color = '#94a3b8';
-                        } else {
-                          el.style.color = '#f1f5f9';
-                        }
-                      });
-                    }}
-                  >
-                    <Bot size={20} />
-                    <div>
-                      <div style={{ marginBottom: '0.25rem' }}>Guide</div>
-                      <div style={{ fontSize: '0.75rem', color: '#94a3b8', fontWeight: '400' }}>
-                        How to use the AI extraction feature
+                      <div>Guide</div>
+                      <div style={{ fontSize: '0.75rem', color: '#6d7a77', fontWeight: 400, marginTop: '0.125rem' }}>
+                        How to use AI extraction
                       </div>
                     </div>
                   </button>
@@ -549,183 +457,178 @@ export default function SupplementAnalyzer(): JSX.Element {
         </div>
       </div>
 
-      {/* Main Content */}
-      <div
-        style={{
-          background: 'linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #0f172a 100%)',
-          minHeight: 'calc(100vh + 100px)',
-          padding: '1rem',
-          paddingTop: '120px',
-          paddingBottom: '120px',
-          position: 'relative',
-          filter: showMenu ? 'blur(3px)' : 'none',
-          transition: 'filter 0.3s ease'
-        }}
-      >
-        {/* Animated Background Elements */}
-        <div style={{
-          position: 'absolute',
-          top: 0,
-          left: 0,
-          right: 0,
-          bottom: 0,
-          background: 'radial-gradient(circle at 20% 50%, rgba(56, 243, 171, 0.1) 0%, transparent 50%), radial-gradient(circle at 80% 50%, rgba(8, 145, 178, 0.1) 0%, transparent 50%)',
-          pointerEvents: 'none'
-        }} />
-
-        <div style={{
-          position: 'relative',
-          zIndex: 1,
-          maxWidth: '1200px',
-          margin: '0 auto',
-          width: '100%',
-          padding: window.innerWidth < 768 ? '0 1rem' : '0 2rem',
-          boxSizing: 'border-box'
-        }}>
-        <div
-          style={{
-            background: 'rgba(15, 23, 42, 0.6)',
-            backdropFilter: 'blur(20px)',
-            borderRadius: window.innerWidth < 768 ? '1rem' : '1.5rem',
-            padding: window.innerWidth < 768 ? '1rem' : '2rem',
-            border: '1px solid rgba(56, 243, 171, 0.1)',
-            boxShadow: '0 20px 60px rgba(0, 0, 0, 0.5)',
-            marginBottom: '2rem'
+      {/* Page content — conditionally rendered below fixed navbar */}
+      {currentPage === 'encyclopedia' && (
+        <EncyclopediaPage
+          onOpenInfo={(slug: string) => {
+            const supp = encyclopediaSupplements.find(s => s.slug === slug) ?? null;
+            setInfoSupp(supp);
+            setCurrentPage('suppinfo');
           }}
-        >
-          {/* Header */}
-          <div style={{ marginBottom: '2rem', textAlign: 'center' }}>
+        />
+      )}
+
+      {currentPage === 'suppinfo' && infoSupp && (
+        <SupplementInfoPage
+          slug={infoSupp.slug}
+          name={infoSupp.name}
+          category={infoSupp.category}
+          evidenceTier={infoSupp.evidenceTier}
+          tagline={infoSupp.tagline}
+          primaryUse={infoSupp.primaryUse}
+          typicalDose={infoSupp.typicalDose}
+          bestFor={infoSupp.bestFor}
+          keyFacts={infoSupp.keyFacts}
+          onBack={() => { setCurrentPage('encyclopedia'); setInfoSupp(null); }}
+          onDeepDive={() => { setDeepDiveSlug(infoSupp.slug); setDeepDiveSupp(infoSupp); setCurrentPage('deepdive'); }}
+        />
+      )}
+
+      {currentPage === 'deepdive' && deepDiveSlug && deepDiveSupp && (
+        <DeepDivePage
+          slug={deepDiveSlug}
+          supplementName={deepDiveSupp.name}
+          supplementCategory={deepDiveSupp.category}
+          evidenceTier={deepDiveSupp.evidenceTier}
+          tagline={deepDiveSupp.tagline}
+          onBack={() => { setCurrentPage('suppinfo'); setDeepDiveSlug(null); }}
+          onGoToRecommendations={() => { setDeepDiveSlug(null); setDeepDiveSupp(null); setCurrentPage('recommendations'); }}
+        />
+      )}
+
+      {currentPage === 'recommendations' && (
+        <RecommendationsPage onBack={() => setCurrentPage('scanner')} products={products} />
+      )}
+
+      {currentPage === 'guide' && (
+        <GuidePage onBack={() => setCurrentPage('scanner')} />
+      )}
+
+      {/* Scanner page */}
+      {currentPage === 'scanner' && (
+      <div style={{ background: '#f5faf8', minHeight: '100vh' }}>
+        {/* Page hero — top padding accounts for fixed navbar */}
+        <div style={{
+          background: 'linear-gradient(135deg, #00685f 0%, #3f6560 100%)',
+          padding: 'calc(68px + 2rem) 1.5rem 2.25rem',
+          position: 'relative',
+          overflow: 'hidden',
+        }}>
+          <div style={{ position: 'absolute', right: '-2rem', top: '-2rem', width: '160px', height: '160px', borderRadius: '50%', background: 'rgba(255,255,255,0.06)', pointerEvents: 'none' }} />
+          <div style={{ maxWidth: '1200px', margin: '0 auto', position: 'relative', zIndex: 1 }}>
             <h2 style={{
-              fontSize: '2rem',
-              fontWeight: 'bold',
-              background: 'linear-gradient(135deg, #38f3ab 0%, #1dd1a1 100%)',
-              WebkitBackgroundClip: 'text',
-              WebkitTextFillColor: 'transparent',
-              backgroundClip: 'text',
-              margin: 0,
-              marginBottom: '0.5rem',
+              fontFamily: "'Manrope', sans-serif",
+              fontWeight: 800,
+              fontSize: 'clamp(1.375rem, 3vw, 1.875rem)',
+              color: '#ffffff',
+              margin: '0 0 0.375rem',
+              letterSpacing: '-0.4px',
               display: 'flex',
               alignItems: 'center',
-              justifyContent: 'center',
-              gap: '0.75rem'
+              gap: '0.625rem',
             }}>
-              <Link size={32} />
-              Add Supplement Products
+              <LinkSimple size={24} />
+              URL Scanner
             </h2>
-            <p style={{ color: '#94a3b8', fontSize: '1rem', margin: 0 }}>
-              Paste product URLs to extract information and analyze ingredient quality
+            <p style={{ color: 'rgba(255,255,255,0.8)', fontSize: '0.9375rem', margin: 0, fontFamily: "'Inter', sans-serif" }}>
+              Paste a product URL to extract supplement info and analyze ingredient quality
             </p>
           </div>
+        </div>
 
+        <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '1.75rem 1.5rem 4rem', boxSizing: 'border-box' }}>
           {/* Product Input Cards */}
-          <div
-            style={{
-              display: "grid",
-              gridTemplateColumns: window.innerWidth < 768 ? "1fr" : "repeat(auto-fit, minmax(400px, 1fr))",
-              gap: "1.5rem",
-              marginBottom: '2rem'
-            }}
-          >
+          <div style={{
+            display: 'grid',
+            gridTemplateColumns: 'repeat(auto-fit, minmax(380px, 1fr))',
+            gap: '1rem',
+            marginBottom: '1.5rem',
+          }}>
             {products.map((product) => (
               <div
                 key={product.id}
                 style={{
-                  background: 'rgba(30, 41, 59, 0.6)',
-                  backdropFilter: 'blur(16px)',
-                  borderRadius: '20px',
+                  background: '#ffffff',
+                  borderRadius: '16px',
                   padding: '1.5rem',
-                  border: '1px solid rgba(148, 163, 184, 0.1)',
-                  boxShadow: '0 8px 32px rgba(0, 0, 0, 0.3)',
-                  transition: 'all 0.3s ease'
+                  border: '1.5px solid #e4e9e7',
+                  boxShadow: '0 1px 4px rgba(0,0,0,0.06)',
                 }}
               >
-                {/* Product Header */}
+                {/* Product label */}
                 <div style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  marginBottom: '1.5rem',
-                  gap: '1rem',
-                  flexWrap: 'wrap'
+                  display: 'inline-flex', alignItems: 'center',
+                  background: '#e6f4f1', borderRadius: '999px',
+                  padding: '0.3125rem 0.875rem', marginBottom: '1.25rem',
+                  border: '1px solid #6bd8cb',
                 }}>
-                  <div
-                    style={{
-                      padding: "0.75rem 1.5rem",
-                      borderRadius: "50px",
-                      background: 'rgba(102, 126, 234, 0.2)',
-                      backdropFilter: 'blur(16px)',
-                      border: '1px solid rgba(118, 75, 162, 0.3)',
-                      color: '#e0e7ff',
-                      fontWeight: '700',
-                      fontSize: '1rem'
-                    }}
-                  >
+                  <span style={{
+                    fontFamily: "'Inter', sans-serif", fontWeight: 700,
+                    fontSize: '0.8125rem', color: '#00685f',
+                  }}>
                     Product #{product.id}
-                  </div>
+                  </span>
                 </div>
 
                 {/* URL Input */}
-                <div style={{
-                  marginBottom: '1.5rem',
-                  background: 'linear-gradient(135deg, rgba(56, 243, 171, 0.1) 0%, rgba(29, 209, 161, 0.1) 100%)',
-                  border: '2px solid rgba(56, 243, 171, 0.3)',
-                  borderRadius: '16px',
-                  padding: '1.5rem'
-                }}>
+                <div style={{ marginBottom: '1.25rem' }}>
                   <label style={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    fontSize: '1rem',
-                    fontWeight: '700',
-                    color: '#38f3ab',
-                    marginBottom: '0.75rem'
+                    display: 'flex', alignItems: 'center', gap: '0.375rem',
+                    fontSize: '0.875rem', fontWeight: 600,
+                    color: '#3d4947', marginBottom: '0.625rem',
+                    fontFamily: "'Inter', sans-serif",
                   }}>
-                    <Bot size={20} style={{ marginRight: '0.5rem' }} />
-                    Paste Product URL
+                    <Bot size={16} color="#00685f" />
+                    Product URL
                   </label>
-
-                  <div style={{ display: 'flex', gap: '0.75rem', alignItems: 'end' }}>
+                  <div style={{ display: 'flex', gap: '0.625rem', alignItems: 'center' }}>
                     <input
                       type="url"
-                      placeholder="https://www.tillskottsbolaget.se/product-name..."
+                      placeholder="https://www.tillskottsbolaget.se/..."
                       value={product.url}
                       onChange={(e) => updateProduct(product.id, "url", e.target.value)}
                       style={{
                         flex: 1,
-                        padding: '0.875rem',
-                        background: 'rgba(15, 23, 42, 0.9)',
-                        border: '2px solid rgba(56, 243, 171, 0.3)',
+                        padding: '0.8125rem 1rem',
+                        background: '#f5faf8',
+                        border: '1.5px solid #bcc9c6',
                         borderRadius: '12px',
-                        color: '#f1f5f9',
-                        fontSize: '1rem',
-                        outline: 'none'
+                        color: '#171d1c',
+                        fontSize: '0.875rem',
+                        outline: 'none',
+                        fontFamily: "'Inter', sans-serif",
+                        transition: 'border-color 0.15s ease',
+                        boxSizing: 'border-box',
                       }}
+                      onFocus={e => { (e.target as HTMLInputElement).style.borderColor = '#00685f'; }}
+                      onBlur={e => { (e.target as HTMLInputElement).style.borderColor = '#bcc9c6'; }}
                     />
                     <button
                       onClick={() => extractProductInfo(product.id, product.url)}
                       disabled={!product.url.trim() || extractingProducts.has(product.id)}
                       style={{
-                        padding: "1rem 1.5rem",
-                        background: extractingProducts.has(product.id)
-                          ? "rgba(156, 163, 175, 0.8)"
-                          : "linear-gradient(135deg, #38f3ab 0%, #1dd1a1 100%)",
-                        borderRadius: "12px",
-                        border: "none",
-                        color: extractingProducts.has(product.id) ? "#6b7280" : "#0f172a",
-                        cursor: extractingProducts.has(product.id) ? "not-allowed" : "pointer",
-                        fontSize: "0.875rem",
-                        fontWeight: "600",
+                        padding: '0.8125rem 1.25rem',
+                        background: extractingProducts.has(product.id) ? '#bcc9c6' : '#00685f',
+                        borderRadius: '12px',
+                        border: 'none',
+                        color: '#ffffff',
+                        cursor: extractingProducts.has(product.id) ? 'not-allowed' : 'pointer',
+                        fontSize: '0.875rem',
+                        fontWeight: 700,
                         display: 'flex',
                         alignItems: 'center',
-                        gap: '0.5rem',
-                        whiteSpace: 'nowrap'
+                        gap: '0.375rem',
+                        whiteSpace: 'nowrap',
+                        fontFamily: "'Inter', sans-serif",
+                        transition: 'background 0.15s ease',
+                        flexShrink: 0,
                       }}
                     >
                       {extractingProducts.has(product.id) ? (
-                        <>Extracting...</>
+                        <>Extracting…</>
                       ) : (
                         <>
-                          <Bot size={18} />
+                          <Robot size={16} />
                           Extract
                         </>
                       )}
@@ -733,21 +636,21 @@ export default function SupplementAnalyzer(): JSX.Element {
                   </div>
                 </div>
 
-                {/* Product Display */}
+                {/* Product result */}
                 {product.name && (
                   <div style={{
-                    background: 'rgba(15, 23, 42, 0.8)',
+                    background: '#f5faf8',
                     borderRadius: '12px',
                     padding: '1rem',
-                    marginBottom: '1rem'
+                    marginBottom: '1rem',
+                    border: '1px solid #e4e9e7',
                   }}>
-                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '0.75rem' }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '0.75rem', gap: '0.75rem' }}>
                       <h3 style={{
-                        color: '#f1f5f9',
-                        fontSize: '1.125rem',
-                        fontWeight: '600',
-                        margin: 0,
-                        flex: 1
+                        fontFamily: "'Manrope', sans-serif",
+                        color: '#171d1c', fontSize: '1rem',
+                        fontWeight: 800, margin: 0, flex: 1,
+                        letterSpacing: '-0.2px',
                       }}>
                         {product.name}
                       </h3>
@@ -755,156 +658,130 @@ export default function SupplementAnalyzer(): JSX.Element {
                         <button
                           onClick={() => window.open(product.url, '_blank')}
                           style={{
-                            padding: '0.5rem 1rem',
-                            background: 'linear-gradient(135deg, #38f3ab 0%, #1dd1a1 100%)',
-                            color: '#0f172a',
-                            border: 'none',
-                            borderRadius: '8px',
-                            fontSize: '0.75rem',
-                            fontWeight: '600',
-                            cursor: 'pointer',
-                            display: 'flex',
-                            alignItems: 'center',
-                            gap: '0.25rem'
+                            padding: '0.375rem 0.875rem',
+                            background: '#e6f4f1', color: '#00685f',
+                            border: '1px solid #6bd8cb',
+                            borderRadius: '999px', fontSize: '0.75rem',
+                            fontWeight: 600, cursor: 'pointer',
+                            fontFamily: "'Inter', sans-serif",
+                            flexShrink: 0,
                           }}
                         >
-                          View Product
+                          View ↗
                         </button>
                       )}
                     </div>
-
-                    <div style={{
-                      display: 'grid',
-                      gridTemplateColumns: window.innerWidth < 768 ? 'repeat(2, 1fr)' : 'repeat(3, 1fr)',
-                      gap: '0.75rem',
-                      fontSize: '0.875rem'
-                    }}>
-                      <div>
-                        <span style={{ color: '#94a3b8' }}>Product #:</span>
-                        <div style={{ color: '#a855f7', fontWeight: '700' }}>#{product.id}</div>
+                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '0.5rem', fontSize: '0.8125rem' }}>
+                      <div style={{ background: '#ffffff', borderRadius: '8px', padding: '0.625rem 0.75rem', border: '1px solid #e4e9e7' }}>
+                        <div style={{ color: '#6d7a77', marginBottom: '0.25rem', fontFamily: "'Inter', sans-serif" }}>Quantity</div>
+                        <div style={{ color: '#171d1c', fontWeight: 700, fontFamily: "'Manrope', sans-serif" }}>{product.quantity} {product.unit}</div>
                       </div>
-                      <div>
-                        <span style={{ color: '#94a3b8' }}>Quantity:</span>
-                        <div style={{ color: '#f1f5f9', fontWeight: '600' }}>{product.quantity} {product.unit}</div>
+                      <div style={{ background: '#ffffff', borderRadius: '8px', padding: '0.625rem 0.75rem', border: '1px solid #e4e9e7' }}>
+                        <div style={{ color: '#6d7a77', marginBottom: '0.25rem', fontFamily: "'Inter', sans-serif" }}>Serving</div>
+                        <div style={{ color: '#171d1c', fontWeight: 700, fontFamily: "'Manrope', sans-serif" }}>{product.servingSize || '—'}</div>
                       </div>
-                      <div>
-                        <span style={{ color: '#94a3b8' }}>Active Ingredient:</span>
-                        <div style={{ color: '#38f3ab', fontWeight: '600', textTransform: 'capitalize' }}>
-                          {product.activeIngredient || 'Detecting...'}
+                      <div style={{ background: '#e6f4f1', borderRadius: '8px', padding: '0.625rem 0.75rem', border: '1px solid #6bd8cb' }}>
+                        <div style={{ color: '#3f6560', marginBottom: '0.25rem', fontFamily: "'Inter', sans-serif" }}>Key ingredient</div>
+                        <div style={{ color: '#00685f', fontWeight: 700, textTransform: 'capitalize', fontFamily: "'Manrope', sans-serif" }}>
+                          {product.activeIngredient || 'Detecting…'}
                         </div>
                       </div>
                     </div>
                   </div>
                 )}
 
-                {/* Remove Button */}
+                {/* Remove */}
                 {products.length > 1 && (
-                  <div style={{ display: 'flex', justifyContent: 'center' }}>
-                    <button
-                      onClick={() => removeProduct(product.id)}
-                      style={{
-                        padding: "0.75rem 1.5rem",
-                        background: "linear-gradient(135deg, #ef4444 0%, #dc2626 100%)",
-                        color: "#ffffff",
-                        border: "none",
-                        borderRadius: "12px",
-                        fontSize: "0.875rem",
-                        fontWeight: "600",
-                        cursor: "pointer",
-                        display: "flex",
-                        alignItems: "center",
-                        gap: "0.5rem"
-                      }}
-                    >
-                      <Trash2 size={16} />
-                      Remove
-                    </button>
-                  </div>
+                  <button
+                    onClick={() => removeProduct(product.id)}
+                    style={{
+                      padding: '0.5rem 1rem',
+                      background: 'transparent',
+                      color: '#ba1a1a',
+                      border: '1.5px solid #f9b4b4',
+                      borderRadius: '999px',
+                      fontSize: '0.8125rem',
+                      fontWeight: 600,
+                      cursor: 'pointer',
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '0.375rem',
+                      fontFamily: "'Inter', sans-serif",
+                    }}
+                  >
+                    <Trash size={14} />
+                    Remove
+                  </button>
                 )}
               </div>
             ))}
           </div>
 
           {/* Add Product Button */}
-          <div style={{ textAlign: 'center' }}>
+          <div style={{ textAlign: 'center', marginBottom: '2rem' }}>
             <button
               onClick={addProduct}
               style={{
-                padding: "1rem 2rem",
-                background: "linear-gradient(135deg, #38f3ab 0%, #1dd1a1 100%)",
-                color: "#0f172a",
-                border: "none",
-                borderRadius: "16px",
-                fontSize: "1rem",
-                fontWeight: "bold",
-                cursor: "pointer",
-                display: "flex",
-                alignItems: "center",
-                gap: "0.5rem",
-                margin: "0 auto"
+                padding: '0.8125rem 1.75rem',
+                background: '#ffffff',
+                color: '#00685f',
+                border: '1.5px solid #00685f',
+                borderRadius: '28px',
+                fontSize: '0.9375rem',
+                fontWeight: 700,
+                cursor: 'pointer',
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '0.5rem',
+                fontFamily: "'Inter', sans-serif",
+                transition: 'all 0.15s ease',
               }}
+              onMouseEnter={e => { (e.currentTarget as HTMLButtonElement).style.background = '#00685f'; (e.currentTarget as HTMLButtonElement).style.color = '#ffffff'; }}
+              onMouseLeave={e => { (e.currentTarget as HTMLButtonElement).style.background = '#ffffff'; (e.currentTarget as HTMLButtonElement).style.color = '#00685f'; }}
             >
-              <Plus size={20} />
+              <Plus size={18} />
               Add Another Product
             </button>
           </div>
-        </div>
 
-        {/* Quality Analysis - Shows ingredient forms and bioavailability */}
-        <IngredientQualityComparison analyzedProducts={analyzedSupplements} />
+          {/* Quality Analysis */}
+          <IngredientQualityComparison analyzedProducts={analyzedSupplements} />
         </div>
       </div>
+      )}
 
       {/* Toast Notifications */}
-      <div
-        style={{
-          position: 'fixed',
-          top: window.innerWidth < 768 ? '80px' : '100px',
-          right: window.innerWidth < 768 ? '10px' : '20px',
-          left: window.innerWidth < 768 ? '10px' : 'auto',
-          zIndex: 9999,
-          display: 'flex',
-          flexDirection: 'column',
-          gap: '10px'
-        }}
-      >
+      <div style={{
+        position: 'fixed', top: '80px', right: '20px',
+        zIndex: 9999, display: 'flex', flexDirection: 'column', gap: '8px',
+      }}>
         {toasts.map(toast => (
           <div
             key={toast.id}
-            style={{
-              background: toast.type === 'success'
-                ? 'linear-gradient(135deg, #10b981 0%, #059669 100%)'
-                : 'linear-gradient(135deg, #ef4444 0%, #dc2626 100%)',
-              color: 'white',
-              padding: '12px 16px',
-              borderRadius: '12px',
-              boxShadow: '0 8px 32px rgba(0, 0, 0, 0.3)',
-              backdropFilter: 'blur(16px)',
-              border: '1px solid rgba(255, 255, 255, 0.1)',
-              maxWidth: '350px',
-              fontSize: '0.875rem',
-              fontWeight: '500',
-              animation: 'slideIn 0.3s ease-out',
-              cursor: 'pointer'
-            }}
             onClick={() => setToasts(prev => prev.filter(t => t.id !== toast.id))}
+            style={{
+              background: toast.type === 'success' ? '#00685f' : '#ba1a1a',
+              color: '#ffffff',
+              padding: '0.75rem 1.125rem',
+              borderRadius: '12px',
+              boxShadow: '0 4px 16px rgba(0,0,0,0.15)',
+              maxWidth: '340px',
+              fontSize: '0.875rem',
+              fontWeight: 500,
+              fontFamily: "'Inter', sans-serif",
+              animation: 'slideIn 0.25s ease-out',
+              cursor: 'pointer',
+            }}
           >
             {toast.message}
           </div>
         ))}
       </div>
 
-      {/* Toast Animation Styles */}
       <style>{`
         @keyframes slideIn {
-          from {
-            transform: translateX(100%);
-            opacity: 0;
-          }
-          to {
-            transform: translateX(0);
-            opacity: 1;
-          }
+          from { transform: translateX(100%); opacity: 0; }
+          to   { transform: translateX(0);    opacity: 1; }
         }
       `}</style>
 
