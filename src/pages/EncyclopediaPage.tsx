@@ -53,14 +53,14 @@ export default function EncyclopediaPage({ onOpenInfo }: EncyclopediaPageProps) 
       {/* Hero section — top padding accounts for fixed navbar */}
       <div style={{
         background: 'linear-gradient(135deg, #00685f 0%, #3f6560 100%)',
-        padding: 'calc(68px + 2.5rem) 1.5rem 0',
+        padding: 'calc(100px + 5rem) 1.5rem 5rem',
         position: 'relative',
         overflow: 'hidden',
       }}>
         <div style={{ position: 'absolute', right: '-3rem', top: '-3rem', width: '200px', height: '200px', borderRadius: '50%', background: 'rgba(255,255,255,0.06)', pointerEvents: 'none' }} />
         <div style={{ position: 'absolute', left: '-1rem', bottom: '-2rem', width: '120px', height: '120px', borderRadius: '50%', background: 'rgba(255,255,255,0.04)', pointerEvents: 'none' }} />
 
-        <div style={{ maxWidth: '860px', margin: '0 auto', position: 'relative', zIndex: 1 }}>
+        <div style={{ maxWidth: '860px', margin: '0 auto', position: 'relative', zIndex: 1, textAlign: 'center' }}>
           <div style={{
             display: 'inline-flex', alignItems: 'center', gap: '0.375rem',
             background: 'rgba(255,255,255,0.15)', borderRadius: '999px',
@@ -81,14 +81,14 @@ export default function EncyclopediaPage({ onOpenInfo }: EncyclopediaPageProps) 
           </h1>
           <p style={{
             fontFamily: "'Inter', sans-serif", fontSize: '1rem',
-            color: 'rgba(255,255,255,0.8)', margin: '0 0 1.75rem',
+            color: 'rgba(255,255,255,0.8)', margin: '0 auto 1.75rem',
             fontWeight: 400, maxWidth: '460px', lineHeight: 1.6,
           }}>
             Mechanisms, dosing &amp; AI deep dives — all in one place
           </p>
 
           {/* Search bar — white bg so text is readable */}
-          <div style={{ position: 'relative', maxWidth: '480px', marginBottom: '1.5rem' }}>
+          <div style={{ position: 'relative', maxWidth: '480px', marginBottom: '1.5rem', margin: '0 auto 1.5rem' }}>
             <MagnifyingGlass size={17} color="#6d7a77" style={{ position: 'absolute', left: '1rem', top: '50%', transform: 'translateY(-50%)', pointerEvents: 'none' }} />
             <input
               type="text"
@@ -109,7 +109,7 @@ export default function EncyclopediaPage({ onOpenInfo }: EncyclopediaPageProps) 
           </div>
 
           {/* Category filter pills */}
-          <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.5rem', paddingBottom: '1.5rem' }}>
+          <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.5rem', paddingBottom: '1.5rem', justifyContent: 'center' }}>
             {encyclopediaCategories.map(cat => {
               const isActive = activeCategory === cat;
               const cfg = cat !== 'All' ? categoryConfig[cat as EncyclopediaCategory] : null;

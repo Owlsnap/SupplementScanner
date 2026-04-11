@@ -8,7 +8,7 @@ import EncyclopediaPage from '../pages/EncyclopediaPage';
 import SupplementInfoPage from '../pages/SupplementInfoPage';
 import DeepDivePage from '../pages/DeepDivePage';
 import { encyclopediaSupplements } from '../data/encyclopediaData';
-import { LOGO_ICON_URI } from '../constants/logos';
+import logoSvg from '../assets/supplement-scanner-logo.svg';
 import type { EncyclopedialSupplement } from '../data/encyclopediaData';
 import {
   validateSupplementProduct,
@@ -141,6 +141,8 @@ export default function SupplementAnalyzer(): JSX.Element {
   const [analyzedSupplements, setAnalyzedSupplements] = useState<Record<string, Product[]>>({});
   const [currentPage, setCurrentPage] = useState<string>('encyclopedia');
   const [showMenu, setShowMenu] = useState<boolean>(false);
+
+  useEffect(() => { window.scrollTo(0, 0); }, [currentPage]);
   const [deepDiveSlug, setDeepDiveSlug] = useState<string | null>(null);
   const [deepDiveSupp, setDeepDiveSupp] = useState<EncyclopedialSupplement | null>(null);
   const [infoSupp, setInfoSupp] = useState<EncyclopedialSupplement | null>(null);
@@ -348,10 +350,7 @@ export default function SupplementAnalyzer(): JSX.Element {
             onClick={() => setCurrentPage('encyclopedia')}
             style={{ background: 'none', border: 'none', cursor: 'pointer', padding: 0, display: 'flex', alignItems: 'center', gap: '0.625rem', flexShrink: 0 }}
           >
-            <img src={LOGO_ICON_URI} alt="SuppScanner" style={{ height: '44px', width: 'auto' }} />
-            <span style={{ fontFamily: "'Manrope', sans-serif", fontWeight: 800, fontSize: '1.3125rem', color: '#085C44', letterSpacing: '-0.4px' }}>
-              SuppScanner
-            </span>
+            <img src={logoSvg} alt="SupplementScanner" style={{ height: '80px', width: 'auto' }} />
           </button>
 
           {/* Tab buttons */}
@@ -510,7 +509,7 @@ export default function SupplementAnalyzer(): JSX.Element {
         {/* Page hero — top padding accounts for fixed navbar */}
         <div style={{
           background: 'linear-gradient(135deg, #00685f 0%, #3f6560 100%)',
-          padding: 'calc(68px + 2rem) 1.5rem 2.25rem',
+          padding: 'calc(100px + 2rem) 1.5rem 2.25rem',
           position: 'relative',
           overflow: 'hidden',
         }}>

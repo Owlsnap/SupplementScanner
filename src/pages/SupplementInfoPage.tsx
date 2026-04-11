@@ -59,57 +59,28 @@ export default function SupplementInfoPage({
   const CatIcon = categoryIcon[category];
 
   return (
-    <div style={{ background: '#f5faf8', minHeight: '100vh', fontFamily: "'Inter', sans-serif", paddingTop: '68px' }}>
-      {/* Sticky sub-header — sits below main navbar */}
-      <div style={{
-        background: '#ffffff', borderBottom: '1px solid #bcc9c6',
-        padding: '0.875rem 1.5rem',
-        display: 'flex', alignItems: 'center', gap: '1rem',
-        position: 'sticky', top: '68px', zIndex: 10,
-      }}>
-        <div style={{ maxWidth: '760px', width: '100%', margin: '0 auto', display: 'flex', alignItems: 'center', gap: '1rem' }}>
-        <button
-          onClick={onBack}
-          style={{
-            display: 'flex', alignItems: 'center', gap: '0.375rem',
-            background: 'transparent', border: '1.5px solid #bcc9c6',
-            borderRadius: '28px', padding: '0.4375rem 0.875rem',
-            color: '#6d7a77', fontFamily: "'Inter', sans-serif",
-            fontWeight: 600, fontSize: '0.8125rem', cursor: 'pointer',
-            transition: 'all 0.15s ease', flexShrink: 0,
-          }}
-          onMouseEnter={e => { (e.currentTarget as HTMLButtonElement).style.borderColor = '#00685f'; (e.currentTarget as HTMLButtonElement).style.color = '#00685f'; }}
-          onMouseLeave={e => { (e.currentTarget as HTMLButtonElement).style.borderColor = '#bcc9c6'; (e.currentTarget as HTMLButtonElement).style.color = '#6d7a77'; }}
-        >
-          <ArrowLeft size={15} />
-          Encyclopedia
-        </button>
-
-        <div style={{ flex: 1, minWidth: 0 }}>
-          <div style={{ fontFamily: "'Manrope', sans-serif", fontWeight: 800, fontSize: '1rem', color: '#171d1c', letterSpacing: '-0.3px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
-            {name}
-          </div>
-        </div>
-
-        <span style={{
-          background: tier.bg, color: tier.color, border: `1px solid ${tier.border}`,
-          borderRadius: '999px', padding: '0.25rem 0.75rem',
-          fontSize: '0.75rem', fontWeight: 600, whiteSpace: 'nowrap', flexShrink: 0,
-          fontFamily: "'Inter', sans-serif",
-        }}>
-          {evidenceTier}
-        </span>
-        </div>{/* end max-width wrapper */}
-      </div>
-
+    <div style={{ background: '#f5faf8', minHeight: '100vh', fontFamily: "'Inter', sans-serif", paddingTop: '100px' }}>
       {/* Hero banner */}
       <div style={{
         background: `linear-gradient(135deg, ${cat.bg} 0%, ${cat.bg}cc 100%)`,
         padding: '2rem 1.5rem 2.5rem', position: 'relative', overflow: 'hidden',
       }}>
         <div style={{ position: 'absolute', right: '-2rem', top: '-2rem', width: '160px', height: '160px', borderRadius: '50%', background: 'rgba(255,255,255,0.08)', pointerEvents: 'none' }} />
-        <div style={{ maxWidth: '760px', margin: '0 auto', position: 'relative', zIndex: 1 }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '0.625rem', marginBottom: '1rem' }}>
+        <div style={{ maxWidth: '760px', margin: '0 auto', position: 'relative', zIndex: 1, textAlign: 'center' }}>
+          <button
+            onClick={onBack}
+            style={{
+              display: 'inline-flex', alignItems: 'center', gap: '0.375rem',
+              background: 'rgba(255,255,255,0.15)', border: '1px solid rgba(255,255,255,0.25)',
+              borderRadius: '999px', padding: '0.375rem 0.75rem 0.375rem 0.5rem',
+              color: '#ffffff', cursor: 'pointer', marginBottom: '1.25rem',
+              fontFamily: "'Inter', sans-serif", fontWeight: 600, fontSize: '0.8125rem',
+            }}
+          >
+            <ArrowLeft size={14} />
+            Back
+          </button>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.625rem', marginBottom: '1rem' }}>
             <div style={{ background: 'rgba(255,255,255,0.2)', borderRadius: '8px', padding: '0.375rem', display: 'flex' }}>
               <CatIcon size={18} color="#ffffff" weight="bold" />
             </div>
@@ -131,7 +102,7 @@ export default function SupplementInfoPage({
           </h1>
           <p style={{
             fontFamily: "'Inter', sans-serif", fontSize: '1rem',
-            color: 'rgba(255,255,255,0.85)', margin: 0, lineHeight: 1.6, maxWidth: '540px',
+            color: 'rgba(255,255,255,0.85)', margin: '0 auto', lineHeight: 1.6, maxWidth: '540px',
           }}>
             {tagline}
           </p>

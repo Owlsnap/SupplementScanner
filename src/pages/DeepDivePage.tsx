@@ -123,86 +123,26 @@ export default function DeepDivePage({
   };
 
   return (
-    <div style={{ background: '#f5faf8', minHeight: '100vh', fontFamily: "'Inter', sans-serif", paddingTop: '68px' }}>
+    <div style={{ background: '#f5faf8', minHeight: '100vh', fontFamily: "'Inter', sans-serif", paddingTop: '100px' }}>
       <style>{`
         @keyframes spin { to { transform: rotate(360deg); } }
       `}</style>
 
-      {/* Header — sticks below main navbar */}
-      <div style={{
-        background: '#ffffff',
-        borderBottom: '1px solid #bcc9c6',
-        padding: '0.875rem 1.5rem',
-        display: 'flex',
-        alignItems: 'center',
-        gap: '1rem',
-        position: 'sticky',
-        top: '68px',
-        zIndex: 10,
-      }}>
+      {/* Content */}
+      <div style={{ maxWidth: '760px', margin: '0 auto', padding: '1.5rem 1rem 3rem' }}>
         <button
           onClick={onBack}
           style={{
-            display: 'flex',
-            alignItems: 'center',
-            gap: '0.375rem',
-            background: 'transparent',
-            border: '1px solid #bcc9c6',
-            borderRadius: '28px',
-            padding: '0.5rem 1rem',
-            color: '#6d7a77',
-            fontFamily: "'Inter', sans-serif",
-            fontWeight: 600,
-            fontSize: '0.875rem',
-            cursor: 'pointer',
-            transition: 'all 0.15s ease',
-          }}
-          onMouseEnter={e => {
-            (e.currentTarget as HTMLButtonElement).style.borderColor = '#00685f';
-            (e.currentTarget as HTMLButtonElement).style.color = '#00685f';
-          }}
-          onMouseLeave={e => {
-            (e.currentTarget as HTMLButtonElement).style.borderColor = '#bcc9c6';
-            (e.currentTarget as HTMLButtonElement).style.color = '#6d7a77';
+            display: 'flex', alignItems: 'center', gap: '0.375rem',
+            background: 'transparent', border: 'none',
+            padding: '0.25rem 0', marginBottom: '1.25rem',
+            color: '#6d7a77', cursor: 'pointer',
+            fontFamily: "'Inter', sans-serif", fontWeight: 600, fontSize: '0.875rem',
           }}
         >
           <ArrowLeft size={16} />
-          Encyclopedia
+          Back
         </button>
-        <div style={{ flex: 1, minWidth: 0 }}>
-          <div style={{
-            fontFamily: "'Manrope', sans-serif",
-            fontWeight: 800,
-            fontSize: '1.125rem',
-            color: '#171d1c',
-            letterSpacing: '-0.3px',
-            whiteSpace: 'nowrap',
-            overflow: 'hidden',
-            textOverflow: 'ellipsis',
-          }}>
-            {supplementName}
-          </div>
-          <div style={{ fontSize: '0.8125rem', color: '#6d7a77', fontWeight: 400 }}>
-            {supplementCategory}
-          </div>
-        </div>
-        <span style={{
-          background: tierStyle.bg,
-          color: tierStyle.text,
-          border: `1px solid ${tierStyle.border}`,
-          borderRadius: '999px',
-          padding: '0.25rem 0.75rem',
-          fontSize: '0.75rem',
-          fontWeight: 600,
-          whiteSpace: 'nowrap',
-          flexShrink: 0,
-        }}>
-          {evidenceTier}
-        </span>
-      </div>
-
-      {/* Content */}
-      <div style={{ maxWidth: '760px', margin: '0 auto', padding: '1.5rem 1rem 3rem' }}>
 
         {/* Hero tagline */}
         <p style={{ ...bodyTextStyle, color: '#6d7a77', marginBottom: '1.5rem', fontSize: '0.9375rem' }}>
