@@ -158,3 +158,29 @@ $$ language plpgsql security definer;
 create trigger on_auth_user_created
   after insert on auth.users
   for each row execute function public.handle_new_user();
+
+-- ============================================================
+-- 5. Supplement Deep Dives (Encyclopedia AI-generated content)
+--    30-day TTL cached per supplement slug
+-- ============================================================
+
+create table if not exists public.supplement_deep_dives (
+  id           uuid primary key default gen_random_uuid(),
+  slug         text unique not null,
+  content      jsonb not null,
+  generated_at timestamptz not null default now(),
+  expires_at   timestamptz not null
+);
+
+create index if not exists idx_deep_dives_slug on public.supplement_deep_dives(slug);
+
+alter table public.supplement_deep_dives enable row level security;
+
+create policy "Deep dives are publicly readable"
+  on public.supplement_deep_dives for select
+  using (true);
+
+create policy "Service role can manage deep dives"
+  on public.supplement_deep_dives for all
+  using (true)
+  with check (true);

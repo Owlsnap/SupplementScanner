@@ -2,6 +2,7 @@ import express from 'express';
 import cors from 'cors';
 import rateLimit from 'express-rate-limit';
 import OpenAI from 'openai';
+import Anthropic from '@anthropic-ai/sdk';
 import puppeteer from 'puppeteer';
 import dotenv from 'dotenv';
 
@@ -1307,6 +1308,220 @@ app.delete('/api/user/favorites/:productId', requireAuth, async (req, res) => {
   }
 });
 
+// ============================================================
+// Encyclopedia Deep Dive — AI generation + Supabase cache
+// ============================================================
+
+// Lazy Anthropic client (reuses ANTHROPIC_API_KEY already in env)
+let _anthropicClient = null;
+function getAnthropicClient() {
+  if (!_anthropicClient) {
+    _anthropicClient = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
+  }
+  return _anthropicClient;
+}
+
+// Slug → display name map (avoids importing .ts files in Node)
+const SLUG_TO_NAME = {
+  'creatine-monohydrate': 'Creatine Monohydrate',
+  'caffeine': 'Caffeine',
+  'beta-alanine': 'Beta-Alanine',
+  'citrulline-malate': 'Citrulline Malate',
+  'betaine-anhydrous': 'Betaine Anhydrous',
+  'hmb': 'HMB (Beta-Hydroxy Beta-Methylbutyrate)',
+  'sodium-bicarbonate': 'Sodium Bicarbonate',
+  'magnesium-glycinate': 'Magnesium Glycinate',
+  'melatonin': 'Melatonin',
+  'l-theanine': 'L-Theanine',
+  'ashwagandha': 'Ashwagandha (KSM-66)',
+  'glycine': 'Glycine',
+  'lions-mane': "Lion's Mane Mushroom",
+  'bacopa-monnieri': 'Bacopa Monnieri',
+  'alpha-gpc': 'Alpha-GPC',
+  'rhodiola-rosea': 'Rhodiola Rosea',
+  'panax-ginseng': 'Panax Ginseng',
+  'phosphatidylserine': 'Phosphatidylserine',
+  'tart-cherry': 'Tart Cherry Extract',
+  'omega-3': 'Omega-3 (EPA/DHA)',
+  'collagen-peptides': 'Collagen Peptides',
+  'curcumin': 'Curcumin (with Piperine)',
+  'glutamine': 'L-Glutamine',
+  'vitamin-d3-k2': 'Vitamin D3 + K2',
+  'zinc-bisglycinate': 'Zinc Bisglycinate',
+  'magnesium-malate': 'Magnesium Malate',
+  'probiotics': 'Probiotics (Multi-strain)',
+  'vitamin-c': 'Vitamin C (Ascorbic Acid)',
+  'berberine': 'Berberine',
+  'coq10': 'CoQ10 (Ubiquinol)',
+};
+
+const DEEP_DIVE_TOOL = {
+  name: 'generate_supplement_deep_dive',
+  description: 'Generate a comprehensive, science-based deep-dive encyclopedia entry for a supplement.',
+  input_schema: {
+    type: 'object',
+    properties: {
+      whatItIs: {
+        type: 'string',
+        description: '2-3 sentence plain-language explanation of what the supplement is and its origin (food, synthetic, plant).'
+      },
+      howItWorks: {
+        type: 'string',
+        description: '3-5 sentence mechanism of action — name the specific pathway, receptor, or enzyme it affects and why that matters.'
+      },
+      dosing: {
+        type: 'object',
+        properties: {
+          low: { type: 'string', description: 'Conservative/beginner dose with amount and unit, e.g., "1–2g".' },
+          standard: { type: 'string', description: 'Typical effective dose used in most studies, e.g., "5g".' },
+          high: { type: 'string', description: 'Upper research dose or advanced range, e.g., "10–20g loading phase".' },
+          timing: { type: 'string', description: 'When to take it: pre/post workout, with food, time of day, etc.' }
+        },
+        required: ['low', 'standard', 'high', 'timing']
+      },
+      forms: {
+        type: 'array',
+        description: 'Common available forms ranked best to worst bioavailability (2-4 forms).',
+        items: {
+          type: 'object',
+          properties: {
+            name: { type: 'string', description: 'Form name, e.g., "Monohydrate", "Bisglycinate".' },
+            bioavailability: { type: 'string', enum: ['Excellent', 'Good', 'Fair', 'Poor'], description: 'Bioavailability rating.' },
+            notes: { type: 'string', description: 'One sentence on why this form is notable.' }
+          },
+          required: ['name', 'bioavailability', 'notes']
+        }
+      },
+      synergies: {
+        type: 'array',
+        description: 'Up to 4 supplements that combine well with this one.',
+        items: {
+          type: 'object',
+          properties: {
+            supplement: { type: 'string', description: 'Name of the synergistic supplement.' },
+            reason: { type: 'string', description: 'One sentence explaining the synergistic mechanism or benefit.' }
+          },
+          required: ['supplement', 'reason']
+        }
+      },
+      cautions: {
+        type: 'array',
+        description: 'Up to 5 important cautions, contraindications, or drug interactions as plain-language strings.',
+        items: { type: 'string' }
+      },
+      recommendationsLink: {
+        type: 'string',
+        description: 'If this supplement maps to a health goal — "better sleep", "build muscle", "general health", or "energy boost" — return the exact string. Otherwise return empty string.',
+      }
+    },
+    required: ['whatItIs', 'howItWorks', 'dosing', 'forms', 'synergies', 'cautions', 'recommendationsLink']
+  }
+};
+
+async function generateDeepDive(slug) {
+  const name = SLUG_TO_NAME[slug] || slug.split('-').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
+
+  const response = await getAnthropicClient().messages.create({
+    model: 'claude-sonnet-4-5-20250929',
+    max_tokens: 2048,
+    tools: [DEEP_DIVE_TOOL],
+    tool_choice: { type: 'tool', name: 'generate_supplement_deep_dive' },
+    messages: [{
+      role: 'user',
+      content: `Generate a complete, accurate, evidence-based deep-dive encyclopedia entry for: ${name}
+
+Requirements:
+- Be precise with mechanisms (name the pathway, receptor, or enzyme)
+- Dose ranges must reflect what peer-reviewed studies actually used
+- Forms section: list 2-4 most commercially relevant forms
+- Cautions must be medically accurate (drug interactions, contraindications, who should avoid)
+- Tone: knowledgeable but accessible — like a trusted sports dietitian explaining to a motivated amateur
+- Do NOT use marketing language or exaggerate effects beyond the evidence
+
+For recommendationsLink: return one of exactly these strings if applicable — "better sleep", "build muscle", "general health", "energy boost" — or an empty string if none fit well.`
+    }]
+  });
+
+  const toolUse = response.content.find(b => b.type === 'tool_use');
+  if (!toolUse) throw new Error('Claude did not return structured tool_use data');
+
+  console.log(`✅ Deep dive generated for: ${slug}`);
+  return toolUse.input;
+}
+
+// GET /api/encyclopedia/deep-dive/:slug
+// Returns cached deep dive or generates one via Claude (30-day TTL)
+app.get('/api/encyclopedia/deep-dive/:slug', async (req, res) => {
+  const { slug } = req.params;
+  console.log(`📖 GET /api/encyclopedia/deep-dive/${slug}`);
+
+  try {
+    // 1. Check Supabase cache
+    const { data: cached, error: fetchError } = await getSupabaseService()
+      .from('supplement_deep_dives')
+      .select('content, expires_at')
+      .eq('slug', slug)
+      .maybeSingle();
+
+    if (fetchError) throw fetchError;
+
+    // 2. Return if cache is fresh
+    if (cached && new Date(cached.expires_at) > new Date()) {
+      console.log(`✅ Cache hit for: ${slug}`);
+      return res.json({ success: true, data: cached.content, cached: true });
+    }
+
+    // 3. Generate with Claude
+    console.log(`🤖 Cache miss — generating with Claude for: ${slug}`);
+    const content = await generateDeepDive(slug);
+
+    // 4. Upsert into Supabase (insert or overwrite expired)
+    const expiresAt = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString();
+    const { error: upsertError } = await getSupabaseService()
+      .from('supplement_deep_dives')
+      .upsert(
+        { slug, content, generated_at: new Date().toISOString(), expires_at: expiresAt },
+        { onConflict: 'slug' }
+      );
+
+    if (upsertError) {
+      console.error(`⚠️ Cache write failed (returning data anyway):`, upsertError);
+    }
+
+    return res.json({ success: true, data: content, cached: false });
+
+  } catch (error) {
+    console.error(`💥 Deep dive error for ${slug}:`, error);
+    return res.status(500).json({ success: false, error: `Deep dive generation failed: ${error.message}` });
+  }
+});
+
+// POST /api/encyclopedia/deep-dive/:slug/refresh
+// Force-regenerates a deep dive (ignores TTL) — for admin/dev use
+app.post('/api/encyclopedia/deep-dive/:slug/refresh', async (req, res) => {
+  const { slug } = req.params;
+  console.log(`🔄 POST /api/encyclopedia/deep-dive/${slug}/refresh`);
+
+  try {
+    const content = await generateDeepDive(slug);
+    const expiresAt = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString();
+
+    const { error } = await getSupabaseService()
+      .from('supplement_deep_dives')
+      .upsert(
+        { slug, content, generated_at: new Date().toISOString(), expires_at: expiresAt },
+        { onConflict: 'slug' }
+      );
+
+    if (error) throw error;
+    return res.json({ success: true, data: content, cached: false });
+
+  } catch (error) {
+    console.error(`💥 Deep dive refresh error for ${slug}:`, error);
+    return res.status(500).json({ success: false, error: error.message });
+  }
+});
+
 app.listen(PORT, '0.0.0.0', () => {
   console.log(`🚀 AI Extraction API running on http://localhost:${PORT}`);
   console.log(`🌐 Available on network: http://192.168.0.31:${PORT}`);
@@ -1326,6 +1541,8 @@ app.listen(PORT, '0.0.0.0', () => {
   console.log('  🔐 GET/PUT /api/user/profile - User profile (auth required)');
   console.log('  🔐 GET/POST/DELETE /api/user/scans - Saved scans (auth required)');
   console.log('  🔐 GET/POST/DELETE /api/user/favorites - Favorites (auth required)');
+  console.log('  📖 GET  /api/encyclopedia/deep-dive/:slug - AI deep dive (cached 30d)');
+  console.log('  🔄 POST /api/encyclopedia/deep-dive/:slug/refresh - Force-regenerate deep dive');
   console.log('\n🎯 SupplementScanner Mobile API Ready!');
   console.log('🔑 Anthropic API Key loaded:', process.env.ANTHROPIC_API_KEY ? 'Yes ✨' : 'No (enhanced extraction disabled)');
   console.log('🗄️ Supabase:', process.env.SUPABASE_URL ? 'Configured ✨' : 'Not configured');
