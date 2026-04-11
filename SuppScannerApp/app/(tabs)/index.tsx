@@ -2,7 +2,7 @@ import { MaterialIcons } from "@expo/vector-icons";
 import { CameraView, useCameraPermissions } from "expo-camera";
 import { Image } from "expo-image";
 import { useRouter } from "expo-router";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import {
   ActivityIndicator,
   ScrollView,
@@ -36,8 +36,8 @@ const COLORS = {
 export default function HomeScreen() {
   const [permission, requestPermission] = useCameraPermissions();
   const [cameraOpen, setCameraOpen] = useState(false);
-  const [scanned, setScanned] = useState(false);
   const [loading, setLoading] = useState(false);
+  const scannedRef = useRef(false);
   const [flashOn, setFlashOn] = useState(false);
   const [facing, setFacing] = useState<"front" | "back">("back");
   const [searchQuery, setSearchQuery] = useState("");
@@ -45,8 +45,9 @@ export default function HomeScreen() {
   const insets = useSafeAreaInsets();
 
   const handleBarcodeScanned = async ({ data: barcode }: { data: string }) => {
-    if (scanned || loading) return;
-    setScanned(true);
+    if (scannedRef.current) return;
+    scannedRef.current = true;
+    setCameraOpen(false);
     setLoading(true);
     try {
       const response = await fetch(
@@ -58,7 +59,7 @@ export default function HomeScreen() {
       );
       const result = await response.json();
       if (result.success && result.requiredFields?.length > 0) {
-        router.push(
+        router.replace(
           `/manual-add?barcode=${encodeURIComponent(
             barcode
           )}&requiredFields=${encodeURIComponent(
@@ -66,13 +67,13 @@ export default function HomeScreen() {
           )}` as any
         );
       } else {
-        router.push(`/product/${encodeURIComponent(barcode)}` as any);
+        router.replace(`/product/${encodeURIComponent(barcode)}` as any);
       }
     } catch {
-      router.push(`/product/${encodeURIComponent(barcode)}` as any);
+      router.replace(`/product/${encodeURIComponent(barcode)}` as any);
     } finally {
       setLoading(false);
-      setScanned(false);
+      scannedRef.current = false;
     }
   };
 

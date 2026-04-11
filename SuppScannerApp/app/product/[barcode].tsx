@@ -219,7 +219,7 @@ export default function ProductPage() {
         >
           <Text style={styles.addManuallyText}>Add manually</Text>
         </TouchableOpacity>
-        <TouchableOpacity onPress={() => router.back()} style={styles.backLinkBtn}>
+        <TouchableOpacity onPress={() => router.canGoBack() ? router.back() : router.replace('/(tabs)' as any)} style={styles.backLinkBtn}>
           <Text style={styles.backLinkText}>Go back</Text>
         </TouchableOpacity>
       </View>
@@ -306,7 +306,7 @@ export default function ProductPage() {
     >
       {/* ── Top bar ── */}
       <View style={[styles.topBar, { paddingTop: insets.top + 8 }]}>
-        <TouchableOpacity onPress={() => router.back()} style={styles.iconBtn} hitSlop={8}>
+        <TouchableOpacity onPress={() => router.canGoBack() ? router.back() : router.replace('/(tabs)' as any)} style={styles.iconBtn} hitSlop={8}>
           <MaterialIcons name="arrow-back" size={24} color="#171d1c" />
         </TouchableOpacity>
         <Text style={styles.topBarTitle}>SupplementScanner</Text>

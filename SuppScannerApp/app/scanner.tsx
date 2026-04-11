@@ -1,6 +1,6 @@
 import { CameraView, useCameraPermissions } from "expo-camera";
 import { useRouter } from "expo-router";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { StyleSheet, Text, View } from "react-native";
 import { API_BASE_URL } from "../src/config/api";
 
@@ -9,6 +9,7 @@ export default function ScannerScreen() {
   const [scanned, setScanned] = useState(false);
   const [barcode, setBarcode] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
+  const scannedRef = useRef(false);
 
   const router = useRouter();
 
@@ -31,8 +32,8 @@ export default function ScannerScreen() {
   }
 
   const handleBarcodeScanned = async ({ data: barcode }: { data: string }) => {
-    if (scanned || loading) return;
-    
+    if (scannedRef.current) return;
+    scannedRef.current = true;
     setScanned(true);
     setBarcode(barcode);
     setLoading(true);
@@ -52,21 +53,17 @@ export default function ScannerScreen() {
         // Check if manual input needed
         if (result.requiredFields && result.requiredFields.length > 0) {
           console.log('Manual input needed for fields:', result.requiredFields);
-          // Navigate to manual add with required fields info
-          router.push(`/manual-add?barcode=${encodeURIComponent(barcode)}&requiredFields=${encodeURIComponent(JSON.stringify(result.requiredFields))}` as any);
+          router.replace(`/manual-add?barcode=${encodeURIComponent(barcode)}&requiredFields=${encodeURIComponent(JSON.stringify(result.requiredFields))}` as any);
         } else {
-          // Navigate to product page with complete data
-          router.push(`/product/${encodeURIComponent(barcode)}` as any);
+          router.replace(`/product/${encodeURIComponent(barcode)}` as any);
         }
       } else {
         console.log('Supplement not found, navigating to product page');
-        // Still navigate to product page, let it handle the error
-        router.push(`/product/${encodeURIComponent(barcode)}` as any);
+        router.replace(`/product/${encodeURIComponent(barcode)}` as any);
       }
     } catch (error) {
       console.error('Scan error:', error);
-      // Still navigate to product page, let it handle the error
-      router.push(`/product/${encodeURIComponent(barcode)}` as any);
+      router.replace(`/product/${encodeURIComponent(barcode)}` as any);
     } finally {
       setLoading(false);
     }
@@ -74,10 +71,12 @@ export default function ScannerScreen() {
 
   return (
     <View style={styles.container}>
-      <CameraView
-        style={StyleSheet.absoluteFillObject}
-        onBarcodeScanned={handleBarcodeScanned}
-      />
+      {!scanned && (
+        <CameraView
+          style={StyleSheet.absoluteFillObject}
+          onBarcodeScanned={handleBarcodeScanned}
+        />
+      )}
 
       {barcode && (
         <View style={styles.resultBox}>
@@ -89,6 +88,7 @@ export default function ScannerScreen() {
             <Text
               style={styles.link}
               onPress={() => {
+                scannedRef.current = false;
                 setScanned(false);
                 setBarcode(null);
                 setLoading(false);
