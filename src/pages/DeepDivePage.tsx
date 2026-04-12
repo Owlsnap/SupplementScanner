@@ -373,7 +373,7 @@ export default function DeepDivePage({
             {deepDive.recommendationsLink && onGoToRecommendations && (
               <div style={{ ...cardStyle, textAlign: 'center' }}>
                 <p style={{ ...bodyTextStyle, marginBottom: '1rem', color: 'var(--text-secondary)' }}>
-                  This supplement is recommended for: <strong style={{ color: 'var(--text-primary)' }}>{deepDive.recommendationsLink}</strong>
+                  This supplement is recommended for: <strong style={{ color: 'var(--text-primary)' }}>{deepDive.recommendationsLink.replace(/\b\w/g, (c: string) => c.toUpperCase())}</strong>
                 </p>
                 <button
                   onClick={onGoToRecommendations}
