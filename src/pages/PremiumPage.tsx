@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { ArrowLeft, Check, Lightning, Star, Sparkle, ArrowRight } from '@phosphor-icons/react';
+import { ArrowLeft, Check, Lightning, Star, Sparkle, ArrowRight, Bell } from '@phosphor-icons/react';
 import { useDarkMode } from '../contexts/DarkModeContext';
 
 interface PremiumPageProps {
@@ -7,6 +7,8 @@ interface PremiumPageProps {
 }
 
 type BillingPeriod = 'monthly' | 'yearly';
+
+const NOTIFY_KEY = 'ss_premium_notify';
 
 const PLANS = {
   dive: {
@@ -86,6 +88,12 @@ const FAQ = [
 export default function PremiumPage({ onBack }: PremiumPageProps) {
   const { isDark } = useDarkMode();
   const [openFaq, setOpenFaq] = useState<number | null>(null);
+  const [notified, setNotified] = useState<boolean>(() => !!localStorage.getItem(NOTIFY_KEY));
+
+  const handleNotify = () => {
+    localStorage.setItem(NOTIFY_KEY, '1');
+    setNotified(true);
+  };
 
   const surface = isDark ? '#1a2420' : '#ffffff';
   const pageBg = isDark ? '#0f1a17' : '#f5faf8';
@@ -238,34 +246,45 @@ export default function PremiumPage({ onBack }: PremiumPageProps) {
                   </span>
                 </div>
 
-                <button
-                  style={{
-                    background: isHighlight ? '#00685f' : 'transparent',
-                    color: isHighlight ? '#ffffff' : '#00685f',
-                    border: isHighlight ? 'none' : '1.5px solid #00685f',
-                    borderRadius: '28px',
-                    padding: '0.75rem 1rem',
-                    fontFamily: "'Inter', sans-serif",
-                    fontWeight: 600,
-                    fontSize: '0.9375rem',
-                    cursor: 'pointer',
-                    width: '100%',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    gap: '0.375rem',
-                    transition: 'opacity 0.15s ease',
-                  }}
-                  onMouseEnter={e => { (e.currentTarget as HTMLButtonElement).style.opacity = '0.85'; }}
-                  onMouseLeave={e => { (e.currentTarget as HTMLButtonElement).style.opacity = '1'; }}
-                  onClick={() => {
-                    // TODO: wire Stripe Checkout for each plan
-                    alert(`Stripe Checkout coming soon — ${plan.label}`);
-                  }}
-                >
-                  {plan.cta}
-                  <ArrowRight size={15} />
-                </button>
+                {notified ? (
+                  <div style={{
+                    display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.375rem',
+                    padding: '0.75rem 1rem', borderRadius: '28px',
+                    background: isDark ? '#0d2e2a' : '#e6f4f1',
+                    border: '1.5px solid #6bd8cb',
+                    fontFamily: "'Inter', sans-serif", fontWeight: 600,
+                    fontSize: '0.875rem', color: '#00685f',
+                  }}>
+                    <Check size={15} weight="bold" />
+                    You're on the list
+                  </div>
+                ) : (
+                  <button
+                    style={{
+                      background: isHighlight ? '#00685f' : 'transparent',
+                      color: isHighlight ? '#ffffff' : '#00685f',
+                      border: isHighlight ? 'none' : '1.5px solid #00685f',
+                      borderRadius: '28px',
+                      padding: '0.75rem 1rem',
+                      fontFamily: "'Inter', sans-serif",
+                      fontWeight: 600,
+                      fontSize: '0.9375rem',
+                      cursor: 'pointer',
+                      width: '100%',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      gap: '0.375rem',
+                      transition: 'opacity 0.15s ease',
+                    }}
+                    onMouseEnter={e => { (e.currentTarget as HTMLButtonElement).style.opacity = '0.85'; }}
+                    onMouseLeave={e => { (e.currentTarget as HTMLButtonElement).style.opacity = '1'; }}
+                    onClick={handleNotify}
+                  >
+                    <Bell size={15} />
+                    Notify me when live
+                  </button>
+                )}
               </div>
             );
           })}
@@ -445,25 +464,38 @@ export default function PremiumPage({ onBack }: PremiumPageProps) {
             fontFamily: "'Inter', sans-serif", fontSize: '0.9375rem',
             color: 'rgba(255,255,255,0.8)', margin: 0, lineHeight: 1.6,
           }}>
-            Start with a single deep dive for $1.99 — no account needed.
+            Payments launching soon — drop your interest below and we'll let you know first.
           </p>
-          <button
-            style={{
-              background: '#ffffff', color: '#00685f',
-              border: 'none', borderRadius: '28px',
-              padding: '0.875rem 2rem',
-              fontFamily: "'Inter', sans-serif", fontWeight: 700,
-              fontSize: '1rem', cursor: 'pointer',
+          {notified ? (
+            <div style={{
               display: 'flex', alignItems: 'center', gap: '0.5rem',
-              transition: 'opacity 0.15s ease',
-            }}
-            onMouseEnter={e => { (e.currentTarget as HTMLButtonElement).style.opacity = '0.9'; }}
-            onMouseLeave={e => { (e.currentTarget as HTMLButtonElement).style.opacity = '1'; }}
-            onClick={() => alert('Stripe Checkout coming soon — per-dive')}
-          >
-            Buy a Deep Dive
-            <ArrowRight size={17} weight="bold" />
-          </button>
+              background: 'rgba(255,255,255,0.15)', border: '1px solid rgba(255,255,255,0.3)',
+              borderRadius: '28px', padding: '0.875rem 2rem',
+              fontFamily: "'Inter', sans-serif", fontWeight: 700,
+              fontSize: '1rem', color: '#ffffff',
+            }}>
+              <Check size={17} weight="bold" />
+              You're on the list
+            </div>
+          ) : (
+            <button
+              style={{
+                background: '#ffffff', color: '#00685f',
+                border: 'none', borderRadius: '28px',
+                padding: '0.875rem 2rem',
+                fontFamily: "'Inter', sans-serif", fontWeight: 700,
+                fontSize: '1rem', cursor: 'pointer',
+                display: 'flex', alignItems: 'center', gap: '0.5rem',
+                transition: 'opacity 0.15s ease',
+              }}
+              onMouseEnter={e => { (e.currentTarget as HTMLButtonElement).style.opacity = '0.9'; }}
+              onMouseLeave={e => { (e.currentTarget as HTMLButtonElement).style.opacity = '1'; }}
+              onClick={handleNotify}
+            >
+              <Bell size={17} />
+              Notify me when live
+            </button>
+          )}
         </div>
       </div>
     </div>
