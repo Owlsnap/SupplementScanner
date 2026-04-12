@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { MagnifyingGlass, ArrowRight, Barbell, Moon, Brain, Lightning, Leaf } from '@phosphor-icons/react';
+import { MagnifyingGlass, ArrowRight, Barbell, Moon, Brain, Lightning, Leaf, Robot, X } from '@phosphor-icons/react';
 import {
   encyclopediaSupplements,
   encyclopediaCategories,
@@ -42,6 +42,8 @@ export default function EncyclopediaPage({ onOpenInfo }: EncyclopediaPageProps) 
   const [searchQuery, setSearchQuery] = useState('');
   const [activeCategory, setActiveCategory] = useState<string>('All');
   const [hoveredCard, setHoveredCard] = useState<string | null>(null);
+  const [hoveredCategory, setHoveredCategory] = useState<string | null>(null);
+  const [showAiDisclaimer, setShowAiDisclaimer] = useState(false);
   const { isDark } = useDarkMode();
   const categoryConfig = isDark ? categoryConfigDark : categoryConfigLight;
 
@@ -69,6 +71,19 @@ export default function EncyclopediaPage({ onOpenInfo }: EncyclopediaPageProps) 
       }}>
         <div style={{ position: 'absolute', right: '-3rem', top: '-3rem', width: '200px', height: '200px', borderRadius: '50%', background: 'rgba(255,255,255,0.06)', pointerEvents: 'none' }} />
         <div style={{ position: 'absolute', left: '-1rem', bottom: '-2rem', width: '120px', height: '120px', borderRadius: '50%', background: 'rgba(255,255,255,0.04)', pointerEvents: 'none' }} />
+        <img
+          src="/pills-glass-bottle.svg"
+          alt=""
+          aria-hidden="true"
+          style={{
+            position: 'absolute', right: '-2rem', bottom: '-1.5rem',
+            width: '420px', height: 'auto',
+            opacity: 0.35,
+            transform: 'rotate(18deg)',
+            pointerEvents: 'none',
+            userSelect: 'none',
+          }}
+        />
 
         <div style={{ maxWidth: '860px', margin: '0 auto', position: 'relative', zIndex: 1, textAlign: 'center' }}>
           <div style={{
@@ -127,14 +142,17 @@ export default function EncyclopediaPage({ onOpenInfo }: EncyclopediaPageProps) 
                 <button
                   key={cat}
                   onClick={() => setActiveCategory(cat)}
+                  onMouseEnter={() => setHoveredCategory(cat)}
+                  onMouseLeave={() => setHoveredCategory(null)}
                   style={{
                     display: 'flex', alignItems: 'center', gap: '0.375rem',
                     padding: '0.4375rem 1rem', borderRadius: '999px',
-                    border: isActive ? '1.5px solid rgba(255,255,255,0.5)' : '1.5px solid rgba(255,255,255,0.2)',
-                    background: isActive ? 'rgba(255,255,255,0.25)' : 'rgba(255,255,255,0.1)',
+                    border: isActive ? '1.5px solid rgba(255,255,255,0.5)' : hoveredCategory === cat ? '1.5px solid rgba(255,255,255,0.4)' : '1.5px solid rgba(255,255,255,0.2)',
+                    background: isActive ? 'rgba(255,255,255,0.25)' : hoveredCategory === cat ? 'rgba(255,255,255,0.2)' : 'rgba(255,255,255,0.1)',
                     color: '#ffffff', fontFamily: "'Inter', sans-serif",
                     fontWeight: 600, fontSize: '0.8125rem', cursor: 'pointer',
                     transition: 'all 0.15s ease',
+                    transform: hoveredCategory === cat && !isActive ? 'translateY(-1px)' : 'none',
                   }}
                 >
                   {cfg && <cfg.Icon size={13} />}
@@ -142,6 +160,49 @@ export default function EncyclopediaPage({ onOpenInfo }: EncyclopediaPageProps) 
                 </button>
               );
             })}
+          </div>
+
+        </div>
+
+        {/* AI disclosure — absolute to hero, centered at bottom */}
+        <div style={{ position: 'absolute', bottom: '1rem', left: 0, right: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 2 }}>
+          <div style={{ position: 'relative', display: 'inline-flex', alignItems: 'center', gap: '0.25rem' }}>
+            <span style={{ fontSize: '0.75rem', fontWeight: 500, color: 'rgba(255,255,255,0.5)', fontFamily: "'Inter', sans-serif", letterSpacing: '0.2px' }}>
+              AI-generated · Not medical advice
+            </span>
+            <button
+              onClick={() => setShowAiDisclaimer(v => !v)}
+              style={{
+                width: '20px', height: '20px', borderRadius: '999px',
+                background: 'rgba(255,255,255,0.2)', border: '1px solid rgba(255,255,255,0.3)',
+                color: '#ffffff', fontSize: '0.6875rem', fontWeight: 700,
+                cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center',
+                fontFamily: "'Inter', sans-serif", flexShrink: 0,
+                transition: 'background 0.15s ease',
+              }}
+            >
+              {showAiDisclaimer ? <X size={10} weight="bold" /> : '?'}
+            </button>
+            {showAiDisclaimer && (
+              <div style={{
+                position: 'absolute', bottom: 'calc(100% + 0.625rem)', left: '50%',
+                transform: 'translateX(-50%)',
+                background: 'var(--bg-surface)', borderRadius: '14px',
+                padding: '1rem 1.125rem',
+                border: '1.5px solid var(--border)',
+                boxShadow: '0 8px 24px rgba(0,0,0,0.18)',
+                width: '300px', zIndex: 10, textAlign: 'left',
+              }}>
+                <p style={{
+                  margin: 0, fontFamily: "'Inter', sans-serif",
+                  fontSize: '0.8125rem', color: 'var(--text-secondary)', lineHeight: 1.55,
+                }}>
+                  Supplement information on this site is generated by AI and reviewed for general accuracy.
+                  It is <strong style={{ color: 'var(--text-primary)' }}>not medical advice</strong> and does not replace guidance from a qualified healthcare professional.
+                  Always consult a doctor before starting, stopping, or changing any supplement regimen.
+                </p>
+              </div>
+            )}
           </div>
         </div>
       </div>

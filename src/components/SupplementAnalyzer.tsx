@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { Routes, Route, useNavigate, useLocation, useParams, Navigate } from 'react-router-dom';
 import { DeviceMobile, Robot, LinkSimple, List, Target, Books, Moon, Sun, Sparkle, X } from "@phosphor-icons/react";
 import { useDarkMode } from '../contexts/DarkModeContext';
 import CookieBanner from './CookieBanner';
@@ -128,6 +129,56 @@ function transformMultiLayerData(multiLayerResponse: MultiLayerResponse) {
   };
 }
 
+/** Route wrapper: /encyclopedia/:slug */
+function SupplementInfoRoute({ onShowPaywall }: { onShowPaywall: () => void }) {
+  const { slug } = useParams<{ slug: string }>();
+  const navigate = useNavigate();
+  const supp = encyclopediaSupplements.find(s => s.slug === slug);
+  if (!supp) return <Navigate to="/" replace />;
+  return (
+    <SupplementInfoPage
+      slug={supp.slug}
+      name={supp.name}
+      category={supp.category}
+      evidenceTier={supp.evidenceTier}
+      tagline={supp.tagline}
+      primaryUse={supp.primaryUse}
+      overview={supp.overview}
+      typicalDose={supp.typicalDose}
+      bestFor={supp.bestFor}
+      keyFacts={supp.keyFacts}
+      commonMistakes={supp.commonMistakes}
+      onBack={() => navigate(-1 as any)}
+      onDeepDive={() => {
+        if (DEV_PREMIUM_BYPASS || /* TODO: check real entitlement */ false) {
+          navigate(`/encyclopedia/${slug}/deep-dive`);
+        } else {
+          onShowPaywall();
+        }
+      }}
+    />
+  );
+}
+
+/** Route wrapper: /encyclopedia/:slug/deep-dive */
+function DeepDiveRoute() {
+  const { slug } = useParams<{ slug: string }>();
+  const navigate = useNavigate();
+  const supp = encyclopediaSupplements.find(s => s.slug === slug);
+  if (!supp) return <Navigate to="/" replace />;
+  return (
+    <DeepDivePage
+      slug={supp.slug}
+      supplementName={supp.name}
+      supplementCategory={supp.category}
+      evidenceTier={supp.evidenceTier}
+      tagline={supp.tagline}
+      onBack={() => navigate(-1 as any)}
+      onGoToRecommendations={() => navigate('/recommendations')}
+    />
+  );
+}
+
 export default function SupplementAnalyzer(): JSX.Element {
   const { isDark, toggle: toggleDark } = useDarkMode();
   const [products, setProducts] = useState<Product[]>([
@@ -145,15 +196,14 @@ export default function SupplementAnalyzer(): JSX.Element {
   const [toasts, setToasts] = useState<Array<{id: number, message: string, type: string}>>([]);
   const [extractingProducts, setExtractingProducts] = useState<Set<number>>(new Set());
   const [analyzedSupplements, setAnalyzedSupplements] = useState<Record<string, Product[]>>({});
-  const [currentPage, setCurrentPage] = useState<string>('encyclopedia');
+  const navigate = useNavigate();
+  const location = useLocation();
   const [showMenu, setShowMenu] = useState<boolean>(false);
   const [urlFocused, setUrlFocused] = useState<boolean>(false);
   const [showPaywallModal, setShowPaywallModal] = useState<boolean>(false);
+  const [hoveredNav, setHoveredNav] = useState<string | null>(null);
 
-  useEffect(() => { window.scrollTo(0, 0); }, [currentPage]);
-  const [deepDiveSlug, setDeepDiveSlug] = useState<string | null>(null);
-  const [deepDiveSupp, setDeepDiveSupp] = useState<EncyclopedialSupplement | null>(null);
-  const [infoSupp, setInfoSupp] = useState<EncyclopedialSupplement | null>(null);
+  useEffect(() => { window.scrollTo(0, 0); }, [location.pathname]);
 
   // Close menu when clicking outside
   useEffect(() => {
@@ -334,17 +384,7 @@ export default function SupplementAnalyzer(): JSX.Element {
     }
   };
 
-  const encyclopediaActive = currentPage === 'encyclopedia' || currentPage === 'suppinfo' || currentPage === 'deepdive';
-
-  const handleDeepDive = () => {
-    if (DEV_PREMIUM_BYPASS || /* TODO: check real entitlement */ false) {
-      setDeepDiveSlug(infoSupp!.slug);
-      setDeepDiveSupp(infoSupp);
-      setCurrentPage('deepdive');
-    } else {
-      setShowPaywallModal(true);
-    }
-  };
+  const encyclopediaActive = location.pathname === '/' || location.pathname.startsWith('/encyclopedia');
 
   return (
     <>
@@ -365,7 +405,7 @@ export default function SupplementAnalyzer(): JSX.Element {
         <div style={{ maxWidth: '1200px', margin: '0 auto', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '1rem' }}>
           {/* Logo */}
           <button
-            onClick={() => setCurrentPage('encyclopedia')}
+            onClick={() => navigate('/')}
             style={{ background: 'none', border: 'none', cursor: 'pointer', padding: 0, display: 'flex', alignItems: 'center', gap: '0.625rem', flexShrink: 0 }}
           >
             <img src={logoSvg} alt="SupplementScanner" style={{ height: '80px', width: 'auto' }} />
@@ -374,13 +414,15 @@ export default function SupplementAnalyzer(): JSX.Element {
           {/* Tab buttons */}
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.375rem', flexWrap: 'nowrap' }}>
             <button
-              onClick={() => { setCurrentPage('encyclopedia'); setShowMenu(false); }}
+              onClick={() => { navigate('/'); setShowMenu(false); }}
+              onMouseEnter={() => setHoveredNav('encyclopedia')}
+              onMouseLeave={() => setHoveredNav(null)}
               style={{
                 display: 'flex', alignItems: 'center', gap: '0.375rem',
                 padding: '0.5rem 0.875rem', borderRadius: '28px',
                 border: encyclopediaActive ? 'none' : '1.5px solid var(--border-strong)',
-                background: encyclopediaActive ? '#00685f' : 'transparent',
-                color: encyclopediaActive ? '#ffffff' : 'var(--text-secondary)',
+                background: encyclopediaActive ? '#00685f' : hoveredNav === 'encyclopedia' ? 'var(--bg-hover)' : 'transparent',
+                color: encyclopediaActive ? '#ffffff' : hoveredNav === 'encyclopedia' ? 'var(--text-primary)' : 'var(--text-secondary)',
                 fontFamily: "'Inter', sans-serif", fontWeight: 600,
                 fontSize: '0.875rem', cursor: 'pointer',
                 transition: 'all 0.15s ease', whiteSpace: 'nowrap',
@@ -391,13 +433,15 @@ export default function SupplementAnalyzer(): JSX.Element {
             </button>
 
             <button
-              onClick={() => { setCurrentPage('scanner'); setShowMenu(false); }}
+              onClick={() => { navigate('/scanner'); setShowMenu(false); }}
+              onMouseEnter={() => setHoveredNav('scanner')}
+              onMouseLeave={() => setHoveredNav(null)}
               style={{
                 display: 'flex', alignItems: 'center', gap: '0.375rem',
                 padding: '0.5rem 0.875rem', borderRadius: '28px',
-                border: currentPage === 'scanner' ? 'none' : '1.5px solid var(--border-strong)',
-                background: currentPage === 'scanner' ? '#00685f' : 'transparent',
-                color: currentPage === 'scanner' ? '#ffffff' : 'var(--text-secondary)',
+                border: location.pathname === '/scanner' ? 'none' : '1.5px solid var(--border-strong)',
+                background: location.pathname === '/scanner' ? '#00685f' : hoveredNav === 'scanner' ? 'var(--bg-hover)' : 'transparent',
+                color: location.pathname === '/scanner' ? '#ffffff' : hoveredNav === 'scanner' ? 'var(--text-primary)' : 'var(--text-secondary)',
                 fontFamily: "'Inter', sans-serif", fontWeight: 600,
                 fontSize: '0.875rem', cursor: 'pointer',
                 transition: 'all 0.15s ease', whiteSpace: 'nowrap',
@@ -408,13 +452,15 @@ export default function SupplementAnalyzer(): JSX.Element {
             </button>
 
             <button
-              onClick={() => { setCurrentPage('recommendations'); setShowMenu(false); }}
+              onClick={() => { navigate('/recommendations'); setShowMenu(false); }}
+              onMouseEnter={() => setHoveredNav('recommendations')}
+              onMouseLeave={() => setHoveredNav(null)}
               style={{
                 display: 'flex', alignItems: 'center', gap: '0.375rem',
                 padding: '0.5rem 0.875rem', borderRadius: '28px',
-                border: currentPage === 'recommendations' ? 'none' : '1.5px solid var(--border-strong)',
-                background: currentPage === 'recommendations' ? '#00685f' : 'transparent',
-                color: currentPage === 'recommendations' ? '#ffffff' : 'var(--text-secondary)',
+                border: location.pathname === '/recommendations' ? 'none' : '1.5px solid var(--border-strong)',
+                background: location.pathname === '/recommendations' ? '#00685f' : hoveredNav === 'recommendations' ? 'var(--bg-hover)' : 'transparent',
+                color: location.pathname === '/recommendations' ? '#ffffff' : hoveredNav === 'recommendations' ? 'var(--text-primary)' : 'var(--text-secondary)',
                 fontFamily: "'Inter', sans-serif", fontWeight: 600,
                 fontSize: '0.875rem', cursor: 'pointer',
                 transition: 'all 0.15s ease', whiteSpace: 'nowrap',
@@ -425,13 +471,15 @@ export default function SupplementAnalyzer(): JSX.Element {
             </button>
 
             <button
-              onClick={() => { setCurrentPage('premium'); setShowMenu(false); }}
+              onClick={() => { navigate('/premium'); setShowMenu(false); }}
+              onMouseEnter={() => setHoveredNav('premium')}
+              onMouseLeave={() => setHoveredNav(null)}
               style={{
                 display: 'flex', alignItems: 'center', gap: '0.375rem',
                 padding: '0.5rem 0.875rem', borderRadius: '28px',
-                border: currentPage === 'premium' ? 'none' : '1.5px solid #00685f',
-                background: currentPage === 'premium' ? '#00685f' : 'transparent',
-                color: currentPage === 'premium' ? '#ffffff' : '#00685f',
+                border: location.pathname === '/premium' ? 'none' : '1.5px solid #00685f',
+                background: location.pathname === '/premium' ? '#00685f' : hoveredNav === 'premium' ? 'rgba(0,104,95,0.1)' : 'transparent',
+                color: location.pathname === '/premium' ? '#ffffff' : '#00685f',
                 fontFamily: "'Inter', sans-serif", fontWeight: 600,
                 fontSize: '0.875rem', cursor: 'pointer',
                 transition: 'all 0.15s ease', whiteSpace: 'nowrap',
@@ -481,7 +529,7 @@ export default function SupplementAnalyzer(): JSX.Element {
                   overflow: 'hidden', minWidth: '220px', zIndex: 1001,
                 }}>
                   <button
-                    onClick={() => { setCurrentPage('mobileapp'); setShowMenu(false); }}
+                    onClick={() => { navigate('/app'); setShowMenu(false); }}
                     style={{
                       width: '100%', padding: '1rem 1.25rem',
                       background: 'transparent', border: 'none', color: 'var(--text-primary)',
@@ -508,152 +556,19 @@ export default function SupplementAnalyzer(): JSX.Element {
         </div>
       </div>
 
-      {/* Page content — conditionally rendered below fixed navbar */}
-      {currentPage === 'encyclopedia' && (
-        <EncyclopediaPage
-          onOpenInfo={(slug: string) => {
-            const supp = encyclopediaSupplements.find(s => s.slug === slug) ?? null;
-            setInfoSupp(supp);
-            setCurrentPage('suppinfo');
-          }}
-        />
-      )}
-
-      {currentPage === 'suppinfo' && infoSupp && (
-        <SupplementInfoPage
-          slug={infoSupp.slug}
-          name={infoSupp.name}
-          category={infoSupp.category}
-          evidenceTier={infoSupp.evidenceTier}
-          tagline={infoSupp.tagline}
-          primaryUse={infoSupp.primaryUse}
-          overview={infoSupp.overview}
-          typicalDose={infoSupp.typicalDose}
-          bestFor={infoSupp.bestFor}
-          keyFacts={infoSupp.keyFacts}
-          commonMistakes={infoSupp.commonMistakes}
-          onBack={() => { setCurrentPage('encyclopedia'); setInfoSupp(null); }}
-          onDeepDive={handleDeepDive}
-        />
-      )}
-
-      {currentPage === 'deepdive' && deepDiveSlug && deepDiveSupp && (
-        <DeepDivePage
-          slug={deepDiveSlug}
-          supplementName={deepDiveSupp.name}
-          supplementCategory={deepDiveSupp.category}
-          evidenceTier={deepDiveSupp.evidenceTier}
-          tagline={deepDiveSupp.tagline}
-          onBack={() => { setCurrentPage('suppinfo'); setDeepDiveSlug(null); }}
-          onGoToRecommendations={() => { setDeepDiveSlug(null); setDeepDiveSupp(null); setCurrentPage('recommendations'); }}
-        />
-      )}
-
-      {currentPage === 'recommendations' && (
-        <RecommendationsPage onBack={() => setCurrentPage('scanner')} products={products} />
-      )}
-
-      {currentPage === 'mobileapp' && (
-        <MobileAppPage onBack={() => setCurrentPage('encyclopedia')} />
-      )}
-
-      {currentPage === 'premium' && (
-        <PremiumPage onBack={() => setCurrentPage('encyclopedia')} />
-      )}
-
-      {/* Paywall modal */}
-      {showPaywallModal && (
-        <div style={{
-          position: 'fixed', inset: 0, zIndex: 2000,
-          background: 'rgba(0,0,0,0.5)', backdropFilter: 'blur(4px)',
-          display: 'flex', alignItems: 'center', justifyContent: 'center',
-          padding: '1.5rem',
-        }}
-          onClick={() => setShowPaywallModal(false)}
-        >
-          <div
-            style={{
-              background: 'var(--bg-surface)', borderRadius: '24px',
-              padding: '2rem', maxWidth: '420px', width: '100%',
-              boxShadow: '0 24px 64px rgba(0,0,0,0.3)',
-              position: 'relative',
-            }}
-            onClick={e => e.stopPropagation()}
-          >
-            <button
-              onClick={() => setShowPaywallModal(false)}
-              style={{
-                position: 'absolute', top: '1rem', right: '1rem',
-                background: 'var(--bg-hover)', border: 'none', borderRadius: '50%',
-                width: '32px', height: '32px', cursor: 'pointer',
-                display: 'flex', alignItems: 'center', justifyContent: 'center',
-                color: 'var(--text-secondary)',
-              }}
-            >
-              <X size={16} />
-            </button>
-
-            <div style={{
-              width: '48px', height: '48px', borderRadius: '14px',
-              background: '#e6f4f1', display: 'flex', alignItems: 'center',
-              justifyContent: 'center', marginBottom: '1.25rem',
-            }}>
-              <Sparkle size={24} weight="fill" color="#00685f" />
-            </div>
-
-            <h3 style={{
-              fontFamily: "'Manrope', sans-serif", fontWeight: 800,
-              fontSize: '1.25rem', color: 'var(--text-primary)',
-              margin: '0 0 0.5rem', letterSpacing: '-0.3px',
-            }}>
-              Deep Dives are Premium
-            </h3>
-            <p style={{
-              fontFamily: "'Inter', sans-serif", fontSize: '0.9rem',
-              color: 'var(--text-muted)', lineHeight: 1.6, margin: '0 0 1.5rem',
-            }}>
-              Get the full breakdown — dosing, forms, bioavailability, synergies,
-              and interactions. Starting at $1.99 per dive.
-            </p>
-
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.625rem' }}>
-              <button
-                onClick={() => { setShowPaywallModal(false); setCurrentPage('premium'); }}
-                style={{
-                  background: '#00685f', color: '#ffffff',
-                  border: 'none', borderRadius: '28px',
-                  padding: '0.75rem 1.25rem',
-                  fontFamily: "'Inter', sans-serif", fontWeight: 600,
-                  fontSize: '0.9375rem', cursor: 'pointer', width: '100%',
-                  display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.375rem',
-                }}
-              >
-                <Sparkle size={15} weight="fill" />
-                See plans
-              </button>
-              <button
-                onClick={() => setShowPaywallModal(false)}
-                style={{
-                  background: 'transparent', color: 'var(--text-secondary)',
-                  border: '1.5px solid var(--border-strong)', borderRadius: '28px',
-                  padding: '0.75rem 1.25rem',
-                  fontFamily: "'Inter', sans-serif", fontWeight: 600,
-                  fontSize: '0.9375rem', cursor: 'pointer', width: '100%',
-                }}
-              >
-                Maybe later
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* Scanner page */}
-      {currentPage === 'scanner' && (() => {
-        const product = products[0];
-        const isExtracting = extractingProducts.has(product.id);
-        return (
-        <div style={{ background: 'var(--bg-page)', minHeight: '100vh' }}>
+      {/* Page content — routed below fixed navbar */}
+      <Routes>
+        <Route path="/" element={<EncyclopediaPage onOpenInfo={(slug: string) => navigate(`/encyclopedia/${slug}`)} />} />
+        <Route path="/encyclopedia/:slug" element={<SupplementInfoRoute onShowPaywall={() => setShowPaywallModal(true)} />} />
+        <Route path="/encyclopedia/:slug/deep-dive" element={<DeepDiveRoute />} />
+        <Route path="/recommendations" element={<RecommendationsPage products={products} />} />
+        <Route path="/app" element={<MobileAppPage onBack={() => navigate(-1 as any)} />} />
+        <Route path="/premium" element={<PremiumPage onBack={() => navigate(-1 as any)} />} />
+        <Route path="/scanner" element={(() => {
+          const product = products[0];
+          const isExtracting = extractingProducts.has(product.id);
+          return (
+          <div style={{ background: 'var(--bg-page)', minHeight: '100vh' }}>
 
           {/* Hero with embedded URL input */}
           <div style={{
@@ -909,8 +824,97 @@ export default function SupplementAnalyzer(): JSX.Element {
             <IngredientQualityComparison analyzedProducts={analyzedSupplements} />
           </div>
         </div>
-        );
-      })()}
+          );
+        })()} />
+        <Route path="*" element={<Navigate to="/" replace />} />
+      </Routes>
+
+      {/* Paywall modal */}
+      {showPaywallModal && (
+        <div style={{
+          position: 'fixed', inset: 0, zIndex: 2000,
+          background: 'rgba(0,0,0,0.5)', backdropFilter: 'blur(4px)',
+          display: 'flex', alignItems: 'center', justifyContent: 'center',
+          padding: '1.5rem',
+        }}
+          onClick={() => setShowPaywallModal(false)}
+        >
+          <div
+            style={{
+              background: 'var(--bg-surface)', borderRadius: '24px',
+              padding: '2rem', maxWidth: '420px', width: '100%',
+              boxShadow: '0 24px 64px rgba(0,0,0,0.3)',
+              position: 'relative',
+            }}
+            onClick={e => e.stopPropagation()}
+          >
+            <button
+              onClick={() => setShowPaywallModal(false)}
+              style={{
+                position: 'absolute', top: '1rem', right: '1rem',
+                background: 'var(--bg-hover)', border: 'none', borderRadius: '50%',
+                width: '32px', height: '32px', cursor: 'pointer',
+                display: 'flex', alignItems: 'center', justifyContent: 'center',
+                color: 'var(--text-secondary)',
+              }}
+            >
+              <X size={16} />
+            </button>
+
+            <div style={{
+              width: '48px', height: '48px', borderRadius: '14px',
+              background: '#e6f4f1', display: 'flex', alignItems: 'center',
+              justifyContent: 'center', marginBottom: '1.25rem',
+            }}>
+              <Sparkle size={24} weight="fill" color="#00685f" />
+            </div>
+
+            <h3 style={{
+              fontFamily: "'Manrope', sans-serif", fontWeight: 800,
+              fontSize: '1.25rem', color: 'var(--text-primary)',
+              margin: '0 0 0.5rem', letterSpacing: '-0.3px',
+            }}>
+              Deep Dives are Premium
+            </h3>
+            <p style={{
+              fontFamily: "'Inter', sans-serif", fontSize: '0.9rem',
+              color: 'var(--text-muted)', lineHeight: 1.6, margin: '0 0 1.5rem',
+            }}>
+              Get the full breakdown — dosing, forms, bioavailability, synergies,
+              and interactions. Starting at $1.99 per dive.
+            </p>
+
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.625rem' }}>
+              <button
+                onClick={() => { setShowPaywallModal(false); navigate('/premium'); }}
+                style={{
+                  background: '#00685f', color: '#ffffff',
+                  border: 'none', borderRadius: '28px',
+                  padding: '0.75rem 1.25rem',
+                  fontFamily: "'Inter', sans-serif", fontWeight: 600,
+                  fontSize: '0.9375rem', cursor: 'pointer', width: '100%',
+                  display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.375rem',
+                }}
+              >
+                <Sparkle size={15} weight="fill" />
+                See plans
+              </button>
+              <button
+                onClick={() => setShowPaywallModal(false)}
+                style={{
+                  background: 'transparent', color: 'var(--text-secondary)',
+                  border: '1.5px solid var(--border-strong)', borderRadius: '28px',
+                  padding: '0.75rem 1.25rem',
+                  fontFamily: "'Inter', sans-serif", fontWeight: 600,
+                  fontSize: '0.9375rem', cursor: 'pointer', width: '100%',
+                }}
+              >
+                Maybe later
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Toast Notifications */}
       <div style={{
