@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
-import { Robot, Plus, LinkSimple, Trash, List, Target, BookOpen, Books } from "@phosphor-icons/react";
+import { Robot, LinkSimple, List, Target, Books, Moon, Sun, Sparkle, X } from "@phosphor-icons/react";
+import { useDarkMode } from '../contexts/DarkModeContext';
 import CookieBanner from './CookieBanner';
 import IngredientQualityComparison from './IngredientQualityComparison';
 import RecommendationsPage from '../pages/RecommendationsPage';
@@ -7,7 +8,11 @@ import GuidePage from '../pages/GuidePage';
 import EncyclopediaPage from '../pages/EncyclopediaPage';
 import SupplementInfoPage from '../pages/SupplementInfoPage';
 import DeepDivePage from '../pages/DeepDivePage';
+import PremiumPage from '../pages/PremiumPage';
 import { encyclopediaSupplements } from '../data/encyclopediaData';
+
+// Dev bypass: set VITE_DEV_PREMIUM_BYPASS=true in .env.local to skip the paywall
+const DEV_PREMIUM_BYPASS = (import.meta as any).env?.VITE_DEV_PREMIUM_BYPASS === 'true';
 import logoSvg from '../assets/supplement-scanner-logo.svg';
 import type { EncyclopedialSupplement } from '../data/encyclopediaData';
 import {
@@ -124,6 +129,7 @@ function transformMultiLayerData(multiLayerResponse: MultiLayerResponse) {
 }
 
 export default function SupplementAnalyzer(): JSX.Element {
+  const { isDark, toggle: toggleDark } = useDarkMode();
   const [products, setProducts] = useState<Product[]>([
     {
       id: 1,
@@ -141,6 +147,8 @@ export default function SupplementAnalyzer(): JSX.Element {
   const [analyzedSupplements, setAnalyzedSupplements] = useState<Record<string, Product[]>>({});
   const [currentPage, setCurrentPage] = useState<string>('encyclopedia');
   const [showMenu, setShowMenu] = useState<boolean>(false);
+  const [urlFocused, setUrlFocused] = useState<boolean>(false);
+  const [showPaywallModal, setShowPaywallModal] = useState<boolean>(false);
 
   useEffect(() => { window.scrollTo(0, 0); }, [currentPage]);
   const [deepDiveSlug, setDeepDiveSlug] = useState<string | null>(null);
@@ -328,6 +336,16 @@ export default function SupplementAnalyzer(): JSX.Element {
 
   const encyclopediaActive = currentPage === 'encyclopedia' || currentPage === 'suppinfo' || currentPage === 'deepdive';
 
+  const handleDeepDive = () => {
+    if (DEV_PREMIUM_BYPASS || /* TODO: check real entitlement */ false) {
+      setDeepDiveSlug(infoSupp!.slug);
+      setDeepDiveSupp(infoSupp);
+      setCurrentPage('deepdive');
+    } else {
+      setShowPaywallModal(true);
+    }
+  };
+
   return (
     <>
       {/* Backdrop Overlay */}
@@ -341,7 +359,7 @@ export default function SupplementAnalyzer(): JSX.Element {
       {/* Navbar — always visible */}
       <div style={{
         position: 'fixed', top: 0, left: 0, right: 0, zIndex: 1000,
-        background: '#ffffff', borderBottom: '1px solid #bcc9c6',
+        background: 'var(--bg-surface)', borderBottom: '1px solid var(--border-strong)',
         padding: '0.625rem 1.5rem',
       }}>
         <div style={{ maxWidth: '1200px', margin: '0 auto', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '1rem' }}>
@@ -360,9 +378,9 @@ export default function SupplementAnalyzer(): JSX.Element {
               style={{
                 display: 'flex', alignItems: 'center', gap: '0.375rem',
                 padding: '0.5rem 0.875rem', borderRadius: '28px',
-                border: encyclopediaActive ? 'none' : '1.5px solid #bcc9c6',
+                border: encyclopediaActive ? 'none' : '1.5px solid var(--border-strong)',
                 background: encyclopediaActive ? '#00685f' : 'transparent',
-                color: encyclopediaActive ? '#ffffff' : '#6d7a77',
+                color: encyclopediaActive ? '#ffffff' : 'var(--text-secondary)',
                 fontFamily: "'Inter', sans-serif", fontWeight: 600,
                 fontSize: '0.875rem', cursor: 'pointer',
                 transition: 'all 0.15s ease', whiteSpace: 'nowrap',
@@ -377,9 +395,9 @@ export default function SupplementAnalyzer(): JSX.Element {
               style={{
                 display: 'flex', alignItems: 'center', gap: '0.375rem',
                 padding: '0.5rem 0.875rem', borderRadius: '28px',
-                border: currentPage === 'scanner' ? 'none' : '1.5px solid #bcc9c6',
+                border: currentPage === 'scanner' ? 'none' : '1.5px solid var(--border-strong)',
                 background: currentPage === 'scanner' ? '#00685f' : 'transparent',
-                color: currentPage === 'scanner' ? '#ffffff' : '#6d7a77',
+                color: currentPage === 'scanner' ? '#ffffff' : 'var(--text-secondary)',
                 fontFamily: "'Inter', sans-serif", fontWeight: 600,
                 fontSize: '0.875rem', cursor: 'pointer',
                 transition: 'all 0.15s ease', whiteSpace: 'nowrap',
@@ -394,9 +412,9 @@ export default function SupplementAnalyzer(): JSX.Element {
               style={{
                 display: 'flex', alignItems: 'center', gap: '0.375rem',
                 padding: '0.5rem 0.875rem', borderRadius: '28px',
-                border: currentPage === 'recommendations' ? 'none' : '1.5px solid #bcc9c6',
+                border: currentPage === 'recommendations' ? 'none' : '1.5px solid var(--border-strong)',
                 background: currentPage === 'recommendations' ? '#00685f' : 'transparent',
-                color: currentPage === 'recommendations' ? '#ffffff' : '#6d7a77',
+                color: currentPage === 'recommendations' ? '#ffffff' : 'var(--text-secondary)',
                 fontFamily: "'Inter', sans-serif", fontWeight: 600,
                 fontSize: '0.875rem', cursor: 'pointer',
                 transition: 'all 0.15s ease', whiteSpace: 'nowrap',
@@ -406,6 +424,40 @@ export default function SupplementAnalyzer(): JSX.Element {
               <span>Goals</span>
             </button>
 
+            <button
+              onClick={() => { setCurrentPage('premium'); setShowMenu(false); }}
+              style={{
+                display: 'flex', alignItems: 'center', gap: '0.375rem',
+                padding: '0.5rem 0.875rem', borderRadius: '28px',
+                border: currentPage === 'premium' ? 'none' : '1.5px solid #00685f',
+                background: currentPage === 'premium' ? '#00685f' : 'transparent',
+                color: currentPage === 'premium' ? '#ffffff' : '#00685f',
+                fontFamily: "'Inter', sans-serif", fontWeight: 600,
+                fontSize: '0.875rem', cursor: 'pointer',
+                transition: 'all 0.15s ease', whiteSpace: 'nowrap',
+              }}
+            >
+              <Sparkle size={14} weight="fill" />
+              <span>Premium</span>
+            </button>
+
+            {/* Dark mode toggle */}
+            <button
+              onClick={toggleDark}
+              title={isDark ? 'Switch to light mode' : 'Switch to dark mode'}
+              style={{
+                display: 'flex', alignItems: 'center', justifyContent: 'center',
+                width: '36px', height: '36px', borderRadius: '999px',
+                border: '1.5px solid var(--border-strong)', background: 'transparent',
+                color: 'var(--text-secondary)', cursor: 'pointer', transition: 'all 0.15s ease',
+                marginLeft: '0.25rem',
+              }}
+              onMouseEnter={e => { (e.currentTarget as HTMLButtonElement).style.borderColor = '#00685f'; (e.currentTarget as HTMLButtonElement).style.color = '#00685f'; }}
+              onMouseLeave={e => { (e.currentTarget as HTMLButtonElement).style.borderColor = 'var(--border-strong)'; (e.currentTarget as HTMLButtonElement).style.color = 'var(--text-secondary)'; }}
+            >
+              {isDark ? <Sun size={16} /> : <Moon size={16} />}
+            </button>
+
             {/* Guide — menu icon */}
             <div style={{ position: 'relative', marginLeft: '0.25rem' }} data-menu>
               <button
@@ -413,18 +465,18 @@ export default function SupplementAnalyzer(): JSX.Element {
                 style={{
                   display: 'flex', alignItems: 'center', justifyContent: 'center',
                   width: '36px', height: '36px', borderRadius: '999px',
-                  border: '1.5px solid #bcc9c6', background: 'transparent',
-                  color: '#6d7a77', cursor: 'pointer', transition: 'all 0.15s ease',
+                  border: '1.5px solid var(--border-strong)', background: 'transparent',
+                  color: 'var(--text-secondary)', cursor: 'pointer', transition: 'all 0.15s ease',
                 }}
                 onMouseEnter={e => { (e.currentTarget as HTMLButtonElement).style.borderColor = '#00685f'; (e.currentTarget as HTMLButtonElement).style.color = '#00685f'; }}
-                onMouseLeave={e => { (e.currentTarget as HTMLButtonElement).style.borderColor = '#bcc9c6'; (e.currentTarget as HTMLButtonElement).style.color = '#6d7a77'; }}
+                onMouseLeave={e => { (e.currentTarget as HTMLButtonElement).style.borderColor = 'var(--border-strong)'; (e.currentTarget as HTMLButtonElement).style.color = 'var(--text-secondary)'; }}
               >
                 <List size={16} />
               </button>
               {showMenu && (
                 <div style={{
                   position: 'absolute', top: 'calc(100% + 0.5rem)', right: 0,
-                  background: '#ffffff', border: '1px solid #e4e9e7',
+                  background: 'var(--bg-surface)', border: '1px solid var(--border)',
                   borderRadius: '16px', boxShadow: '0 8px 24px rgba(0,0,0,0.12)',
                   overflow: 'hidden', minWidth: '220px', zIndex: 1001,
                 }}>
@@ -432,19 +484,19 @@ export default function SupplementAnalyzer(): JSX.Element {
                     onClick={() => { setCurrentPage('guide'); setShowMenu(false); }}
                     style={{
                       width: '100%', padding: '1rem 1.25rem',
-                      background: 'transparent', border: 'none', color: '#171d1c',
+                      background: 'transparent', border: 'none', color: 'var(--text-primary)',
                       fontSize: '0.9375rem', fontFamily: "'Inter', sans-serif",
                       fontWeight: 600, cursor: 'pointer',
                       display: 'flex', alignItems: 'center', gap: '0.75rem',
                       textAlign: 'left', transition: 'background 0.15s ease',
                     }}
-                    onMouseEnter={e => { (e.currentTarget as HTMLButtonElement).style.background = '#f0f5f2'; }}
+                    onMouseEnter={e => { (e.currentTarget as HTMLButtonElement).style.background = 'var(--bg-hover)'; }}
                     onMouseLeave={e => { (e.currentTarget as HTMLButtonElement).style.background = 'transparent'; }}
                   >
-                    <Robot size={18} color="#6d7a77" />
+                    <Robot size={18} color="var(--text-secondary)" />
                     <div>
                       <div>Guide</div>
-                      <div style={{ fontSize: '0.75rem', color: '#6d7a77', fontWeight: 400, marginTop: '0.125rem' }}>
+                      <div style={{ fontSize: '0.75rem', color: 'var(--text-secondary)', fontWeight: 400, marginTop: '0.125rem' }}>
                         How to use AI extraction
                       </div>
                     </div>
@@ -479,7 +531,7 @@ export default function SupplementAnalyzer(): JSX.Element {
           bestFor={infoSupp.bestFor}
           keyFacts={infoSupp.keyFacts}
           onBack={() => { setCurrentPage('encyclopedia'); setInfoSupp(null); }}
-          onDeepDive={() => { setDeepDiveSlug(infoSupp.slug); setDeepDiveSupp(infoSupp); setCurrentPage('deepdive'); }}
+          onDeepDive={handleDeepDive}
         />
       )}
 
@@ -503,251 +555,360 @@ export default function SupplementAnalyzer(): JSX.Element {
         <GuidePage onBack={() => setCurrentPage('scanner')} />
       )}
 
-      {/* Scanner page */}
-      {currentPage === 'scanner' && (
-      <div style={{ background: '#f5faf8', minHeight: '100vh' }}>
-        {/* Page hero — top padding accounts for fixed navbar */}
-        <div style={{
-          background: 'linear-gradient(135deg, #00685f 0%, #3f6560 100%)',
-          padding: 'calc(100px + 2rem) 1.5rem 2.25rem',
-          position: 'relative',
-          overflow: 'hidden',
-        }}>
-          <div style={{ position: 'absolute', right: '-2rem', top: '-2rem', width: '160px', height: '160px', borderRadius: '50%', background: 'rgba(255,255,255,0.06)', pointerEvents: 'none' }} />
-          <div style={{ maxWidth: '1200px', margin: '0 auto', position: 'relative', zIndex: 1 }}>
-            <h2 style={{
-              fontFamily: "'Manrope', sans-serif",
-              fontWeight: 800,
-              fontSize: 'clamp(1.375rem, 3vw, 1.875rem)',
-              color: '#ffffff',
-              margin: '0 0 0.375rem',
-              letterSpacing: '-0.4px',
-              display: 'flex',
-              alignItems: 'center',
-              gap: '0.625rem',
-            }}>
-              <LinkSimple size={24} />
-              URL Scanner
-            </h2>
-            <p style={{ color: 'rgba(255,255,255,0.8)', fontSize: '0.9375rem', margin: 0, fontFamily: "'Inter', sans-serif" }}>
-              Paste a product URL to extract supplement info and analyze ingredient quality
-            </p>
-          </div>
-        </div>
+      {currentPage === 'premium' && (
+        <PremiumPage onBack={() => setCurrentPage('encyclopedia')} />
+      )}
 
-        <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '1.75rem 1.5rem 4rem', boxSizing: 'border-box' }}>
-          {/* Product Input Cards */}
-          <div style={{
-            display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fit, minmax(380px, 1fr))',
-            gap: '1rem',
-            marginBottom: '1.5rem',
-          }}>
-            {products.map((product) => (
-              <div
-                key={product.id}
+      {/* Paywall modal */}
+      {showPaywallModal && (
+        <div style={{
+          position: 'fixed', inset: 0, zIndex: 2000,
+          background: 'rgba(0,0,0,0.5)', backdropFilter: 'blur(4px)',
+          display: 'flex', alignItems: 'center', justifyContent: 'center',
+          padding: '1.5rem',
+        }}
+          onClick={() => setShowPaywallModal(false)}
+        >
+          <div
+            style={{
+              background: 'var(--bg-surface)', borderRadius: '24px',
+              padding: '2rem', maxWidth: '420px', width: '100%',
+              boxShadow: '0 24px 64px rgba(0,0,0,0.3)',
+              position: 'relative',
+            }}
+            onClick={e => e.stopPropagation()}
+          >
+            <button
+              onClick={() => setShowPaywallModal(false)}
+              style={{
+                position: 'absolute', top: '1rem', right: '1rem',
+                background: 'var(--bg-hover)', border: 'none', borderRadius: '50%',
+                width: '32px', height: '32px', cursor: 'pointer',
+                display: 'flex', alignItems: 'center', justifyContent: 'center',
+                color: 'var(--text-secondary)',
+              }}
+            >
+              <X size={16} />
+            </button>
+
+            <div style={{
+              width: '48px', height: '48px', borderRadius: '14px',
+              background: '#e6f4f1', display: 'flex', alignItems: 'center',
+              justifyContent: 'center', marginBottom: '1.25rem',
+            }}>
+              <Sparkle size={24} weight="fill" color="#00685f" />
+            </div>
+
+            <h3 style={{
+              fontFamily: "'Manrope', sans-serif", fontWeight: 800,
+              fontSize: '1.25rem', color: 'var(--text-primary)',
+              margin: '0 0 0.5rem', letterSpacing: '-0.3px',
+            }}>
+              Deep Dives are Premium
+            </h3>
+            <p style={{
+              fontFamily: "'Inter', sans-serif", fontSize: '0.9rem',
+              color: 'var(--text-muted)', lineHeight: 1.6, margin: '0 0 1.5rem',
+            }}>
+              Get the full breakdown — dosing, forms, bioavailability, synergies,
+              and interactions. Starting at $1.99 per dive.
+            </p>
+
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.625rem' }}>
+              <button
+                onClick={() => { setShowPaywallModal(false); setCurrentPage('premium'); }}
                 style={{
-                  background: '#ffffff',
-                  borderRadius: '16px',
-                  padding: '1.5rem',
-                  border: '1.5px solid #e4e9e7',
-                  boxShadow: '0 1px 4px rgba(0,0,0,0.06)',
+                  background: '#00685f', color: '#ffffff',
+                  border: 'none', borderRadius: '28px',
+                  padding: '0.75rem 1.25rem',
+                  fontFamily: "'Inter', sans-serif", fontWeight: 600,
+                  fontSize: '0.9375rem', cursor: 'pointer', width: '100%',
+                  display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.375rem',
                 }}
               >
-                {/* Product label */}
+                <Sparkle size={15} weight="fill" />
+                See plans
+              </button>
+              <button
+                onClick={() => setShowPaywallModal(false)}
+                style={{
+                  background: 'transparent', color: 'var(--text-secondary)',
+                  border: '1.5px solid var(--border-strong)', borderRadius: '28px',
+                  padding: '0.75rem 1.25rem',
+                  fontFamily: "'Inter', sans-serif", fontWeight: 600,
+                  fontSize: '0.9375rem', cursor: 'pointer', width: '100%',
+                }}
+              >
+                Maybe later
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Scanner page */}
+      {currentPage === 'scanner' && (() => {
+        const product = products[0];
+        const isExtracting = extractingProducts.has(product.id);
+        return (
+        <div style={{ background: 'var(--bg-page)', minHeight: '100vh' }}>
+
+          {/* Hero with embedded URL input */}
+          <div style={{
+            background: 'linear-gradient(135deg, #00685f 0%, #3f6560 100%)',
+            padding: 'calc(100px + 2.5rem) 1.5rem 3rem',
+            position: 'relative', overflow: 'hidden',
+          }}>
+            <div style={{ position: 'absolute', right: '-3rem', top: '-3rem', width: '200px', height: '200px', borderRadius: '50%', background: 'rgba(255,255,255,0.05)', pointerEvents: 'none' }} />
+            <div style={{ position: 'absolute', left: '-2rem', bottom: '-2rem', width: '140px', height: '140px', borderRadius: '50%', background: 'rgba(255,255,255,0.04)', pointerEvents: 'none' }} />
+
+            <div style={{ maxWidth: '1000px', margin: '0 auto', position: 'relative', zIndex: 1, textAlign: 'center' }}>
+              {/* Icon + title */}
+              <div style={{
+                display: 'inline-flex', alignItems: 'center', gap: '0.5rem',
+                background: 'rgba(255,255,255,0.15)', borderRadius: '999px',
+                padding: '0.375rem 1rem', marginBottom: '1.25rem',
+                border: '1px solid rgba(255,255,255,0.2)',
+              }}>
+                <LinkSimple size={14} color="#ffffff" />
+                <span style={{ color: '#ffffff', fontSize: '0.8125rem', fontWeight: 600, fontFamily: "'Inter', sans-serif" }}>URL Scanner</span>
+              </div>
+
+              <h1 style={{
+                fontFamily: "'Manrope', sans-serif", fontWeight: 800,
+                fontSize: 'clamp(1.625rem, 4vw, 2.25rem)',
+                color: '#ffffff', margin: '0 0 0.625rem', letterSpacing: '-0.5px',
+                lineHeight: 1.2,
+              }}>
+                Analyze any supplement<br />from a product page
+              </h1>
+              <p style={{ color: 'rgba(255,255,255,0.75)', fontSize: '1rem', margin: '0 0 2rem', fontFamily: "'Inter', sans-serif" }}>
+                Paste a product URL — AI extracts ingredients, dosages and quality data automatically
+              </p>
+
+              {/* URL input bar */}
+              <div style={{
+                background: 'var(--bg-surface)', borderRadius: '16px',
+                padding: '0.5rem 0.5rem 0.5rem 1.25rem',
+                display: 'flex', alignItems: 'center', gap: '0.5rem',
+                boxShadow: urlFocused
+                  ? `0 8px 32px rgba(0,0,0,0.15), 0 0 0 2px ${isDark ? 'rgba(255,255,255,0.15)' : '#00685f'}`
+                  : '0 8px 32px rgba(0,0,0,0.15)',
+                transition: 'box-shadow 0.15s ease',
+              }}>
+                <LinkSimple size={18} color="#6d7a77" style={{ flexShrink: 0 }} />
+                <input
+                  type="url"
+                  placeholder="https://www.tillskottsbolaget.se/produkt/..."
+                  value={product.url}
+                  onChange={(e) => updateProduct(product.id, "url", e.target.value)}
+                  onKeyDown={(e) => { if (e.key === 'Enter' && product.url.trim() && !isExtracting) extractProductInfo(product.id, product.url); }}
+                  onFocus={() => setUrlFocused(true)}
+                  onBlur={() => setUrlFocused(false)}
+                  style={{
+                    flex: 1, border: 'none', outline: 'none',
+                    fontSize: '0.9375rem', color: 'var(--text-primary)',
+                    background: 'transparent', fontFamily: "'Inter', sans-serif",
+                    minWidth: 0,
+                  }}
+                />
+                <button
+                  onClick={() => extractProductInfo(product.id, product.url)}
+                  disabled={!product.url.trim() || isExtracting}
+                  style={{
+                    padding: '0.75rem 1.375rem',
+                    background: isExtracting ? '#bcc9c6' : '#00685f',
+                    borderRadius: '12px', border: 'none',
+                    color: '#ffffff',
+                    cursor: isExtracting ? 'not-allowed' : 'pointer',
+                    fontSize: '0.9375rem', fontWeight: 700,
+                    display: 'flex', alignItems: 'center', gap: '0.5rem',
+                    whiteSpace: 'nowrap', fontFamily: "'Inter', sans-serif",
+                    transition: 'background 0.15s ease', flexShrink: 0,
+                  }}
+                >
+                  <Robot size={17} />
+                  {isExtracting ? 'Extracting…' : 'Extract'}
+                </button>
+              </div>
+
+              {/* Hint row */}
+              <p style={{ color: 'rgba(255,255,255,0.5)', fontSize: '0.8rem', margin: '0.75rem 0 0', fontFamily: "'Inter', sans-serif" }}>
+                Works with Proteinbolaget, Gymgrossisten, Tillskottsbolaget, and more
+              </p>
+            </div>
+          </div>
+
+          {/* Body */}
+          <div style={{ maxWidth: '1000px', margin: '0 auto', padding: '2rem 1.5rem 4rem', boxSizing: 'border-box' }}>
+
+            {/* Extracting skeleton */}
+            {isExtracting && (
+              <div style={{
+                background: 'var(--bg-surface)', borderRadius: '20px',
+                border: '1.5px solid var(--border)', padding: '2rem',
+                boxShadow: '0 1px 4px rgba(0,0,0,0.06)',
+                display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '1rem',
+                marginBottom: '1.5rem',
+              }}>
                 <div style={{
-                  display: 'inline-flex', alignItems: 'center',
-                  background: '#e6f4f1', borderRadius: '999px',
-                  padding: '0.3125rem 0.875rem', marginBottom: '1.25rem',
-                  border: '1px solid #6bd8cb',
+                  width: '48px', height: '48px', borderRadius: '50%',
+                  background: 'var(--primary-light)', border: '1px solid var(--primary-border)',
+                  display: 'flex', alignItems: 'center', justifyContent: 'center',
                 }}>
-                  <span style={{
-                    fontFamily: "'Inter', sans-serif", fontWeight: 700,
-                    fontSize: '0.8125rem', color: '#00685f',
-                  }}>
-                    Product #{product.id}
-                  </span>
+                  <Robot size={22} color="#00685f" />
                 </div>
-
-                {/* URL Input */}
-                <div style={{ marginBottom: '1.25rem' }}>
-                  <label style={{
-                    display: 'flex', alignItems: 'center', gap: '0.375rem',
-                    fontSize: '0.875rem', fontWeight: 600,
-                    color: '#3d4947', marginBottom: '0.625rem',
-                    fontFamily: "'Inter', sans-serif",
-                  }}>
-                    <Bot size={16} color="#00685f" />
-                    Product URL
-                  </label>
-                  <div style={{ display: 'flex', gap: '0.625rem', alignItems: 'center' }}>
-                    <input
-                      type="url"
-                      placeholder="https://www.tillskottsbolaget.se/..."
-                      value={product.url}
-                      onChange={(e) => updateProduct(product.id, "url", e.target.value)}
-                      style={{
-                        flex: 1,
-                        padding: '0.8125rem 1rem',
-                        background: '#f5faf8',
-                        border: '1.5px solid #bcc9c6',
-                        borderRadius: '12px',
-                        color: '#171d1c',
-                        fontSize: '0.875rem',
-                        outline: 'none',
-                        fontFamily: "'Inter', sans-serif",
-                        transition: 'border-color 0.15s ease',
-                        boxSizing: 'border-box',
-                      }}
-                      onFocus={e => { (e.target as HTMLInputElement).style.borderColor = '#00685f'; }}
-                      onBlur={e => { (e.target as HTMLInputElement).style.borderColor = '#bcc9c6'; }}
-                    />
-                    <button
-                      onClick={() => extractProductInfo(product.id, product.url)}
-                      disabled={!product.url.trim() || extractingProducts.has(product.id)}
-                      style={{
-                        padding: '0.8125rem 1.25rem',
-                        background: extractingProducts.has(product.id) ? '#bcc9c6' : '#00685f',
-                        borderRadius: '12px',
-                        border: 'none',
-                        color: '#ffffff',
-                        cursor: extractingProducts.has(product.id) ? 'not-allowed' : 'pointer',
-                        fontSize: '0.875rem',
-                        fontWeight: 700,
-                        display: 'flex',
-                        alignItems: 'center',
-                        gap: '0.375rem',
-                        whiteSpace: 'nowrap',
-                        fontFamily: "'Inter', sans-serif",
-                        transition: 'background 0.15s ease',
-                        flexShrink: 0,
-                      }}
-                    >
-                      {extractingProducts.has(product.id) ? (
-                        <>Extracting…</>
-                      ) : (
-                        <>
-                          <Robot size={16} />
-                          Extract
-                        </>
-                      )}
-                    </button>
+                <div style={{ textAlign: 'center' }}>
+                  <div style={{ fontFamily: "'Manrope', sans-serif", fontWeight: 800, fontSize: '1rem', color: 'var(--text-primary)', marginBottom: '0.25rem' }}>
+                    AI is reading the page…
+                  </div>
+                  <div style={{ color: 'var(--text-secondary)', fontSize: '0.875rem', fontFamily: "'Inter', sans-serif" }}>
+                    Extracting ingredients, dosages, and product info
                   </div>
                 </div>
+                <style>{`
+                  @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.4} }
+                  .skeleton { background: linear-gradient(90deg, var(--border) 25%, var(--bg-page) 50%, var(--border) 75%); background-size: 200% 100%; animation: shimmer 1.4s infinite; border-radius: 6px; }
+                  @keyframes shimmer { 0%{background-position:200% 0} 100%{background-position:-200% 0} }
+                `}</style>
+                <div style={{ width: '100%', display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+                  <div className="skeleton" style={{ height: '18px', width: '60%' }} />
+                  <div className="skeleton" style={{ height: '14px', width: '40%' }} />
+                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '0.5rem', marginTop: '0.25rem' }}>
+                    <div className="skeleton" style={{ height: '52px' }} />
+                    <div className="skeleton" style={{ height: '52px' }} />
+                    <div className="skeleton" style={{ height: '52px' }} />
+                  </div>
+                </div>
+              </div>
+            )}
 
-                {/* Product result */}
-                {product.name && (
-                  <div style={{
-                    background: '#f5faf8',
-                    borderRadius: '12px',
-                    padding: '1rem',
-                    marginBottom: '1rem',
-                    border: '1px solid #e4e9e7',
-                  }}>
-                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '0.75rem', gap: '0.75rem' }}>
-                      <h3 style={{
-                        fontFamily: "'Manrope', sans-serif",
-                        color: '#171d1c', fontSize: '1rem',
-                        fontWeight: 800, margin: 0, flex: 1,
-                        letterSpacing: '-0.2px',
+            {/* Result card */}
+            {product.name && !isExtracting && (
+              <div style={{
+                background: 'var(--bg-surface)', borderRadius: '20px',
+                border: '1.5px solid var(--border)',
+                boxShadow: '0 2px 12px rgba(0,0,0,0.07)',
+                overflow: 'hidden', marginBottom: '1.5rem',
+              }}>
+                {/* Card header */}
+                <div style={{
+                  padding: '1.25rem 1.5rem',
+                  borderBottom: '1px solid var(--border)',
+                  display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: '1rem',
+                }}>
+                  <div style={{ flex: 1, minWidth: 0 }}>
+                    {(product.category || product.subCategory) && (
+                      <div style={{
+                        display: 'inline-flex', alignItems: 'center',
+                        background: 'var(--primary-light)', borderRadius: '999px',
+                        padding: '0.25rem 0.75rem', marginBottom: '0.625rem',
+                        border: '1px solid var(--primary-border)',
                       }}>
-                        {product.name}
-                      </h3>
-                      {product.url && (
-                        <button
-                          onClick={() => window.open(product.url, '_blank')}
-                          style={{
-                            padding: '0.375rem 0.875rem',
-                            background: '#e6f4f1', color: '#00685f',
-                            border: '1px solid #6bd8cb',
-                            borderRadius: '999px', fontSize: '0.75rem',
-                            fontWeight: 600, cursor: 'pointer',
-                            fontFamily: "'Inter', sans-serif",
-                            flexShrink: 0,
-                          }}
-                        >
-                          View ↗
-                        </button>
-                      )}
-                    </div>
-                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '0.5rem', fontSize: '0.8125rem' }}>
-                      <div style={{ background: '#ffffff', borderRadius: '8px', padding: '0.625rem 0.75rem', border: '1px solid #e4e9e7' }}>
-                        <div style={{ color: '#6d7a77', marginBottom: '0.25rem', fontFamily: "'Inter', sans-serif" }}>Quantity</div>
-                        <div style={{ color: '#171d1c', fontWeight: 700, fontFamily: "'Manrope', sans-serif" }}>{product.quantity} {product.unit}</div>
+                        <span style={{ fontFamily: "'Inter', sans-serif", fontWeight: 700, fontSize: '0.75rem', color: '#00685f', textTransform: 'capitalize' }}>
+                          {product.subCategory || product.category}
+                        </span>
                       </div>
-                      <div style={{ background: '#ffffff', borderRadius: '8px', padding: '0.625rem 0.75rem', border: '1px solid #e4e9e7' }}>
-                        <div style={{ color: '#6d7a77', marginBottom: '0.25rem', fontFamily: "'Inter', sans-serif" }}>Serving</div>
-                        <div style={{ color: '#171d1c', fontWeight: 700, fontFamily: "'Manrope', sans-serif" }}>{product.servingSize || '—'}</div>
-                      </div>
-                      <div style={{ background: '#e6f4f1', borderRadius: '8px', padding: '0.625rem 0.75rem', border: '1px solid #6bd8cb' }}>
-                        <div style={{ color: '#3f6560', marginBottom: '0.25rem', fontFamily: "'Inter', sans-serif" }}>Key ingredient</div>
-                        <div style={{ color: '#00685f', fontWeight: 700, textTransform: 'capitalize', fontFamily: "'Manrope', sans-serif" }}>
-                          {product.activeIngredient || 'Detecting…'}
-                        </div>
-                      </div>
-                    </div>
+                    )}
+                    <h2 style={{
+                      fontFamily: "'Manrope', sans-serif", fontWeight: 800,
+                      fontSize: 'clamp(1.125rem, 2.5vw, 1.375rem)',
+                      color: 'var(--text-primary)', margin: 0, letterSpacing: '-0.3px',
+                      lineHeight: 1.3,
+                    }}>
+                      {product.name}
+                    </h2>
                   </div>
-                )}
-
-                {/* Remove */}
-                {products.length > 1 && (
                   <button
-                    onClick={() => removeProduct(product.id)}
+                    onClick={() => window.open(product.url, '_blank')}
                     style={{
                       padding: '0.5rem 1rem',
-                      background: 'transparent',
-                      color: '#ba1a1a',
-                      border: '1.5px solid #f9b4b4',
-                      borderRadius: '999px',
-                      fontSize: '0.8125rem',
-                      fontWeight: 600,
-                      cursor: 'pointer',
-                      display: 'flex',
-                      alignItems: 'center',
-                      gap: '0.375rem',
+                      background: 'var(--bg-subtle)', color: '#00685f',
+                      border: '1.5px solid var(--border-strong)',
+                      borderRadius: '999px', fontSize: '0.8125rem',
+                      fontWeight: 700, cursor: 'pointer',
                       fontFamily: "'Inter', sans-serif",
+                      display: 'flex', alignItems: 'center', gap: '0.375rem',
+                      flexShrink: 0, whiteSpace: 'nowrap',
                     }}
                   >
-                    <Trash size={14} />
-                    Remove
+                    <LinkSimple size={13} />
+                    View page
                   </button>
+                </div>
+
+                {/* Stats row */}
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', padding: '0' }}>
+                  {[
+                    { label: 'Servings', value: product.quantity ? `${product.quantity} ${product.unit || ''}`.trim() : '—' },
+                    { label: 'Serving size', value: product.servingSize || '—' },
+                    { label: 'Key ingredient', value: product.activeIngredient || 'Detecting…', highlight: true },
+                  ].map((stat, i) => (
+                    <div key={i} style={{
+                      padding: '1rem 1.25rem',
+                      borderRight: i < 2 ? '1px solid var(--border)' : 'none',
+                      background: stat.highlight ? 'var(--primary-light)' : 'var(--bg-surface)',
+                    }}>
+                      <div style={{ color: 'var(--text-secondary)', fontSize: '0.75rem', fontWeight: 600, marginBottom: '0.375rem', fontFamily: "'Inter', sans-serif", textTransform: 'uppercase', letterSpacing: '0.4px' }}>
+                        {stat.label}
+                      </div>
+                      <div style={{
+                        color: stat.highlight ? '#00685f' : 'var(--text-primary)',
+                        fontWeight: 800, fontSize: '0.9375rem',
+                        textTransform: 'capitalize',
+                        fontFamily: "'Manrope', sans-serif",
+                        lineHeight: 1.3,
+                      }}>
+                        {stat.value}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+
+                {/* Extraction method footer */}
+                {product.extractionMethod && (
+                  <div style={{
+                    padding: '0.625rem 1.25rem',
+                    borderTop: '1px solid var(--border)',
+                    background: 'var(--bg-subtle)',
+                    display: 'flex', alignItems: 'center', gap: '0.5rem',
+                  }}>
+                    <Robot size={13} color="var(--text-secondary)" />
+                    <span style={{ color: 'var(--text-secondary)', fontSize: '0.75rem', fontFamily: "'Inter', sans-serif" }}>
+                      Extracted via {product.extractionMethod}
+                    </span>
+                  </div>
                 )}
               </div>
-            ))}
-          </div>
+            )}
 
-          {/* Add Product Button */}
-          <div style={{ textAlign: 'center', marginBottom: '2rem' }}>
-            <button
-              onClick={addProduct}
-              style={{
-                padding: '0.8125rem 1.75rem',
-                background: '#ffffff',
-                color: '#00685f',
-                border: '1.5px solid #00685f',
-                borderRadius: '28px',
-                fontSize: '0.9375rem',
-                fontWeight: 700,
-                cursor: 'pointer',
-                display: 'inline-flex',
-                alignItems: 'center',
-                gap: '0.5rem',
-                fontFamily: "'Inter', sans-serif",
-                transition: 'all 0.15s ease',
-              }}
-              onMouseEnter={e => { (e.currentTarget as HTMLButtonElement).style.background = '#00685f'; (e.currentTarget as HTMLButtonElement).style.color = '#ffffff'; }}
-              onMouseLeave={e => { (e.currentTarget as HTMLButtonElement).style.background = '#ffffff'; (e.currentTarget as HTMLButtonElement).style.color = '#00685f'; }}
-            >
-              <Plus size={18} />
-              Add Another Product
-            </button>
-          </div>
+            {/* Empty state */}
+            {!product.name && !isExtracting && (
+              <div style={{
+                textAlign: 'center', padding: '3rem 1.5rem',
+                color: 'var(--text-secondary)', fontFamily: "'Inter', sans-serif",
+              }}>
+                <div style={{
+                  width: '56px', height: '56px', borderRadius: '50%',
+                  background: 'var(--primary-light)', border: '1px solid var(--primary-border)',
+                  display: 'flex', alignItems: 'center', justifyContent: 'center',
+                  margin: '0 auto 1rem',
+                }}>
+                  <LinkSimple size={24} color="#00685f" />
+                </div>
+                <div style={{ fontFamily: "'Manrope', sans-serif", fontWeight: 700, fontSize: '1rem', color: 'var(--text-muted)', marginBottom: '0.375rem' }}>
+                  No product scanned yet
+                </div>
+                <div style={{ fontSize: '0.875rem' }}>Paste a supplement product URL above and click Extract</div>
+              </div>
+            )}
 
-          {/* Quality Analysis */}
-          <IngredientQualityComparison analyzedProducts={analyzedSupplements} />
+            {/* Quality Analysis */}
+            <IngredientQualityComparison analyzedProducts={analyzedSupplements} />
+          </div>
         </div>
-      </div>
-      )}
+        );
+      })()}
 
       {/* Toast Notifications */}
       <div style={{
