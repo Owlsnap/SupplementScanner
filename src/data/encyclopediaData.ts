@@ -8,9 +8,11 @@ export interface EncyclopedialSupplement {
   tagline: string;
   evidenceTier: EvidenceTier;
   primaryUse: string;
+  overview: string;
   typicalDose: string;
   bestFor: string[];
   keyFacts: string[];
+  commonMistakes: string[];
 }
 
 export const encyclopediaCategories = ['All', 'Performance', 'Sleep', 'Nootropics', 'Recovery', 'Health'] as const;
@@ -24,12 +26,17 @@ export const encyclopediaSupplements: EncyclopedialSupplement[] = [
     tagline: 'The most researched strength & power supplement on earth',
     evidenceTier: 'Strong',
     primaryUse: 'Increases ATP regeneration for sustained power output and muscle mass gains',
+    overview: 'Creatine is the best return-on-investment supplement for strength and muscle — bar none. Your muscles store it as phosphocreatine, which rapidly refuels ATP during explosive efforts like heavy sets and sprints. It also draws water into muscle cells, contributing to a fuller look and accelerating protein synthesis over time.',
     typicalDose: '3–5g daily',
     bestFor: ['Strength & power athletes', 'Muscle mass goals', 'High-intensity interval training'],
     keyFacts: [
       'Backed by 500+ human clinical trials — the most studied supplement in sports science',
       'Loading phase (20g/day for 5 days) is optional — daily 3g gives the same result in ~4 weeks',
       'Safe for long-term use; no evidence of kidney harm in healthy individuals',
+    ],
+    commonMistakes: [
+      'Doing a loading phase — it\'s optional, not required. Daily 3–5g reaches saturation in ~4 weeks without the GI issues a loading phase causes.',
+      'Stopping during a cut — creatine is equally valuable in a caloric deficit where it helps preserve strength and muscle mass.',
     ],
   },
   {
@@ -39,12 +46,17 @@ export const encyclopediaSupplements: EncyclopedialSupplement[] = [
     tagline: 'Proven ergogenic aid for endurance, strength, and focus',
     evidenceTier: 'Strong',
     primaryUse: 'Stimulates the CNS via adenosine receptor antagonism, reducing perceived exertion',
+    overview: 'Caffeine blocks adenosine — the chemical that accumulates in your brain and makes you feel tired. The result is reduced perceived effort: hard workouts feel easier. It reliably improves both endurance and strength performance, making it one of the most validated ergogenic aids in sports science.',
     typicalDose: '150–400mg pre-workout',
     bestFor: ['Endurance athletes', 'Strength training sessions', 'Early-morning training'],
     keyFacts: [
       'Tolerance builds within 1–2 weeks; cycling off restores sensitivity',
       'Anhydrous caffeine absorbs faster than coffee for more predictable timing',
       'Half-life is ~5 hours — avoid doses within 6 hours of sleep',
+    ],
+    commonMistakes: [
+      'Taking it too late — with a ~5-hour half-life, a 3pm dose can still be active at 11pm and significantly wreck sleep quality even if you fall asleep fine.',
+      'Staying on it continuously — tolerance builds fast. Cycling off 1–2 days per week (or one week per month) keeps sensitivity high and the effect potent.',
     ],
   },
   {
@@ -54,12 +66,17 @@ export const encyclopediaSupplements: EncyclopedialSupplement[] = [
     tagline: 'Buffer muscle acid to train harder for longer',
     evidenceTier: 'Strong',
     primaryUse: 'Raises muscle carnosine levels, delaying fatigue in 60–240 second efforts',
+    overview: 'Beta-alanine doesn\'t work in real time — it builds up carnosine in your muscles over weeks. Carnosine acts as a pH buffer, soaking up the acid that accumulates during intense efforts and delaying the burning sensation that forces you to stop. It\'s most effective for sustained efforts in the 1–4 minute range like rowing, cycling intervals, or combat sports rounds.',
     typicalDose: '3.2–6.4g daily',
     bestFor: ['Rowing, swimming & cycling', 'Combat sports', 'Any effort lasting 1–4 minutes'],
     keyFacts: [
       'The "tingling" (paresthesia) is harmless and fades with regular use',
       'Takes 4–6 weeks to meaningfully raise muscle carnosine levels',
       'Split into 2×1.6g doses to reduce tingling intensity',
+    ],
+    commonMistakes: [
+      'Expecting an acute pre-workout effect — beta-alanine requires 4–6 weeks of daily use to build meaningful carnosine levels; single doses do nothing.',
+      'Skipping it on non-training days — consistent daily use is what builds carnosine stores, not just pre-workout doses.',
     ],
   },
   {
@@ -69,12 +86,17 @@ export const encyclopediaSupplements: EncyclopedialSupplement[] = [
     tagline: 'Nitric oxide precursor for pumps and endurance',
     evidenceTier: 'Moderate',
     primaryUse: 'Increases arginine bioavailability, enhancing NO production and reducing fatigue',
+    overview: 'Citrulline converts to arginine in the kidneys, bypassing the liver degradation that makes arginine supplements ineffective. More arginine means more nitric oxide, which dilates blood vessels for better oxygen and nutrient delivery — the pump you feel in training. It also helps recycle ammonia, a fatigue byproduct, reducing next-day soreness.',
     typicalDose: '6–8g 60 min pre-workout',
     bestFor: ['Hypertrophy / "pump" training', 'Endurance & high-rep work', 'Stacking with creatine'],
     keyFacts: [
       'More effective than L-Arginine directly — bypasses first-pass liver metabolism',
       '2:1 malate ratio is the best-studied form; pure L-citrulline is also effective',
       'Reduces muscle soreness ratings by ~40% in multiple studies',
+    ],
+    commonMistakes: [
+      'Using L-Arginine instead — it\'s broken down by the liver before reaching circulation, making citrulline 2–3× more effective at raising nitric oxide levels.',
+      'Underdosing — most studies showing benefits used 6–8g, but many pre-workout blends contain only 2–3g of citrulline.',
     ],
   },
   {
@@ -84,12 +106,17 @@ export const encyclopediaSupplements: EncyclopedialSupplement[] = [
     tagline: 'Osmolyte that supports power output and body composition',
     evidenceTier: 'Moderate',
     primaryUse: 'Acts as a methyl donor and osmolyte; supports creatine synthesis and hydration',
+    overview: 'Betaine is found naturally in beets, spinach, and quinoa. Your body uses it as a methyl donor for dozens of metabolic processes, and in training it acts as an osmolyte — helping cells maintain hydration under stress. Results are subtle but compound over weeks, with body composition improvements most evident after 6+ weeks of consistent use.',
     typicalDose: '2.5g twice daily',
     bestFor: ['Strength sports', 'Body composition goals', 'High-volume training blocks'],
     keyFacts: [
       'Found naturally in beets and spinach — used in food processing for centuries',
       'Methyl-donor function supports homocysteine metabolism and liver health',
       'Consistent use over 6+ weeks shows body composition improvements',
+    ],
+    commonMistakes: [
+      'Expecting immediate effects like caffeine — betaine works through slow metabolic processes; body composition shifts take 6+ weeks to appear.',
+      'Taking it all at once — splitting doses (morning + pre-workout) improves cell saturation and tolerability over a single large dose.',
     ],
   },
   {
@@ -99,12 +126,17 @@ export const encyclopediaSupplements: EncyclopedialSupplement[] = [
     tagline: 'Leucine metabolite for muscle preservation',
     evidenceTier: 'Moderate',
     primaryUse: 'Reduces muscle protein breakdown, especially useful during caloric restriction',
+    overview: 'HMB is what your body naturally makes from leucine — the key muscle-building amino acid. It acts as a brake on muscle breakdown, which is especially valuable when calories are restricted or when returning from a training break. Its benefits are most clearly seen in older athletes and during high-stress periods where muscle loss is the primary concern.',
     typicalDose: '3g daily (split doses)',
     bestFor: ['Cutting / caloric deficit phases', 'Older athletes (35+)', 'Training after long breaks'],
     keyFacts: [
       'A metabolite of leucine — body produces ~0.2–0.4g naturally from dietary protein',
       'Most benefit seen in untrained individuals or during periods of high muscle stress',
       'Free-acid form (HMB-FA) absorbs faster than calcium HMB',
+    ],
+    commonMistakes: [
+      'Using it as a primary muscle-builder — evidence for HMB in well-trained athletes on adequate protein is weak. It shines most during caloric deficits or detraining.',
+      'Using calcium HMB instead of the free-acid form — HMB-FA absorbs significantly faster and has better acute performance data.',
     ],
   },
   {
@@ -114,12 +146,17 @@ export const encyclopediaSupplements: EncyclopedialSupplement[] = [
     tagline: 'Old-school acid buffer for high-intensity efforts',
     evidenceTier: 'Strong',
     primaryUse: 'Raises extracellular pH, buffering acid and improving performance in 1–7 minute efforts',
+    overview: 'Plain baking soda works as a performance aid because it raises blood pH, giving your muscles more buffer capacity to clear acid during intense efforts. It has been used by competitive athletes since the 1930s and has solid evidence for events lasting 1–7 minutes — from 800m track to MMA rounds. The main challenge is tolerating it without GI distress.',
     typicalDose: '200–300mg per kg bodyweight',
     bestFor: ['Swimmers & rowers', '800m–1500m track athletes', 'MMA & boxing'],
     keyFacts: [
       'One of the original sports supplements — used by athletes since the 1930s',
       'Take 60–90 min before exercise; GI distress is the main side effect (use enteric capsules)',
       'Loading over 3–5 days can reduce GI issues and maintain performance',
+    ],
+    commonMistakes: [
+      'Taking it on an empty stomach — GI distress (nausea, cramps) is the main barrier; always take with a light meal and plenty of water.',
+      'Taking it too close to the event — allow 60–90 minutes for absorption, and consider a 3–5 day lead-in dose to adapt your gut before competition.',
     ],
   },
 
@@ -131,12 +168,17 @@ export const encyclopediaSupplements: EncyclopedialSupplement[] = [
     tagline: 'The premium relaxation mineral — gentle and highly absorbed',
     evidenceTier: 'Strong',
     primaryUse: 'Activates GABA receptors and supports the parasympathetic nervous system',
+    overview: 'Magnesium is involved in over 300 enzymatic reactions, including directly activating GABA — your brain\'s main calming neurotransmitter. Most people don\'t get enough from diet alone, and deficiency commonly shows up as restlessness, muscle cramps, and fragmented sleep. Glycinate pairs magnesium with the amino acid glycine, which itself has independent sleep-promoting properties.',
     typicalDose: '200–400mg elemental Mg before bed',
     bestFor: ['Stress-related sleep issues', 'Muscle cramps at night', 'People with low dietary magnesium'],
     keyFacts: [
       'Glycinate chelation makes it one of the most bioavailable forms with minimal laxative effect',
       'Up to 68% of the population is estimated to be deficient in magnesium',
       'Takes 4–8 weeks of consistent use to normalize deficiency symptoms',
+    ],
+    commonMistakes: [
+      'Using magnesium oxide for sleep — it has <10% absorption and a strong laxative effect, providing little actual calming benefit.',
+      'Expecting instant results — correcting a deficiency takes 4–8 weeks of nightly use; don\'t judge it in the first week.',
     ],
   },
   {
@@ -146,12 +188,17 @@ export const encyclopediaSupplements: EncyclopedialSupplement[] = [
     tagline: 'Regulate your circadian clock with precision',
     evidenceTier: 'Strong',
     primaryUse: 'Signals sleep onset by binding MT1/MT2 receptors in the suprachiasmatic nucleus',
+    overview: 'Melatonin is a hormone your brain naturally produces when it gets dark — it signals your body that it\'s time to sleep. Supplementing doesn\'t knock you out like a sedative; instead it shifts your internal clock, making it most valuable for jet lag, shift work, or delayed sleep phase. Both timing and dose matter far more than most people realize.',
     typicalDose: '0.5–3mg 30–60 min before bed',
     bestFor: ['Jet lag & shift workers', 'Delayed sleep phase', 'Adjusting to new sleep schedules'],
     keyFacts: [
       'More is not better — 0.5mg is as effective as 5mg for sleep onset in most adults',
       'Works best for circadian phase-shifting, not as a sedative',
       'Light exposure (especially blue light) suppresses natural melatonin production by 50%+',
+    ],
+    commonMistakes: [
+      'Taking too high a dose — 0.5mg is as effective as 5mg for most people and avoids next-day grogginess. Higher doses are not stronger, just longer-lasting.',
+      'Using it as a nightly sedative for chronic sleep issues — melatonin is a circadian regulator. For ongoing sleep problems, address sleep hygiene and light exposure first.',
     ],
   },
   {
@@ -161,12 +208,17 @@ export const encyclopediaSupplements: EncyclopedialSupplement[] = [
     tagline: 'Calm the mind without sedation',
     evidenceTier: 'Moderate',
     primaryUse: 'Increases alpha brain wave activity, promoting relaxed alertness and sleep onset',
+    overview: 'L-Theanine is an amino acid unique to tea leaves that promotes alpha brain waves — the mental state associated with calm, unfocused awareness. It\'s non-sedating, so it won\'t make you drowsy during the day, but it quiets the mental chatter that can prevent sleep onset at night. It also pairs exceptionally well with caffeine to smooth out jitteriness.',
     typicalDose: '100–200mg before bed',
     bestFor: ['Anxiety-driven sleep issues', 'Stacking with caffeine for calm focus', 'Light sleepers'],
     keyFacts: [
       'Naturally found in green tea — typically 20–30mg per cup',
       'Does not cause grogginess; alpha wave effect is non-sedating',
       '200mg + 100mg caffeine is one of the most studied cognitive stacks',
+    ],
+    commonMistakes: [
+      'Underdosing — green tea contains only 20–30mg per cup. Therapeutic effects for sleep or focus require 100–200mg from a supplement.',
+      'Expecting a strong sedative effect — it\'s subtle and calming, not a knockout. Those with significant anxiety or insomnia may need to stack it with other approaches.',
     ],
   },
   {
@@ -176,12 +228,17 @@ export const encyclopediaSupplements: EncyclopedialSupplement[] = [
     tagline: 'Adaptogen that lowers cortisol and improves sleep quality',
     evidenceTier: 'Moderate',
     primaryUse: 'Reduces cortisol and stress biomarkers, improving non-REM sleep duration',
+    overview: 'Ashwagandha is one of the most well-researched adaptogens — plants that help your body modulate its stress response. It directly lowers cortisol, the hormone that keeps your nervous system in alert mode and fragments deep sleep. The KSM-66 extract specifically uses root-only material and has the strongest clinical validation among ashwagandha forms.',
     typicalDose: '300–600mg KSM-66 daily',
     bestFor: ['High-stress lifestyles', 'Cortisol-disrupted sleep', 'Athletes in heavy training blocks'],
     keyFacts: [
       'KSM-66 is a root-only extract with 5% withanolides — the most clinically tested form',
       'Cortisol reduction of ~28% reported in 8-week RCT vs placebo',
       'Dual benefit: improves sleep quality AND may modestly boost testosterone',
+    ],
+    commonMistakes: [
+      'Using cheap root powder instead of a standardized extract — active withanolide content varies wildly in unverified powders; KSM-66 or Sensoril with stated percentages are essential.',
+      'Expecting fast results — cortisol normalization is a slow process. Give it 4–8 weeks of consistent daily use before evaluating.',
     ],
   },
   {
@@ -191,12 +248,17 @@ export const encyclopediaSupplements: EncyclopedialSupplement[] = [
     tagline: 'Amino acid that lowers core body temperature for better sleep',
     evidenceTier: 'Moderate',
     primaryUse: 'Facilitates sleep by reducing core body temperature and modulating NMDA receptors',
+    overview: 'Glycine is a simple amino acid with a surprisingly direct effect on sleep: it lowers your core body temperature by dilating blood vessels in the skin, and cooling is one of the body\'s key triggers for sleep onset. Users consistently report waking up feeling less fatigued the next morning — a sign of improved sleep architecture rather than just longer time in bed.',
     typicalDose: '3g 30–60 min before bed',
     bestFor: ['Poor sleep quality without clear cause', 'Shift workers', 'Stacking with magnesium'],
     keyFacts: [
       'Lowers core body temperature by ~0.3°C — a known trigger for sleep onset',
       'Subjective reports show significantly reduced daytime fatigue the next morning',
       'Extremely safe at any dose — also used at 15–60g daily for metabolic conditions',
+    ],
+    commonMistakes: [
+      'Overlooking it because it\'s "just an amino acid" — the core temperature-lowering mechanism is distinct from other sleep aids and complements magnesium well.',
+      'Taking it too early — the temperature drop needs to coincide with your sleep window; take it 30–60 minutes before you actually intend to sleep.',
     ],
   },
 
@@ -208,12 +270,17 @@ export const encyclopediaSupplements: EncyclopedialSupplement[] = [
     tagline: 'The nerve growth factor mushroom for brain health',
     evidenceTier: 'Emerging',
     primaryUse: 'Stimulates NGF synthesis, supporting neuroplasticity and long-term cognitive health',
+    overview: 'Lion\'s Mane is one of the few supplements with evidence for stimulating Nerve Growth Factor (NGF) — a protein essential for the growth and maintenance of brain neurons. It\'s not a stimulant; effects are slow-building and cumulative over months, supporting cognitive health rather than delivering acute focus. Most valuable for long-term brain maintenance and anxiety-related focus issues.',
     typicalDose: '500mg–2g fruiting body extract daily',
     bestFor: ['Long-term brain health', 'Cognitive recovery', 'Anxiety-related focus issues'],
     keyFacts: [
       'Hericenones and erinacines are the active compounds that cross the blood-brain barrier',
       'Fruiting body extracts are more potent than mycelium-only products',
       'Human trials show promise for mild cognitive impairment; more data needed',
+    ],
+    commonMistakes: [
+      'Buying mycelium-on-grain products — these contain mostly starch filler, not active compounds. Look for fruiting body extracts standardized to beta-glucan content.',
+      'Expecting an immediate nootropic effect — benefits accumulate over 8+ weeks and are about long-term brain health, not acute focus or energy.',
     ],
   },
   {
@@ -223,12 +290,17 @@ export const encyclopediaSupplements: EncyclopedialSupplement[] = [
     tagline: 'Ayurvedic herb for long-term memory consolidation',
     evidenceTier: 'Moderate',
     primaryUse: 'Enhances memory formation via antioxidant activity and cholinergic modulation',
+    overview: 'Bacopa is one of the best-studied herbs for memory, used in Ayurvedic medicine for centuries and validated in modern RCTs. It enhances synaptic communication and protects neurons from oxidative stress, translating to faster information recall and better learning retention over time. It won\'t make you sharper tomorrow — but consistently over 8–12 weeks, the evidence is compelling.',
     typicalDose: '300–450mg standardized extract daily',
     bestFor: ['Students & memory work', 'Age-related cognitive decline', 'Long-term supplementation plans'],
     keyFacts: [
       'Effects are slow-building — most trials show significant results at 8–12 weeks',
       'Bacosides A and B are the active components — look for 20–55% standardization',
       'Best taken with a fat-containing meal for improved absorption',
+    ],
+    commonMistakes: [
+      'Giving up too early — most trials show meaningful cognitive improvement only at 8–12 weeks; quitting after 2–3 weeks means missing the benefit entirely.',
+      'Taking on an empty stomach — bacosides are fat-soluble; absorption is significantly improved when taken with a meal containing fat.',
     ],
   },
   {
@@ -238,12 +310,17 @@ export const encyclopediaSupplements: EncyclopedialSupplement[] = [
     tagline: 'Premium choline source for acetylcholine synthesis',
     evidenceTier: 'Moderate',
     primaryUse: 'Crosses the blood-brain barrier to rapidly boost acetylcholine levels',
+    overview: 'Acetylcholine is the neurotransmitter behind focus, learning, and the mind-muscle connection in training. Alpha-GPC is the most efficient way to raise brain acetylcholine levels because it crosses the blood-brain barrier directly, unlike most choline sources. Athletes use it for cognitive sharpness and its reported boost to power output and growth hormone release.',
     typicalDose: '300–600mg daily',
     bestFor: ['Focus-demanding tasks', 'Stacking with racetams', 'Athletes seeking power output boost'],
     keyFacts: [
       'Contains ~40% choline by weight — one of the most bioavailable choline forms',
       'Also has independent nootropic effects beyond just choline donation',
       'A single 600mg dose may acutely increase growth hormone release',
+    ],
+    commonMistakes: [
+      'Substituting CDP-choline without adjusting dose — CDP-choline contains ~18% choline vs Alpha-GPC\'s ~40%; you\'d need roughly double the milligrams.',
+      'Stacking with racetams without enough choline — racetams increase acetylcholine demand; inadequate choline supply leads to brain fog and headaches.',
     ],
   },
   {
@@ -253,12 +330,17 @@ export const encyclopediaSupplements: EncyclopedialSupplement[] = [
     tagline: 'Adaptogen that fights mental fatigue under stress',
     evidenceTier: 'Moderate',
     primaryUse: 'Modulates stress hormones and supports serotonergic/dopaminergic transmission',
+    overview: 'Rhodiola has one key advantage over most adaptogens: it works acutely. You can feel anti-fatigue and mood-stabilizing effects within hours of a dose, not just after weeks of use. It modulates the stress response axis and supports dopaminergic and serotonergic transmission — genuinely useful during exam periods, high-deadline weeks, or hard training blocks.',
     typicalDose: '200–600mg 3% rosavins / 1% salidroside',
     bestFor: ['Burnout & overtraining recovery', 'Exam / deadline periods', 'Morning energy without caffeine'],
     keyFacts: [
       'Acts within hours for acute anti-fatigue effects — unlike most adaptogens',
       'Cyclic use (5 days on, 2 days off) may prevent tolerance buildup',
       'Used by Soviet military and athletes for decades before Western research began',
+    ],
+    commonMistakes: [
+      'Using it continuously without breaks — tolerance appears to build; cycling 5 days on / 2 days off (or taking weekends off) preserves effectiveness over time.',
+      'Taking it late in the day — it\'s mildly activating and can interfere with sleep if taken in the afternoon or evening.',
     ],
   },
   {
@@ -268,12 +350,17 @@ export const encyclopediaSupplements: EncyclopedialSupplement[] = [
     tagline: 'Classic adaptogen for energy and cognitive resilience',
     evidenceTier: 'Moderate',
     primaryUse: 'Ginsenosides modulate the HPA axis and multiple neurotransmitter systems',
+    overview: 'Panax ginseng is one of the most thoroughly researched adaptogens, with evidence spanning cognitive performance, immune function, and blood sugar regulation. Its active ginsenosides modulate the hypothalamic-pituitary-adrenal axis — essentially the body\'s stress-response control center. Korean Red Ginseng, made by steaming the root, has the strongest clinical track record of any form.',
     typicalDose: '200–400mg standardized extract daily',
     bestFor: ['Mental stamina & sustained focus', 'Immune resilience', 'Older adults (cognitive maintenance)'],
     keyFacts: [
       'Korean Red Ginseng (steamed & dried) has the most clinical evidence',
       'Ginsenoside Rg1 and Rb1 are primary active compounds',
       'May modestly improve blood glucose regulation when used consistently',
+    ],
+    commonMistakes: [
+      'Confusing it with Siberian (Eleuthero) or American Ginseng — different plants with different active compounds and use cases; not interchangeable.',
+      'Using unstandardized products — active ginsenoside content varies enormously between brands. Always look for a product specifying total ginsenoside percentage.',
     ],
   },
   {
@@ -283,12 +370,17 @@ export const encyclopediaSupplements: EncyclopedialSupplement[] = [
     tagline: 'Cell membrane phospholipid essential for brain function',
     evidenceTier: 'Moderate',
     primaryUse: 'Supports neuronal membrane fluidity and blunts the cortisol response to stress',
+    overview: 'Phosphatidylserine is a phospholipid that forms a critical component of every brain cell membrane. As we age, PS levels decline, affecting memory and processing speed. It also blunts the cortisol spike after intense exercise — making it uniquely valuable for athletes who want to recover faster without suppressing the training adaptations that cortisol also drives.',
     typicalDose: '100–300mg daily with a meal',
     bestFor: ['High-stress athletes (overtraining prevention)', 'Age-related memory concerns', 'Executive function support'],
     keyFacts: [
       'FDA allows a qualified health claim for PS and cognitive decline risk reduction',
       'Soy-derived PS (most common) has equivalent bioavailability to sunflower-derived',
       'Cortisol-blunting effect is most pronounced at 400–800mg — relevant post-exercise',
+    ],
+    commonMistakes: [
+      'Skipping it due to cost — lower doses of 100–200mg still provide meaningful cortisol-blunting effects for athletes at a more manageable price point.',
+      'Taking on an empty stomach — PS is fat-soluble and absorption is significantly improved when taken with a fat-containing meal.',
     ],
   },
 
@@ -300,12 +392,17 @@ export const encyclopediaSupplements: EncyclopedialSupplement[] = [
     tagline: 'Natural anti-inflammatory for post-exercise muscle soreness',
     evidenceTier: 'Moderate',
     primaryUse: 'Anthocyanins reduce oxidative stress and muscle damage markers post-exercise',
+    overview: 'Tart cherries are exceptionally rich in anthocyanins — the pigments behind their deep red color that act as potent antioxidants. After hard training, your muscles undergo significant oxidative stress; these anthocyanins accelerate the cleanup process, reducing soreness and speeding up strength recovery. As a bonus, tart cherries also contain natural melatonin for a sleep quality benefit.',
     typicalDose: '480mg extract or 240–480ml juice twice daily',
     bestFor: ['Endurance athletes', 'Back-to-back training days', 'Race week / peak competition prep'],
     keyFacts: [
       'Also improves sleep quality due to natural melatonin content',
       'Most effective when started 4–5 days before a high-stress event',
       'Montmorency variety has the highest anthocyanin concentration',
+    ],
+    commonMistakes: [
+      'Starting it the morning of an event — most of the evidence uses a 4–7 day loading period before the high-stress activity to saturate tissues with anthocyanins.',
+      'Using sweet cherry juice instead of tart Montmorency — the anthocyanin concentration in sweet varieties is dramatically lower and likely insufficient for the effect.',
     ],
   },
   {
@@ -315,12 +412,17 @@ export const encyclopediaSupplements: EncyclopedialSupplement[] = [
     tagline: 'Essential fatty acids for systemic inflammation control',
     evidenceTier: 'Strong',
     primaryUse: 'EPA/DHA reduce prostaglandin-mediated inflammation and support joint health',
+    overview: 'EPA and DHA are long-chain fatty acids your body cannot efficiently synthesize — they must come from diet or supplements. EPA is the primary driver of anti-inflammatory activity, directly competing with the inflammatory pathways behind joint pain and post-exercise soreness. DHA concentrates in brain cell membranes and supports cognitive function. Most Western diets are severely deficient in both.',
     typicalDose: '1–3g EPA+DHA daily with a meal',
     bestFor: ['Joint health & flexibility', 'Post-training inflammation', 'Cardiovascular health'],
     keyFacts: [
       'EPA primarily drives anti-inflammatory effects; DHA supports brain structure',
       'Triglyceride form (fish oil) absorbs ~70% better than ethyl ester form',
       'Look for IFOS or similar 3rd-party certification for purity and oxidation levels',
+    ],
+    commonMistakes: [
+      'Counting total fish oil milligrams instead of EPA+DHA — a "1000mg fish oil" capsule typically contains only 300mg of actual omega-3s. Check the label.',
+      'Using rancid oil — oxidized fish oil is pro-inflammatory. Check for a fresh smell (not fishy), look for IFOS certification, and keep it refrigerated after opening.',
     ],
   },
   {
@@ -330,12 +432,17 @@ export const encyclopediaSupplements: EncyclopedialSupplement[] = [
     tagline: 'Structural protein for tendons, joints, and connective tissue',
     evidenceTier: 'Moderate',
     primaryUse: 'Provides hydroxyproline and glycine substrates for connective tissue collagen synthesis',
+    overview: 'Tendons, ligaments, and cartilage are made of collagen but have poor blood supply, making connective tissue injuries notoriously slow to heal. Taking hydrolyzed collagen 30–60 minutes before exercise has been shown to increase collagen synthesis specifically in tendons during the post-exercise window. Vitamin C is a required co-factor — without it, the synthesis process is incomplete.',
     typicalDose: '10–15g daily, ideally with Vitamin C',
     bestFor: ['Tendon & ligament injuries', 'Joint pain in athletes', 'Skin & hair health'],
     keyFacts: [
       'Take 30–60 min before exercise for maximum collagen synthesis stimulation in connective tissue',
       'Vitamin C is a required co-factor for collagen synthesis — combine them',
       'Hydrolyzed form (peptides) has significantly better absorption than gelatin',
+    ],
+    commonMistakes: [
+      'Taking it without vitamin C — collagen synthesis requires vitamin C as a co-factor. Skipping it means significantly reduced connective tissue benefit.',
+      'Using collagen as a general protein supplement — its amino acid profile lacks tryptophan and is not optimal for muscle building; its purpose is specifically connective tissue.',
     ],
   },
   {
@@ -345,12 +452,17 @@ export const encyclopediaSupplements: EncyclopedialSupplement[] = [
     tagline: 'Potent anti-inflammatory compound from turmeric root',
     evidenceTier: 'Moderate',
     primaryUse: 'Inhibits NF-kB pathway, reducing systemic inflammatory cytokines',
+    overview: 'Curcumin is the active compound in turmeric and works by blocking NF-kB — one of the master switches of inflammation in the body. The critical catch is bioavailability: standard curcumin is almost completely insoluble and barely absorbed. With piperine from black pepper, absorption jumps by up to 2000%. Without an absorption enhancer, you\'re essentially taking an inert powder.',
     typicalDose: '500–1000mg daily with piperine or fat',
     bestFor: ['Chronic inflammation & joint issues', 'Post-exercise soreness', 'Gut inflammation'],
     keyFacts: [
       'Standard curcumin has <1% bioavailability alone — piperine boosts absorption by ~2000%',
       'Newer forms like Meriva® (phytosome), BCM-95® and Longvida® absorb even better',
       'Curcumin is only ~3% of dried turmeric by weight — supplements far exceed food amounts',
+    ],
+    commonMistakes: [
+      'Relying on turmeric in food for a therapeutic effect — you\'d need to eat enormous quantities, and the fat and piperine required for absorption still aren\'t guaranteed.',
+      'Buying standard curcumin without an absorption enhancer — piperine, Meriva®, or BCM-95® are not optional; without them, bioavailability is below 1%.',
     ],
   },
   {
@@ -360,12 +472,17 @@ export const encyclopediaSupplements: EncyclopedialSupplement[] = [
     tagline: 'Conditionally essential amino acid for gut and immune health',
     evidenceTier: 'Moderate',
     primaryUse: 'Most abundant amino acid; supports gut barrier integrity and immune cell function',
+    overview: 'Glutamine is the most abundant amino acid in muscle tissue and the primary fuel source for gut lining cells and immune lymphocytes. During intense training, illness, or injury, your body\'s glutamine demand can exceed its production capacity — leading to muscle catabolism and immune suppression. Supplementing helps plug this gap, with the strongest evidence for gut barrier integrity.',
     typicalDose: '5–10g daily (or up to 20g in clinical settings)',
     bestFor: ['Gut permeability issues ("leaky gut")', 'Intense training & overtraining recovery', 'Post-illness immune rebuilding'],
     keyFacts: [
       'Becomes "conditionally essential" during high physiological stress or injury',
       'Primary fuel source for enterocytes (gut lining cells) and immune lymphocytes',
       'High-dose evidence for performance is weak; gut/immune benefits are better supported',
+    ],
+    commonMistakes: [
+      'Expecting muscle-building effects comparable to creatine — evidence for glutamine improving hypertrophy or strength in well-nourished athletes is weak.',
+      'Overlooking the gut health application — the strongest case for glutamine supplementation is gut barrier integrity ("leaky gut"), not muscle performance.',
     ],
   },
 
@@ -377,12 +494,17 @@ export const encyclopediaSupplements: EncyclopedialSupplement[] = [
     tagline: 'The essential sunshine vitamin pair for bone and immune health',
     evidenceTier: 'Strong',
     primaryUse: 'D3 regulates calcium absorption; K2 directs calcium to bones rather than arteries',
+    overview: 'Vitamin D acts more like a hormone than a vitamin — it regulates gene expression across hundreds of tissues and is essential for immune function, bone density, and testosterone production. Most people in northern latitudes or who work indoors are deficient. K2 is the critical partner: D3 increases calcium absorption, and K2 ensures that calcium goes to your bones rather than calcifying your arteries.',
     typicalDose: '2000–5000 IU D3 + 100–200mcg K2 (MK-7) daily',
     bestFor: ['Northerners / low sun exposure', 'Bone density maintenance', 'Immune system baseline'],
     keyFacts: [
       'Estimated 40–50% of adults worldwide are deficient; deficiency linked to 200+ conditions',
       'K2 prevents the "calcium paradox" — D3 increases calcium absorption, K2 ensures it goes to bone not arteries',
       'Cholecalciferol (D3) raises blood levels ~3× more effectively than ergocalciferol (D2)',
+    ],
+    commonMistakes: [
+      'Taking D3 long-term without K2 — without K2, increased calcium absorption from D3 can deposit in arteries instead of bones. The two work as a pair.',
+      'Stopping supplementation once levels look "normal" — standard lab reference ranges are often set too low. Optimal function is typically at 40–60 ng/mL, not just above deficiency threshold.',
     ],
   },
   {
@@ -392,12 +514,17 @@ export const encyclopediaSupplements: EncyclopedialSupplement[] = [
     tagline: 'Essential mineral for immunity, hormones, and wound healing',
     evidenceTier: 'Strong',
     primaryUse: 'Cofactor in 300+ enzymatic reactions; critical for testosterone synthesis and immune function',
+    overview: 'Zinc is a cofactor in over 300 enzymes and plays a direct role in testosterone synthesis, immune activation, and wound repair. Athletes are particularly at risk for depletion since zinc is lost in sweat and high training volumes increase metabolic demand. The bisglycinate chelate form absorbs dramatically more effectively than the zinc oxide found in cheap multivitamins.',
     typicalDose: '15–30mg elemental zinc daily',
     bestFor: ['Athletes (zinc lost in sweat)', 'Immune support during intense training', 'Hormonal health'],
     keyFacts: [
       'Bisglycinate chelate absorbs ~43% more efficiently than zinc oxide',
       'Zinc competes with copper — long-term high doses (>40mg) may need copper balancing',
       'Deficiency is associated with reduced testosterone, impaired wound healing, and increased illness',
+    ],
+    commonMistakes: [
+      'Relying on zinc oxide from cheap multivitamins — it has <10% absorption. Bisglycinate or picolinate forms are significantly more effective per milligram.',
+      'Taking high doses long-term without balancing copper — zinc and copper compete for absorption; sustained doses above 40mg/day can gradually deplete copper.',
     ],
   },
   {
@@ -407,12 +534,17 @@ export const encyclopediaSupplements: EncyclopedialSupplement[] = [
     tagline: 'Daytime magnesium form that supports energy metabolism',
     evidenceTier: 'Strong',
     primaryUse: 'Malate participates in the Krebs cycle; supports ATP production and energy output',
+    overview: 'Magnesium malate is the daytime-optimized magnesium form, pairing the mineral with malic acid — a key intermediate in the Krebs cycle that your cells use to produce ATP. Unlike magnesium glycinate (which has a calming, sleep-oriented effect), malate supports cellular energy without the sedating component, making it better suited for morning or pre-workout use.',
     typicalDose: '200–400mg elemental Mg daily',
     bestFor: ['Daytime energy & fatigue reduction', 'Athletes with high training volume', 'Fibromyalgia management'],
     keyFacts: [
       'Malic acid is a key Krebs cycle intermediate — this form supports cellular energy, not just relaxation',
       'Less sedating than glycinate — better taken in the morning or pre-workout',
       'Used in fibromyalgia research where malic acid + magnesium showed pain reduction',
+    ],
+    commonMistakes: [
+      'Using magnesium glycinate in the morning and feeling sluggish — glycinate\'s calming effect is better suited for evening. Malate is the right form for daytime energy.',
+      'Confusing total compound weight with elemental magnesium content — the label\'s milligrams refer to the full compound, not just the active magnesium; check the elemental amount.',
     ],
   },
   {
@@ -422,12 +554,17 @@ export const encyclopediaSupplements: EncyclopedialSupplement[] = [
     tagline: 'Gut microbiome support for digestion and immunity',
     evidenceTier: 'Moderate',
     primaryUse: 'Restore healthy gut flora balance and modulate the gut-immune axis',
+    overview: 'Your gut microbiome influences far more than digestion — it modulates immune function, mental health via the gut-brain axis, and systemic inflammation. Probiotics introduce beneficial bacteria to compete with harmful strains and support the gut lining. Multi-strain formulas outperform single-strain in most studies because different strains colonize different regions of the gut.',
     typicalDose: '10–50 billion CFU daily',
     bestFor: ['Post-antibiotic microbiome recovery', 'IBS / digestive discomfort', 'Immune maintenance'],
     keyFacts: [
       'Lactobacillus and Bifidobacterium genera have the most clinical evidence',
       'Multi-strain formulas show better outcomes than single-strain in most studies',
       'Refrigerated probiotics maintain higher viability — check the expiry and storage',
+    ],
+    commonMistakes: [
+      'Leaving refrigerated probiotics at room temperature — viability degrades quickly without cold storage; always check storage requirements and expiry date before buying.',
+      'Starting at a high CFU dose immediately — some people experience significant gas and bloating. Start at 5–10 billion CFU and increase gradually over 1–2 weeks.',
     ],
   },
   {
@@ -437,12 +574,17 @@ export const encyclopediaSupplements: EncyclopedialSupplement[] = [
     tagline: 'Foundational antioxidant and immune system pillar',
     evidenceTier: 'Strong',
     primaryUse: 'Cofactor in collagen synthesis; reduces oxidative stress and supports immune function',
+    overview: 'Vitamin C is an essential cofactor for collagen synthesis and a frontline antioxidant that neutralizes free radicals generated during exercise and illness. Your body can\'t store large amounts, so consistent daily intake matters more than occasional megadosing. It\'s also essential to pair with collagen peptides — without adequate vitamin C, collagen synthesis is incomplete regardless of dose.',
     typicalDose: '250–1000mg daily (split doses)',
     bestFor: ['Immune system baseline', 'Collagen synthesis (skin, joints)', 'High oxidative-stress periods (illness, intense training)'],
     keyFacts: [
       'Absorption saturates at ~400mg per dose — split into 2x for better uptake',
       'Does not prevent colds but reduces duration by ~8% in adults (14% in athletes)',
       'Buffered forms (sodium ascorbate) are gentler on the stomach at high doses',
+    ],
+    commonMistakes: [
+      'Megadosing in one go — absorption plateaus at ~400mg per dose; a single 1000mg dose wastes most of it in urine. Split into two smaller doses instead.',
+      'Only taking it when sick — vitamin C doesn\'t prevent colds but reduces duration when levels are already maintained through daily intake.',
     ],
   },
   {
@@ -452,12 +594,17 @@ export const encyclopediaSupplements: EncyclopedialSupplement[] = [
     tagline: 'Plant alkaloid with significant metabolic effects',
     evidenceTier: 'Moderate',
     primaryUse: 'Activates AMPK, improving insulin sensitivity and blood glucose regulation',
+    overview: 'Berberine is a plant alkaloid that activates AMPK — often called the "metabolic master switch" — leading to improved insulin sensitivity and lower blood glucose. It has a remarkably consistent track record in clinical trials, with multiple meta-analyses comparing its blood sugar effects favorably to Metformin. It\'s one of the most evidence-backed natural compounds for metabolic health.',
     typicalDose: '500mg 2–3× daily with meals',
     bestFor: ['Blood sugar management', 'Metabolic syndrome', 'PCOS-related insulin resistance'],
     keyFacts: [
       'Multiple meta-analyses show blood glucose reductions comparable to Metformin',
       'Poor bioavailability — dihydroberberine (DHB) absorbs ~5× better',
       'Not recommended during pregnancy; may interact with CYP enzymes',
+    ],
+    commonMistakes: [
+      'Using standard berberine and being disappointed by weak effects — its bioavailability is poor. Dihydroberberine (DHB) absorbs ~5× more efficiently.',
+      'Taking it away from meals — berberine\'s glucose-lowering effect is most relevant around mealtimes; take 20–30 minutes before eating for best results.',
     ],
   },
   {
@@ -467,12 +614,17 @@ export const encyclopediaSupplements: EncyclopedialSupplement[] = [
     tagline: 'Mitochondrial electron carrier for cellular energy and heart health',
     evidenceTier: 'Moderate',
     primaryUse: 'Transfers electrons in the mitochondrial electron transport chain for ATP production',
+    overview: 'CoQ10 is a fat-soluble compound that acts as an electron shuttle in your mitochondria\'s energy production chain. Your body synthesizes it naturally, but levels peak around age 20 and decline steadily after 40. Statins dramatically accelerate this depletion by blocking the same metabolic pathway. Ubiquinol is the active, reduced form that bypasses a conversion step that becomes less efficient with age.',
     typicalDose: '100–300mg ubiquinol daily with a meal',
     bestFor: ['Statin users (CoQ10 depleted by statins)', 'Cardiovascular health support', 'Age-related energy decline (drops after 40)'],
     keyFacts: [
       'Ubiquinol (reduced form) absorbs up to 8× better than ubiquinone for adults over 40',
       'Statin medications inhibit the same pathway that produces CoQ10 — supplementation is widely recommended',
       'Body levels naturally decline with age, starting from around age 40',
+    ],
+    commonMistakes: [
+      'Using ubiquinone (standard CoQ10) over the age of 40 — the ability to convert ubiquinone to active ubiquinol declines with age; ubiquinol absorbs directly and is worth the premium.',
+      'Taking it without food — CoQ10 is fat-soluble and absorption is dramatically reduced when taken on an empty stomach.',
     ],
   },
 ];

@@ -30,7 +30,7 @@ export default function RecommendationsPage({ products = [] }: RecommendationsPa
       {/* Page hero */}
       <div style={{
         background: 'linear-gradient(135deg, #00685f 0%, #3f6560 100%)',
-        padding: 'calc(100px + 3.5rem) 1.5rem 3.5rem',
+        padding: 'calc(100px + 5rem) 1.5rem 5rem',
         position: 'relative',
         overflow: 'hidden',
       }}>

@@ -1,7 +1,7 @@
 import React from 'react';
 import {
   ArrowLeft, Lock, Sparkle, Flask, Gauge, ArrowsHorizontal,
-  ShieldWarning, ArrowRight, Barbell, Moon, Brain, Lightning, Leaf,
+  ShieldWarning, ArrowRight, Barbell, Moon, Brain, Lightning, Leaf, Warning,
 } from '@phosphor-icons/react';
 import type { EvidenceTier, EncyclopediaCategory } from '../data/encyclopediaData';
 import { useDarkMode } from '../contexts/DarkModeContext';
@@ -13,9 +13,11 @@ interface SupplementInfoPageProps {
   evidenceTier: EvidenceTier;
   tagline: string;
   primaryUse: string;
+  overview: string;
   typicalDose: string;
   bestFor: string[];
   keyFacts: string[];
+  commonMistakes: string[];
   onBack: () => void;
   onDeepDive: () => void;
 }
@@ -59,8 +61,8 @@ const deepDiveFeatures: Array<{ Icon: React.ElementType; label: string; desc: st
 ];
 
 export default function SupplementInfoPage({
-  name, category, evidenceTier, tagline, primaryUse,
-  typicalDose, bestFor, keyFacts, onBack, onDeepDive,
+  name, category, evidenceTier, tagline, primaryUse, overview,
+  typicalDose, bestFor, keyFacts, commonMistakes, onBack, onDeepDive,
 }: SupplementInfoPageProps) {
   const { isDark } = useDarkMode();
   const categoryColors = isDark ? categoryColorsDark : categoryColorsLight;
@@ -167,6 +169,20 @@ export default function SupplementInfoPage({
           </div>
         </div>
 
+        {/* Overview */}
+        <div style={{
+          background: 'var(--bg-surface)', borderRadius: '14px',
+          boxShadow: '0 1px 4px rgba(0,0,0,0.06)',
+          padding: '1.375rem 1.5rem', marginBottom: '1rem',
+        }}>
+          <div style={{ fontFamily: "'Inter', sans-serif", fontWeight: 600, fontSize: '0.75rem', color: 'var(--text-secondary)', textTransform: 'uppercase', letterSpacing: '0.7px', marginBottom: '0.625rem' }}>
+            Overview
+          </div>
+          <p style={{ fontFamily: "'Inter', sans-serif", fontSize: '0.9375rem', color: 'var(--text-primary)', lineHeight: 1.75, margin: 0 }}>
+            {overview}
+          </p>
+        </div>
+
         {/* Primary use */}
         <div style={{
           background: 'var(--bg-surface)', borderRadius: '14px',
@@ -212,7 +228,7 @@ export default function SupplementInfoPage({
         <div style={{
           background: 'var(--bg-surface)', borderRadius: '14px',
           boxShadow: '0 1px 4px rgba(0,0,0,0.06)',
-          padding: '1.375rem 1.5rem', marginBottom: '1.75rem',
+          padding: '1.375rem 1.5rem', marginBottom: '1rem',
         }}>
           <div style={{ fontFamily: "'Inter', sans-serif", fontWeight: 600, fontSize: '0.75rem', color: 'var(--text-secondary)', textTransform: 'uppercase', letterSpacing: '0.7px', marginBottom: '0.75rem' }}>
             Best For
@@ -228,6 +244,37 @@ export default function SupplementInfoPage({
               }}>
                 {item}
               </span>
+            ))}
+          </div>
+        </div>
+
+        {/* Common mistakes */}
+        <div style={{
+          background: 'var(--card-warning-bg, #fffbeb)', borderRadius: '14px',
+          boxShadow: '0 1px 4px rgba(0,0,0,0.06)',
+          padding: '1.375rem 1.5rem', marginBottom: '1.75rem',
+          border: '1px solid var(--card-warning-border, #fcd34d)',
+        }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.875rem' }}>
+            <Warning size={15} color="var(--card-warning-heading, #92400e)" weight="fill" />
+            <div style={{ fontFamily: "'Inter', sans-serif", fontWeight: 600, fontSize: '0.75rem', color: 'var(--card-warning-heading, #92400e)', textTransform: 'uppercase', letterSpacing: '0.7px' }}>
+              Common Mistakes
+            </div>
+          </div>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
+            {commonMistakes.map((mistake, i) => (
+              <div key={i} style={{ display: 'flex', gap: '0.75rem', alignItems: 'flex-start' }}>
+                <div style={{
+                  width: '20px', height: '20px', borderRadius: '50%', flexShrink: 0,
+                  background: 'var(--card-warning-border, #fcd34d)', display: 'flex',
+                  alignItems: 'center', justifyContent: 'center', marginTop: '2px',
+                }}>
+                  <div style={{ width: '6px', height: '6px', borderRadius: '50%', background: 'var(--card-warning-heading, #92400e)' }} />
+                </div>
+                <p style={{ fontFamily: "'Inter', sans-serif", fontSize: '0.875rem', color: 'var(--text-muted)', lineHeight: 1.6, margin: 0 }}>
+                  {mistake}
+                </p>
+              </div>
             ))}
           </div>
         </div>

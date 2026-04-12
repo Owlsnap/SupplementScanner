@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from "react";
-import { Robot, LinkSimple, List, Target, Books, Moon, Sun, Sparkle, X } from "@phosphor-icons/react";
+import { DeviceMobile, Robot, LinkSimple, List, Target, Books, Moon, Sun, Sparkle, X } from "@phosphor-icons/react";
 import { useDarkMode } from '../contexts/DarkModeContext';
 import CookieBanner from './CookieBanner';
 import IngredientQualityComparison from './IngredientQualityComparison';
 import RecommendationsPage from '../pages/RecommendationsPage';
-import GuidePage from '../pages/GuidePage';
+import MobileAppPage from '../pages/MobileAppPage';
 import EncyclopediaPage from '../pages/EncyclopediaPage';
 import SupplementInfoPage from '../pages/SupplementInfoPage';
 import DeepDivePage from '../pages/DeepDivePage';
@@ -481,7 +481,7 @@ export default function SupplementAnalyzer(): JSX.Element {
                   overflow: 'hidden', minWidth: '220px', zIndex: 1001,
                 }}>
                   <button
-                    onClick={() => { setCurrentPage('guide'); setShowMenu(false); }}
+                    onClick={() => { setCurrentPage('mobileapp'); setShowMenu(false); }}
                     style={{
                       width: '100%', padding: '1rem 1.25rem',
                       background: 'transparent', border: 'none', color: 'var(--text-primary)',
@@ -493,11 +493,11 @@ export default function SupplementAnalyzer(): JSX.Element {
                     onMouseEnter={e => { (e.currentTarget as HTMLButtonElement).style.background = 'var(--bg-hover)'; }}
                     onMouseLeave={e => { (e.currentTarget as HTMLButtonElement).style.background = 'transparent'; }}
                   >
-                    <Robot size={18} color="var(--text-secondary)" />
+                    <DeviceMobile size={18} color="var(--text-secondary)" />
                     <div>
-                      <div>Guide</div>
+                      <div>Mobile App</div>
                       <div style={{ fontSize: '0.75rem', color: 'var(--text-secondary)', fontWeight: 400, marginTop: '0.125rem' }}>
-                        How to use AI extraction
+                        iOS & Android — coming soon
                       </div>
                     </div>
                   </button>
@@ -527,9 +527,11 @@ export default function SupplementAnalyzer(): JSX.Element {
           evidenceTier={infoSupp.evidenceTier}
           tagline={infoSupp.tagline}
           primaryUse={infoSupp.primaryUse}
+          overview={infoSupp.overview}
           typicalDose={infoSupp.typicalDose}
           bestFor={infoSupp.bestFor}
           keyFacts={infoSupp.keyFacts}
+          commonMistakes={infoSupp.commonMistakes}
           onBack={() => { setCurrentPage('encyclopedia'); setInfoSupp(null); }}
           onDeepDive={handleDeepDive}
         />
@@ -551,8 +553,8 @@ export default function SupplementAnalyzer(): JSX.Element {
         <RecommendationsPage onBack={() => setCurrentPage('scanner')} products={products} />
       )}
 
-      {currentPage === 'guide' && (
-        <GuidePage onBack={() => setCurrentPage('scanner')} />
+      {currentPage === 'mobileapp' && (
+        <MobileAppPage onBack={() => setCurrentPage('encyclopedia')} />
       )}
 
       {currentPage === 'premium' && (

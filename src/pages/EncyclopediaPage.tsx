@@ -264,14 +264,24 @@ function CardGrid({ items, hoveredCard, setHoveredCard, onOpenInfo }: {
                   {supp.category}
                 </span>
               </div>
-              <span style={{
-                ...evidenceTierStyle[supp.evidenceTier],
-                borderRadius: '999px', padding: '0.125rem 0.5rem',
-                fontSize: '0.6875rem', fontWeight: 600,
-                fontFamily: "'Inter', sans-serif",
-              }}>
-                {supp.evidenceTier}
-              </span>
+              <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: '2px' }}>
+                <span style={{
+                  fontSize: '0.5625rem', fontWeight: 500,
+                  color: 'rgba(255,255,255,0.65)',
+                  fontFamily: "'Inter', sans-serif",
+                  textTransform: 'uppercase', letterSpacing: '0.4px',
+                }}>
+                  Evidence level
+                </span>
+                <span style={{
+                  ...evidenceTierStyle[supp.evidenceTier],
+                  borderRadius: '999px', padding: '0.125rem 0.5rem',
+                  fontSize: '0.6875rem', fontWeight: 600,
+                  fontFamily: "'Inter', sans-serif",
+                }}>
+                  {supp.evidenceTier}
+                </span>
+              </div>
             </div>
 
             {/* Card body */}

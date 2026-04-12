@@ -122,46 +122,47 @@ export default function PremiumPage({ onBack }: PremiumPageProps) {
   };
 
   return (
-    <div style={{ background: pageBg, minHeight: '100vh', fontFamily: "'Inter', sans-serif", paddingTop: '100px' }}>
+    <div style={{ background: pageBg, minHeight: '100vh', fontFamily: "'Inter', sans-serif" }}>
 
       {/* Hero */}
       <div style={{
         background: 'linear-gradient(135deg, #00685f 0%, #3f6560 100%)',
-        padding: 'calc(100px + 2rem) 1.5rem 4rem',
+        padding: 'calc(100px + 5rem) 1.5rem 5rem',
         textAlign: 'center',
         position: 'relative',
         overflow: 'hidden',
-        marginTop: '-100px',
       }}>
         <div style={{ position: 'absolute', right: '-3rem', top: '-3rem', width: '200px', height: '200px', borderRadius: '50%', background: 'rgba(255,255,255,0.06)', pointerEvents: 'none' }} />
         <div style={{ position: 'absolute', left: '-1rem', bottom: '-2rem', width: '120px', height: '120px', borderRadius: '50%', background: 'rgba(255,255,255,0.04)', pointerEvents: 'none' }} />
 
-        <button
-          onClick={onBack}
-          style={{
-            position: 'absolute', top: '6rem', left: '1.25rem',
-            display: 'flex', alignItems: 'center', gap: '0.375rem',
-            background: 'rgba(255,255,255,0.15)', border: '1px solid rgba(255,255,255,0.2)',
-            borderRadius: '28px', padding: '0.375rem 0.875rem',
-            color: 'rgba(255,255,255,0.9)', cursor: 'pointer',
-            fontFamily: "'Inter', sans-serif", fontWeight: 600, fontSize: '0.8125rem',
-          }}
-        >
-          <ArrowLeft size={14} />
-          Back
-        </button>
-
         <div style={{ position: 'relative', zIndex: 1, maxWidth: '640px', margin: '0 auto' }}>
-          <div style={{
-            display: 'inline-flex', alignItems: 'center', gap: '0.375rem',
-            background: 'rgba(255,255,255,0.15)', borderRadius: '999px',
-            padding: '0.3125rem 0.875rem', marginBottom: '1rem',
-            border: '1px solid rgba(255,255,255,0.2)',
-          }}>
-            <Sparkle size={13} weight="fill" color="rgba(255,255,255,0.85)" />
-            <span style={{ fontSize: '0.75rem', fontWeight: 600, color: 'rgba(255,255,255,0.9)', letterSpacing: '0.4px' }}>
-              SUPPLEMENT SCANNER PREMIUM
-            </span>
+          {/* Back button + pill badge on same row */}
+          <div style={{ position: 'relative', display: 'flex', justifyContent: 'center', alignItems: 'center', marginBottom: '1rem' }}>
+            <button
+              onClick={onBack}
+              style={{
+                position: 'absolute', left: 0,
+                display: 'flex', alignItems: 'center', gap: '0.375rem',
+                background: 'rgba(255,255,255,0.15)', border: '1px solid rgba(255,255,255,0.2)',
+                borderRadius: '28px', padding: '0.375rem 0.875rem',
+                color: 'rgba(255,255,255,0.9)', cursor: 'pointer',
+                fontFamily: "'Inter', sans-serif", fontWeight: 600, fontSize: '0.8125rem',
+              }}
+            >
+              <ArrowLeft size={14} />
+              Back
+            </button>
+            <div style={{
+              display: 'inline-flex', alignItems: 'center', gap: '0.375rem',
+              background: 'rgba(255,255,255,0.15)', borderRadius: '999px',
+              padding: '0.3125rem 0.875rem',
+              border: '1px solid rgba(255,255,255,0.2)',
+            }}>
+              <Sparkle size={13} weight="fill" color="rgba(255,255,255,0.85)" />
+              <span style={{ fontSize: '0.75rem', fontWeight: 600, color: 'rgba(255,255,255,0.9)', letterSpacing: '0.4px' }}>
+                SUPPLEMENT SCANNER PREMIUM
+              </span>
+            </div>
           </div>
 
           <h1 style={{
