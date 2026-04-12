@@ -41,10 +41,10 @@ interface DeepDivePageProps {
 }
 
 const evidenceTierColors: Record<EvidenceTier, { bg: string; text: string; border: string }> = {
-  Strong: { bg: '#00685f', text: '#ffffff', border: '#00685f' },
-  Moderate: { bg: '#dbeafe', text: '#1d4ed8', border: '#93c5fd' },
-  Emerging: { bg: '#fef9c3', text: '#854d0e', border: '#fde047' },
-  Anecdotal: { bg: '#f1f5f9', text: '#64748b', border: '#cbd5e1' },
+  Strong:    { bg: '#00685f',                 text: '#ffffff',                      border: '#00685f' },
+  Moderate:  { bg: 'var(--card-info-bg)',     text: 'var(--card-info-heading)',     border: 'var(--card-info-border)' },
+  Emerging:  { bg: 'var(--card-warning-bg)',  text: 'var(--card-warning-heading)',  border: 'var(--card-warning-border)' },
+  Anecdotal: { bg: 'var(--bg-subtle)',        text: 'var(--text-secondary)',        border: 'var(--border)' },
 };
 
 const bioavailabilityColors: Record<string, string> = {
@@ -94,7 +94,7 @@ export default function DeepDivePage({
   }, [loadContent]);
 
   const cardStyle: React.CSSProperties = {
-    background: '#ffffff',
+    background: 'var(--bg-surface)',
     borderRadius: '16px',
     boxShadow: '0 1px 4px rgba(0,0,0,0.06)',
     padding: '1.5rem',
@@ -105,7 +105,7 @@ export default function DeepDivePage({
     fontFamily: "'Manrope', sans-serif",
     fontWeight: 800,
     fontSize: '1rem',
-    color: '#171d1c',
+    color: 'var(--text-primary)',
     letterSpacing: '-0.3px',
     marginBottom: '0.75rem',
     display: 'flex',
@@ -117,13 +117,13 @@ export default function DeepDivePage({
     fontFamily: "'Inter', sans-serif",
     fontWeight: 400,
     fontSize: '0.9375rem',
-    color: '#3d4947',
+    color: 'var(--text-muted)',
     lineHeight: 1.65,
     margin: 0,
   };
 
   return (
-    <div style={{ background: '#f5faf8', minHeight: '100vh', fontFamily: "'Inter', sans-serif", paddingTop: '100px' }}>
+    <div style={{ background: 'var(--bg-page)', minHeight: '100vh', fontFamily: "'Inter', sans-serif", paddingTop: '100px' }}>
       <style>{`
         @keyframes spin { to { transform: rotate(360deg); } }
       `}</style>
@@ -136,7 +136,7 @@ export default function DeepDivePage({
             display: 'flex', alignItems: 'center', gap: '0.375rem',
             background: 'transparent', border: 'none',
             padding: '0.25rem 0', marginBottom: '1.25rem',
-            color: '#6d7a77', cursor: 'pointer',
+            color: 'var(--text-secondary)', cursor: 'pointer',
             fontFamily: "'Inter', sans-serif", fontWeight: 600, fontSize: '0.875rem',
           }}
         >
@@ -145,7 +145,7 @@ export default function DeepDivePage({
         </button>
 
         {/* Hero tagline */}
-        <p style={{ ...bodyTextStyle, color: '#6d7a77', marginBottom: '1.5rem', fontSize: '0.9375rem' }}>
+        <p style={{ ...bodyTextStyle, color: 'var(--text-secondary)', marginBottom: '1.5rem', fontSize: '0.9375rem' }}>
           {tagline}
         </p>
 
@@ -156,15 +156,15 @@ export default function DeepDivePage({
               width: '48px',
               height: '48px',
               borderRadius: '50%',
-              border: '3px solid #e4e9e7',
+              border: '3px solid var(--border)',
               borderTopColor: '#00685f',
               animation: 'spin 1s linear infinite',
               margin: '0 auto 1.25rem',
             }} />
-            <p style={{ ...bodyTextStyle, color: '#3d4947', margin: '0 0 0.5rem' }}>
+            <p style={{ ...bodyTextStyle, color: 'var(--text-muted)', margin: '0 0 0.5rem' }}>
               Generating deep dive with AI…
             </p>
-            <p style={{ fontFamily: "'Inter', sans-serif", fontSize: '0.8125rem', color: '#6d7a77', margin: 0 }}>
+            <p style={{ fontFamily: "'Inter', sans-serif", fontSize: '0.8125rem', color: 'var(--text-secondary)', margin: 0 }}>
               ~5–10 seconds. Cached for 30 days after first load.
             </p>
           </div>
@@ -176,7 +176,7 @@ export default function DeepDivePage({
             <p style={{ color: '#ba1a1a', fontWeight: 600, margin: '0 0 0.5rem', fontFamily: "'Inter', sans-serif" }}>
               Failed to load content
             </p>
-            <p style={{ ...bodyTextStyle, color: '#6d7a77', marginBottom: '1.25rem' }}>{error}</p>
+            <p style={{ ...bodyTextStyle, color: 'var(--text-secondary)', marginBottom: '1.25rem' }}>{error}</p>
             <div style={{ display: 'flex', gap: '0.75rem', justifyContent: 'center' }}>
               <button
                 onClick={loadContent}
@@ -198,8 +198,8 @@ export default function DeepDivePage({
                 onClick={onBack}
                 style={{
                   background: 'transparent',
-                  color: '#6d7a77',
-                  border: '1px solid #bcc9c6',
+                  color: 'var(--text-secondary)',
+                  border: '1px solid var(--border-strong)',
                   borderRadius: '28px',
                   padding: '0.625rem 1.25rem',
                   fontFamily: "'Inter', sans-serif",
@@ -243,9 +243,9 @@ export default function DeepDivePage({
               </div>
               <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '0.75rem', marginBottom: '0.75rem' }}>
                 {[
-                  { label: 'Conservative', value: deepDive.dosing.low, accent: '#f0f5f2', border: '#bcc9c6' },
-                  { label: 'Standard', value: deepDive.dosing.standard, accent: '#e6f4f1', border: '#00685f' },
-                  { label: 'High / Loading', value: deepDive.dosing.high, accent: '#f0f5f2', border: '#bcc9c6' },
+                  { label: 'Conservative', value: deepDive.dosing.low, accent: 'var(--bg-hover)', border: 'var(--border-strong)' },
+                  { label: 'Standard', value: deepDive.dosing.standard, accent: 'var(--primary-light)', border: '#00685f' },
+                  { label: 'High / Loading', value: deepDive.dosing.high, accent: 'var(--bg-hover)', border: 'var(--border-strong)' },
                 ].map(({ label, value, accent, border }) => (
                   <div key={label} style={{
                     background: accent,
@@ -254,24 +254,24 @@ export default function DeepDivePage({
                     padding: '0.875rem',
                     textAlign: 'center',
                   }}>
-                    <div style={{ fontSize: '0.6875rem', fontWeight: 600, color: '#6d7a77', textTransform: 'uppercase', letterSpacing: '0.6px', marginBottom: '0.375rem', fontFamily: "'Inter', sans-serif" }}>
+                    <div style={{ fontSize: '0.6875rem', fontWeight: 600, color: 'var(--text-secondary)', textTransform: 'uppercase', letterSpacing: '0.6px', marginBottom: '0.375rem', fontFamily: "'Inter', sans-serif" }}>
                       {label}
                     </div>
-                    <div style={{ fontFamily: "'Manrope', sans-serif", fontWeight: 800, fontSize: '0.9375rem', color: '#171d1c' }}>
+                    <div style={{ fontFamily: "'Manrope', sans-serif", fontWeight: 800, fontSize: '0.9375rem', color: 'var(--text-primary)' }}>
                       {value}
                     </div>
                   </div>
                 ))}
               </div>
               <div style={{
-                background: '#f0f5f2',
+                background: 'var(--bg-hover)',
                 borderRadius: '10px',
                 padding: '0.75rem 1rem',
                 display: 'flex',
                 alignItems: 'flex-start',
                 gap: '0.5rem',
               }}>
-                <span style={{ fontSize: '0.75rem', fontWeight: 600, color: '#6d7a77', textTransform: 'uppercase', letterSpacing: '0.6px', fontFamily: "'Inter', sans-serif", whiteSpace: 'nowrap', paddingTop: '2px' }}>
+                <span style={{ fontSize: '0.75rem', fontWeight: 600, color: 'var(--text-secondary)', textTransform: 'uppercase', letterSpacing: '0.6px', fontFamily: "'Inter', sans-serif", whiteSpace: 'nowrap', paddingTop: '2px' }}>
                   Timing
                 </span>
                 <span style={{ ...bodyTextStyle, fontSize: '0.875rem' }}>{deepDive.dosing.timing}</span>
@@ -291,7 +291,7 @@ export default function DeepDivePage({
                       alignItems: 'flex-start',
                       gap: '0.75rem',
                       padding: '0.75rem',
-                      background: '#f0f5f2',
+                      background: 'var(--bg-hover)',
                       borderRadius: '10px',
                     }}>
                       <span style={{
@@ -309,7 +309,7 @@ export default function DeepDivePage({
                         {form.bioavailability}
                       </span>
                       <div>
-                        <div style={{ fontFamily: "'Manrope', sans-serif", fontWeight: 700, fontSize: '0.875rem', color: '#171d1c', marginBottom: '0.125rem' }}>
+                        <div style={{ fontFamily: "'Manrope', sans-serif", fontWeight: 700, fontSize: '0.875rem', color: 'var(--text-primary)', marginBottom: '0.125rem' }}>
                           {form.name}
                         </div>
                         <div style={{ ...bodyTextStyle, fontSize: '0.8125rem' }}>{form.notes}</div>
@@ -331,7 +331,7 @@ export default function DeepDivePage({
                     <div key={i} style={{ width: '100%' }}>
                       <div style={{ display: 'flex', alignItems: 'flex-start', gap: '0.75rem' }}>
                         <span style={{
-                          background: '#e6f4f1',
+                          background: 'var(--primary-light)',
                           color: '#00685f',
                           border: '1px solid #6bd8cb',
                           borderRadius: '999px',
@@ -354,14 +354,14 @@ export default function DeepDivePage({
 
             {/* Cautions */}
             {deepDive.cautions && deepDive.cautions.length > 0 && (
-              <div style={{ ...cardStyle, borderLeft: '3px solid #fde047' }}>
+              <div style={{ ...cardStyle, borderLeft: '3px solid var(--card-warning-border)' }}>
                 <div style={sectionTitleStyle}>
                   <Warning size={18} color="#d97706" weight="fill" />
                   Cautions & Interactions
                 </div>
                 <ul style={{ margin: 0, padding: '0 0 0 1.25rem' }}>
                   {deepDive.cautions.map((c, i) => (
-                    <li key={i} style={{ ...bodyTextStyle, marginBottom: i < deepDive.cautions.length - 1 ? '0.5rem' : 0, color: '#3d4947' }}>
+                    <li key={i} style={{ ...bodyTextStyle, marginBottom: i < deepDive.cautions.length - 1 ? '0.5rem' : 0, color: 'var(--text-muted)' }}>
                       {c}
                     </li>
                   ))}
@@ -372,8 +372,8 @@ export default function DeepDivePage({
             {/* Recommendations link */}
             {deepDive.recommendationsLink && onGoToRecommendations && (
               <div style={{ ...cardStyle, textAlign: 'center' }}>
-                <p style={{ ...bodyTextStyle, marginBottom: '1rem', color: '#6d7a77' }}>
-                  This supplement is recommended for: <strong style={{ color: '#171d1c' }}>{deepDive.recommendationsLink}</strong>
+                <p style={{ ...bodyTextStyle, marginBottom: '1rem', color: 'var(--text-secondary)' }}>
+                  This supplement is recommended for: <strong style={{ color: 'var(--text-primary)' }}>{deepDive.recommendationsLink}</strong>
                 </p>
                 <button
                   onClick={onGoToRecommendations}
@@ -401,7 +401,7 @@ export default function DeepDivePage({
             {wasFreshlyGenerated && (
               <div style={{ textAlign: 'center', marginTop: '1rem' }}>
                 <span style={{
-                  background: '#e6f4f1',
+                  background: 'var(--primary-light)',
                   color: '#00685f',
                   border: '1px solid #6bd8cb',
                   borderRadius: '999px',

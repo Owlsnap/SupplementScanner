@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Cookie, Shield, X, Settings } from 'lucide-react';
+import { Cookie, Shield, X, Gear } from '@phosphor-icons/react';
 
 declare global {
   interface Window {
@@ -20,42 +20,22 @@ export default function CookieBanner(): JSX.Element | null {
   const [showPreferences, setShowPreferences] = useState<boolean>(false);
 
   useEffect(() => {
-    // Check if CookieBot is loaded and if consent is needed
     const checkCookieConsent = () => {
       if (window.Cookiebot) {
-        // Show banner only if consent is needed
         if (!window.Cookiebot.hasResponse) {
-          setShowBanner(false); // is set to false to hide banner in development
+          setShowBanner(false);
         }
-        
-        // Listen for CookieBot events
         window.addEventListener('CookiebotOnLoad', () => {
-          if (!window.Cookiebot.hasResponse) {
-            setShowBanner(true);
-          }
+          if (!window.Cookiebot.hasResponse) setShowBanner(true);
         });
-        
-        window.addEventListener('CookiebotOnAccept', () => {
-          setShowBanner(false);
-          setShowPreferences(false);
-        });
-        
-        window.addEventListener('CookiebotOnDecline', () => {
-          setShowBanner(false);
-          setShowPreferences(false);
-        });
+        window.addEventListener('CookiebotOnAccept', () => { setShowBanner(false); setShowPreferences(false); });
+        window.addEventListener('CookiebotOnDecline', () => { setShowBanner(false); setShowPreferences(false); });
       } else {
-        // Fallback if CookieBot is not loaded - show custom banner
         const consent = localStorage.getItem('cookie-consent');
-        if (!consent) {
-          setShowBanner(true);
-        }
+        if (!consent) setShowBanner(true);
       }
     };
-
     checkCookieConsent();
-    
-    // Also check after a delay in case CookieBot loads late
     setTimeout(checkCookieConsent, 1000);
   }, []);
 
@@ -63,7 +43,6 @@ export default function CookieBanner(): JSX.Element | null {
     if (window.Cookiebot) {
       window.Cookiebot.submitCustomConsent(true, true, true, true);
     } else {
-      // Fallback
       localStorage.setItem('cookie-consent', 'accepted');
       setShowBanner(false);
     }
@@ -71,9 +50,8 @@ export default function CookieBanner(): JSX.Element | null {
 
   const handleRejectAll = () => {
     if (window.Cookiebot) {
-      window.Cookiebot.submitCustomConsent(false, false, false, true); // Only necessary cookies
+      window.Cookiebot.submitCustomConsent(false, false, false, true);
     } else {
-      // Fallback
       localStorage.setItem('cookie-consent', 'rejected');
       setShowBanner(false);
     }
@@ -92,154 +70,76 @@ export default function CookieBanner(): JSX.Element | null {
   return (
     <>
       {/* Cookie Banner */}
-      <div
-        style={{
-          position: 'fixed',
-          bottom: 0,
-          left: 0,
-          right: 0,
-          zIndex: 10000,
-          background: 'rgba(15, 23, 42, 0.95)',
-          backdropFilter: 'blur(20px)',
-          borderTop: '1px solid rgba(56, 243, 171, 0.2)',
-          padding: '1.5rem',
-          boxShadow: '0 -8px 32px rgba(0, 0, 0, 0.3)'
-        }}
-      >
-        <div style={{ 
-          maxWidth: '1200px', 
-          margin: '0 auto',
-          display: 'flex',
-          alignItems: 'center',
-          gap: '1.5rem',
-          flexWrap: 'wrap'
+      <div style={{
+        position: 'fixed', bottom: 0, left: 0, right: 0, zIndex: 10000,
+        background: 'var(--bg-surface)', borderTop: '1.5px solid var(--border)',
+        padding: '1.25rem 1.5rem',
+        boxShadow: '0 -4px 20px rgba(0,0,0,0.08)',
+      }}>
+        <div style={{
+          maxWidth: '1200px', margin: '0 auto',
+          display: 'flex', alignItems: 'center', gap: '1.25rem', flexWrap: 'wrap',
         }}>
           {/* Cookie Icon */}
-          <div
-            style={{
-              background: 'linear-gradient(135deg, #38f3ab 0%, #1dd1a1 100%)',
-              borderRadius: '12px',
-              padding: '0.75rem',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              minWidth: '48px',
-              height: '48px'
-            }}
-          >
-            <Cookie size={24} color="#0f172a" />
+          <div style={{
+            background: 'var(--primary-light)', borderRadius: '12px', padding: '0.625rem',
+            display: 'flex', alignItems: 'center', justifyContent: 'center',
+            minWidth: '44px', height: '44px', border: '1px solid var(--primary-border)',
+          }}>
+            <Cookie size={22} color="#00685f" />
           </div>
 
           {/* Content */}
-          <div style={{ flex: 1, minWidth: '300px' }}>
+          <div style={{ flex: 1, minWidth: '280px' }}>
             <h3 style={{
-              margin: '0 0 0.5rem 0',
-              color: '#f1f5f9',
-              fontSize: '1.125rem',
-              fontWeight: 'bold',
-              display: 'flex',
-              alignItems: 'center',
-              gap: '0.5rem'
+              margin: '0 0 0.25rem', color: 'var(--text-primary)', fontSize: '1rem', fontWeight: 700,
+              display: 'flex', alignItems: 'center', gap: '0.375rem',
+              fontFamily: "'Manrope', sans-serif",
             }}>
-              <Shield size={18} />
+              <Shield size={16} color="#00685f" />
               Cookie Consent
             </h3>
-            <p style={{
-              margin: 0,
-              color: '#94a3b8',
-              fontSize: '0.875rem',
-              lineHeight: '1.4'
-            }}>
-              We use cookies to enhance your experience and analyze usage. Essential cookies are required for basic functionality.
-              <br />
-              <span style={{ color: '#38f3ab', fontSize: '0.8rem' }}>
-                🔒 Your privacy matters - we don't sell or share personal data.
-              </span>
+            <p style={{ margin: 0, color: 'var(--text-secondary)', fontSize: '0.8125rem', lineHeight: '1.4', fontFamily: "'Inter', sans-serif" }}>
+              We use cookies to enhance your experience and analyze usage. Essential cookies are required for basic functionality.{' '}
+              <span style={{ color: '#00685f', fontWeight: 600 }}>🔒 We don't sell or share personal data.</span>
             </p>
           </div>
 
           {/* Action Buttons */}
-          <div style={{
-            display: 'flex',
-            gap: '0.75rem',
-            flexWrap: 'wrap',
-            alignItems: 'center'
-          }}>
-            {/* Preferences Button */}
+          <div style={{ display: 'flex', gap: '0.625rem', flexWrap: 'wrap', alignItems: 'center' }}>
             <button
               onClick={openPreferences}
               style={{
-                background: 'transparent',
-                border: '1px solid rgba(148, 163, 184, 0.3)',
-                borderRadius: '8px',
-                padding: '0.5rem 1rem',
-                color: '#94a3b8',
-                fontSize: '0.875rem',
-                cursor: 'pointer',
-                transition: 'all 0.3s ease',
-                display: 'flex',
-                alignItems: 'center',
-                gap: '0.5rem'
-              }}
-              onMouseEnter={(e) => {
-                e.target.style.borderColor = 'rgba(56, 243, 171, 0.5)';
-                e.target.style.color = '#38f3ab';
-              }}
-              onMouseLeave={(e) => {
-                e.target.style.borderColor = 'rgba(148, 163, 184, 0.3)';
-                e.target.style.color = '#94a3b8';
+                background: 'transparent', border: '1.5px solid #bcc9c6',
+                borderRadius: '999px', padding: '0.5rem 1rem',
+                color: 'var(--text-secondary)', fontSize: '0.875rem', fontWeight: 600,
+                cursor: 'pointer', fontFamily: "'Inter', sans-serif",
+                display: 'flex', alignItems: 'center', gap: '0.375rem',
               }}
             >
-              <Settings size={16} />
+              <Gear size={15} />
               Settings
             </button>
 
-            {/* Reject Button */}
             <button
               onClick={handleRejectAll}
               style={{
-                background: 'rgba(148, 163, 184, 0.2)',
-                border: '1px solid rgba(148, 163, 184, 0.3)',
-                borderRadius: '8px',
-                padding: '0.75rem 1.5rem',
-                color: '#f1f5f9',
-                fontSize: '0.875rem',
-                fontWeight: '600',
-                cursor: 'pointer',
-                transition: 'all 0.3s ease'
-              }}
-              onMouseEnter={(e) => {
-                e.target.style.background = 'rgba(148, 163, 184, 0.3)';
-              }}
-              onMouseLeave={(e) => {
-                e.target.style.background = 'rgba(148, 163, 184, 0.2)';
+                background: 'var(--bg-page)', border: '1.5px solid var(--border-strong)',
+                borderRadius: '999px', padding: '0.5rem 1.25rem',
+                color: 'var(--text-muted)', fontSize: '0.875rem', fontWeight: 600,
+                cursor: 'pointer', fontFamily: "'Inter', sans-serif",
               }}
             >
               Reject All
             </button>
 
-            {/* Accept Button */}
             <button
               onClick={handleAcceptAll}
               style={{
-                background: 'linear-gradient(135deg, #38f3ab 0%, #1dd1a1 100%)',
-                border: 'none',
-                borderRadius: '8px',
-                padding: '0.75rem 1.5rem',
-                color: '#0f172a',
-                fontSize: '0.875rem',
-                fontWeight: 'bold',
-                cursor: 'pointer',
-                transition: 'all 0.3s ease',
-                boxShadow: '0 4px 20px rgba(56, 243, 171, 0.3)'
-              }}
-              onMouseEnter={(e) => {
-                e.target.style.transform = 'translateY(-1px)';
-                e.target.style.boxShadow = '0 6px 24px rgba(56, 243, 171, 0.4)';
-              }}
-              onMouseLeave={(e) => {
-                e.target.style.transform = 'translateY(0)';
-                e.target.style.boxShadow = '0 4px 20px rgba(56, 243, 171, 0.3)';
+                background: '#00685f', border: 'none',
+                borderRadius: '999px', padding: '0.5rem 1.25rem',
+                color: '#ffffff', fontSize: '0.875rem', fontWeight: 700,
+                cursor: 'pointer', fontFamily: "'Inter', sans-serif",
               }}
             >
               Accept All
@@ -248,88 +148,64 @@ export default function CookieBanner(): JSX.Element | null {
         </div>
       </div>
 
-      {/* Custom Preferences Modal (fallback) */}
+      {/* Preferences Modal */}
       {showPreferences && !window.Cookiebot && (
         <div
           style={{
-            position: 'fixed',
-            top: 0,
-            left: 0,
-            right: 0,
-            bottom: 0,
-            zIndex: 10001,
-            background: 'rgba(0, 0, 0, 0.8)',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            padding: '1rem'
+            position: 'fixed', top: 0, left: 0, right: 0, bottom: 0,
+            zIndex: 10001, background: 'rgba(0,0,0,0.4)',
+            display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '1rem',
           }}
           onClick={() => setShowPreferences(false)}
         >
           <div
             style={{
-              background: 'linear-gradient(135deg, #0f172a 0%, #1e293b 100%)',
-              borderRadius: '16px',
-              padding: '2rem',
-              maxWidth: '500px',
-              width: '100%',
-              border: '1px solid rgba(56, 243, 171, 0.2)',
-              boxShadow: '0 20px 60px rgba(0, 0, 0, 0.5)'
+              background: 'var(--bg-surface)', borderRadius: '20px', padding: '1.75rem',
+              maxWidth: '460px', width: '100%',
+              border: '1.5px solid var(--border)', boxShadow: '0 8px 32px rgba(0,0,0,0.12)',
             }}
             onClick={(e) => e.stopPropagation()}
           >
-            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '1.5rem' }}>
-              <h3 style={{ margin: 0, color: '#f1f5f9', fontSize: '1.25rem', fontWeight: 'bold' }}>
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '1.25rem' }}>
+              <h3 style={{ margin: 0, color: 'var(--text-primary)', fontSize: '1.125rem', fontWeight: 800, fontFamily: "'Manrope', sans-serif" }}>
                 Cookie Preferences
               </h3>
               <button
                 onClick={() => setShowPreferences(false)}
-                style={{
-                  background: 'transparent',
-                  border: 'none',
-                  color: '#94a3b8',
-                  cursor: 'pointer',
-                  padding: '0.5rem'
-                }}
+                style={{ background: 'transparent', border: 'none', color: 'var(--text-secondary)', cursor: 'pointer', padding: '0.25rem' }}
               >
                 <X size={20} />
               </button>
             </div>
-            
-            <div style={{ marginBottom: '1.5rem' }}>
-              <p style={{ color: '#94a3b8', fontSize: '0.875rem', lineHeight: '1.5' }}>
-                We use different types of cookies to optimize your experience:
-              </p>
-              
-              <div style={{ marginTop: '1rem', display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-                <div style={{ padding: '1rem', background: 'rgba(56, 243, 171, 0.1)', borderRadius: '8px', border: '1px solid rgba(56, 243, 171, 0.2)' }}>
-                  <strong style={{ color: '#38f3ab' }}>Essential Cookies (Required)</strong>
-                  <p style={{ color: '#94a3b8', fontSize: '0.8rem', margin: '0.5rem 0 0 0' }}>
-                    Required for basic site functionality and security.
-                  </p>
-                </div>
-                
-                <div style={{ padding: '1rem', background: 'rgba(148, 163, 184, 0.1)', borderRadius: '8px' }}>
-                  <strong style={{ color: '#f1f5f9' }}>Analytics Cookies</strong>
-                  <p style={{ color: '#94a3b8', fontSize: '0.8rem', margin: '0.5rem 0 0 0' }}>
-                    Help us understand how you use our site to improve performance.
-                  </p>
-                </div>
+
+            <p style={{ color: 'var(--text-secondary)', fontSize: '0.875rem', lineHeight: '1.5', margin: '0 0 1rem', fontFamily: "'Inter', sans-serif" }}>
+              We use different types of cookies to optimize your experience:
+            </p>
+
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem', marginBottom: '1.25rem' }}>
+              <div style={{ padding: '0.875rem', background: 'var(--primary-light)', borderRadius: '10px', border: '1px solid var(--primary-border)' }}>
+                <strong style={{ color: 'var(--text-primary)', fontSize: '0.875rem', fontFamily: "'Manrope', sans-serif" }}>Essential Cookies (Required)</strong>
+                <p style={{ color: 'var(--text-secondary)', fontSize: '0.8rem', margin: '0.375rem 0 0', fontFamily: "'Inter', sans-serif" }}>
+                  Required for basic site functionality and security.
+                </p>
+              </div>
+
+              <div style={{ padding: '0.875rem', background: 'var(--bg-page)', borderRadius: '10px', border: '1px solid var(--border)' }}>
+                <strong style={{ color: 'var(--text-primary)', fontSize: '0.875rem', fontFamily: "'Manrope', sans-serif" }}>Analytics Cookies</strong>
+                <p style={{ color: 'var(--text-secondary)', fontSize: '0.8rem', margin: '0.375rem 0 0', fontFamily: "'Inter', sans-serif" }}>
+                  Help us understand how you use our site to improve performance.
+                </p>
               </div>
             </div>
-            
-            <div style={{ display: 'flex', gap: '1rem', justifyContent: 'flex-end' }}>
+
+            <div style={{ display: 'flex', gap: '0.75rem', justifyContent: 'flex-end' }}>
               <button
                 onClick={handleRejectAll}
                 style={{
-                  background: 'rgba(148, 163, 184, 0.2)',
-                  border: '1px solid rgba(148, 163, 184, 0.3)',
-                  borderRadius: '8px',
-                  padding: '0.75rem 1.5rem',
-                  color: '#f1f5f9',
-                  fontSize: '0.875rem',
-                  fontWeight: '600',
-                  cursor: 'pointer'
+                  background: 'var(--bg-page)', border: '1.5px solid var(--border-strong)',
+                  borderRadius: '999px', padding: '0.625rem 1.25rem',
+                  color: 'var(--text-muted)', fontSize: '0.875rem', fontWeight: 600,
+                  cursor: 'pointer', fontFamily: "'Inter', sans-serif",
                 }}
               >
                 Essential Only
@@ -337,14 +213,10 @@ export default function CookieBanner(): JSX.Element | null {
               <button
                 onClick={handleAcceptAll}
                 style={{
-                  background: 'linear-gradient(135deg, #38f3ab 0%, #1dd1a1 100%)',
-                  border: 'none',
-                  borderRadius: '8px',
-                  padding: '0.75rem 1.5rem',
-                  color: '#0f172a',
-                  fontSize: '0.875rem',
-                  fontWeight: 'bold',
-                  cursor: 'pointer'
+                  background: '#00685f', border: 'none',
+                  borderRadius: '999px', padding: '0.625rem 1.25rem',
+                  color: '#ffffff', fontSize: '0.875rem', fontWeight: 700,
+                  cursor: 'pointer', fontFamily: "'Inter', sans-serif",
                 }}
               >
                 Accept All

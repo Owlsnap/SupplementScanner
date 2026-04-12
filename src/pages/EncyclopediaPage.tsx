@@ -6,6 +6,7 @@ import {
   type EvidenceTier,
   type EncyclopediaCategory,
 } from '../data/encyclopediaData';
+import { useDarkMode } from '../contexts/DarkModeContext';
 
 interface EncyclopediaPageProps {
   onOpenInfo: (slug: string) => void;
@@ -13,18 +14,25 @@ interface EncyclopediaPageProps {
 
 const evidenceTierStyle: Record<EvidenceTier, React.CSSProperties> = {
   Strong:    { background: '#00685f', color: '#ffffff', border: '1px solid #00685f' },
-  Moderate:  { background: '#dbeafe', color: '#1d4ed8', border: '1px solid #93c5fd' },
-  Emerging:  { background: '#fef9c3', color: '#854d0e', border: '1px solid #fde047' },
-  Anecdotal: { background: '#f1f5f9', color: '#64748b', border: '1px solid #cbd5e1' },
+  Moderate:  { background: 'var(--card-info-bg)', color: 'var(--card-info-heading)', border: '1px solid var(--card-info-border)' },
+  Emerging:  { background: 'var(--card-warning-bg)', color: 'var(--card-warning-heading)', border: '1px solid var(--card-warning-border)' },
+  Anecdotal: { background: 'var(--bg-subtle)', color: 'var(--text-secondary)', border: '1px solid var(--border)' },
 };
 
 type CategoryConfig = { Icon: React.ElementType; bg: string; light: string };
-const categoryConfig: Record<EncyclopediaCategory, CategoryConfig> = {
+const categoryConfigLight: Record<EncyclopediaCategory, CategoryConfig> = {
   Performance: { Icon: Barbell,   bg: '#00685f', light: '#e6f4f1' },
   Sleep:       { Icon: Moon,      bg: '#6366f1', light: '#eef2ff' },
   Nootropics:  { Icon: Brain,     bg: '#0891b2', light: '#e0f2fe' },
   Recovery:    { Icon: Lightning, bg: '#ea580c', light: '#fff7ed' },
   Health:      { Icon: Leaf,      bg: '#16a34a', light: '#f0fdf4' },
+};
+const categoryConfigDark: Record<EncyclopediaCategory, CategoryConfig> = {
+  Performance: { Icon: Barbell,   bg: '#14b8a6', light: '#0d2e2a' },
+  Sleep:       { Icon: Moon,      bg: '#818cf8', light: '#150d2a' },
+  Nootropics:  { Icon: Brain,     bg: '#22d3ee', light: '#0d1f3a' },
+  Recovery:    { Icon: Lightning, bg: '#fb923c', light: '#1f0e00' },
+  Health:      { Icon: Leaf,      bg: '#4ade80', light: '#071c12' },
 };
 
 // Display order for category sections
@@ -34,6 +42,8 @@ export default function EncyclopediaPage({ onOpenInfo }: EncyclopediaPageProps) 
   const [searchQuery, setSearchQuery] = useState('');
   const [activeCategory, setActiveCategory] = useState<string>('All');
   const [hoveredCard, setHoveredCard] = useState<string | null>(null);
+  const { isDark } = useDarkMode();
+  const categoryConfig = isDark ? categoryConfigDark : categoryConfigLight;
 
   const filtered = encyclopediaSupplements.filter(s => {
     const matchesCategory = activeCategory === 'All' || s.category === activeCategory;
@@ -49,7 +59,7 @@ export default function EncyclopediaPage({ onOpenInfo }: EncyclopediaPageProps) 
     .filter(s => s.items.length > 0);
 
   return (
-    <div style={{ background: '#f5faf8', minHeight: '100vh', fontFamily: "'Inter', sans-serif" }}>
+    <div style={{ background: 'var(--bg-page)', minHeight: '100vh', fontFamily: "'Inter', sans-serif" }}>
       {/* Hero section — top padding accounts for fixed navbar */}
       <div style={{
         background: 'linear-gradient(135deg, #00685f 0%, #3f6560 100%)',
@@ -98,9 +108,9 @@ export default function EncyclopediaPage({ onOpenInfo }: EncyclopediaPageProps) 
               style={{
                 width: '100%', padding: '0.8125rem 1rem 0.8125rem 2.75rem',
                 borderRadius: '28px', border: '1.5px solid rgba(255,255,255,0.3)',
-                background: '#ffffff',
+                background: 'var(--bg-surface)',
                 fontFamily: "'Inter', sans-serif", fontSize: '0.9375rem',
-                color: '#171d1c', outline: 'none',
+                color: 'var(--text-primary)', outline: 'none',
                 boxSizing: 'border-box', transition: 'border-color 0.15s ease',
               }}
               onFocus={e => { (e.target as HTMLInputElement).style.borderColor = '#00685f'; }}
@@ -141,17 +151,17 @@ export default function EncyclopediaPage({ onOpenInfo }: EncyclopediaPageProps) 
         {filtered.length === 0 ? (
           <div style={{ textAlign: 'center', padding: '4rem 1rem' }}>
             <MagnifyingGlass size={40} color="#bcc9c6" style={{ marginBottom: '1rem' }} />
-            <p style={{ fontFamily: "'Manrope', sans-serif", fontWeight: 700, fontSize: '1.125rem', color: '#3d4947', margin: '0 0 0.5rem' }}>
+            <p style={{ fontFamily: "'Manrope', sans-serif", fontWeight: 700, fontSize: '1.125rem', color: 'var(--text-muted)', margin: '0 0 0.5rem' }}>
               No supplements found
             </p>
-            <p style={{ fontFamily: "'Inter', sans-serif", fontSize: '0.9375rem', color: '#6d7a77', margin: 0 }}>
+            <p style={{ fontFamily: "'Inter', sans-serif", fontSize: '0.9375rem', color: 'var(--text-secondary)', margin: 0 }}>
               Try a different search or category
             </p>
           </div>
         ) : isFiltered ? (
           /* Flat grid when searching/filtering */
           <>
-            <p style={{ fontFamily: "'Inter', sans-serif", fontSize: '0.8125rem', color: '#6d7a77', marginBottom: '1.25rem' }}>
+            <p style={{ fontFamily: "'Inter', sans-serif", fontSize: '0.8125rem', color: 'var(--text-secondary)', marginBottom: '1.25rem' }}>
               {filtered.length} result{filtered.length !== 1 ? 's' : ''}
               {activeCategory !== 'All' ? ` in ${activeCategory}` : ''}
               {searchQuery ? ` for "${searchQuery}"` : ''}
@@ -177,12 +187,12 @@ export default function EncyclopediaPage({ onOpenInfo }: EncyclopediaPageProps) 
                     <div>
                       <h2 style={{
                         fontFamily: "'Manrope', sans-serif", fontWeight: 800,
-                        fontSize: '1.125rem', color: '#171d1c',
+                        fontSize: '1.125rem', color: 'var(--text-primary)',
                         margin: 0, letterSpacing: '-0.3px',
                       }}>
                         {cat}
                       </h2>
-                      <p style={{ fontFamily: "'Inter', sans-serif", fontSize: '0.8125rem', color: '#6d7a77', margin: 0 }}>
+                      <p style={{ fontFamily: "'Inter', sans-serif", fontSize: '0.8125rem', color: 'var(--text-secondary)', margin: 0 }}>
                         {items.length} supplement{items.length !== 1 ? 's' : ''}
                       </p>
                     </div>
@@ -207,6 +217,8 @@ function CardGrid({ items, hoveredCard, setHoveredCard, onOpenInfo }: {
   setHoveredCard: (s: string | null) => void;
   onOpenInfo: (slug: string) => void;
 }) {
+  const { isDark } = useDarkMode();
+  const categoryConfig = isDark ? categoryConfigDark : categoryConfigLight;
   return (
     <div style={{
       display: 'grid',
@@ -223,8 +235,8 @@ function CardGrid({ items, hoveredCard, setHoveredCard, onOpenInfo }: {
             onMouseEnter={() => setHoveredCard(supp.slug)}
             onMouseLeave={() => setHoveredCard(null)}
             style={{
-              background: '#ffffff', borderRadius: '16px',
-              border: `1.5px solid ${isHovered ? cfg.bg : '#e4e9e7'}`,
+              background: 'var(--bg-surface)', borderRadius: '16px',
+              border: `1.5px solid ${isHovered ? cfg.bg : 'var(--border)'}`,
               boxShadow: isHovered ? `0 6px 20px ${cfg.bg}22` : '0 1px 4px rgba(0,0,0,0.06)',
               padding: 0, cursor: 'pointer', textAlign: 'left',
               transition: 'all 0.18s ease',
@@ -266,14 +278,14 @@ function CardGrid({ items, hoveredCard, setHoveredCard, onOpenInfo }: {
             <div style={{ padding: '1rem 1.125rem 1.125rem' }}>
               <div style={{
                 fontFamily: "'Manrope', sans-serif", fontWeight: 800,
-                fontSize: '0.9375rem', color: '#171d1c',
+                fontSize: '0.9375rem', color: 'var(--text-primary)',
                 letterSpacing: '-0.3px', marginBottom: '0.375rem', lineHeight: 1.3,
               }}>
                 {supp.name}
               </div>
               <div style={{
                 fontFamily: "'Inter', sans-serif", fontSize: '0.8125rem',
-                color: '#6d7a77', lineHeight: 1.55, marginBottom: '0.875rem',
+                color: 'var(--text-secondary)', lineHeight: 1.55, marginBottom: '0.875rem',
               }}>
                 {supp.tagline}
               </div>
@@ -282,7 +294,7 @@ function CardGrid({ items, hoveredCard, setHoveredCard, onOpenInfo }: {
               <div style={{
                 display: 'flex', alignItems: 'center', justifyContent: 'space-between',
                 paddingTop: '0.75rem',
-                borderTop: `1px solid ${isHovered ? cfg.bg + '30' : '#f0f4f3'}`,
+                borderTop: `1px solid ${isHovered ? cfg.bg + '30' : 'var(--border-subtle)'}`,
                 transition: 'border-color 0.18s ease',
               }}>
                 <span style={{

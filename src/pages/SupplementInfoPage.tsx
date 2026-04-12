@@ -4,6 +4,7 @@ import {
   ShieldWarning, ArrowRight, Barbell, Moon, Brain, Lightning, Leaf,
 } from '@phosphor-icons/react';
 import type { EvidenceTier, EncyclopediaCategory } from '../data/encyclopediaData';
+import { useDarkMode } from '../contexts/DarkModeContext';
 
 interface SupplementInfoPageProps {
   slug: string;
@@ -19,12 +20,19 @@ interface SupplementInfoPageProps {
   onDeepDive: () => void;
 }
 
-const categoryColors: Record<EncyclopediaCategory, { bg: string; light: string }> = {
+const categoryColorsLight: Record<EncyclopediaCategory, { bg: string; light: string }> = {
   Performance: { bg: '#00685f', light: '#e6f4f1' },
   Sleep:       { bg: '#6366f1', light: '#eef2ff' },
   Nootropics:  { bg: '#0891b2', light: '#e0f2fe' },
   Recovery:    { bg: '#ea580c', light: '#fff7ed' },
   Health:      { bg: '#16a34a', light: '#f0fdf4' },
+};
+const categoryColorsDark: Record<EncyclopediaCategory, { bg: string; light: string }> = {
+  Performance: { bg: '#14b8a6', light: '#0d2e2a' },
+  Sleep:       { bg: '#818cf8', light: '#150d2a' },
+  Nootropics:  { bg: '#22d3ee', light: '#0d1f3a' },
+  Recovery:    { bg: '#fb923c', light: '#1f0e00' },
+  Health:      { bg: '#4ade80', light: '#071c12' },
 };
 
 const categoryIcon: Record<EncyclopediaCategory, React.ElementType> = {
@@ -36,10 +44,10 @@ const categoryIcon: Record<EncyclopediaCategory, React.ElementType> = {
 };
 
 const evidenceTierStyle: Record<EvidenceTier, { bg: string; color: string; border: string; label: string }> = {
-  Strong:    { bg: '#00685f', color: '#ffffff', border: '#00685f',  label: 'Well-established science with multiple RCTs' },
-  Moderate:  { bg: '#dbeafe', color: '#1d4ed8', border: '#93c5fd',  label: 'Several quality studies with consistent results' },
-  Emerging:  { bg: '#fef9c3', color: '#854d0e', border: '#fde047',  label: 'Promising early research, more trials needed' },
-  Anecdotal: { bg: '#f1f5f9', color: '#64748b', border: '#cbd5e1',  label: 'Primarily user reports, limited clinical data' },
+  Strong:    { bg: '#00685f',                color: '#ffffff',                    border: '#00685f',                       label: 'Well-established science with multiple RCTs' },
+  Moderate:  { bg: 'var(--card-info-bg)',    color: 'var(--card-info-heading)',   border: 'var(--card-info-border)',        label: 'Several quality studies with consistent results' },
+  Emerging:  { bg: 'var(--card-warning-bg)', color: 'var(--card-warning-heading)', border: 'var(--card-warning-border)',   label: 'Promising early research, more trials needed' },
+  Anecdotal: { bg: 'var(--bg-subtle)',       color: 'var(--text-secondary)',      border: 'var(--border)',                  label: 'Primarily user reports, limited clinical data' },
 };
 
 const deepDiveFeatures: Array<{ Icon: React.ElementType; label: string; desc: string }> = [
@@ -54,12 +62,14 @@ export default function SupplementInfoPage({
   name, category, evidenceTier, tagline, primaryUse,
   typicalDose, bestFor, keyFacts, onBack, onDeepDive,
 }: SupplementInfoPageProps) {
+  const { isDark } = useDarkMode();
+  const categoryColors = isDark ? categoryColorsDark : categoryColorsLight;
   const cat = categoryColors[category];
   const tier = evidenceTierStyle[evidenceTier];
   const CatIcon = categoryIcon[category];
 
   return (
-    <div style={{ background: '#f5faf8', minHeight: '100vh', fontFamily: "'Inter', sans-serif", paddingTop: '100px' }}>
+    <div style={{ background: 'var(--bg-page)', minHeight: '100vh', fontFamily: "'Inter', sans-serif", paddingTop: '100px' }}>
       {/* Hero banner */}
       <div style={{
         background: `linear-gradient(135deg, ${cat.bg} 0%, ${cat.bg}cc 100%)`,
@@ -67,31 +77,35 @@ export default function SupplementInfoPage({
       }}>
         <div style={{ position: 'absolute', right: '-2rem', top: '-2rem', width: '160px', height: '160px', borderRadius: '50%', background: 'rgba(255,255,255,0.08)', pointerEvents: 'none' }} />
         <div style={{ maxWidth: '760px', margin: '0 auto', position: 'relative', zIndex: 1, textAlign: 'center' }}>
-          <button
-            onClick={onBack}
-            style={{
-              display: 'inline-flex', alignItems: 'center', gap: '0.375rem',
-              background: 'rgba(255,255,255,0.15)', border: '1px solid rgba(255,255,255,0.25)',
-              borderRadius: '999px', padding: '0.375rem 0.75rem 0.375rem 0.5rem',
-              color: '#ffffff', cursor: 'pointer', marginBottom: '1.25rem',
-              fontFamily: "'Inter', sans-serif", fontWeight: 600, fontSize: '0.8125rem',
-            }}
-          >
-            <ArrowLeft size={14} />
-            Back
-          </button>
-          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.625rem', marginBottom: '1rem' }}>
-            <div style={{ background: 'rgba(255,255,255,0.2)', borderRadius: '8px', padding: '0.375rem', display: 'flex' }}>
-              <CatIcon size={18} color="#ffffff" weight="bold" />
+          <div style={{ display: 'flex', alignItems: 'center', marginBottom: '1.25rem' }}>
+            <button
+              onClick={onBack}
+              style={{
+                display: 'inline-flex', alignItems: 'center', gap: '0.375rem',
+                background: 'rgba(255,255,255,0.15)', border: '1px solid rgba(255,255,255,0.25)',
+                borderRadius: '999px', padding: '0.375rem 0.75rem 0.375rem 0.5rem',
+                color: '#ffffff', cursor: 'pointer',
+                fontFamily: "'Inter', sans-serif", fontWeight: 600, fontSize: '0.8125rem',
+                flexShrink: 0,
+              }}
+            >
+              <ArrowLeft size={14} />
+              Back
+            </button>
+            <div style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.625rem' }}>
+              <div style={{ background: 'rgba(255,255,255,0.2)', borderRadius: '8px', padding: '0.375rem', display: 'flex' }}>
+                <CatIcon size={18} color="#ffffff" weight="bold" />
+              </div>
+              <span style={{
+                background: 'rgba(255,255,255,0.18)', borderRadius: '999px',
+                padding: '0.25rem 0.75rem', fontSize: '0.8125rem', fontWeight: 600,
+                color: '#ffffff', fontFamily: "'Inter', sans-serif",
+                border: '1px solid rgba(255,255,255,0.2)',
+              }}>
+                {category}
+              </span>
             </div>
-            <span style={{
-              background: 'rgba(255,255,255,0.18)', borderRadius: '999px',
-              padding: '0.25rem 0.75rem', fontSize: '0.8125rem', fontWeight: 600,
-              color: '#ffffff', fontFamily: "'Inter', sans-serif",
-              border: '1px solid rgba(255,255,255,0.2)',
-            }}>
-              {category}
-            </span>
+            <div style={{ width: '60px', flexShrink: 0 }} />
           </div>
           <h1 style={{
             fontFamily: "'Manrope', sans-serif", fontWeight: 800,
@@ -115,29 +129,30 @@ export default function SupplementInfoPage({
         {/* Typical dose + evidence row */}
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.75rem', marginBottom: '1rem' }}>
           <div style={{
-            background: '#ffffff', borderRadius: '14px',
+            background: 'var(--bg-surface)', borderRadius: '14px',
             boxShadow: '0 1px 4px rgba(0,0,0,0.06)',
             padding: '1.125rem 1.25rem',
             borderTop: `3px solid ${cat.bg}`,
           }}>
-            <div style={{ fontFamily: "'Inter', sans-serif", fontWeight: 600, fontSize: '0.75rem', color: '#6d7a77', textTransform: 'uppercase', letterSpacing: '0.7px', marginBottom: '0.5rem' }}>
+            <div style={{ fontFamily: "'Inter', sans-serif", fontWeight: 600, fontSize: '0.75rem', color: 'var(--text-secondary)', textTransform: 'uppercase', letterSpacing: '0.7px', marginBottom: '0.5rem' }}>
               Typical Dose
             </div>
-            <div style={{ fontFamily: "'Manrope', sans-serif", fontWeight: 800, fontSize: '1rem', color: '#171d1c', letterSpacing: '-0.2px' }}>
+            <div style={{ fontFamily: "'Manrope', sans-serif", fontWeight: 800, fontSize: '1rem', color: 'var(--text-primary)', letterSpacing: '-0.2px' }}>
               {typicalDose}
             </div>
           </div>
           <div style={{
-            background: tier.bg === '#00685f' ? '#e6f4f1' : '#ffffff',
+            background: tier.bg === '#00685f' ? 'var(--primary-light)' : 'var(--bg-surface)',
             borderRadius: '14px',
             boxShadow: '0 1px 4px rgba(0,0,0,0.06)',
             padding: '1.125rem 1.25rem',
             borderTop: `3px solid ${tier.border}`,
+            textAlign: 'center',
           }}>
-            <div style={{ fontFamily: "'Inter', sans-serif", fontWeight: 600, fontSize: '0.75rem', color: '#6d7a77', textTransform: 'uppercase', letterSpacing: '0.7px', marginBottom: '0.5rem' }}>
+            <div style={{ fontFamily: "'Inter', sans-serif", fontWeight: 600, fontSize: '0.75rem', color: 'var(--text-secondary)', textTransform: 'uppercase', letterSpacing: '0.7px', marginBottom: '0.5rem' }}>
               Evidence Level
             </div>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem' }}>
               <span style={{
                 background: tier.bg, color: tier.color, border: `1px solid ${tier.border}`,
                 borderRadius: '999px', padding: '0.1875rem 0.625rem',
@@ -146,7 +161,7 @@ export default function SupplementInfoPage({
                 {evidenceTier}
               </span>
             </div>
-            <div style={{ fontFamily: "'Inter', sans-serif", fontSize: '0.75rem', color: '#6d7a77', marginTop: '0.375rem', lineHeight: 1.4 }}>
+            <div style={{ fontFamily: "'Inter', sans-serif", fontSize: '0.75rem', color: 'var(--text-secondary)', marginTop: '0.375rem', lineHeight: 1.4 }}>
               {tier.label}
             </div>
           </div>
@@ -154,26 +169,26 @@ export default function SupplementInfoPage({
 
         {/* Primary use */}
         <div style={{
-          background: '#ffffff', borderRadius: '14px',
+          background: 'var(--bg-surface)', borderRadius: '14px',
           boxShadow: '0 1px 4px rgba(0,0,0,0.06)',
           padding: '1.375rem 1.5rem', marginBottom: '1rem',
           borderLeft: `4px solid ${cat.bg}`,
         }}>
-          <div style={{ fontFamily: "'Inter', sans-serif", fontWeight: 600, fontSize: '0.75rem', color: '#6d7a77', textTransform: 'uppercase', letterSpacing: '0.7px', marginBottom: '0.625rem' }}>
+          <div style={{ fontFamily: "'Inter', sans-serif", fontWeight: 600, fontSize: '0.75rem', color: 'var(--text-secondary)', textTransform: 'uppercase', letterSpacing: '0.7px', marginBottom: '0.625rem' }}>
             How It Works
           </div>
-          <p style={{ fontFamily: "'Inter', sans-serif", fontSize: '0.9375rem', color: '#171d1c', lineHeight: 1.7, margin: 0 }}>
+          <p style={{ fontFamily: "'Inter', sans-serif", fontSize: '0.9375rem', color: 'var(--text-primary)', lineHeight: 1.7, margin: 0 }}>
             {primaryUse}
           </p>
         </div>
 
         {/* Key facts */}
         <div style={{
-          background: '#ffffff', borderRadius: '14px',
+          background: 'var(--bg-surface)', borderRadius: '14px',
           boxShadow: '0 1px 4px rgba(0,0,0,0.06)',
           padding: '1.375rem 1.5rem', marginBottom: '1rem',
         }}>
-          <div style={{ fontFamily: "'Inter', sans-serif", fontWeight: 600, fontSize: '0.75rem', color: '#6d7a77', textTransform: 'uppercase', letterSpacing: '0.7px', marginBottom: '0.875rem' }}>
+          <div style={{ fontFamily: "'Inter', sans-serif", fontWeight: 600, fontSize: '0.75rem', color: 'var(--text-secondary)', textTransform: 'uppercase', letterSpacing: '0.7px', marginBottom: '0.875rem' }}>
             Key Facts
           </div>
           <div style={{ display: 'flex', flexDirection: 'column', gap: '0.625rem' }}>
@@ -185,7 +200,7 @@ export default function SupplementInfoPage({
                 }}>
                   <div style={{ width: '6px', height: '6px', borderRadius: '50%', background: cat.bg }} />
                 </div>
-                <p style={{ fontFamily: "'Inter', sans-serif", fontSize: '0.875rem', color: '#3d4947', lineHeight: 1.6, margin: 0 }}>
+                <p style={{ fontFamily: "'Inter', sans-serif", fontSize: '0.875rem', color: 'var(--text-muted)', lineHeight: 1.6, margin: 0 }}>
                   {fact}
                 </p>
               </div>
@@ -195,11 +210,11 @@ export default function SupplementInfoPage({
 
         {/* Best for */}
         <div style={{
-          background: '#ffffff', borderRadius: '14px',
+          background: 'var(--bg-surface)', borderRadius: '14px',
           boxShadow: '0 1px 4px rgba(0,0,0,0.06)',
           padding: '1.375rem 1.5rem', marginBottom: '1.75rem',
         }}>
-          <div style={{ fontFamily: "'Inter', sans-serif", fontWeight: 600, fontSize: '0.75rem', color: '#6d7a77', textTransform: 'uppercase', letterSpacing: '0.7px', marginBottom: '0.75rem' }}>
+          <div style={{ fontFamily: "'Inter', sans-serif", fontWeight: 600, fontSize: '0.75rem', color: 'var(--text-secondary)', textTransform: 'uppercase', letterSpacing: '0.7px', marginBottom: '0.75rem' }}>
             Best For
           </div>
           <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.5rem' }}>
@@ -222,7 +237,7 @@ export default function SupplementInfoPage({
 
         {/* Deep Dive premium section */}
         <div style={{
-          background: '#ffffff', borderRadius: '20px',
+          background: 'var(--bg-surface)', borderRadius: '20px',
           border: '1.5px solid #00685f',
           boxShadow: '0 4px 20px rgba(0,104,95,0.1)',
           overflow: 'hidden',
@@ -261,21 +276,21 @@ export default function SupplementInfoPage({
                 <div key={label} style={{
                   display: 'flex', alignItems: 'center', gap: '0.875rem',
                   padding: '0.875rem 1rem',
-                  background: '#f5faf8', borderRadius: '12px',
-                  border: '1px solid #e4e9e7',
+                  background: 'var(--bg-page)', borderRadius: '12px',
+                  border: '1px solid var(--border)',
                 }}>
                   <div style={{
                     width: '44px', height: '44px', borderRadius: '10px',
-                    background: '#e6f4f1', display: 'flex', alignItems: 'center',
+                    background: 'var(--primary-light)', display: 'flex', alignItems: 'center',
                     justifyContent: 'center', flexShrink: 0,
                   }}>
                     <Icon size={44} color="#00685f" weight="duotone" />
                   </div>
                   <div style={{ flex: 1, minWidth: 0 }}>
-                    <div style={{ fontFamily: "'Manrope', sans-serif", fontWeight: 700, fontSize: '0.875rem', color: '#171d1c' }}>
+                    <div style={{ fontFamily: "'Manrope', sans-serif", fontWeight: 700, fontSize: '0.875rem', color: 'var(--text-primary)' }}>
                       {label}
                     </div>
-                    <div style={{ fontFamily: "'Inter', sans-serif", fontSize: '0.8125rem', color: '#6d7a77', marginTop: '0.125rem' }}>
+                    <div style={{ fontFamily: "'Inter', sans-serif", fontSize: '0.8125rem', color: 'var(--text-secondary)', marginTop: '0.125rem' }}>
                       {desc}
                     </div>
                   </div>
@@ -303,7 +318,7 @@ export default function SupplementInfoPage({
               Unlock Deep Dive
               <ArrowRight size={16} weight="bold" />
             </button>
-            <p style={{ textAlign: 'center', fontFamily: "'Inter', sans-serif", fontSize: '0.75rem', color: '#6d7a77', margin: '0.75rem 0 0' }}>
+            <p style={{ textAlign: 'center', fontFamily: "'Inter', sans-serif", fontSize: '0.75rem', color: 'var(--text-secondary)', margin: '0.75rem 0 0' }}>
               AI-generated · cached for 30 days after first load
             </p>
           </div>

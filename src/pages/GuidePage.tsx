@@ -1,5 +1,5 @@
 import React from "react";
-import { ArrowLeft, Bot } from "lucide-react";
+import { ArrowLeft, Robot } from "@phosphor-icons/react";
 import AIExtractionGuide from '../components/AIExtractionGuide';
 
 interface GuidePageProps {
@@ -8,111 +8,45 @@ interface GuidePageProps {
 
 export default function GuidePage({ onBack }: GuidePageProps): JSX.Element {
   return (
-    <div
-      style={{
-        background: 'linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #0f172a 100%)',
-        minHeight: '100vh',
-        padding: '1rem',
-        paddingTop: '120px',
-        paddingBottom: '120px',
-        position: 'relative'
-      }}
-    >
-      {/* Animated Background Elements */}
+    <div style={{ background: 'var(--bg-page)', minHeight: '100vh' }}>
+      {/* Page hero */}
       <div style={{
-        position: 'absolute',
-        top: 0,
-        left: 0,
-        right: 0,
-        bottom: 0,
-        background: 'radial-gradient(circle at 20% 50%, rgba(56, 243, 171, 0.1) 0%, transparent 50%), radial-gradient(circle at 80% 50%, rgba(8, 145, 178, 0.1) 0%, transparent 50%)',
-        pointerEvents: 'none'
-      }} />
-      
-      <div style={{ 
-        position: 'relative', 
-        zIndex: 1, 
-        maxWidth: '1200px', 
-        margin: '0 auto',
-        width: '100%',
-        padding: window.innerWidth < 768 ? '0 1rem' : '0 2rem',
-        boxSizing: 'border-box'
+        background: 'linear-gradient(135deg, #00685f 0%, #3f6560 100%)',
+        padding: 'calc(100px + 2rem) 1.5rem 2.25rem',
+        position: 'relative', overflow: 'hidden',
       }}>
-        {/* Page Header */}
-        <div style={{
-          background: 'rgba(15, 23, 42, 0.6)',
-          backdropFilter: 'blur(20px)',
-          borderRadius: '20px',
-          padding: '2rem',
-          border: '1px solid rgba(56, 243, 171, 0.1)',
-          boxShadow: '0 20px 60px rgba(0, 0, 0, 0.5)',
-          marginBottom: '2rem'
-        }}>
-          {/* Back Button */}
+        <div style={{ position: 'absolute', right: '-2rem', top: '-2rem', width: '160px', height: '160px', borderRadius: '50%', background: 'rgba(255,255,255,0.06)', pointerEvents: 'none' }} />
+        <div style={{ maxWidth: '1200px', margin: '0 auto', position: 'relative', zIndex: 1 }}>
           <button
             onClick={onBack}
             style={{
-              background: 'rgba(148, 163, 184, 0.1)',
-              border: '1px solid rgba(148, 163, 184, 0.2)',
-              borderRadius: '12px',
-              padding: '0.75rem 1.5rem',
-              color: '#f1f5f9',
-              cursor: 'pointer',
-              fontSize: '0.875rem',
-              fontWeight: '500',
-              display: 'flex',
-              alignItems: 'center',
-              gap: '0.5rem',
-              marginBottom: '2rem',
-              transition: 'all 0.3s ease'
-            }}
-            onMouseEnter={(e) => {
-              e.target.style.background = 'rgba(148, 163, 184, 0.2)';
-              e.target.style.borderColor = 'rgba(148, 163, 184, 0.3)';
-            }}
-            onMouseLeave={(e) => {
-              e.target.style.background = 'rgba(148, 163, 184, 0.1)';
-              e.target.style.borderColor = 'rgba(148, 163, 184, 0.2)';
+              display: 'inline-flex', alignItems: 'center', gap: '0.375rem',
+              background: 'rgba(255,255,255,0.15)', border: '1px solid rgba(255,255,255,0.25)',
+              borderRadius: '999px', padding: '0.5rem 1rem',
+              color: '#ffffff', cursor: 'pointer',
+              fontSize: '0.875rem', fontWeight: 600,
+              fontFamily: "'Inter', sans-serif", marginBottom: '1.25rem',
             }}
           >
-            <ArrowLeft size={16} />
-            Back to Scanner
+            <ArrowLeft size={15} />
+            Back
           </button>
-
-          {/* Page Title */}
-          <div style={{ textAlign: 'center' }}>
-            <h1 style={{
-              fontSize: '3rem',
-              fontWeight: 'bold',
-              background: 'linear-gradient(135deg, #38f3ab 0%, #1dd1a1 100%)',
-              WebkitBackgroundClip: 'text',
-              WebkitTextFillColor: 'transparent',
-              backgroundClip: 'text',
-              margin: 0,
-              marginBottom: '1rem',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              gap: '1rem'
-            }}>
-              <Bot size={48} />
-              AI Extraction Guide
-            </h1>
-            <p style={{
-              color: '#94a3b8',
-              fontSize: '1.25rem',
-              margin: 0,
-              maxWidth: '600px',
-              marginLeft: 'auto',
-              marginRight: 'auto',
-              lineHeight: '1.6'
-            }}>
-              Learn how to use the AI-powered extraction feature to automatically fill product information from supplement websites
-            </p>
-          </div>
+          <h2 style={{
+            fontFamily: "'Manrope', sans-serif", fontWeight: 800,
+            fontSize: 'clamp(1.375rem, 3vw, 1.875rem)',
+            color: '#ffffff', margin: '0 0 0.375rem', letterSpacing: '-0.4px',
+            display: 'flex', alignItems: 'center', gap: '0.625rem',
+          }}>
+            <Robot size={24} />
+            AI Extraction Guide
+          </h2>
+          <p style={{ color: 'rgba(255,255,255,0.8)', fontSize: '0.9375rem', margin: 0, fontFamily: "'Inter', sans-serif" }}>
+            Learn how to use AI-powered extraction to automatically fill product information
+          </p>
         </div>
+      </div>
 
-        {/* AI Extraction Guide Component */}
+      <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '1.75rem 1.5rem 4rem', boxSizing: 'border-box' }}>
         <AIExtractionGuide />
       </div>
     </div>

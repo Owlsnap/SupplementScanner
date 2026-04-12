@@ -1,9 +1,12 @@
 import React from 'react';
 import SupplementAnalyzer from './components/SupplementAnalyzer';
+import { DarkModeProvider } from './contexts/DarkModeContext';
 
 function App(): JSX.Element {
   return (
-    <SupplementAnalyzer />
+    <DarkModeProvider>
+      <SupplementAnalyzer />
+    </DarkModeProvider>
   );
 }
 

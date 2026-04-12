@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { FlaskConical, Scale, TrendingUp, TrendingDown, CheckCircle, XCircle, Info, AlertTriangle, ChevronDown, ChevronUp, Shield, AlertCircle } from "lucide-react";
+import { Flask, Scales, ArrowUp, ArrowDown, CheckCircle, XCircle, Info, Warning, Shield, WarningCircle, Target } from "@phosphor-icons/react";
 import { ingredientQuality, compareIngredients, getIngredientQuality } from '../data/supplementData.js';
 import type { Product, AnalyzedProduct, StructuredSupplementData, IngredientAnalysis } from '../types/index.js';
 
@@ -74,12 +74,12 @@ export default function IngredientQualityComparison({ analyzedProducts = {} }: I
   };
 
   const getQualityColor = (score) => {
-    if (score === null) return '#8b5cf6'; // Purple for individual choice
-    if (score >= 90) return '#22c55e'; // Green
-    if (score >= 80) return '#84cc16'; // Light green
-    if (score >= 70) return '#eab308'; // Yellow
-    if (score >= 50) return '#f97316'; // Orange
-    return '#ef4444'; // Red
+    if (score === null) return '#8b5cf6';
+    if (score >= 90) return '#16a34a';
+    if (score >= 80) return '#65a30d';
+    if (score >= 70) return '#ca8a04';
+    if (score >= 50) return '#ea580c';
+    return '#dc2626';
   };
 
   // Enhanced dosage analysis that works with structured ingredient data
@@ -508,13 +508,12 @@ export default function IngredientQualityComparison({ analyzedProducts = {} }: I
       <div
         key={ingredientName}
         style={{
-          background: 'rgba(30, 41, 59, 0.6)',
-          backdropFilter: 'blur(16px)',
+          background: 'var(--bg-surface)',
           borderRadius: '16px',
-          border: `2px solid ${getQualityColor(currentQuality?.score)}40`,
+          border: `1.5px solid ${getQualityColor(currentQuality?.score)}50`,
           padding: '1.5rem',
           marginBottom: '1rem',
-          transition: 'all 0.3s ease'
+          boxShadow: '0 1px 4px rgba(0,0,0,0.06)',
         }}
       >
         {/* Header with quality score and ingredient selector */}
@@ -523,24 +522,25 @@ export default function IngredientQualityComparison({ analyzedProducts = {} }: I
             {/* Interactive ingredient selector for multi-ingredient products */}
             {isMultiIngredient ? (
               <div>
-                <h3 style={{ 
-                  margin: 0, 
-                  fontSize: '1.25rem', 
-                  fontWeight: '700', 
-                  color: '#f1f5f9',
+                <h3 style={{
+                  margin: 0,
+                  fontSize: '1.125rem',
+                  fontWeight: 700,
+                  color: 'var(--text-primary)',
                   textTransform: 'capitalize',
-                  marginBottom: '1rem'
+                  marginBottom: '1rem',
+                  fontFamily: "'Manrope', sans-serif",
                 }}>
                   {currentSelectedIngredient}
                 </h3>
-                
+
                 {/* Ingredient selector - always visible */}
                 <div style={{
-                  background: 'rgba(15, 23, 42, 0.8)',
-                  borderRadius: '8px',
+                  background: 'var(--bg-page)',
+                  borderRadius: '10px',
                   padding: '0.5rem',
                   marginBottom: '0.5rem',
-                  border: '1px solid rgba(56, 243, 171, 0.2)'
+                  border: '1px solid var(--border)',
                 }}>
                   {allIngredients.map(ingredient => (
                     <div
@@ -552,26 +552,16 @@ export default function IngredientQualityComparison({ analyzedProducts = {} }: I
                         }));
                       }}
                       style={{
-                        padding: '0.5rem',
-                        borderRadius: '4px',
+                        padding: '0.5rem 0.625rem',
+                        borderRadius: '6px',
                         cursor: 'pointer',
-                        background: currentSelectedIngredient === ingredient ? 
-                          'rgba(56, 243, 171, 0.1)' : 'transparent',
-                        color: currentSelectedIngredient === ingredient ? 
-                          '#38f3ab' : '#cbd5e1',
+                        background: currentSelectedIngredient === ingredient ? 'var(--primary-light)' : 'transparent',
+                        color: currentSelectedIngredient === ingredient ? '#00685f' : '#6d7a77',
                         fontSize: '0.875rem',
+                        fontWeight: currentSelectedIngredient === ingredient ? 600 : 400,
                         textTransform: 'capitalize',
-                        transition: 'all 0.2s ease'
-                      }}
-                      onMouseEnter={(e) => {
-                        if (currentSelectedIngredient !== ingredient) {
-                          (e.target as HTMLElement).style.background = 'rgba(56, 243, 171, 0.05)';
-                        }
-                      }}
-                      onMouseLeave={(e) => {
-                        if (currentSelectedIngredient !== ingredient) {
-                          (e.target as HTMLElement).style.background = 'transparent';
-                        }
+                        transition: 'all 0.15s ease',
+                        fontFamily: "'Inter', sans-serif",
                       }}
                     >
                       {ingredient}
@@ -579,40 +569,31 @@ export default function IngredientQualityComparison({ analyzedProducts = {} }: I
                   ))}
                 </div>
                 
-                <div style={{ 
-                  fontSize: '0.75rem', 
-                  color: '#94a3b8',
-                  marginBottom: '0.5rem'
-                }}>
-                  Multi-ingredient formula • Select an ingredient to analyze
+                <div style={{ fontSize: '0.75rem', color: 'var(--text-secondary)', marginBottom: '0.5rem', fontFamily: "'Inter', sans-serif" }}>
+                  Multi-ingredient formula · Select an ingredient to analyze
                 </div>
               </div>
             ) : (
-              <h3 style={{ 
-                margin: 0, 
-                fontSize: '1.25rem', 
-                fontWeight: '700', 
-                color: '#f1f5f9',
-                textTransform: 'capitalize',
-                marginBottom: '0.5rem'
+              <h3 style={{
+                margin: 0, fontSize: '1.125rem', fontWeight: 700,
+                color: 'var(--text-primary)', textTransform: 'capitalize', marginBottom: '0.5rem',
+                fontFamily: "'Manrope', sans-serif",
               }}>
                 {ingredientName}
               </h3>
             )}
 
-            <p style={{ 
-              margin: 0, 
-              fontSize: '0.875rem', 
+            <p style={{
+              margin: 0, fontSize: '0.875rem',
               color: getQualityColor(currentQuality?.score),
-              fontWeight: '600',
-              marginTop: '0.25rem'
+              fontWeight: 700, marginTop: '0.25rem',
+              fontFamily: "'Inter', sans-serif",
             }}>
               {getQualityLabel(currentQuality?.score)} Quality
             </p>
-            {/* Show which products contain this ingredient */}
             {matchingProducts.length > 0 && (
-              <div style={{ marginTop: '0.5rem' }}>
-                <span style={{ color: '#94a3b8', fontSize: '0.75rem' }}>
+              <div style={{ marginTop: '0.375rem' }}>
+                <span style={{ color: 'var(--text-secondary)', fontSize: '0.75rem', fontFamily: "'Inter', sans-serif" }}>
                   Found in: {matchingProducts.map(p => `Product #${p.id}`).join(', ')}
                 </span>
               </div>
@@ -621,29 +602,23 @@ export default function IngredientQualityComparison({ analyzedProducts = {} }: I
           
           {/* Quality Score Badge */}
           <div style={{
-            background: `linear-gradient(135deg, ${getQualityColor(currentQuality?.score)}20 0%, ${getQualityColor(currentQuality?.score)}40 100%)`,
+            background: `${getQualityColor(currentQuality?.score)}15`,
             border: `2px solid ${getQualityColor(currentQuality?.score)}`,
-            borderRadius: '20px',
-            padding: '0.75rem 1.5rem',
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center'
+            borderRadius: '16px',
+            padding: '0.75rem 1.25rem',
+            display: 'flex', flexDirection: 'column', alignItems: 'center', flexShrink: 0,
           }}>
-            <div style={{ 
-              fontSize: currentQuality?.score === null ? '0.875rem' : '1.5rem', 
-              fontWeight: 'bold', 
+            <div style={{
+              fontSize: currentQuality?.score === null ? '0.8125rem' : '1.5rem',
+              fontWeight: 800,
               color: getQualityColor(currentQuality?.score),
-              textAlign: 'center'
+              textAlign: 'center',
+              fontFamily: "'Manrope', sans-serif",
             }}>
               {currentQuality?.score === null ? 'Individual\nChoice' : currentQuality?.score}
             </div>
             {currentQuality?.score !== null && (
-              <div style={{ 
-                fontSize: '0.75rem', 
-                color: '#94a3b8' 
-              }}>
-                /100
-              </div>
+              <div style={{ fontSize: '0.75rem', color: 'var(--text-secondary)', fontFamily: "'Inter', sans-serif" }}>/100</div>
             )}
           </div>
         </div>
@@ -658,34 +633,27 @@ export default function IngredientQualityComparison({ analyzedProducts = {} }: I
 
             return (
               <div style={{
-                background: `rgba(${dosageAnalysis.level === 'optimal' ? '34, 197, 94' : 
-                              dosageAnalysis.level === 'low' || dosageAnalysis.level === 'excessive' ? '239, 68, 68' :
-                              dosageAnalysis.level === 'high' ? '249, 115, 22' : '148, 163, 184'}, 0.1)`,
+                background: `${dosageAnalysis.color}10`,
                 border: `1px solid ${dosageAnalysis.color}40`,
                 borderRadius: '12px',
                 padding: '1rem',
-                marginBottom: '1.5rem'
+                marginBottom: '1.5rem',
               }}>
-                <h5 style={{ 
-                  color: dosageAnalysis.color, 
-                  fontSize: '0.875rem', 
-                  fontWeight: '600',
+                <h5 style={{
+                  color: dosageAnalysis.color,
+                  fontSize: '0.875rem', fontWeight: 700,
                   marginBottom: '0.75rem',
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '0.5rem'
+                  display: 'flex', alignItems: 'center', gap: '0.5rem',
+                  fontFamily: "'Inter', sans-serif",
                 }}>
                   {dosageAnalysis.isAIGenerated ? '🤖' : '🎯'} Dosage Analysis: {currentSelectedIngredient}
                   {dosageAnalysis.isAIGenerated && (
                     <span style={{
-                      background: 'rgba(59, 130, 246, 0.2)',
-                      color: '#3b82f6',
-                      fontSize: '0.625rem',
-                      padding: '0.25rem 0.5rem',
-                      borderRadius: '12px',
-                      fontWeight: '700',
-                      textTransform: 'uppercase',
-                      letterSpacing: '0.5px'
+                      background: 'var(--card-info-bg)', color: 'var(--card-info-heading)',
+                      fontSize: '0.625rem', padding: '0.2rem 0.5rem',
+                      borderRadius: '999px', fontWeight: 700,
+                      textTransform: 'uppercase', letterSpacing: '0.5px',
+                      fontFamily: "'Inter', sans-serif",
                     }}>
                       AI RECOMMENDED
                     </span>
@@ -723,19 +691,13 @@ export default function IngredientQualityComparison({ analyzedProducts = {} }: I
                     )}
                   </div>
                   <div>
-                    <div style={{ 
-                      color: '#f1f5f9', 
-                      fontSize: '0.875rem', 
-                      fontWeight: '600',
-                      marginBottom: '0.25rem'
+                    <div style={{
+                      color: 'var(--text-primary)', fontSize: '0.875rem', fontWeight: 700,
+                      marginBottom: '0.25rem', fontFamily: "'Inter', sans-serif",
                     }}>
                       {dosageAnalysis.isAIGenerated ? 'Evidence-Based Recommendation:' : 'Recommendation:'}
                     </div>
-                    <div style={{ 
-                      color: '#cbd5e1', 
-                      fontSize: '0.75rem',
-                      lineHeight: '1.4'
-                    }}>
+                    <div style={{ color: 'var(--text-secondary)', fontSize: '0.75rem', lineHeight: '1.4', fontFamily: "'Inter', sans-serif" }}>
                       {dosageAnalysis.recommendation}
                     </div>
                   </div>
@@ -747,42 +709,22 @@ export default function IngredientQualityComparison({ analyzedProducts = {} }: I
 
         {/* Quality Details for current ingredient */}
         <div style={{ marginBottom: '1.5rem' }}>
-          <p style={{ 
-            color: '#cbd5e1', 
-            fontSize: '0.875rem', 
-            lineHeight: '1.6',
-            marginBottom: '1rem' 
-          }}>
+          <p style={{ color: 'var(--text-secondary)', fontSize: '0.875rem', lineHeight: '1.6', marginBottom: '1rem', fontFamily: "'Inter', sans-serif" }}>
             {currentQuality?.description}
           </p>
 
-          {/* Quality Metrics */}
           {currentQuality?.bioavailability && (
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '1rem', marginBottom: '1rem' }}>
-              <div style={{ textAlign: 'center' }}>
-                <div style={{ color: '#94a3b8', fontSize: '0.75rem', marginBottom: '0.25rem' }}>
-                  Bioavailability
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '0.75rem', marginBottom: '1rem' }}>
+              {[
+                { label: 'Bioavailability', value: currentQuality.bioavailability },
+                { label: 'Absorption', value: currentQuality.absorption },
+                { label: 'Side Effects', value: currentQuality.sideEffects },
+              ].map(({ label, value }) => (
+                <div key={label} style={{ background: 'var(--bg-page)', border: '1px solid var(--border)', borderRadius: '10px', padding: '0.625rem', textAlign: 'center' }}>
+                  <div style={{ color: 'var(--text-secondary)', fontSize: '0.75rem', marginBottom: '0.25rem', fontFamily: "'Inter', sans-serif" }}>{label}</div>
+                  <div style={{ color: 'var(--text-primary)', fontSize: '0.875rem', fontWeight: 700, fontFamily: "'Manrope', sans-serif" }}>{value}</div>
                 </div>
-                <div style={{ color: '#f1f5f9', fontSize: '0.875rem', fontWeight: '600' }}>
-                  {currentQuality.bioavailability}
-                </div>
-              </div>
-              <div style={{ textAlign: 'center' }}>
-                <div style={{ color: '#94a3b8', fontSize: '0.75rem', marginBottom: '0.25rem' }}>
-                  Absorption
-                </div>
-                <div style={{ color: '#f1f5f9', fontSize: '0.875rem', fontWeight: '600' }}>
-                  {currentQuality.absorption}
-                </div>
-              </div>
-              <div style={{ textAlign: 'center' }}>
-                <div style={{ color: '#94a3b8', fontSize: '0.75rem', marginBottom: '0.25rem' }}>
-                  Side Effects
-                </div>
-                <div style={{ color: '#f1f5f9', fontSize: '0.875rem', fontWeight: '600' }}>
-                  {currentQuality.sideEffects}
-                </div>
-              </div>
+              ))}
             </div>
           )}
         </div>
@@ -885,107 +827,48 @@ export default function IngredientQualityComparison({ analyzedProducts = {} }: I
           return (
             <>
               {/* General Usage */}
-              <div style={{ 
-                background: 'rgba(56, 243, 171, 0.1)',
-                border: '1px solid rgba(56, 243, 171, 0.2)',
-                borderRadius: '12px',
-                padding: '1rem',
-                marginBottom: '1rem'
-              }}>
-                <h5 style={{ 
-                  color: '#38f3ab', 
-                  fontSize: '0.875rem', 
-                  fontWeight: '600', 
-                  marginBottom: '0.5rem',
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '0.5rem'
-                }}>
+              <div style={{ background: 'var(--primary-light)', border: '1px solid var(--primary-border)', borderRadius: '12px', padding: '1rem', marginBottom: '0.875rem' }}>
+                <h5 style={{ color: '#00685f', fontSize: '0.875rem', fontWeight: 700, margin: '0 0 0.5rem', fontFamily: "'Inter', sans-serif" }}>
                   📋 General Supplement Usage
                 </h5>
-                <p style={{ 
-                  color: '#cbd5e1', 
-                  fontSize: '0.875rem', 
-                  lineHeight: '1.6',
-                  margin: 0
-                }}>
+                <p style={{ color: '#3f6560', fontSize: '0.875rem', lineHeight: '1.6', margin: 0, fontFamily: "'Inter', sans-serif" }}>
                   {suppInfo.generalUsage}
                 </p>
               </div>
 
               {/* Dosage Recommendations */}
-              <div style={{ 
-                background: 'rgba(59, 130, 246, 0.1)',
-                border: '1px solid rgba(59, 130, 246, 0.2)',
-                borderRadius: '12px',
-                padding: '1rem',
-                marginBottom: '1rem'
-              }}>
-                <h5 style={{ 
-                  color: '#3b82f6', 
-                  fontSize: '0.875rem', 
-                  fontWeight: '600', 
-                  marginBottom: '0.5rem',
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '0.5rem'
-                }}>
-                  🎯 Dosage Recommendations
+              <div style={{ background: 'var(--card-info-bg)', border: '1px solid var(--card-info-border)', borderRadius: '12px', padding: '1rem', marginBottom: '0.875rem' }}>
+                <h5 style={{ color: 'var(--card-info-heading)', fontSize: '0.875rem', fontWeight: 700, margin: '0 0 0.5rem', fontFamily: "'Inter', sans-serif", display: 'flex', alignItems: 'center', gap: '0.375rem' }}>
+                  <Target size={14} />
+                  Dosage Recommendations
                 </h5>
-                <p style={{ 
-                  color: '#cbd5e1', 
-                  fontSize: '0.875rem', 
-                  lineHeight: '1.6',
-                  margin: 0
-                }}>
+                <p style={{ color: 'var(--card-info-text)', fontSize: '0.875rem', lineHeight: '1.6', margin: 0, fontFamily: "'Inter', sans-serif" }}>
                   {suppInfo.dosage}
                 </p>
               </div>
 
               {/* Warnings and Inferior Ingredients */}
-              <div style={{ 
-                background: 'rgba(251, 191, 36, 0.1)',
-                border: '1px solid rgba(251, 191, 36, 0.2)',
-                borderRadius: '12px',
-                padding: '1rem',
-                marginBottom: '1.5rem'
-              }}>
-                <h5 style={{ 
-                  color: '#fbbf24', 
-                  fontSize: '0.875rem', 
-                  fontWeight: '600', 
-                  marginBottom: '0.5rem',
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '0.5rem'
-                }}>
-                  ⚠️ Important Warnings
+              <div style={{ background: 'var(--card-warning-bg)', border: '1px solid var(--card-warning-border)', borderRadius: '12px', padding: '1rem', marginBottom: '1.5rem' }}>
+                <h5 style={{ color: 'var(--card-warning-heading)', fontSize: '0.875rem', fontWeight: 700, margin: '0 0 0.5rem', fontFamily: "'Inter', sans-serif", display: 'flex', alignItems: 'center', gap: '0.375rem' }}>
+                  <Warning size={14} />
+                  Important Warnings
                 </h5>
-                <p style={{ 
-                  color: '#cbd5e1', 
-                  fontSize: '0.875rem', 
-                  lineHeight: '1.6',
-                  margin: 0,
-                  marginBottom: suppInfo.inferiorForms.length > 0 ? '0.75rem' : 0
+                <p style={{
+                  color: 'var(--card-warning-text)', fontSize: '0.875rem', lineHeight: '1.6',
+                  margin: 0, marginBottom: suppInfo.inferiorForms.length > 0 ? '0.75rem' : 0,
+                  fontFamily: "'Inter', sans-serif",
                 }}>
                   {suppInfo.warnings}
                 </p>
-                
+
                 {suppInfo.inferiorForms.length > 0 && (
                   <div>
-                    <div style={{ color: '#ef4444', fontSize: '0.75rem', fontWeight: '600', marginBottom: '0.5rem' }}>
-                      🚫 AVOID these inferior forms:
+                    <div style={{ color: 'var(--card-danger-heading)', fontSize: '0.75rem', fontWeight: 700, marginBottom: '0.5rem', fontFamily: "'Inter', sans-serif", display: 'flex', alignItems: 'center', gap: '0.375rem' }}>
+                      <XCircle size={12} /> AVOID these inferior forms:
                     </div>
                     {suppInfo.inferiorForms.map((form, idx) => (
-                      <div key={idx} style={{ 
-                        color: '#fca5a5', 
-                        fontSize: '0.75rem', 
-                        marginBottom: '0.25rem',
-                        display: 'flex',
-                        alignItems: 'center',
-                        gap: '0.5rem'
-                      }}>
-                        <div style={{ width: '4px', height: '4px', borderRadius: '50%', background: '#ef4444' }} />
+                      <div key={idx} style={{ color: 'var(--card-danger-text)', fontSize: '0.75rem', marginBottom: '0.25rem', display: 'flex', alignItems: 'center', gap: '0.5rem', fontFamily: "'Inter', sans-serif" }}>
+                        <div style={{ width: '4px', height: '4px', borderRadius: '50%', background: 'var(--card-danger-heading)', flexShrink: 0 }} />
                         {form}
                       </div>
                     ))}
@@ -997,133 +880,56 @@ export default function IngredientQualityComparison({ analyzedProducts = {} }: I
         })()}
         {/* End Enhanced Supplement Information */}
 
-        {/* Pre-workout Considerations (for ingredients without scores) */}
         {currentQuality?.score === null && currentQuality?.considerations && (
-          <div style={{ 
-            background: 'rgba(139, 92, 246, 0.1)',
-            border: '1px solid rgba(139, 92, 246, 0.2)',
-            borderRadius: '12px',
-            padding: '1rem',
-            marginBottom: '1.5rem'
-          }}>
-            <h5 style={{ 
-              color: '#8b5cf6', 
-              fontSize: '0.875rem', 
-              fontWeight: '600', 
-              marginBottom: '0.5rem',
-              display: 'flex',
-              alignItems: 'center',
-              gap: '0.5rem'
-            }}>
-              🤔 Individual Considerations
+          <div style={{ background: 'var(--card-purple-bg)', border: '1px solid var(--card-purple-border)', borderRadius: '12px', padding: '1rem', marginBottom: '1.5rem' }}>
+            <h5 style={{ color: 'var(--card-purple-heading)', fontSize: '0.875rem', fontWeight: 700, margin: '0 0 0.5rem', fontFamily: "'Inter', sans-serif", display: 'flex', alignItems: 'center', gap: '0.375rem' }}>
+              <Info size={14} />
+              Individual Considerations
             </h5>
-            <p style={{ 
-              color: '#cbd5e1', 
-              fontSize: '0.875rem', 
-              lineHeight: '1.6',
-              margin: 0
-            }}>
+            <p style={{ color: 'var(--card-purple-text)', fontSize: '0.875rem', lineHeight: '1.6', margin: 0, fontFamily: "'Inter', sans-serif" }}>
               {currentQuality.considerations}
             </p>
           </div>
         )}
 
         {/* Benefits and Drawbacks */}
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem', marginBottom: '1rem' }}>
-          {/* Benefits */}
-          <div style={{
-            background: 'rgba(34, 197, 94, 0.1)',
-            border: '1px solid rgba(34, 197, 94, 0.2)',
-            borderRadius: '12px',
-            padding: '1rem'
-          }}>
-            <h5 style={{ 
-              color: '#22c55e', 
-              fontSize: '0.875rem', 
-              fontWeight: '600', 
-              marginBottom: '0.75rem',
-              display: 'flex',
-              alignItems: 'center',
-              gap: '0.5rem'
-            }}>
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.75rem', marginBottom: '1rem' }}>
+          <div style={{ background: 'var(--card-success-bg)', border: '1px solid var(--card-success-border)', borderRadius: '12px', padding: '1rem' }}>
+            <h5 style={{ color: 'var(--card-success-heading)', fontSize: '0.875rem', fontWeight: 700, margin: '0 0 0.75rem', display: 'flex', alignItems: 'center', gap: '0.375rem', fontFamily: "'Inter', sans-serif" }}>
               <CheckCircle size={14} />
               Benefits
             </h5>
             {currentQuality?.benefits?.map((benefit, idx) => (
-              <div key={idx} style={{ 
-                color: '#cbd5e1', 
-                fontSize: '0.75rem', 
-                marginBottom: '0.25rem',
-                display: 'flex',
-                alignItems: 'center',
-                gap: '0.5rem'
-              }}>
-                <div style={{ width: '4px', height: '4px', borderRadius: '50%', background: '#22c55e' }} />
+              <div key={idx} style={{ color: 'var(--card-success-text)', fontSize: '0.75rem', marginBottom: '0.25rem', display: 'flex', alignItems: 'center', gap: '0.5rem', fontFamily: "'Inter', sans-serif" }}>
+                <div style={{ width: '4px', height: '4px', borderRadius: '50%', background: 'var(--card-success-heading)', flexShrink: 0 }} />
                 {benefit}
               </div>
             ))}
           </div>
 
-          {/* Drawbacks */}
-          <div style={{
-            background: 'rgba(239, 68, 68, 0.1)',
-            border: '1px solid rgba(239, 68, 68, 0.2)',
-            borderRadius: '12px',
-            padding: '1rem'
-          }}>
-            <h5 style={{ 
-              color: '#ef4444', 
-              fontSize: '0.875rem', 
-              fontWeight: '600', 
-              marginBottom: '0.75rem',
-              display: 'flex',
-              alignItems: 'center',
-              gap: '0.5rem'
-            }}>
+          <div style={{ background: 'var(--card-danger-bg)', border: '1px solid var(--card-danger-border)', borderRadius: '12px', padding: '1rem' }}>
+            <h5 style={{ color: 'var(--card-danger-heading)', fontSize: '0.875rem', fontWeight: 700, margin: '0 0 0.75rem', display: 'flex', alignItems: 'center', gap: '0.375rem', fontFamily: "'Inter', sans-serif" }}>
               <XCircle size={14} />
               Drawbacks
             </h5>
             {currentQuality?.drawbacks?.map((drawback, idx) => (
-              <div key={idx} style={{ 
-                color: '#cbd5e1', 
-                fontSize: '0.75rem', 
-                marginBottom: '0.25rem',
-                display: 'flex',
-                alignItems: 'center',
-                gap: '0.5rem'
-              }}>
-                <div style={{ width: '4px', height: '4px', borderRadius: '50%', background: '#ef4444' }} />
+              <div key={idx} style={{ color: 'var(--card-danger-text)', fontSize: '0.75rem', marginBottom: '0.25rem', display: 'flex', alignItems: 'center', gap: '0.5rem', fontFamily: "'Inter', sans-serif" }}>
+                <div style={{ width: '4px', height: '4px', borderRadius: '50%', background: 'var(--card-danger-heading)', flexShrink: 0 }} />
                 {drawback}
               </div>
             ))}
           </div>
         </div>
 
-        {/* Matching Products */}
         {matchingProducts.length > 0 && (
-          <div style={{
-            background: 'rgba(56, 243, 171, 0.1)',
-            border: '1px solid rgba(56, 243, 171, 0.2)',
-            borderRadius: '12px',
-            padding: '1rem'
-          }}>
-            <h5 style={{ 
-              color: '#38f3ab', 
-              fontSize: '0.875rem', 
-              fontWeight: '600', 
-              marginBottom: '0.75rem',
-              display: 'flex',
-              alignItems: 'center',
-              gap: '0.5rem'
-            }}>
+          <div style={{ background: 'var(--primary-light)', border: '1px solid var(--primary-border)', borderRadius: '12px', padding: '1rem' }}>
+            <h5 style={{ color: '#00685f', fontSize: '0.875rem', fontWeight: 700, margin: '0 0 0.75rem', display: 'flex', alignItems: 'center', gap: '0.375rem', fontFamily: "'Inter', sans-serif" }}>
               <Info size={14} />
               Your Products Using This Ingredient
             </h5>
             {matchingProducts.map((product, idx) => (
-              <div key={idx} style={{ marginBottom: '0.5rem' }}>
-                <div style={{ color: '#f1f5f9', fontSize: '0.875rem', fontWeight: '500' }}>
-                  {product.name}
-                </div>
+              <div key={idx} style={{ color: 'var(--text-primary)', fontSize: '0.875rem', fontWeight: 600, marginBottom: '0.25rem', fontFamily: "'Manrope', sans-serif" }}>
+                {product.name}
               </div>
             ))}
           </div>
@@ -1154,157 +960,77 @@ export default function IngredientQualityComparison({ analyzedProducts = {} }: I
 
     return (
       <div style={{
-        background: 'rgba(102, 126, 234, 0.1)',
-        border: '2px solid rgba(102, 126, 234, 0.3)',
+        background: 'var(--bg-surface)',
+        border: '1.5px solid var(--border)',
         borderRadius: '16px',
-        padding: '2rem',
-        marginBottom: '2rem',
-        position: 'relative',
-        overflow: 'hidden'
+        padding: '1.5rem',
+        marginBottom: '1.5rem',
+        boxShadow: '0 1px 4px rgba(0,0,0,0.06)',
       }}>
-        {/* Glow effect */}
-        <div style={{
-          position: 'absolute',
-          top: 0,
-          left: 0,
-          right: 0,
-          bottom: 0,
-          background: 'radial-gradient(circle at 50% 0%, rgba(102, 126, 234, 0.1) 0%, transparent 70%)',
-          pointerEvents: 'none'
-        }} />
-
         <div style={{ position: 'relative', zIndex: 1 }}>
           <h3 style={{
-            color: '#667eea',
-            fontSize: '1.5rem',
-            fontWeight: '700',
-            marginBottom: '1.5rem',
-            display: 'flex',
-            alignItems: 'center',
-            gap: '0.75rem'
+            color: '#00685f', fontSize: '1.125rem', fontWeight: 800,
+            marginBottom: '1.25rem',
+            display: 'flex', alignItems: 'center', gap: '0.5rem',
+            fontFamily: "'Manrope', sans-serif",
           }}>
-            <Scale size={24} />
+            <Scales size={20} />
             Quality Comparison: {selectedCategory.charAt(0).toUpperCase() + selectedCategory.slice(1)}
           </h3>
 
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '2rem' }}>
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
             {/* Best Option */}
-            <div style={{
-              background: 'rgba(34, 197, 94, 0.2)',
-              border: '2px solid rgba(34, 197, 94, 0.4)',
-              borderRadius: '16px',
-              padding: '1.5rem',
-              textAlign: 'center'
-            }}>
+            <div style={{ background: 'var(--card-success-bg)', border: '1.5px solid var(--card-success-border)', borderRadius: '14px', padding: '1.25rem', textAlign: 'center' }}>
               <div style={{
-                background: 'linear-gradient(135deg, #22c55e 0%, #16a34a 100%)',
-                color: '#0f172a',
-                padding: '0.5rem 1rem',
-                borderRadius: '20px',
-                fontSize: '0.75rem',
-                fontWeight: '700',
-                marginBottom: '1rem',
-                display: 'inline-flex',
-                alignItems: 'center',
-                gap: '0.5rem'
+                background: '#16a34a', color: '#ffffff',
+                padding: '0.35rem 0.875rem', borderRadius: '999px',
+                fontSize: '0.75rem', fontWeight: 700, marginBottom: '0.875rem',
+                display: 'inline-flex', alignItems: 'center', gap: '0.375rem',
+                fontFamily: "'Inter', sans-serif",
               }}>
-                <TrendingUp size={14} />
+                <ArrowUp size={12} />
                 BEST QUALITY
               </div>
-              
-              <h4 style={{ 
-                color: '#f1f5f9', 
-                fontSize: '1.25rem', 
-                fontWeight: '700',
-                margin: 0,
-                marginBottom: '0.5rem',
-                textTransform: 'capitalize'
-              }}>
+
+              <h4 style={{ color: 'var(--text-primary)', fontSize: '1.125rem', fontWeight: 800, margin: '0 0 0.375rem', textTransform: 'capitalize', fontFamily: "'Manrope', sans-serif" }}>
                 {best.name}
               </h4>
-              
-              <div style={{ 
-                fontSize: '2rem', 
-                fontWeight: 'bold', 
-                color: '#22c55e',
-                marginBottom: '0.5rem'
-              }}>
+              <div style={{ fontSize: '1.75rem', fontWeight: 800, color: '#16a34a', marginBottom: '0.375rem', fontFamily: "'Manrope', sans-serif" }}>
                 {best.quality.score}/100
               </div>
-              
-              <p style={{ 
-                color: '#cbd5e1', 
-                fontSize: '0.875rem',
-                margin: 0 
-              }}>
+              <p style={{ color: 'var(--text-secondary)', fontSize: '0.8125rem', margin: 0, fontFamily: "'Inter', sans-serif" }}>
                 {best.quality.description}
               </p>
             </div>
 
-            {/* Second Option - Smart labeling based on score difference */}
+            {/* Second Option */}
             <div style={{
-              background: isCloseComparison 
-                ? 'rgba(34, 197, 94, 0.2)' 
-                : 'rgba(239, 68, 68, 0.2)',
-              border: isCloseComparison 
-                ? '2px solid rgba(34, 197, 94, 0.4)' 
-                : '2px solid rgba(239, 68, 68, 0.4)',
-              borderRadius: '16px',
-              padding: '1.5rem',
-              textAlign: 'center'
+              background: isCloseComparison ? 'var(--card-success-bg)' : 'var(--card-danger-bg)',
+              border: `1.5px solid ${isCloseComparison ? 'var(--card-success-border)' : 'var(--card-danger-border)'}`,
+              borderRadius: '14px', padding: '1.25rem', textAlign: 'center',
             }}>
               <div style={{
-                background: isCloseComparison 
-                  ? 'linear-gradient(135deg, #22c55e 0%, #16a34a 100%)'
-                  : 'linear-gradient(135deg, #ef4444 0%, #dc2626 100%)',
+                background: isCloseComparison ? '#16a34a' : '#dc2626',
                 color: '#ffffff',
-                padding: '0.5rem 1rem',
-                borderRadius: '20px',
-                fontSize: '0.75rem',
-                fontWeight: '700',
-                marginBottom: '1rem',
-                display: 'inline-flex',
-                alignItems: 'center',
-                gap: '0.5rem'
+                padding: '0.35rem 0.875rem', borderRadius: '999px',
+                fontSize: '0.75rem', fontWeight: 700, marginBottom: '0.875rem',
+                display: 'inline-flex', alignItems: 'center', gap: '0.375rem',
+                fontFamily: "'Inter', sans-serif",
               }}>
                 {isCloseComparison ? (
-                  <>
-                    <CheckCircle size={14} />
-                    {isSameScore ? 'EQUALLY GOOD OPTION' : 'GOOD OPTION'}
-                  </>
+                  <><CheckCircle size={12} />{isSameScore ? 'EQUALLY GOOD' : 'GOOD OPTION'}</>
                 ) : (
-                  <>
-                    <TrendingDown size={14} />
-                    AVOID IF POSSIBLE
-                  </>
+                  <><ArrowDown size={12} />AVOID IF POSSIBLE</>
                 )}
               </div>
-              
-              <h4 style={{ 
-                color: '#f1f5f9', 
-                fontSize: '1.25rem', 
-                fontWeight: '700',
-                margin: 0,
-                marginBottom: '0.5rem',
-                textTransform: 'capitalize'
-              }}>
+
+              <h4 style={{ color: 'var(--text-primary)', fontSize: '1.125rem', fontWeight: 800, margin: '0 0 0.375rem', textTransform: 'capitalize', fontFamily: "'Manrope', sans-serif" }}>
                 {worst.name}
               </h4>
-              
-              <div style={{ 
-                fontSize: '2rem', 
-                fontWeight: 'bold', 
-                color: isCloseComparison ? '#22c55e' : '#ef4444',
-                marginBottom: '0.5rem'
-              }}>
+              <div style={{ fontSize: '1.75rem', fontWeight: 800, color: isCloseComparison ? '#16a34a' : '#dc2626', marginBottom: '0.375rem', fontFamily: "'Manrope', sans-serif" }}>
                 {worst.quality.score}/100
               </div>
-              
-              <p style={{ 
-                color: '#cbd5e1', 
-                fontSize: '0.875rem',
-                margin: 0 
-              }}>
+              <p style={{ color: 'var(--text-secondary)', fontSize: '0.8125rem', margin: 0, fontFamily: "'Inter', sans-serif" }}>
                 {worst.quality.description}
               </p>
             </div>
@@ -1312,25 +1038,16 @@ export default function IngredientQualityComparison({ analyzedProducts = {} }: I
 
           {/* Quality Gap */}
           <div style={{
-            textAlign: 'center',
-            marginTop: '2rem',
-            padding: '1rem',
-            background: 'rgba(56, 243, 171, 0.1)',
-            border: '1px solid rgba(56, 243, 171, 0.2)',
-            borderRadius: '12px'
+            textAlign: 'center', marginTop: '1rem', padding: '0.875rem',
+            background: 'var(--primary-light)', border: '1px solid var(--primary-border)', borderRadius: '12px',
           }}>
-            <div style={{
-              fontSize: '1.125rem',
-              fontWeight: '600',
-              color: '#38f3ab',
-              marginBottom: '0.5rem'
-            }}>
+            <div style={{ fontSize: '1rem', fontWeight: 700, color: '#00685f', marginBottom: '0.25rem', fontFamily: "'Manrope', sans-serif" }}>
               Quality Gap: {qualityGap} points
             </div>
-            <p style={{ color: '#cbd5e1', fontSize: '0.875rem', margin: 0 }}>
-              {isSameScore 
-                ? 'Both options have identical quality scores - choose based on preference'
-                : isCloseComparison 
+            <p style={{ color: '#3f6560', fontSize: '0.8125rem', margin: 0, fontFamily: "'Inter', sans-serif" }}>
+              {isSameScore
+                ? 'Both options have identical quality scores — choose based on preference'
+                : isCloseComparison
                   ? 'Both options are high quality with minimal difference in effectiveness'
                   : 'This represents a significant difference in bioavailability and effectiveness'
               }
@@ -1355,11 +1072,11 @@ export default function IngredientQualityComparison({ analyzedProducts = {} }: I
   const proteinData = getProteinQualityData();
 
   const getScoreColor = (score: number) => {
-    if (score >= 8) return '#22c55e';
-    if (score >= 6) return '#84cc16';
-    if (score >= 4) return '#eab308';
-    if (score >= 3) return '#f97316';
-    return '#ef4444';
+    if (score >= 8) return '#16a34a';
+    if (score >= 6) return '#65a30d';
+    if (score >= 4) return '#ca8a04';
+    if (score >= 3) return '#ea580c';
+    return '#dc2626';
   };
 
   const getScoreLabel = (score: number) => {
@@ -1377,99 +1094,57 @@ export default function IngredientQualityComparison({ analyzedProducts = {} }: I
 
     return (
       <div style={{
-        background: 'rgba(15, 23, 42, 0.8)',
-        backdropFilter: 'blur(20px)',
-        borderRadius: '20px',
-        padding: '2rem',
-        border: `2px solid ${scoreColor}40`,
-        boxShadow: `0 20px 60px rgba(0, 0, 0, 0.3), 0 0 40px ${scoreColor}10`,
-        marginBottom: '2rem'
+        background: 'var(--bg-surface)',
+        borderRadius: '16px',
+        border: `1.5px solid ${scoreColor}40`,
+        boxShadow: '0 1px 4px rgba(0,0,0,0.06)',
+        marginBottom: '1.5rem',
+        overflow: 'hidden',
       }}>
         {/* Header */}
-        <div style={{ marginBottom: '2rem', textAlign: 'center' }}>
+        <div style={{ background: `${scoreColor}10`, padding: '1.25rem 1.5rem', borderBottom: '1px solid var(--border)' }}>
           <h2 style={{
-            fontSize: '2rem',
-            fontWeight: 'bold',
-            background: `linear-gradient(135deg, ${scoreColor} 0%, #38f3ab 100%)`,
-            WebkitBackgroundClip: 'text',
-            WebkitTextFillColor: 'transparent',
-            backgroundClip: 'text',
-            margin: 0,
-            marginBottom: '0.5rem',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            gap: '0.75rem'
+            fontSize: '1.25rem', fontWeight: 800, color: scoreColor,
+            margin: '0 0 0.25rem',
+            display: 'flex', alignItems: 'center', gap: '0.5rem',
+            fontFamily: "'Manrope', sans-serif",
           }}>
-            <Shield size={32} />
+            <Shield size={20} />
             Protein Quality Analysis
           </h2>
-          <p style={{ color: '#94a3b8', fontSize: '1rem', margin: 0 }}>
+          <p style={{ color: 'var(--text-secondary)', fontSize: '0.875rem', margin: 0, fontFamily: "'Inter', sans-serif" }}>
             {(product as any).name || 'Protein Product'}
           </p>
         </div>
 
+        <div style={{ padding: '1.5rem' }}>
         {/* Score Display */}
-        <div style={{
-          display: 'flex',
-          justifyContent: 'center',
-          marginBottom: '2rem'
-        }}>
+        <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '1.5rem' }}>
           <div style={{
-            background: `linear-gradient(135deg, ${scoreColor}15 0%, ${scoreColor}30 100%)`,
-            border: `3px solid ${scoreColor}`,
-            borderRadius: '24px',
-            padding: '1.5rem 3rem',
-            display: 'flex',
-            alignItems: 'center',
-            gap: '1.5rem'
+            background: `${scoreColor}10`, border: `2px solid ${scoreColor}`,
+            borderRadius: '16px', padding: '1.25rem 2.5rem',
+            display: 'flex', alignItems: 'center', gap: '1.25rem',
           }}>
             <div style={{ textAlign: 'center' }}>
-              <div style={{
-                fontSize: '3.5rem',
-                fontWeight: '800',
-                color: scoreColor,
-                lineHeight: 1
-              }}>
+              <div style={{ fontSize: '3rem', fontWeight: 800, color: scoreColor, lineHeight: 1, fontFamily: "'Manrope', sans-serif" }}>
                 {quality.score}
               </div>
-              <div style={{ fontSize: '1rem', color: '#94a3b8', fontWeight: '600' }}>/10</div>
+              <div style={{ fontSize: '0.875rem', color: 'var(--text-secondary)', fontWeight: 600, fontFamily: "'Inter', sans-serif" }}>/10</div>
             </div>
             <div>
-              <div style={{
-                fontSize: '1.25rem',
-                fontWeight: '700',
-                color: scoreColor,
-                marginBottom: '0.25rem'
-              }}>
+              <div style={{ fontSize: '1.125rem', fontWeight: 800, color: scoreColor, marginBottom: '0.125rem', fontFamily: "'Manrope', sans-serif" }}>
                 {getScoreLabel(quality.score)}
               </div>
-              <div style={{ fontSize: '0.875rem', color: '#94a3b8' }}>
-                Quality Score
-              </div>
+              <div style={{ fontSize: '0.8125rem', color: 'var(--text-secondary)', fontFamily: "'Inter', sans-serif" }}>Quality Score</div>
             </div>
           </div>
         </div>
 
         {/* Protein Sources */}
         {quality.proteinSources && quality.proteinSources.length > 0 && (
-          <div style={{
-            background: 'rgba(56, 243, 171, 0.08)',
-            border: '1px solid rgba(56, 243, 171, 0.2)',
-            borderRadius: '16px',
-            padding: '1.25rem',
-            marginBottom: '1.5rem'
-          }}>
-            <h4 style={{
-              color: '#38f3ab',
-              fontSize: '1rem',
-              fontWeight: '700',
-              marginBottom: '1rem',
-              display: 'flex',
-              alignItems: 'center',
-              gap: '0.5rem'
-            }}>
-              <FlaskConical size={18} />
+          <div style={{ background: 'var(--primary-light)', border: '1px solid var(--primary-border)', borderRadius: '14px', padding: '1.25rem', marginBottom: '1.25rem' }}>
+            <h4 style={{ color: '#00685f', fontSize: '1rem', fontWeight: 700, margin: '0 0 0.875rem', display: 'flex', alignItems: 'center', gap: '0.5rem', fontFamily: "'Manrope', sans-serif" }}>
+              <Flask size={18} />
               Protein Sources
             </h4>
             {quality.proteinSources.map((source: any, idx: number) => (
@@ -1477,41 +1152,36 @@ export default function IngredientQualityComparison({ analyzedProducts = {} }: I
                 display: 'flex',
                 alignItems: 'center',
                 gap: '0.75rem',
-                marginBottom: '0.75rem',
-                padding: '0.75rem',
-                background: 'rgba(15, 23, 42, 0.5)',
-                borderRadius: '10px'
+                marginBottom: '0.625rem',
+                padding: '0.625rem 0.75rem',
+                background: 'var(--bg-surface)',
+                borderRadius: '10px',
+                border: '1px solid var(--border)',
               }}>
                 <div style={{
-                  width: '8px',
-                  height: '8px',
-                  borderRadius: '50%',
-                  background: source.quality === 'excellent' ? '#22c55e' :
-                              source.quality === 'good' ? '#84cc16' :
-                              source.quality === 'decent' ? '#eab308' : '#ef4444',
-                  flexShrink: 0
+                  width: '8px', height: '8px', borderRadius: '50%', flexShrink: 0,
+                  background: source.quality === 'excellent' ? '#16a34a' :
+                              source.quality === 'good' ? '#65a30d' :
+                              source.quality === 'decent' ? '#ca8a04' : '#dc2626',
                 }} />
-                <div>
-                  <div style={{ color: '#f1f5f9', fontWeight: '600', fontSize: '0.875rem' }}>
+                <div style={{ flex: 1 }}>
+                  <div style={{ color: 'var(--text-primary)', fontWeight: 700, fontSize: '0.875rem', fontFamily: "'Manrope', sans-serif" }}>
                     {source.name}
                   </div>
-                  <div style={{ color: '#94a3b8', fontSize: '0.75rem' }}>
+                  <div style={{ color: 'var(--text-secondary)', fontSize: '0.75rem', fontFamily: "'Inter', sans-serif" }}>
                     {source.reason}
                   </div>
                 </div>
                 <div style={{
-                  marginLeft: 'auto',
-                  padding: '0.25rem 0.75rem',
-                  borderRadius: '20px',
-                  fontSize: '0.7rem',
-                  fontWeight: '700',
-                  textTransform: 'uppercase',
-                  background: source.quality === 'excellent' ? 'rgba(34, 197, 94, 0.2)' :
-                              source.quality === 'good' ? 'rgba(132, 204, 22, 0.2)' :
-                              source.quality === 'decent' ? 'rgba(234, 179, 8, 0.2)' : 'rgba(239, 68, 68, 0.2)',
-                  color: source.quality === 'excellent' ? '#22c55e' :
-                         source.quality === 'good' ? '#84cc16' :
-                         source.quality === 'decent' ? '#eab308' : '#ef4444'
+                  marginLeft: 'auto', padding: '0.2rem 0.625rem',
+                  borderRadius: '999px', fontSize: '0.7rem', fontWeight: 700,
+                  textTransform: 'uppercase', fontFamily: "'Inter', sans-serif",
+                  background: source.quality === 'excellent' ? 'var(--card-success-bg)' :
+                              source.quality === 'good' ? 'var(--card-success-bg)' :
+                              source.quality === 'decent' ? 'var(--card-warning-bg)' : 'var(--card-danger-bg)',
+                  color: source.quality === 'excellent' ? '#16a34a' :
+                         source.quality === 'good' ? '#65a30d' :
+                         source.quality === 'decent' ? '#ca8a04' : '#dc2626',
                 }}>
                   {source.quality}
                 </div>
@@ -1524,330 +1194,192 @@ export default function IngredientQualityComparison({ analyzedProducts = {} }: I
         <div style={{
           display: 'grid',
           gridTemplateColumns: quality.concerns?.length > 0 && quality.positives?.length > 0 ? '1fr 1fr' : '1fr',
-          gap: '1.5rem',
-          marginBottom: '1.5rem'
+          gap: '1rem', marginBottom: '1.25rem',
         }}>
-          {/* Concerns / Sketchy Ingredients */}
           {quality.concerns && quality.concerns.length > 0 && (
-            <div style={{
-              background: 'rgba(239, 68, 68, 0.08)',
-              border: '1px solid rgba(239, 68, 68, 0.2)',
-              borderRadius: '16px',
-              padding: '1.25rem'
-            }}>
-              <h4 style={{
-                color: '#ef4444',
-                fontSize: '1rem',
-                fontWeight: '700',
-                marginBottom: '1rem',
-                display: 'flex',
-                alignItems: 'center',
-                gap: '0.5rem'
-              }}>
-                <AlertCircle size={18} />
+            <div style={{ background: 'var(--card-danger-bg)', border: '1px solid var(--card-danger-border)', borderRadius: '14px', padding: '1.25rem' }}>
+              <h4 style={{ color: '#dc2626', fontSize: '0.9375rem', fontWeight: 700, margin: '0 0 0.875rem', display: 'flex', alignItems: 'center', gap: '0.5rem', fontFamily: "'Manrope', sans-serif" }}>
+                <WarningCircle size={18} />
                 Sketchy Ingredients ({quality.concerns.length})
               </h4>
               {quality.concerns.map((concern: any, idx: number) => (
                 <div key={idx} style={{
-                  marginBottom: '0.75rem',
-                  padding: '0.75rem',
-                  background: 'rgba(15, 23, 42, 0.5)',
-                  borderRadius: '10px',
-                  borderLeft: `3px solid ${concern.severity === 'high' ? '#ef4444' : concern.severity === 'medium' ? '#f97316' : '#eab308'}`
+                  marginBottom: '0.625rem', padding: '0.625rem 0.75rem',
+                  background: 'var(--bg-surface)', borderRadius: '10px',
+                  borderLeft: `3px solid ${concern.severity === 'high' ? '#dc2626' : concern.severity === 'medium' ? '#ea580c' : '#ca8a04'}`,
                 }}>
-                  <div style={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'space-between',
-                    marginBottom: '0.25rem'
-                  }}>
-                    <span style={{ color: '#f1f5f9', fontWeight: '600', fontSize: '0.875rem' }}>
-                      {concern.name}
-                    </span>
+                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '0.2rem' }}>
+                    <span style={{ color: 'var(--text-primary)', fontWeight: 700, fontSize: '0.875rem', fontFamily: "'Manrope', sans-serif" }}>{concern.name}</span>
                     <span style={{
-                      padding: '0.15rem 0.5rem',
-                      borderRadius: '12px',
-                      fontSize: '0.625rem',
-                      fontWeight: '700',
-                      textTransform: 'uppercase',
-                      background: concern.severity === 'high' ? 'rgba(239, 68, 68, 0.2)' :
-                                  concern.severity === 'medium' ? 'rgba(249, 115, 22, 0.2)' : 'rgba(234, 179, 8, 0.2)',
-                      color: concern.severity === 'high' ? '#ef4444' :
-                             concern.severity === 'medium' ? '#f97316' : '#eab308'
+                      padding: '0.15rem 0.5rem', borderRadius: '999px',
+                      fontSize: '0.625rem', fontWeight: 700, textTransform: 'uppercase',
+                      fontFamily: "'Inter', sans-serif",
+                      background: concern.severity === 'high' ? 'var(--card-danger-bg)' : concern.severity === 'medium' ? 'var(--card-warning-bg)' : 'var(--card-warning-bg)',
+                      color: concern.severity === 'high' ? '#dc2626' : concern.severity === 'medium' ? '#ea580c' : '#ca8a04',
                     }}>
                       {concern.severity}
                     </span>
                   </div>
-                  <div style={{ color: '#94a3b8', fontSize: '0.75rem', lineHeight: '1.4' }}>
-                    {concern.reason}
-                  </div>
+                  <div style={{ color: 'var(--text-secondary)', fontSize: '0.75rem', lineHeight: '1.4', fontFamily: "'Inter', sans-serif" }}>{concern.reason}</div>
                 </div>
               ))}
             </div>
           )}
 
-          {/* Positive Ingredients */}
           {quality.positives && quality.positives.length > 0 && (
-            <div style={{
-              background: 'rgba(34, 197, 94, 0.08)',
-              border: '1px solid rgba(34, 197, 94, 0.2)',
-              borderRadius: '16px',
-              padding: '1.25rem'
-            }}>
-              <h4 style={{
-                color: '#22c55e',
-                fontSize: '1rem',
-                fontWeight: '700',
-                marginBottom: '1rem',
-                display: 'flex',
-                alignItems: 'center',
-                gap: '0.5rem'
-              }}>
+            <div style={{ background: 'var(--card-success-bg)', border: '1px solid var(--card-success-border)', borderRadius: '14px', padding: '1.25rem' }}>
+              <h4 style={{ color: '#16a34a', fontSize: '0.9375rem', fontWeight: 700, margin: '0 0 0.875rem', display: 'flex', alignItems: 'center', gap: '0.5rem', fontFamily: "'Manrope', sans-serif" }}>
                 <CheckCircle size={18} />
                 Good Ingredients ({quality.positives.length})
               </h4>
               {quality.positives.map((positive: any, idx: number) => (
-                <div key={idx} style={{
-                  marginBottom: '0.75rem',
-                  padding: '0.75rem',
-                  background: 'rgba(15, 23, 42, 0.5)',
-                  borderRadius: '10px',
-                  borderLeft: '3px solid #22c55e'
-                }}>
-                  <div style={{ color: '#f1f5f9', fontWeight: '600', fontSize: '0.875rem', marginBottom: '0.25rem' }}>
-                    {positive.name}
-                  </div>
-                  <div style={{ color: '#94a3b8', fontSize: '0.75rem', lineHeight: '1.4' }}>
-                    {positive.reason}
-                  </div>
+                <div key={idx} style={{ marginBottom: '0.625rem', padding: '0.625rem 0.75rem', background: 'var(--bg-surface)', borderRadius: '10px', borderLeft: '3px solid #16a34a' }}>
+                  <div style={{ color: 'var(--text-primary)', fontWeight: 700, fontSize: '0.875rem', marginBottom: '0.2rem', fontFamily: "'Manrope', sans-serif" }}>{positive.name}</div>
+                  <div style={{ color: 'var(--text-secondary)', fontSize: '0.75rem', lineHeight: '1.4', fontFamily: "'Inter', sans-serif" }}>{positive.reason}</div>
                 </div>
               ))}
             </div>
           )}
         </div>
 
-        {/* Full Ingredient Breakdown */}
         {quality.ingredientBreakdown && quality.ingredientBreakdown.length > 0 && (
-          <div style={{
-            background: 'rgba(30, 41, 59, 0.5)',
-            borderRadius: '16px',
-            padding: '1.25rem',
-            border: '1px solid rgba(148, 163, 184, 0.1)'
-          }}>
-            <h4 style={{
-              color: '#f1f5f9',
-              fontSize: '1rem',
-              fontWeight: '700',
-              marginBottom: '1rem',
-              display: 'flex',
-              alignItems: 'center',
-              gap: '0.5rem'
-            }}>
-              <Info size={18} />
+          <div style={{ background: 'var(--bg-page)', borderRadius: '14px', padding: '1.25rem', border: '1px solid var(--border)' }}>
+            <h4 style={{ color: 'var(--text-primary)', fontSize: '0.9375rem', fontWeight: 700, margin: '0 0 0.875rem', display: 'flex', alignItems: 'center', gap: '0.5rem', fontFamily: "'Manrope', sans-serif" }}>
+              <Info size={18} color="#00685f" />
               Ingredient Breakdown
             </h4>
-            <div style={{
-              display: 'flex',
-              flexWrap: 'wrap',
-              gap: '0.5rem'
-            }}>
+            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.5rem' }}>
               {quality.ingredientBreakdown.map((item: any, idx: number) => (
                 <span key={idx} style={{
-                  padding: '0.4rem 0.75rem',
-                  borderRadius: '20px',
-                  fontSize: '0.75rem',
-                  fontWeight: '600',
-                  background: item.category === 'good' ? 'rgba(34, 197, 94, 0.15)' :
-                              item.category === 'sketchy' ? 'rgba(239, 68, 68, 0.15)' : 'rgba(148, 163, 184, 0.15)',
-                  color: item.category === 'good' ? '#22c55e' :
-                         item.category === 'sketchy' ? '#ef4444' : '#94a3b8',
-                  border: `1px solid ${item.category === 'good' ? 'rgba(34, 197, 94, 0.3)' :
-                           item.category === 'sketchy' ? 'rgba(239, 68, 68, 0.3)' : 'rgba(148, 163, 184, 0.2)'}`
+                  padding: '0.35rem 0.75rem', borderRadius: '999px',
+                  fontSize: '0.75rem', fontWeight: 600, fontFamily: "'Inter', sans-serif",
+                  background: item.category === 'good' ? 'var(--card-success-bg)' : item.category === 'sketchy' ? 'var(--card-danger-bg)' : 'var(--bg-page)',
+                  color: item.category === 'good' ? 'var(--card-success-heading)' : item.category === 'sketchy' ? 'var(--card-danger-heading)' : 'var(--text-secondary)',
+                  border: `1px solid ${item.category === 'good' ? 'var(--card-success-border)' : item.category === 'sketchy' ? 'var(--card-danger-border)' : 'var(--border)'}`,
                 }}>
-                  {item.category === 'good' ? '+ ' : item.category === 'sketchy' ? '- ' : ''}{item.name}
+                  {item.category === 'good' ? '+ ' : item.category === 'sketchy' ? '− ' : ''}{item.name}
                 </span>
               ))}
             </div>
           </div>
         )}
+        </div>
       </div>
     );
   };
 
   return (
-    <div style={{
-      background: 'rgba(15, 23, 42, 0.8)',
-      backdropFilter: 'blur(20px)',
-      borderRadius: '20px',
-      padding: '2rem',
-      border: '1px solid rgba(56, 243, 171, 0.1)',
-      boxShadow: '0 20px 60px rgba(0, 0, 0, 0.3)',
-      marginBottom: '2rem'
-    }}>
+    <div>
       {/* Protein Quality Section - Render first if protein product detected */}
       {renderProteinQualitySection()}
 
-      {/* Header */}
-      <div style={{ marginBottom: '2rem', textAlign: 'center' }}>
-        <h2 style={{
-          fontSize: '2rem',
-          fontWeight: 'bold',
-          background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-          WebkitBackgroundClip: 'text',
-          WebkitTextFillColor: 'transparent',
-          backgroundClip: 'text',
-          margin: 0,
-          marginBottom: '0.5rem',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          gap: '0.75rem'
-        }}>
-          <FlaskConical size={32} />
-          Ingredient Quality Analysis
-        </h2>
-        <p style={{ color: '#94a3b8', fontSize: '1rem', margin: 0 }}>
-          Compare supplement forms to make informed purchasing decisions
-        </p>
-      </div>
-
-      {/* Category Selection */}
-      {availableCategories.length > 0 && (
-        <div style={{ marginBottom: '2rem' }}>
-          <label style={{
-            display: 'block',
-            fontSize: '1.125rem',
-            fontWeight: '600',
-            color: '#f1f5f9',
-            marginBottom: '1rem'
+      {/* Main card */}
+      <div style={{
+        background: 'var(--bg-surface)', borderRadius: '16px',
+        border: '1.5px solid var(--border)', padding: '1.5rem',
+        boxShadow: '0 1px 4px rgba(0,0,0,0.06)', marginBottom: '1.5rem',
+      }}>
+        {/* Header */}
+        <div style={{ marginBottom: '1.5rem' }}>
+          <h2 style={{
+            fontSize: '1.25rem', fontWeight: 800, color: 'var(--text-primary)',
+            margin: '0 0 0.25rem',
+            display: 'flex', alignItems: 'center', gap: '0.5rem',
+            fontFamily: "'Manrope', sans-serif",
           }}>
-            🔬 Supplement categories available for analysis:
-          </label>
-          
-          <div style={{ 
-            display: 'grid', 
-            gridTemplateColumns: window.innerWidth < 768 ? '1fr' : 'repeat(auto-fit, minmax(250px, 1fr))', 
-            gap: '1rem' 
-          }}>
-            {allCategories
-              .filter(cat => availableCategories.includes(cat.key))
-              .map(category => (
-                <div
-                  key={category.key}
-                  onClick={() => setSelectedCategory(category.key)}
-                  style={{
-                    background: selectedCategory === category.key 
-                      ? 'linear-gradient(135deg, rgba(102, 126, 234, 0.2) 0%, rgba(118, 75, 162, 0.2) 100%)'
-                      : 'rgba(30, 41, 59, 0.6)',
-                    border: selectedCategory === category.key 
-                      ? '2px solid rgba(102, 126, 234, 0.4)'
-                      : '1px solid rgba(148, 163, 184, 0.1)',
-                    borderRadius: '16px',
-                    padding: '1.5rem',
-                    cursor: 'pointer',
-                    transition: 'all 0.3s ease',
-                    backdropFilter: 'blur(16px)'
-                  }}
-                  onMouseEnter={(e) => {
-                    if (selectedCategory !== category.key) {
-                      e.currentTarget.style.borderColor = 'rgba(102, 126, 234, 0.3)';
-                      e.currentTarget.style.background = 'rgba(102, 126, 234, 0.1)';
-                    }
-                  }}
-                  onMouseLeave={(e) => {
-                    if (selectedCategory !== category.key) {
-                      e.currentTarget.style.borderColor = 'rgba(148, 163, 184, 0.1)';
-                      e.currentTarget.style.background = 'rgba(30, 41, 59, 0.6)';
-                    }
-                  }}
-                >
-                  <h3 style={{ 
-                    margin: 0, 
-                    fontSize: '1.125rem', 
-                    fontWeight: '700', 
-                    color: selectedCategory === category.key ? '#667eea' : '#f1f5f9',
-                    marginBottom: '0.5rem'
-                  }}>
-                    {category.label}
-                  </h3>
-                  <p style={{ 
-                    margin: 0, 
-                    fontSize: '0.875rem', 
-                    color: '#94a3b8' 
-                  }}>
-                    {category.description}
-                  </p>
-                  <div style={{ 
-                    marginTop: '0.75rem',
-                    fontSize: '0.75rem',
-                    color: '#38f3ab',
-                    fontWeight: '600'
-                  }}>
-                    {(analyzedProducts[category.key] || []).length} products found
-                  </div>
-                </div>
-              ))}
-          </div>
-        </div>
-      )}
-
-      {/* No products warning */}
-      {availableCategories.length === 0 && (
-        <div style={{
-          background: 'rgba(249, 115, 22, 0.1)',
-          border: '1px solid rgba(249, 115, 22, 0.2)',
-          borderRadius: '16px',
-          padding: '2rem',
-          textAlign: 'center'
-        }}>
-          <AlertTriangle size={48} style={{ color: '#f97316', marginBottom: '1rem' }} />
-          <h3 style={{ color: '#f97316', fontSize: '1.25rem', fontWeight: '600', marginBottom: '0.5rem' }}>
-            No Supplement Data Available
-          </h3>
-          <p style={{ color: '#cbd5e1', fontSize: '1rem', margin: 0 }}>
-            Add supplement products with URLs to see ingredient quality analysis
+            <Flask size={20} color="#00685f" />
+            Ingredient Quality Analysis
+          </h2>
+          <p style={{ color: 'var(--text-secondary)', fontSize: '0.875rem', margin: 0, fontFamily: "'Inter', sans-serif" }}>
+            Compare supplement forms to make informed purchasing decisions
           </p>
         </div>
-      )}
 
-      {/* Category Comparison */}
-      {selectedCategory && renderCategoryComparison()}
-
-      {/* Individual Ingredient Cards */}
-      {selectedCategory && categoryProducts.length > 0 && (
-        <div>
-          <h3 style={{
-            color: '#f1f5f9',
-            fontSize: '1.5rem',
-            fontWeight: '600',
-            marginBottom: '1.5rem',
-            display: 'flex',
-            alignItems: 'center',
-            gap: '0.5rem'
-          }}>
-            <Info size={20} />
-            Detailed Analysis
-          </h3>
-          
-          {categoryIngredients.length > 0 ? (
-            categoryIngredients.map(ingredient => renderIngredientCard(ingredient))
-          ) : (
-            <div style={{
-              background: 'rgba(249, 115, 22, 0.1)',
-              border: '1px solid rgba(249, 115, 22, 0.2)',
-              borderRadius: '12px',
-              padding: '1.5rem',
-              textAlign: 'center'
+        {/* Category Selection */}
+        {availableCategories.length > 0 && (
+          <div style={{ marginBottom: '1.5rem' }}>
+            <label style={{
+              display: 'block', fontSize: '0.875rem', fontWeight: 600,
+              color: 'var(--text-muted)', marginBottom: '0.75rem', fontFamily: "'Inter', sans-serif",
             }}>
-              <h4 style={{ color: '#f97316', marginBottom: '0.5rem' }}>No ingredients found</h4>
-              <p style={{ color: '#cbd5e1', fontSize: '0.875rem', margin: 0 }}>
-                Products in this category don't have extractable ingredient data. 
-                Check console logs for debugging information.
-              </p>
+              🔬 Supplement categories available for analysis:
+            </label>
+
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '0.75rem' }}>
+              {allCategories
+                .filter(cat => availableCategories.includes(cat.key))
+                .map(category => (
+                  <div
+                    key={category.key}
+                    onClick={() => setSelectedCategory(category.key)}
+                    style={{
+                      background: selectedCategory === category.key ? 'var(--primary-light)' : 'var(--bg-page)',
+                      border: selectedCategory === category.key ? '1.5px solid #00685f' : '1.5px solid var(--border)',
+                      borderRadius: '12px', padding: '1rem',
+                      cursor: 'pointer', transition: 'all 0.15s ease',
+                    }}
+                  >
+                    <h3 style={{
+                      margin: '0 0 0.25rem', fontSize: '0.9375rem', fontWeight: 700,
+                      color: selectedCategory === category.key ? '#00685f' : '#171d1c',
+                      fontFamily: "'Manrope', sans-serif",
+                    }}>
+                      {category.label}
+                    </h3>
+                    <p style={{ margin: '0 0 0.375rem', fontSize: '0.8125rem', color: 'var(--text-secondary)', fontFamily: "'Inter', sans-serif" }}>
+                      {category.description}
+                    </p>
+                    <div style={{ fontSize: '0.75rem', color: '#00685f', fontWeight: 700, fontFamily: "'Inter', sans-serif" }}>
+                      {(analyzedProducts[category.key] || []).length} products found
+                    </div>
+                  </div>
+                ))}
             </div>
-          )}
-        </div>
-      )}
+          </div>
+        )}
+
+        {/* No products warning */}
+        {availableCategories.length === 0 && (
+          <div style={{ background: 'var(--card-orange-bg)', border: '1px solid var(--card-orange-border)', borderRadius: '14px', padding: '1.75rem', textAlign: 'center' }}>
+            <Warning size={36} color="#ea580c" style={{ marginBottom: '0.75rem', display: 'block', margin: '0 auto 0.75rem' }} />
+            <h3 style={{ color: 'var(--card-orange-heading)', fontSize: '1.125rem', fontWeight: 700, marginBottom: '0.375rem', fontFamily: "'Manrope', sans-serif" }}>
+              No Supplement Data Available
+            </h3>
+            <p style={{ color: 'var(--card-orange-text)', fontSize: '0.875rem', margin: 0, fontFamily: "'Inter', sans-serif" }}>
+              Add supplement products with URLs to see ingredient quality analysis
+            </p>
+          </div>
+        )}
+
+        {/* Category Comparison */}
+        {selectedCategory && renderCategoryComparison()}
+
+        {/* Individual Ingredient Cards */}
+        {selectedCategory && categoryProducts.length > 0 && (
+          <div>
+            <h3 style={{
+              color: 'var(--text-primary)', fontSize: '1.125rem', fontWeight: 800,
+              marginBottom: '1rem', display: 'flex', alignItems: 'center', gap: '0.5rem',
+              fontFamily: "'Manrope', sans-serif",
+            }}>
+              <Info size={18} color="#00685f" />
+              Detailed Analysis
+            </h3>
+
+            {categoryIngredients.length > 0 ? (
+              categoryIngredients.map(ingredient => renderIngredientCard(ingredient))
+            ) : (
+              <div style={{ background: 'var(--card-orange-bg)', border: '1px solid var(--card-orange-border)', borderRadius: '12px', padding: '1.25rem', textAlign: 'center' }}>
+                <h4 style={{ color: 'var(--card-orange-heading)', marginBottom: '0.375rem', fontFamily: "'Manrope', sans-serif" }}>No ingredients found</h4>
+                <p style={{ color: 'var(--card-orange-text)', fontSize: '0.875rem', margin: 0, fontFamily: "'Inter', sans-serif" }}>
+                  Products in this category don't have extractable ingredient data.
+                  Check console logs for debugging information.
+                </p>
+              </div>
+            )}
+          </div>
+        )}
+      </div>
     </div>
   );
 }

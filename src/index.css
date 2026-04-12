@@ -8,14 +8,115 @@
   font-weight: 400;
 
   color-scheme: light dark;
-  color: rgba(255, 255, 255, 0.87);
-  background-color: #242424;
 
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   -webkit-text-size-adjust: 100%;
+
+  /* Light mode theme tokens */
+  --bg-page: #f5faf8;
+  --bg-surface: #ffffff;
+  --bg-subtle: #f5faf8;
+  --bg-hover: #f0f5f2;
+  --text-primary: #171d1c;
+  --text-secondary: #6d7a77;
+  --text-muted: #3d4947;
+  --border: #e4e9e7;
+  --border-strong: #bcc9c6;
+  --border-subtle: #f0f4f3;
+  --primary-light: #e6f4f1;
+  --primary-border: #6bd8cb;
+
+  /* Semantic card colors */
+  --card-info-bg: #eff6ff;
+  --card-info-border: #93c5fd;
+  --card-info-heading: #1d4ed8;
+  --card-info-text: #1e40af;
+
+  --card-warning-bg: #fffbeb;
+  --card-warning-border: #fcd34d;
+  --card-warning-heading: #92400e;
+  --card-warning-text: #78350f;
+
+  --card-success-bg: #f0fdf4;
+  --card-success-border: #86efac;
+  --card-success-heading: #15803d;
+  --card-success-text: #166534;
+
+  --card-danger-bg: #fff1f2;
+  --card-danger-border: #fca5a5;
+  --card-danger-heading: #dc2626;
+  --card-danger-text: #991b1b;
+
+  --card-purple-bg: #f3e8ff;
+  --card-purple-border: #c4b5fd;
+  --card-purple-heading: #7c3aed;
+  --card-purple-text: #5b21b6;
+
+  --card-orange-bg: #fff7ed;
+  --card-orange-border: #fed7aa;
+  --card-orange-heading: #c2410c;
+  --card-orange-text: #9a3412;
+}
+
+html.dark {
+  color-scheme: dark;
+
+  /* Dark mode theme tokens */
+  --bg-page: #111c1a;
+  --bg-surface: #1a2826;
+  --bg-subtle: #1e2f2c;
+  --bg-hover: #253735;
+  --text-primary: #e2edea;
+  --text-secondary: #8fa9a4;
+  --text-muted: #a8bfbb;
+  --border: #2b3f3b;
+  --border-strong: #3a5250;
+  --border-subtle: #1e2f2c;
+  --primary-light: #1a332f;
+  --primary-border: #2a5450;
+
+  /* Semantic card colors — dark variants */
+  --card-info-bg: #0d1f3a;
+  --card-info-border: #1e3a6e;
+  --card-info-heading: #93c5fd;
+  --card-info-text: #bfdbfe;
+
+  --card-warning-bg: #211700;
+  --card-warning-border: #854d0e;
+  --card-warning-heading: #fcd34d;
+  --card-warning-text: #fde68a;
+
+  --card-success-bg: #071c12;
+  --card-success-border: #166534;
+  --card-success-heading: #4ade80;
+  --card-success-text: #86efac;
+
+  --card-danger-bg: #1f0a0a;
+  --card-danger-border: #7f1d1d;
+  --card-danger-heading: #f87171;
+  --card-danger-text: #fca5a5;
+
+  --card-purple-bg: #150d2a;
+  --card-purple-border: #5b21b6;
+  --card-purple-heading: #c4b5fd;
+  --card-purple-text: #ddd6fe;
+
+  --card-orange-bg: #1f0e00;
+  --card-orange-border: #7c2d12;
+  --card-orange-heading: #fb923c;
+  --card-orange-text: #fed7aa;
+}
+
+html, body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  background-color: var(--bg-page);
+  color: var(--text-primary);
+  transition: background-color 0.2s ease, color 0.2s ease;
 }
 
 #root {
@@ -23,12 +124,6 @@
   text-align: center;
   height: 100%;
   width: 100%;
-}
-
-html, body {
-  height: 100%;
-  margin: 0;
-  padding: 0;
 }
 
 input {

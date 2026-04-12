@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Target, Star, TrendingUp, Clock, DollarSign, Award, ChevronDown, ChevronUp, Info } from "lucide-react";
+import { Target, Star, ArrowUp, Clock, CurrencyDollar, Medal, CaretDown, CaretUp, Info, Moon, Barbell, Leaf, Lightning, Lightbulb, CheckCircle, XCircle } from "@phosphor-icons/react";
 import { healthGoalRecommendations, getRecommendationsForGoal } from '../data/supplementData.js';
 import type { Product, AnalyzedProduct } from '../types/index.js';
 
@@ -12,17 +12,17 @@ export default function SupplementRecommendations({ analyzedProducts = {} }: Sup
   const [expandedSupplement, setExpandedSupplement] = useState<string | null>(null);
 
   const goalOptions = [
-    { key: 'better sleep', label: '🛌 Better Sleep', description: 'Natural sleep quality improvement' },
-    { key: 'build muscle', label: '💪 Build Muscle', description: 'Muscle growth and recovery' },
-    { key: 'general health', label: '🌟 General Health', description: 'Overall wellness and vitality' },
-    { key: 'energy boost', label: '⚡ Energy & Focus', description: 'Natural energy and mental clarity' }
+    { key: 'better sleep', Icon: Moon, label: 'Better Sleep', description: 'Natural sleep quality improvement' },
+    { key: 'build muscle', Icon: Barbell, label: 'Build Muscle', description: 'Muscle growth and recovery' },
+    { key: 'general health', Icon: Leaf, label: 'General Health', description: 'Overall wellness and vitality' },
+    { key: 'energy boost', Icon: Lightning, label: 'Energy & Focus', description: 'Natural energy and mental clarity' },
   ];
 
   const recommendations = selectedGoal ? getRecommendationsForGoal(selectedGoal) : null;
 
   const getProductMatch = (supplementName, category) => {
     const categoryProducts = analyzedProducts[category] || [];
-    return categoryProducts.find(product => 
+    return categoryProducts.find(product =>
       product.name.toLowerCase().includes(supplementName.toLowerCase()) ||
       (product.supplementInfo?.activeIngredient || product.activeIngredient)?.toLowerCase().includes(supplementName.toLowerCase())
     );
@@ -32,181 +32,139 @@ export default function SupplementRecommendations({ analyzedProducts = {} }: Sup
     const isExpanded = expandedSupplement === index;
     const productMatch = getProductMatch(supplement.name, supplement.name.toLowerCase().includes('magnesium') ? 'magnesium' : 'general');
 
+    const priorityColors = {
+      1: { bg: 'var(--card-warning-bg)', border: 'var(--card-warning-border)', text: 'var(--card-warning-heading)' },
+      2: { bg: 'var(--card-info-bg)',    border: 'var(--card-info-border)',    text: 'var(--card-info-heading)' },
+      3: { bg: 'var(--card-purple-bg)',  border: 'var(--card-purple-border)',   text: 'var(--card-purple-heading)' },
+    };
+    const pc = priorityColors[supplement.priority] || priorityColors[3];
+
     return (
       <div
         key={index}
         style={{
-          background: 'rgba(30, 41, 59, 0.6)',
-          backdropFilter: 'blur(16px)',
+          background: 'var(--bg-surface)',
           borderRadius: '16px',
-          border: '1px solid rgba(148, 163, 184, 0.1)',
-          marginBottom: '1rem',
+          border: '1.5px solid var(--border)',
+          marginBottom: '0.75rem',
           overflow: 'hidden',
-          transition: 'all 0.3s ease'
+          boxShadow: '0 1px 4px rgba(0,0,0,0.06)',
         }}
       >
         {/* Header */}
-        <div 
-          style={{
-            padding: '1.5rem',
-            borderBottom: isExpanded ? '1px solid rgba(148, 163, 184, 0.1)' : 'none',
-            cursor: 'pointer'
-          }}
+        <div
+          style={{ padding: '1.25rem 1.5rem', cursor: 'pointer', borderBottom: isExpanded ? '1px solid var(--border)' : 'none' }}
           onClick={() => setExpandedSupplement(isExpanded ? null : index)}
         >
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '0.875rem' }}>
               {/* Priority Badge */}
-              <div
-                style={{
-                  background: supplement.priority === 1 ? 'linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%)' :
-                             supplement.priority === 2 ? 'linear-gradient(135deg, #94a3b8 0%, #64748b 100%)' :
-                             'linear-gradient(135deg, #a78bfa 0%, #8b5cf6 100%)',
-                  color: '#0f172a',
-                  padding: '0.25rem 0.75rem',
-                  borderRadius: '20px',
-                  fontSize: '0.75rem',
-                  fontWeight: '700',
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '0.25rem'
-                }}
-              >
-                {supplement.priority === 1 && <Award size={12} />}
+              <div style={{
+                background: pc.bg, border: `1px solid ${pc.border}`, color: pc.text,
+                padding: '0.25rem 0.75rem', borderRadius: '999px',
+                fontSize: '0.75rem', fontWeight: 700,
+                display: 'inline-flex', alignItems: 'center', gap: '0.25rem',
+                fontFamily: "'Inter', sans-serif", flexShrink: 0,
+              }}>
+                {supplement.priority === 1 && <Medal size={12} />}
                 Priority {supplement.priority}
               </div>
 
               {/* Supplement Info */}
               <div>
-                <h3 style={{ 
-                  margin: 0, 
-                  fontSize: '1.125rem', 
-                  fontWeight: '700', 
-                  color: '#f1f5f9' 
+                <h3 style={{
+                  margin: 0, fontSize: '1rem', fontWeight: 700,
+                  color: 'var(--text-primary)', fontFamily: "'Manrope', sans-serif",
                 }}>
                   {supplement.name}
                 </h3>
-                <p style={{ 
-                  margin: 0, 
-                  fontSize: '0.875rem', 
-                  color: '#94a3b8',
-                  marginTop: '0.25rem'
+                <p style={{
+                  margin: 0, fontSize: '0.8125rem', color: 'var(--text-secondary)',
+                  marginTop: '0.125rem', fontFamily: "'Inter', sans-serif",
                 }}>
-                  {supplement.dosage} • {supplement.timing}
+                  {supplement.dosage} · {supplement.timing}
                 </p>
               </div>
             </div>
 
-            {/* Product Match Indicator */}
-            <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
               {productMatch && (
                 <div style={{
-                  background: 'linear-gradient(135deg, #38f3ab 0%, #1dd1a1 100%)',
-                  color: '#0f172a',
-                  padding: '0.5rem 1rem',
-                  borderRadius: '12px',
-                  fontSize: '0.75rem',
-                  fontWeight: '600',
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '0.5rem'
+                  background: 'var(--primary-light)', color: '#00685f',
+                  border: '1px solid var(--primary-border)',
+                  padding: '0.375rem 0.875rem', borderRadius: '999px',
+                  fontSize: '0.75rem', fontWeight: 700,
+                  display: 'inline-flex', alignItems: 'center', gap: '0.375rem',
+                  fontFamily: "'Inter', sans-serif",
                 }}>
-                  <Star size={12} />
-                  In Your List!
+                  <Star size={11} weight="fill" />
+                  In Your List
                 </div>
               )}
-              
-              {isExpanded ? <ChevronUp color="#94a3b8" size={20} /> : <ChevronDown color="#94a3b8" size={20} />}
+              {isExpanded
+                ? <CaretUp size={16} color="var(--text-secondary)" />
+                : <CaretDown size={16} color="var(--text-secondary)" />
+              }
             </div>
           </div>
         </div>
 
         {/* Expanded Content */}
         {isExpanded && (
-          <div style={{ padding: '1.5rem' }}>
+          <div style={{ padding: '1.25rem 1.5rem' }}>
             {/* Why It Works */}
-            <div style={{ marginBottom: '1.5rem' }}>
-              <h4 style={{ 
-                color: '#38f3ab', 
-                fontSize: '1rem', 
-                fontWeight: '600', 
-                marginBottom: '0.75rem',
-                display: 'flex',
-                alignItems: 'center',
-                gap: '0.5rem'
+            <div style={{ marginBottom: '1rem' }}>
+              <h4 style={{
+                color: '#00685f', fontSize: '0.875rem', fontWeight: 700,
+                marginBottom: '0.5rem', display: 'flex', alignItems: 'center', gap: '0.375rem',
+                fontFamily: "'Inter', sans-serif",
               }}>
-                <Info size={16} />
+                <Info size={15} />
                 Why It Works
               </h4>
-              <p style={{ color: '#cbd5e1', fontSize: '0.875rem', lineHeight: '1.6' }}>
+              <p style={{ color: 'var(--text-muted)', fontSize: '0.875rem', lineHeight: '1.6', margin: 0, fontFamily: "'Inter', sans-serif" }}>
                 {supplement.reason}
               </p>
             </div>
 
             {/* Quality Comparison */}
-            <div style={{ marginBottom: '1.5rem' }}>
-              <h4 style={{ 
-                color: '#f59e0b', 
-                fontSize: '1rem', 
-                fontWeight: '600', 
-                marginBottom: '0.75rem',
-                display: 'flex',
-                alignItems: 'center',
-                gap: '0.5rem'
+            <div style={{ marginBottom: '1rem' }}>
+              <h4 style={{
+                color: 'var(--text-muted)', fontSize: '0.875rem', fontWeight: 700,
+                marginBottom: '0.75rem', display: 'flex', alignItems: 'center', gap: '0.375rem',
+                fontFamily: "'Inter', sans-serif",
               }}>
-                <TrendingUp size={16} />
+                <ArrowUp size={15} />
                 Quality Comparison
               </h4>
-              
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
-                {/* Quality Ingredients */}
+
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.75rem' }}>
                 <div style={{
-                  background: 'rgba(34, 197, 94, 0.1)',
-                  border: '1px solid rgba(34, 197, 94, 0.2)',
-                  borderRadius: '12px',
-                  padding: '1rem'
+                  background: 'var(--card-success-bg)', border: '1px solid var(--card-success-border)',
+                  borderRadius: '12px', padding: '0.875rem',
                 }}>
-                  <h5 style={{ 
-                    color: '#22c55e', 
-                    fontSize: '0.875rem', 
-                    fontWeight: '600', 
-                    marginBottom: '0.5rem' 
-                  }}>
-                    ✅ Premium Forms
+                  <h5 style={{ color: 'var(--card-success-heading)', fontSize: '0.8125rem', fontWeight: 700, margin: '0 0 0.5rem', display: 'flex', alignItems: 'center', gap: '0.375rem' }}>
+                    <CheckCircle size={13} />
+                    Premium Forms
                   </h5>
                   {supplement.qualityIngredients.map((ingredient, idx) => (
-                    <div key={idx} style={{ 
-                      color: '#cbd5e1', 
-                      fontSize: '0.75rem', 
-                      marginBottom: '0.25rem' 
-                    }}>
-                      • {ingredient}
+                    <div key={idx} style={{ color: 'var(--card-success-text)', fontSize: '0.75rem', marginBottom: '0.25rem', fontFamily: "'Inter', sans-serif" }}>
+                      · {ingredient}
                     </div>
                   ))}
                 </div>
 
-                {/* Poor Ingredients */}
                 <div style={{
-                  background: 'rgba(239, 68, 68, 0.1)',
-                  border: '1px solid rgba(239, 68, 68, 0.2)',
-                  borderRadius: '12px',
-                  padding: '1rem'
+                  background: 'var(--card-danger-bg)', border: '1px solid var(--card-danger-border)',
+                  borderRadius: '12px', padding: '0.875rem',
                 }}>
-                  <h5 style={{ 
-                    color: '#ef4444', 
-                    fontSize: '0.875rem', 
-                    fontWeight: '600', 
-                    marginBottom: '0.5rem' 
-                  }}>
-                    ❌ Avoid These
+                  <h5 style={{ color: 'var(--card-danger-heading)', fontSize: '0.8125rem', fontWeight: 700, margin: '0 0 0.5rem', display: 'flex', alignItems: 'center', gap: '0.375rem' }}>
+                    <XCircle size={13} />
+                    Avoid These
                   </h5>
                   {supplement.poorIngredients.map((ingredient, idx) => (
-                    <div key={idx} style={{ 
-                      color: '#cbd5e1', 
-                      fontSize: '0.75rem', 
-                      marginBottom: '0.25rem' 
-                    }}>
-                      • {ingredient}
+                    <div key={idx} style={{ color: 'var(--card-danger-text)', fontSize: '0.75rem', marginBottom: '0.25rem', fontFamily: "'Inter', sans-serif" }}>
+                      · {ingredient}
                     </div>
                   ))}
                 </div>
@@ -215,60 +173,45 @@ export default function SupplementRecommendations({ analyzedProducts = {} }: Sup
 
             {/* Budget Option */}
             <div style={{
-              background: 'rgba(56, 243, 171, 0.1)',
-              border: '1px solid rgba(56, 243, 171, 0.2)',
-              borderRadius: '12px',
-              padding: '1rem',
-              marginBottom: '1rem'
+              background: 'var(--primary-light)', border: '1px solid var(--primary-border)',
+              borderRadius: '12px', padding: '0.875rem', marginBottom: '0.875rem',
             }}>
-              <h5 style={{ 
-                color: '#38f3ab', 
-                fontSize: '0.875rem', 
-                fontWeight: '600', 
-                marginBottom: '0.5rem',
-                display: 'flex',
-                alignItems: 'center',
-                gap: '0.5rem'
+              <h5 style={{
+                color: '#00685f', fontSize: '0.8125rem', fontWeight: 700,
+                marginBottom: '0.375rem', display: 'flex', alignItems: 'center', gap: '0.375rem',
+                margin: '0 0 0.375rem', fontFamily: "'Inter', sans-serif",
               }}>
-                <DollarSign size={14} />
+                <CurrencyDollar size={14} />
                 Budget-Friendly Option
               </h5>
-              <p style={{ color: '#cbd5e1', fontSize: '0.75rem' }}>
-                If premium forms are too expensive, start with: <strong>{supplement.budgetOption}</strong>
+              <p style={{ color: '#3f6560', fontSize: '0.8125rem', margin: 0, fontFamily: "'Inter', sans-serif" }}>
+                {supplement.budgetOption}
               </p>
             </div>
 
             {/* Product Match Details */}
             {productMatch && (
               <div style={{
-                background: 'linear-gradient(135deg, rgba(56, 243, 171, 0.2) 0%, rgba(29, 209, 161, 0.2) 100%)',
-                border: '2px solid rgba(56, 243, 171, 0.3)',
-                borderRadius: '12px',
-                padding: '1rem'
+                background: 'var(--primary-light)', border: '1.5px solid var(--primary-border)',
+                borderRadius: '12px', padding: '0.875rem',
               }}>
-                <h5 style={{ 
-                  color: '#38f3ab', 
-                  fontSize: '0.875rem', 
-                  fontWeight: '600', 
-                  marginBottom: '0.75rem',
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '0.5rem'
+                <h5 style={{
+                  color: '#00685f', fontSize: '0.8125rem', fontWeight: 700,
+                  marginBottom: '0.75rem', display: 'flex', alignItems: 'center', gap: '0.375rem',
+                  margin: '0 0 0.75rem', fontFamily: "'Inter', sans-serif",
                 }}>
                   <Star size={14} />
                   Found in Your Products
                 </h5>
                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.5rem' }}>
                   <div>
-                    <span style={{ color: '#94a3b8', fontSize: '0.75rem' }}>Product:</span>
-                    <div style={{ color: '#f1f5f9', fontSize: '0.875rem', fontWeight: '500' }}>
-                      {productMatch.name}
-                    </div>
+                    <div style={{ color: 'var(--text-secondary)', fontSize: '0.75rem', fontFamily: "'Inter', sans-serif" }}>Product</div>
+                    <div style={{ color: 'var(--text-primary)', fontSize: '0.875rem', fontWeight: 600, fontFamily: "'Manrope', sans-serif" }}>{productMatch.name}</div>
                   </div>
                   <div>
-                    <span style={{ color: '#94a3b8', fontSize: '0.75rem' }}>Quality Score:</span>
-                    <div style={{ color: '#f1f5f9', fontSize: '0.875rem', fontWeight: '500' }}>
-                      {productMatch.supplementInfo?.quality?.score || 'Unknown'}/100
+                    <div style={{ color: 'var(--text-secondary)', fontSize: '0.75rem', fontFamily: "'Inter', sans-serif" }}>Quality Score</div>
+                    <div style={{ color: 'var(--text-primary)', fontSize: '0.875rem', fontWeight: 600, fontFamily: "'Manrope', sans-serif" }}>
+                      {productMatch.supplementInfo?.quality?.score || '—'}/100
                     </div>
                   </div>
                 </div>
@@ -281,182 +224,114 @@ export default function SupplementRecommendations({ analyzedProducts = {} }: Sup
   };
 
   return (
-    <div style={{
-      background: 'rgba(15, 23, 42, 0.8)',
-      backdropFilter: 'blur(20px)',
-      borderRadius: '20px',
-      padding: '2rem',
-      border: '1px solid rgba(56, 243, 171, 0.1)',
-      boxShadow: '0 20px 60px rgba(0, 0, 0, 0.3)',
-      marginBottom: '2rem'
-    }}>
-      {/* Header */}
-      <div style={{ marginBottom: '2rem', textAlign: 'center' }}>
+    <div>
+      {/* Goal Selection */}
+      <div style={{
+        background: 'var(--bg-surface)', borderRadius: '16px',
+        border: '1.5px solid var(--border)', padding: '1.5rem',
+        boxShadow: '0 1px 4px rgba(0,0,0,0.06)', marginBottom: '1.5rem',
+      }}>
         <h2 style={{
-          fontSize: '2rem',
-          fontWeight: 'bold',
-          background: 'linear-gradient(135deg, #38f3ab 0%, #1dd1a1 100%)',
-          WebkitBackgroundClip: 'text',
-          WebkitTextFillColor: 'transparent',
-          backgroundClip: 'text',
-          margin: 0,
-          marginBottom: '0.5rem',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          gap: '0.75rem'
+          fontFamily: "'Manrope', sans-serif", fontWeight: 800,
+          fontSize: '1.25rem', color: 'var(--text-primary)', margin: '0 0 0.375rem',
+          display: 'flex', alignItems: 'center', gap: '0.5rem',
+          letterSpacing: '-0.3px',
         }}>
-          <Target size={32} />
+          <Target size={20} color="#00685f" />
           Supplement Recommendations
         </h2>
-        <p style={{ color: '#94a3b8', fontSize: '1rem', margin: 0 }}>
-          Get personalized supplement suggestions based on your health goals
+        <p style={{ color: 'var(--text-secondary)', fontSize: '0.875rem', margin: '0 0 1.25rem', fontFamily: "'Inter', sans-serif" }}>
+          Select your primary health goal to get personalized supplement suggestions
         </p>
-      </div>
 
-      {/* Goal Selection */}
-      <div style={{ marginBottom: '2rem' }}>
-        <label style={{
-          display: 'block',
-          fontSize: '1.125rem',
-          fontWeight: '600',
-          color: '#f1f5f9',
-          marginBottom: '1rem'
-        }}>
-          🎯 What's your primary health goal?
-        </label>
-        
-        <div style={{ 
-          display: 'grid', 
-          gridTemplateColumns: window.innerWidth < 768 ? '1fr' : 'repeat(2, 1fr)', 
-          gap: '1rem' 
-        }}>
-          {goalOptions.map(goal => (
-            <div
-              key={goal.key}
-              onClick={() => setSelectedGoal(goal.key)}
-              style={{
-                background: selectedGoal === goal.key 
-                  ? 'linear-gradient(135deg, rgba(56, 243, 171, 0.2) 0%, rgba(29, 209, 161, 0.2) 100%)'
-                  : 'rgba(30, 41, 59, 0.6)',
-                border: selectedGoal === goal.key 
-                  ? '2px solid rgba(56, 243, 171, 0.4)'
-                  : '1px solid rgba(148, 163, 184, 0.1)',
-                borderRadius: '16px',
-                padding: '1.5rem',
-                cursor: 'pointer',
-                transition: 'all 0.3s ease',
-                backdropFilter: 'blur(16px)'
-              }}
-              onMouseEnter={(e) => {
-                if (selectedGoal !== goal.key) {
-                  const target = e.target as HTMLElement;
-                  target.style.borderColor = 'rgba(56, 243, 171, 0.3)';
-                  target.style.background = 'rgba(56, 243, 171, 0.1)';
-                }
-              }}
-              onMouseLeave={(e) => {
-                if (selectedGoal !== goal.key) {
-                  const target = e.target as HTMLElement;
-                  target.style.borderColor = 'rgba(148, 163, 184, 0.1)';
-                  target.style.background = 'rgba(30, 41, 59, 0.6)';
-                }
-              }}
-            >
-              <h3 style={{ 
-                margin: 0, 
-                fontSize: '1.125rem', 
-                fontWeight: '700', 
-                color: selectedGoal === goal.key ? '#38f3ab' : '#f1f5f9',
-                marginBottom: '0.5rem'
-              }}>
-                {goal.label}
-              </h3>
-              <p style={{ 
-                margin: 0, 
-                fontSize: '0.875rem', 
-                color: '#94a3b8' 
-              }}>
-                {goal.description}
-              </p>
-            </div>
-          ))}
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '0.75rem' }}>
+          {goalOptions.map(goal => {
+            const isActive = selectedGoal === goal.key;
+            return (
+              <div
+                key={goal.key}
+                onClick={() => setSelectedGoal(goal.key)}
+                style={{
+                  background: isActive ? 'var(--primary-light)' : 'var(--bg-page)',
+                  border: isActive ? '1.5px solid #00685f' : '1.5px solid var(--border)',
+                  borderRadius: '12px', padding: '1rem',
+                  cursor: 'pointer', transition: 'all 0.15s ease',
+                }}
+              >
+                <h3 style={{
+                  margin: '0 0 0.25rem', fontSize: '0.9375rem', fontWeight: 700,
+                  color: isActive ? '#00685f' : 'var(--text-primary)',
+                  fontFamily: "'Manrope', sans-serif",
+                  display: 'flex', alignItems: 'center', gap: '0.5rem',
+                }}>
+                  <goal.Icon size={16} weight={isActive ? 'fill' : 'regular'} />
+                  {goal.label}
+                </h3>
+                <p style={{ margin: 0, fontSize: '0.8125rem', color: 'var(--text-secondary)', fontFamily: "'Inter', sans-serif" }}>
+                  {goal.description}
+                </p>
+              </div>
+            );
+          })}
         </div>
       </div>
 
       {/* Recommendations */}
       {recommendations && (
         <div>
-          <div style={{ 
-            marginBottom: '2rem',
-            textAlign: 'center',
-            padding: '1.5rem',
-            background: 'rgba(56, 243, 171, 0.1)',
-            border: '1px solid rgba(56, 243, 171, 0.2)',
-            borderRadius: '16px'
+          {/* Goal summary */}
+          <div style={{
+            background: '#00685f', border: '1px solid #00685f',
+            borderRadius: '16px', padding: '1.25rem',
+            marginBottom: '1.25rem', textAlign: 'center',
           }}>
-            <h3 style={{ 
-              color: '#38f3ab', 
-              fontSize: '1.5rem', 
-              fontWeight: '700', 
-              margin: 0,
-              marginBottom: '0.5rem'
+            <h3 style={{
+              color: '#ffffff', fontSize: '1.125rem', fontWeight: 800,
+              margin: '0 0 0.25rem', fontFamily: "'Manrope', sans-serif",
             }}>
               {recommendations.name}
             </h3>
-            <p style={{ 
-              color: '#cbd5e1', 
-              fontSize: '1rem', 
-              margin: 0 
-            }}>
+            <p style={{ color: 'rgba(255,255,255,0.82)', fontSize: '0.875rem', margin: 0, fontFamily: "'Inter', sans-serif" }}>
               {recommendations.description}
             </p>
           </div>
 
           <div style={{ marginBottom: '1rem' }}>
-            <h4 style={{ 
-              color: '#f1f5f9', 
-              fontSize: '1.25rem', 
-              fontWeight: '600', 
-              marginBottom: '1rem',
-              display: 'flex',
-              alignItems: 'center',
-              gap: '0.5rem'
+            <h4 style={{
+              color: 'var(--text-muted)', fontSize: '0.9375rem', fontWeight: 700,
+              marginBottom: '0.875rem', display: 'flex', alignItems: 'center', gap: '0.375rem',
+              fontFamily: "'Inter', sans-serif",
             }}>
-              <Clock size={20} />
+              <Clock size={16} color="#00685f" />
               Recommended Supplements (in order of priority)
             </h4>
-            
-            {recommendations.supplements.map((supplement, index) => 
+
+            {recommendations.supplements.map((supplement, index) =>
               renderSupplementCard(supplement, index)
             )}
           </div>
 
-          {/* Additional Tips */}
+          {/* Pro Tips */}
           <div style={{
-            background: 'rgba(102, 126, 234, 0.1)',
-            border: '1px solid rgba(102, 126, 234, 0.2)',
-            borderRadius: '16px',
-            padding: '1.5rem',
-            marginTop: '2rem'
+            background: 'var(--bg-surface)', border: '1.5px solid var(--border)',
+            borderRadius: '16px', padding: '1.25rem',
+            boxShadow: '0 1px 4px rgba(0,0,0,0.06)',
           }}>
-            <h4 style={{ 
-              color: '#667eea', 
-              fontSize: '1.125rem', 
-              fontWeight: '600', 
-              marginBottom: '1rem',
-              display: 'flex',
-              alignItems: 'center',
-              gap: '0.5rem'
+            <h4 style={{
+              color: '#00685f', fontSize: '0.9375rem', fontWeight: 700,
+              marginBottom: '0.75rem', margin: '0 0 0.75rem',
+              fontFamily: "'Inter', sans-serif",
+              display: 'flex', alignItems: 'center', gap: '0.375rem',
             }}>
-              💡 Pro Tips
+              <Lightbulb size={16} weight="fill" />
+              Pro Tips
             </h4>
-            <ul style={{ color: '#cbd5e1', fontSize: '0.875rem', lineHeight: '1.6', margin: 0, paddingLeft: '1rem' }}>
+            <ul style={{ color: 'var(--text-muted)', fontSize: '0.875rem', lineHeight: '1.7', margin: 0, paddingLeft: '1.25rem', fontFamily: "'Inter', sans-serif" }}>
               <li>Start with Priority 1 supplements first, add others gradually</li>
-              <li>Take supplements consistently for at least 4-6 weeks to see benefits</li>
+              <li>Take supplements consistently for at least 4–6 weeks to see benefits</li>
               <li>Buy from reputable brands with third-party testing</li>
               <li>Consider getting blood tests to check for deficiencies</li>
-              <li>Quality matters more than quantity - invest in better forms when possible</li>
+              <li>Quality matters more than quantity — invest in better forms when possible</li>
             </ul>
           </div>
         </div>
