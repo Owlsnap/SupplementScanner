@@ -6,6 +6,7 @@ module.exports = {
     'plugin:react/recommended',
     'plugin:react/jsx-runtime',
     'plugin:react-hooks/recommended',
+    'prettier',
   ],
   ignorePatterns: ['dist', '.eslintrc.cjs', 'SuppScannerApp', 'node_modules', 'test-*.js'],
   parserOptions: { ecmaVersion: 'latest', sourceType: 'module' },
