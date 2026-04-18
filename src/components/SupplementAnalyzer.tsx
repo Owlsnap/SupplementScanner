@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from "react";
 import { Routes, Route, useNavigate, useLocation, useParams, Navigate } from 'react-router-dom';
-import { DeviceMobile, Robot, LinkSimple, List, Target, Books, Moon, Sun, Sparkle, X } from "@phosphor-icons/react";
+import { DeviceMobile, Robot, LinkSimple, List, Target, Books, Moon, Sun, Sparkle, X, UserCircle, SignOut, User } from "@phosphor-icons/react";
 import { useDarkMode } from '../contexts/DarkModeContext';
+import { useAuth } from '../contexts/AuthContext';
+import AuthModal from './AuthModal';
 import CookieBanner from './CookieBanner';
 import IngredientQualityComparison from './IngredientQualityComparison';
 import RecommendationsPage from '../pages/RecommendationsPage';
@@ -11,6 +13,7 @@ import SupplementInfoPage from '../pages/SupplementInfoPage';
 import DeepDivePage from '../pages/DeepDivePage';
 import PremiumDeepDivePage from '../pages/PremiumDeepDivePage';
 import PremiumPage from '../pages/PremiumPage';
+import HealthProfilePage from '../pages/HealthProfilePage';
 import { encyclopediaSupplements } from '../data/encyclopediaData';
 
 // Dev bypass: set VITE_DEV_PREMIUM_BYPASS=true in .env.local to skip the paywall
@@ -134,6 +137,7 @@ function transformMultiLayerData(multiLayerResponse: MultiLayerResponse) {
 function SupplementInfoRoute({ onShowPaywall }: { onShowPaywall: () => void }) {
   const { slug } = useParams<{ slug: string }>();
   const navigate = useNavigate();
+  const { isPremium } = useAuth();
   const supp = encyclopediaSupplements.find(s => s.slug === slug);
   if (!supp) return <Navigate to="/" replace />;
   return (
@@ -151,7 +155,7 @@ function SupplementInfoRoute({ onShowPaywall }: { onShowPaywall: () => void }) {
       commonMistakes={supp.commonMistakes}
       onBack={() => navigate(-1 as any)}
       onDeepDive={() => {
-        if (DEV_PREMIUM_BYPASS || /* TODO: check real entitlement */ false) {
+        if (DEV_PREMIUM_BYPASS || isPremium) {
           navigate(`/encyclopedia/${slug}/premium-deep-dive`);
         } else {
           onShowPaywall();
@@ -184,9 +188,10 @@ function DeepDiveRoute() {
 function PremiumDeepDiveRoute() {
   const { slug } = useParams<{ slug: string }>();
   const navigate = useNavigate();
+  const { session } = useAuth();
   const supp = encyclopediaSupplements.find(s => s.slug === slug);
   if (!supp) return <Navigate to="/" replace />;
-  const authToken = DEV_PREMIUM_BYPASS ? 'dev-bypass' : (localStorage.getItem('sb-auth-token') ?? '');
+  const authToken = DEV_PREMIUM_BYPASS ? 'dev-bypass' : (session?.access_token ?? '');
   return (
     <PremiumDeepDivePage
       slug={supp.slug}
@@ -201,6 +206,9 @@ function PremiumDeepDiveRoute() {
 
 export default function SupplementAnalyzer(): JSX.Element {
   const { isDark, toggle: toggleDark } = useDarkMode();
+  const { user, signOut } = useAuth();
+  const [showAuthModal, setShowAuthModal] = useState(false);
+  const [showUserMenu, setShowUserMenu] = useState(false);
   const [products, setProducts] = useState<Product[]>([
     {
       id: 1,
@@ -509,6 +517,96 @@ export default function SupplementAnalyzer(): JSX.Element {
               <span>Premium</span>
             </button>
 
+            {/* Auth button */}
+            {user ? (
+              <div style={{ position: 'relative', marginLeft: '0.25rem' }}>
+                <button
+                  onClick={() => setShowUserMenu(v => !v)}
+                  title={user.email ?? 'Account'}
+                  style={{
+                    display: 'flex', alignItems: 'center', gap: '0.375rem',
+                    padding: '0.375rem 0.75rem 0.375rem 0.5rem',
+                    borderRadius: '999px',
+                    border: '1.5px solid var(--border-strong)', background: 'transparent',
+                    color: 'var(--text-secondary)', cursor: 'pointer', transition: 'all 0.15s ease',
+                  }}
+                  onMouseEnter={e => { (e.currentTarget as HTMLButtonElement).style.borderColor = '#00685f'; (e.currentTarget as HTMLButtonElement).style.color = '#00685f'; }}
+                  onMouseLeave={e => { (e.currentTarget as HTMLButtonElement).style.borderColor = 'var(--border-strong)'; (e.currentTarget as HTMLButtonElement).style.color = 'var(--text-secondary)'; }}
+                >
+                  <UserCircle size={18} />
+                  <span style={{ fontFamily: "'Inter', sans-serif", fontWeight: 600, fontSize: '0.8125rem', maxWidth: '120px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                    {user.email?.split('@')[0]}
+                  </span>
+                </button>
+                {showUserMenu && (
+                  <>
+                    <div style={{ position: 'fixed', inset: 0, zIndex: 998 }} onClick={() => setShowUserMenu(false)} />
+                    <div style={{
+                      position: 'absolute', top: 'calc(100% + 0.5rem)', right: 0,
+                      background: 'var(--bg-surface)', border: '1px solid var(--border)',
+                      borderRadius: '14px', boxShadow: '0 8px 24px rgba(0,0,0,0.12)',
+                      minWidth: '180px', zIndex: 999, overflow: 'hidden',
+                    }}>
+                      <div style={{ padding: '0.75rem 1rem', borderBottom: '1px solid var(--border)' }}>
+                        <div style={{ fontFamily: "'Inter', sans-serif", fontSize: '0.75rem', color: 'var(--text-secondary)', fontWeight: 500 }}>Signed in as</div>
+                        <div style={{ fontFamily: "'Inter', sans-serif", fontSize: '0.8125rem', color: 'var(--text-primary)', fontWeight: 600, marginTop: '0.125rem', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{user.email}</div>
+                      </div>
+                      <button
+                        onClick={() => { navigate('/profile'); setShowUserMenu(false); }}
+                        style={{
+                          width: '100%', padding: '0.75rem 1rem',
+                          background: 'transparent', border: 'none',
+                          color: 'var(--text-primary)', fontFamily: "'Inter', sans-serif",
+                          fontWeight: 600, fontSize: '0.875rem', cursor: 'pointer',
+                          display: 'flex', alignItems: 'center', gap: '0.5rem',
+                          textAlign: 'left',
+                        }}
+                        onMouseEnter={e => { (e.currentTarget as HTMLButtonElement).style.background = 'var(--bg-hover)'; }}
+                        onMouseLeave={e => { (e.currentTarget as HTMLButtonElement).style.background = 'transparent'; }}
+                      >
+                        <User size={16} color="var(--text-secondary)" />
+                        My profile
+                      </button>
+                      <button
+                        onClick={() => { signOut(); setShowUserMenu(false); }}
+                        style={{
+                          width: '100%', padding: '0.75rem 1rem',
+                          background: 'transparent', border: 'none',
+                          color: 'var(--text-primary)', fontFamily: "'Inter', sans-serif",
+                          fontWeight: 600, fontSize: '0.875rem', cursor: 'pointer',
+                          display: 'flex', alignItems: 'center', gap: '0.5rem',
+                          textAlign: 'left', borderTop: '1px solid var(--border)',
+                        }}
+                        onMouseEnter={e => { (e.currentTarget as HTMLButtonElement).style.background = 'var(--bg-hover)'; }}
+                        onMouseLeave={e => { (e.currentTarget as HTMLButtonElement).style.background = 'transparent'; }}
+                      >
+                        <SignOut size={16} color="var(--text-secondary)" />
+                        Sign out
+                      </button>
+                    </div>
+                  </>
+                )}
+              </div>
+            ) : (
+              <button
+                onClick={() => setShowAuthModal(true)}
+                style={{
+                  display: 'flex', alignItems: 'center', gap: '0.375rem',
+                  padding: '0.5rem 0.875rem', borderRadius: '28px',
+                  border: '1.5px solid var(--border-strong)', background: 'transparent',
+                  color: 'var(--text-secondary)', cursor: 'pointer',
+                  fontFamily: "'Inter', sans-serif", fontWeight: 600,
+                  fontSize: '0.875rem', transition: 'all 0.15s ease', marginLeft: '0.25rem',
+                  whiteSpace: 'nowrap',
+                }}
+                onMouseEnter={e => { (e.currentTarget as HTMLButtonElement).style.borderColor = '#00685f'; (e.currentTarget as HTMLButtonElement).style.color = '#00685f'; }}
+                onMouseLeave={e => { (e.currentTarget as HTMLButtonElement).style.borderColor = 'var(--border-strong)'; (e.currentTarget as HTMLButtonElement).style.color = 'var(--text-secondary)'; }}
+              >
+                <UserCircle size={16} />
+                Sign in
+              </button>
+            )}
+
             {/* Dark mode toggle */}
             <button
               onClick={toggleDark}
@@ -585,6 +683,7 @@ export default function SupplementAnalyzer(): JSX.Element {
         <Route path="/recommendations" element={<RecommendationsPage products={products} />} />
         <Route path="/app" element={<MobileAppPage onBack={() => navigate(-1 as any)} />} />
         <Route path="/premium" element={<PremiumPage onBack={() => navigate(-1 as any)} />} />
+        <Route path="/profile" element={<HealthProfilePage onBack={() => navigate(-1 as any)} onSignIn={() => setShowAuthModal(true)} />} />
         <Route path="/scanner" element={(() => {
           const product = products[0];
           const isExtracting = extractingProducts.has(product.id);
@@ -907,7 +1006,7 @@ export default function SupplementAnalyzer(): JSX.Element {
 
             <div style={{ display: 'flex', flexDirection: 'column', gap: '0.625rem' }}>
               <button
-                onClick={() => { setShowPaywallModal(false); navigate('/premium'); }}
+                onClick={() => { setShowPaywallModal(false); setShowAuthModal(true); }}
                 style={{
                   background: '#00685f', color: '#ffffff',
                   border: 'none', borderRadius: '28px',
@@ -918,7 +1017,7 @@ export default function SupplementAnalyzer(): JSX.Element {
                 }}
               >
                 <Sparkle size={15} weight="fill" />
-                See plans
+                Sign in to unlock
               </button>
               <button
                 onClick={() => setShowPaywallModal(false)}
@@ -971,6 +1070,9 @@ export default function SupplementAnalyzer(): JSX.Element {
           to   { transform: translateX(0);    opacity: 1; }
         }
       `}</style>
+
+      {/* Auth Modal */}
+      {showAuthModal && <AuthModal onClose={() => setShowAuthModal(false)} />}
 
       {/* Cookie Consent Banner */}
       <CookieBanner />
