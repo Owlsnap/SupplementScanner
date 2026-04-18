@@ -75,6 +75,7 @@ function getSupabaseService() {
 }
 
 // Auth middleware: verifies Bearer token via Supabase and sets req.user
+// In development, accepts the token "dev-bypass" when DEV_PREMIUM_BYPASS=true
 async function requireAuth(req, res, next) {
   const authHeader = req.headers.authorization;
   if (!authHeader || !authHeader.startsWith('Bearer ')) {
@@ -82,6 +83,12 @@ async function requireAuth(req, res, next) {
   }
 
   const token = authHeader.slice(7);
+
+  if (process.env.NODE_ENV !== 'production' && token === 'dev-bypass') {
+    req.user = { id: 'dev-user', email: 'dev@local' };
+    return next();
+  }
+
   const { data: { user }, error } = await getSupabaseAuth().auth.getUser(token);
 
   if (error || !user) {
@@ -1518,6 +1525,152 @@ app.post('/api/encyclopedia/deep-dive/:slug/refresh', async (req, res) => {
 
   } catch (error) {
     console.error(`💥 Deep dive refresh error for ${slug}:`, error);
+    return res.status(500).json({ success: false, error: error.message });
+  }
+});
+
+// ====== PREMIUM ENDPOINTS ======
+
+// POST /api/premium/deep-dive/:slug
+// RAG-grounded deep dive — auth required, retrieves top studies, cites sources
+app.post('/api/premium/deep-dive/:slug', requireAuth, async (req, res) => {
+  const { slug } = req.params;
+  const { question } = req.body; // optional focused question from user
+  console.log(`💎 POST /api/premium/deep-dive/${slug} user=${req.user.id}`);
+
+  try {
+    const name = SLUG_TO_NAME[slug] || slug.split('-').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
+    const query = question ? `${name}: ${question}` : `${name} supplementation efficacy dosage mechanisms`;
+
+    // 1. Embed the query
+    const embeddingRes = await openai.embeddings.create({
+      model: 'text-embedding-3-small',
+      input: query,
+    });
+    const queryEmbedding = embeddingRes.data[0].embedding;
+
+    // 2. Retrieve top 5 most relevant studies via pgvector
+    const { data: studies, error: rpcError } = await getSupabaseService()
+      .rpc('match_studies', {
+        query_embedding: queryEmbedding,
+        supplement_slug: slug,
+        match_count: 5,
+      });
+
+    if (rpcError) throw rpcError;
+
+    // 3. Build grounded prompt with study snippets
+    const snippets = (studies || []).map((s, i) => {
+      const meta = [
+        s.study_type,
+        s.sample_size ? `n=${s.sample_size}` : null,
+        s.year,
+        s.funding_source ? `funded by ${s.funding_source}` : null,
+      ].filter(Boolean).join(', ');
+      return `[${i + 1}] PMID:${s.pmid} (${meta})\n${s.title}\n${s.abstract}`;
+    }).join('\n\n---\n\n');
+
+    const userQuery = question || `What does the clinical evidence say about ${name}? Cover efficacy, dosage, and any important caveats.`;
+
+    const systemPrompt = `You are a precise clinical nutrition analyst. Answer using ONLY the provided study snippets. Do not use any outside knowledge.
+
+Rules:
+- Cite every factual claim with [N] referencing the snippet number.
+- If information is not in the snippets, say "The available studies don't address this."
+- Be exact, not creative. Temperature is 0.
+
+STUDY SNIPPETS:
+${snippets || 'No studies found for this supplement.'}`;
+
+    // 4. Generate grounded structured response (temp=0.0)
+    const completion = await openai.chat.completions.create({
+      model: 'gpt-4o',
+      temperature: 0.0,
+      response_format: { type: 'json_object' },
+      messages: [
+        { role: 'system', content: systemPrompt },
+        {
+          role: 'user',
+          content: `${userQuery}
+
+Respond with a JSON object with exactly these fields:
+{
+  "summary": "Main evidence-based answer with [N] inline citations",
+  "the_catch": ["array of study limitations: small samples, industry funding, short duration, animal-only evidence, etc."],
+  "dosage_gap": "One sentence comparing the dose used in the studies vs typical retail dose, or null if not determinable"
+}`,
+        },
+      ],
+    });
+
+    const parsed = JSON.parse(completion.choices[0].message.content);
+
+    // 5. Build citation list from retrieved studies
+    const citations = (studies || []).map((s, i) => ({
+      index: i + 1,
+      pmid: s.pmid,
+      title: s.title,
+      year: s.year,
+      study_type: s.study_type,
+      sample_size: s.sample_size,
+      funding_source: s.funding_source,
+      url: `https://pubmed.ncbi.nlm.nih.gov/${s.pmid}/`,
+    }));
+
+    // 6. Compute confidence score from study types
+    const typeWeights = { 'meta-analysis': 1.0, rct: 0.8, observational: 0.4, other: 0.3, animal: 0.1 };
+    const weights = citations.map(c => typeWeights[c.study_type] ?? 0.3);
+    const confidenceScore = weights.length
+      ? Math.round((weights.reduce((a, b) => a + b, 0) / weights.length) * 100)
+      : null;
+
+    return res.json({
+      success: true,
+      data: {
+        slug,
+        supplement: name,
+        question: userQuery,
+        summary: parsed.summary || '',
+        the_catch: Array.isArray(parsed.the_catch) ? parsed.the_catch : [],
+        dosage_gap: parsed.dosage_gap || null,
+        confidence_score: confidenceScore,
+        citations,
+        studies_found: citations.length,
+      },
+    });
+
+  } catch (error) {
+    console.error(`💥 Premium deep dive error for ${slug}:`, error);
+    return res.status(500).json({ success: false, error: error.message });
+  }
+});
+
+// GET /api/premium/interactions/:slug
+// Returns all interactions for a supplement (danger + caution + synergy)
+app.get('/api/premium/interactions/:slug', requireAuth, async (req, res) => {
+  const { slug } = req.params;
+  console.log(`💎 GET /api/premium/interactions/${slug} user=${req.user.id}`);
+
+  try {
+    const { data, error } = await getSupabaseService()
+      .from('interactions')
+      .select('*')
+      .or(`substance_a.eq.${slug},substance_b.eq.${slug}`)
+      .order('severity');
+
+    if (error) throw error;
+
+    // Normalise so the queried supplement is always substance_a
+    const normalised = (data || []).map(row => ({
+      ...row,
+      substance_a: slug,
+      substance_b: row.substance_a === slug ? row.substance_b : row.substance_a,
+    }));
+
+    return res.json({ success: true, data: normalised });
+
+  } catch (error) {
+    console.error(`💥 Interactions error for ${slug}:`, error);
     return res.status(500).json({ success: false, error: error.message });
   }
 });

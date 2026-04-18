@@ -9,6 +9,7 @@ import MobileAppPage from '../pages/MobileAppPage';
 import EncyclopediaPage from '../pages/EncyclopediaPage';
 import SupplementInfoPage from '../pages/SupplementInfoPage';
 import DeepDivePage from '../pages/DeepDivePage';
+import PremiumDeepDivePage from '../pages/PremiumDeepDivePage';
 import PremiumPage from '../pages/PremiumPage';
 import { encyclopediaSupplements } from '../data/encyclopediaData';
 
@@ -151,7 +152,7 @@ function SupplementInfoRoute({ onShowPaywall }: { onShowPaywall: () => void }) {
       onBack={() => navigate(-1 as any)}
       onDeepDive={() => {
         if (DEV_PREMIUM_BYPASS || /* TODO: check real entitlement */ false) {
-          navigate(`/encyclopedia/${slug}/deep-dive`);
+          navigate(`/encyclopedia/${slug}/premium-deep-dive`);
         } else {
           onShowPaywall();
         }
@@ -175,6 +176,25 @@ function DeepDiveRoute() {
       tagline={supp.tagline}
       onBack={() => navigate(-1 as any)}
       onGoToRecommendations={() => navigate('/recommendations')}
+    />
+  );
+}
+
+/** Route wrapper: /encyclopedia/:slug/premium-deep-dive */
+function PremiumDeepDiveRoute() {
+  const { slug } = useParams<{ slug: string }>();
+  const navigate = useNavigate();
+  const supp = encyclopediaSupplements.find(s => s.slug === slug);
+  if (!supp) return <Navigate to="/" replace />;
+  const authToken = DEV_PREMIUM_BYPASS ? 'dev-bypass' : (localStorage.getItem('sb-auth-token') ?? '');
+  return (
+    <PremiumDeepDivePage
+      slug={supp.slug}
+      supplementName={supp.name}
+      evidenceTier={supp.evidenceTier}
+      tagline={supp.tagline}
+      authToken={authToken}
+      onBack={() => navigate(-1 as any)}
     />
   );
 }
@@ -561,6 +581,7 @@ export default function SupplementAnalyzer(): JSX.Element {
         <Route path="/" element={<EncyclopediaPage onOpenInfo={(slug: string) => navigate(`/encyclopedia/${slug}`)} />} />
         <Route path="/encyclopedia/:slug" element={<SupplementInfoRoute onShowPaywall={() => setShowPaywallModal(true)} />} />
         <Route path="/encyclopedia/:slug/deep-dive" element={<DeepDiveRoute />} />
+        <Route path="/encyclopedia/:slug/premium-deep-dive" element={<PremiumDeepDiveRoute />} />
         <Route path="/recommendations" element={<RecommendationsPage products={products} />} />
         <Route path="/app" element={<MobileAppPage onBack={() => navigate(-1 as any)} />} />
         <Route path="/premium" element={<PremiumPage onBack={() => navigate(-1 as any)} />} />

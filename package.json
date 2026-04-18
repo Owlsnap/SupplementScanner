@@ -13,7 +13,11 @@
     "server": "node server.js",
     "start": "node server.js",
     "start:full": "concurrently \"npm run dev\" \"npm run server\"",
-    "postinstall": "echo 'Puppeteer will install Chromium automatically'"
+    "postinstall": "echo 'Puppeteer will install Chromium automatically'",
+    "ingest:pubmed": "node scripts/ingest-pubmed.js",
+    "ingest:pubmed:dry": "node scripts/ingest-pubmed.js --dry-run",
+    "seed:interactions": "node scripts/seed-interactions.js",
+    "seed:interactions:dry": "node scripts/seed-interactions.js --dry-run"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.73.0",

@@ -54,16 +54,16 @@ const PREMIUM_FEATURES = [
   'Forms & bioavailability rankings',
   'Synergy pairings (e.g. Mg + Zn)',
   'Cautions & drug interactions',
+  'Evidence citations linked to PubMed studies',
+  'Confidence score weighted by study type',
+  'Dosage gap: studied dose vs. retail dose',
+  'Supplement interaction engine (danger / caution / synergy)',
   'Web + mobile access with one account',
   'New supplements added regularly',
 ];
 
 const COMING_SOON = [
-  'RAG-powered evidence citations (PubMed / NIH)',
-  'Confidence scores per study type',
-  'Dosage gap: studied dose vs. retail dose',
-  'Red/Yellow/Green interaction engine',
-  'Personalized stack optimizer',
+  'Personalized stack optimizer (requires account)',
 ];
 
 const FAQ = [

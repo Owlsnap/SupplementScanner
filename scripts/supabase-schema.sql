@@ -184,3 +184,129 @@ create policy "Service role can manage deep dives"
   on public.supplement_deep_dives for all
   using (true)
   with check (true);
+
+-- ============================================================
+-- 6. Premium RAG: Studies (PubMed abstracts with embeddings)
+-- ============================================================
+
+create table if not exists public.studies (
+  id             uuid primary key default gen_random_uuid(),
+  pmid           text unique not null,
+  title          text not null,
+  abstract       text not null,
+  embedding      vector(1536),
+  study_type     text check (study_type in ('meta-analysis', 'rct', 'animal', 'observational', 'other')),
+  sample_size    integer,
+  year           integer,
+  funding_source text,
+  supplements    text[] default '{}',
+  created_at     timestamptz default now()
+);
+
+create index if not exists idx_studies_pmid on public.studies(pmid);
+create index if not exists idx_studies_supplements on public.studies using gin(supplements);
+create index if not exists idx_studies_embedding on public.studies
+  using ivfflat (embedding vector_cosine_ops) with (lists = 100);
+
+alter table public.studies enable row level security;
+
+create policy "Studies are publicly readable"
+  on public.studies for select
+  using (true);
+
+create policy "Service role can manage studies"
+  on public.studies for all
+  using (true)
+  with check (true);
+
+-- ============================================================
+-- 7. Premium RAG: Interactions (supplement/drug interaction DB)
+-- ============================================================
+
+create table if not exists public.interactions (
+  id           uuid primary key default gen_random_uuid(),
+  substance_a  text not null,
+  substance_b  text not null,
+  severity     text not null check (severity in ('danger', 'caution', 'synergy')),
+  mechanism    text,
+  source       text,
+  created_at   timestamptz default now(),
+  unique(substance_a, substance_b)
+);
+
+create index if not exists idx_interactions_a on public.interactions(substance_a);
+create index if not exists idx_interactions_b on public.interactions(substance_b);
+
+alter table public.interactions enable row level security;
+
+create policy "Interactions are publicly readable"
+  on public.interactions for select
+  using (true);
+
+create policy "Service role can manage interactions"
+  on public.interactions for all
+  using (true)
+  with check (true);
+
+-- ============================================================
+-- 8. Premium RAG: User Health Profile (requires auth — issue #9)
+-- ============================================================
+
+create table if not exists public.user_health_profiles (
+  id           uuid primary key default gen_random_uuid(),
+  user_id      uuid not null references auth.users(id) on delete cascade,
+  goal         text,
+  diet         text[],
+  conditions   text[],
+  current_stack text[],
+  updated_at   timestamptz default now(),
+  unique(user_id)
+);
+
+alter table public.user_health_profiles enable row level security;
+
+create policy "Users can read own health profile"
+  on public.user_health_profiles for select
+  using (auth.uid() = user_id);
+
+create policy "Users can upsert own health profile"
+  on public.user_health_profiles for insert
+  with check (auth.uid() = user_id);
+
+create policy "Users can update own health profile"
+  on public.user_health_profiles for update
+  using (auth.uid() = user_id);
+
+create policy "Users can delete own health profile"
+  on public.user_health_profiles for delete
+  using (auth.uid() = user_id);
+
+-- ============================================================
+-- 9. Premium RAG: Vector similarity search function
+-- ============================================================
+
+create or replace function match_studies(
+  query_embedding vector(1536),
+  supplement_slug text,
+  match_count int default 5
+)
+returns table (
+  pmid text,
+  title text,
+  abstract text,
+  study_type text,
+  sample_size int,
+  year int,
+  funding_source text,
+  similarity float
+)
+language sql stable
+as $$
+  select
+    pmid, title, abstract, study_type, sample_size, year, funding_source,
+    1 - (embedding <=> query_embedding) as similarity
+  from studies
+  where supplement_slug = any(supplements)
+  order by embedding <=> query_embedding
+  limit match_count;
+$$;
