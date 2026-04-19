@@ -1,5 +1,20 @@
 import React, { useState, useEffect } from "react";
 import { Routes, Route, useNavigate, useLocation, useParams, Navigate } from 'react-router-dom';
+
+// ── Paid single-dive helpers ──────────────────────────────────────────────────
+type PaidDive = { slug: string; sessionId: string };
+const PAID_DIVES_KEY = 'ss_paid_dives';
+
+function getPaidDives(): PaidDive[] {
+  try { return JSON.parse(localStorage.getItem(PAID_DIVES_KEY) || '[]'); } catch { return []; }
+}
+function savePaidDive(slug: string, sessionId: string) {
+  const existing = getPaidDives().filter(d => d.slug !== slug);
+  localStorage.setItem(PAID_DIVES_KEY, JSON.stringify([...existing, { slug, sessionId }]));
+}
+function getSessionIdForSlug(slug: string): string | null {
+  return getPaidDives().find(d => d.slug === slug)?.sessionId ?? null;
+}
 import { DeviceMobile, Robot, LinkSimple, List, Target, Books, Moon, Sun, Sparkle, X, UserCircle, SignOut, User } from "@phosphor-icons/react";
 import { useDarkMode } from '../contexts/DarkModeContext';
 import { useAuth } from '../contexts/AuthContext';
@@ -140,6 +155,24 @@ function SupplementInfoRoute({ onShowPaywall }: { onShowPaywall: () => void }) {
   const { isPremium } = useAuth();
   const supp = encyclopediaSupplements.find(s => s.slug === slug);
   if (!supp) return <Navigate to="/" replace />;
+
+  const hasPaidDive = !!getSessionIdForSlug(supp.slug);
+  const canAccess = DEV_PREMIUM_BYPASS || isPremium || hasPaidDive;
+
+  const handleBuyDive = async () => {
+    try {
+      const res = await fetch('/api/payment/create-checkout', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ supplementSlug: supp.slug }),
+      });
+      const data = await res.json();
+      if (data.url) window.location.href = data.url;
+    } catch (err) {
+      console.error('Checkout error:', err);
+    }
+  };
+
   return (
     <SupplementInfoPage
       slug={supp.slug}
@@ -154,12 +187,11 @@ function SupplementInfoRoute({ onShowPaywall }: { onShowPaywall: () => void }) {
       keyFacts={supp.keyFacts}
       commonMistakes={supp.commonMistakes}
       onBack={() => navigate(-1 as any)}
+      hasPaidDive={hasPaidDive}
+      onBuyDive={handleBuyDive}
       onDeepDive={() => {
-        if (DEV_PREMIUM_BYPASS || isPremium) {
-          navigate(`/encyclopedia/${slug}/premium-deep-dive`);
-        } else {
-          onShowPaywall();
-        }
+        if (canAccess) navigate(`/encyclopedia/${slug}/premium-deep-dive`);
+        else onShowPaywall();
       }}
     />
   );
@@ -188,10 +220,36 @@ function DeepDiveRoute() {
 function PremiumDeepDiveRoute() {
   const { slug } = useParams<{ slug: string }>();
   const navigate = useNavigate();
-  const { session } = useAuth();
+  const { session, isPremium } = useAuth();
+  const [stripeSessionId, setStripeSessionId] = useState<string | null>(() => getSessionIdForSlug(slug ?? ''));
   const supp = encyclopediaSupplements.find(s => s.slug === slug);
+
+  // Handle redirect back from Stripe after single-dive purchase
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const divePaid = params.get('dive_paid');
+    const sessionId = params.get('session_id');
+    if (divePaid === '1' && sessionId && slug) {
+      window.history.replaceState({}, '', `/encyclopedia/${slug}/premium-deep-dive`);
+      fetch(`/api/payment/verify-session?id=${sessionId}`)
+        .then(r => r.json())
+        .then(data => {
+          if (data.paid) {
+            savePaidDive(slug, sessionId);
+            setStripeSessionId(sessionId);
+          }
+        })
+        .catch(() => {});
+    }
+  }, [slug]);
+
   if (!supp) return <Navigate to="/" replace />;
+
   const authToken = DEV_PREMIUM_BYPASS ? 'dev-bypass' : (session?.access_token ?? '');
+  const canAccess = DEV_PREMIUM_BYPASS || isPremium || !!stripeSessionId;
+
+  if (!canAccess) return <Navigate to={`/encyclopedia/${slug}`} replace />;
+
   return (
     <PremiumDeepDivePage
       slug={supp.slug}
@@ -199,6 +257,7 @@ function PremiumDeepDiveRoute() {
       evidenceTier={supp.evidenceTier}
       tagline={supp.tagline}
       authToken={authToken}
+      stripeSessionId={stripeSessionId ?? undefined}
       onBack={() => navigate(-1 as any)}
     />
   );

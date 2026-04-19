@@ -1,7 +1,7 @@
 import React from 'react';
 import {
   ArrowLeft, Lock, Sparkle, Flask, Gauge, ArrowsHorizontal,
-  ShieldWarning, ArrowRight, Barbell, Moon, Brain, Lightning, Leaf, Warning,
+  ShieldWarning, ArrowRight, Barbell, Moon, Brain, Lightning, Leaf, Warning, Article,
 } from '@phosphor-icons/react';
 import type { EvidenceTier, EncyclopediaCategory } from '../data/encyclopediaData';
 import { useDarkMode } from '../contexts/DarkModeContext';
@@ -20,6 +20,8 @@ interface SupplementInfoPageProps {
   commonMistakes: string[];
   onBack: () => void;
   onDeepDive: () => void;
+  onBuyDive: () => void;
+  hasPaidDive: boolean;
 }
 
 const categoryColorsLight: Record<EncyclopediaCategory, { bg: string; light: string }> = {
@@ -53,16 +55,17 @@ const evidenceTierStyle: Record<EvidenceTier, { bg: string; color: string; borde
 };
 
 const deepDiveFeatures: Array<{ Icon: React.ElementType; label: string; desc: string }> = [
-  { Icon: Flask,          label: 'Mechanism of action',          desc: 'How it works at the cellular level' },
-  { Icon: Gauge,          label: 'Optimal dosing protocols',     desc: 'Conservative, standard, and loading ranges' },
+  { Icon: Article,          label: 'Cited research',               desc: 'Key studies with sources linked' },
+  { Icon: Flask,            label: 'Mechanism of action',          desc: 'How it works at the cellular level' },
+  { Icon: Gauge,            label: 'Optimal dosing protocols',     desc: 'Conservative, standard, and loading ranges' },
   { Icon: ArrowsHorizontal, label: 'Best forms & bioavailability', desc: 'Which form absorbs best and why' },
-  { Icon: Sparkle,        label: 'Synergies & stacks',           desc: 'What to combine it with for best results' },
-  { Icon: ShieldWarning,  label: 'Cautions & interactions',      desc: 'What to watch out for' },
+  { Icon: Sparkle,          label: 'Synergies & stacks',           desc: 'What to combine it with for best results' },
+  { Icon: ShieldWarning,    label: 'Cautions & interactions',      desc: 'What to watch out for' },
 ];
 
 export default function SupplementInfoPage({
   name, category, evidenceTier, tagline, primaryUse, overview,
-  typicalDose, bestFor, keyFacts, commonMistakes, onBack, onDeepDive,
+  typicalDose, bestFor, keyFacts, commonMistakes, onBack, onDeepDive, onBuyDive, hasPaidDive,
 }: SupplementInfoPageProps) {
   const { isDark } = useDarkMode();
   const categoryColors = isDark ? categoryColorsDark : categoryColorsLight;
@@ -300,11 +303,11 @@ export default function SupplementInfoPage({
                 fontSize: '1.125rem', color: '#ffffff', letterSpacing: '-0.3px',
                 display: 'flex', alignItems: 'center', gap: '0.5rem',
               }}>
-                <Sparkle size={18} weight="fill" />
-                AI Deep Dive
+                <Article size={18} weight="fill" />
+                Research Deep Dive
               </div>
               <div style={{ fontFamily: "'Inter', sans-serif", fontSize: '0.8125rem', color: 'rgba(255,255,255,0.75)', marginTop: '0.25rem' }}>
-                Full research breakdown — generated on demand
+                Peer-reviewed sources · Generated on demand
               </div>
             </div>
             <span style={{
@@ -318,30 +321,39 @@ export default function SupplementInfoPage({
           </div>
 
           <div style={{ padding: '1.25rem 1.5rem' }}>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.625rem', marginBottom: '1.5rem' }}>
+            <div style={{
+              display: 'grid', gridTemplateColumns: '1fr 1fr',
+              gap: '0.75rem', marginBottom: '1.5rem',
+            }}>
               {deepDiveFeatures.map(({ Icon, label, desc }) => (
                 <div key={label} style={{
-                  display: 'flex', alignItems: 'center', gap: '0.875rem',
-                  padding: '0.875rem 1rem',
-                  background: 'var(--bg-page)', borderRadius: '12px',
+                  display: 'flex', flexDirection: 'column', gap: '0.5rem',
+                  padding: '0.875rem',
+                  background: 'var(--bg-page)',
+                  borderRadius: '12px',
                   border: '1px solid var(--border)',
                 }}>
                   <div style={{
-                    width: '44px', height: '44px', borderRadius: '10px',
-                    background: 'var(--primary-light)', display: 'flex', alignItems: 'center',
-                    justifyContent: 'center', flexShrink: 0,
+                    width: '34px', height: '34px', borderRadius: '8px',
+                    background: 'var(--bg-surface)',
+                    border: '1px solid var(--border)',
+                    display: 'flex', alignItems: 'center', justifyContent: 'center',
                   }}>
-                    <Icon size={44} color="#00685f" weight="duotone" />
+                    <Icon size={17} color="#00685f" weight="duotone" />
                   </div>
-                  <div style={{ flex: 1, minWidth: 0 }}>
-                    <div style={{ fontFamily: "'Manrope', sans-serif", fontWeight: 700, fontSize: '0.875rem', color: 'var(--text-primary)' }}>
+                  <div>
+                    <div style={{
+                      fontFamily: "'Manrope', sans-serif", fontWeight: 800, fontSize: '0.875rem',
+                      background: 'linear-gradient(90deg, #00685f 0%, #3f9e8a 100%)',
+                      WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent',
+                      backgroundClip: 'text', lineHeight: 1.2,
+                    }}>
                       {label}
                     </div>
-                    <div style={{ fontFamily: "'Inter', sans-serif", fontSize: '0.8125rem', color: 'var(--text-secondary)', marginTop: '0.125rem' }}>
+                    <div style={{ fontFamily: "'Inter', sans-serif", fontSize: '0.75rem', color: 'var(--text-secondary)', marginTop: '0.25rem', lineHeight: 1.4 }}>
                       {desc}
                     </div>
                   </div>
-                  <Lock size={14} color="#bcc9c6" style={{ flexShrink: 0 }} />
                 </div>
               ))}
             </div>
@@ -362,11 +374,38 @@ export default function SupplementInfoPage({
               onMouseLeave={e => { (e.currentTarget as HTMLButtonElement).style.background = '#00685f'; }}
             >
               <Sparkle size={18} weight="fill" />
-              Unlock Deep Dive
+              {hasPaidDive ? 'Open Research Deep Dive' : 'Unlock with Premium'}
               <ArrowRight size={16} weight="bold" />
             </button>
+
+            {!hasPaidDive && (
+              <>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', margin: '0.75rem 0' }}>
+                  <div style={{ flex: 1, height: '1px', background: 'var(--border)' }} />
+                  <span style={{ fontFamily: "'Inter', sans-serif", fontSize: '0.75rem', color: 'var(--text-secondary)' }}>or</span>
+                  <div style={{ flex: 1, height: '1px', background: 'var(--border)' }} />
+                </div>
+                <button
+                  onClick={onBuyDive}
+                  style={{
+                    width: '100%', padding: '0.875rem 1rem',
+                    background: 'transparent', color: 'var(--text-primary)',
+                    border: '1.5px solid var(--border)', borderRadius: '14px',
+                    fontFamily: "'Inter', sans-serif", fontWeight: 600,
+                    fontSize: '0.9375rem', cursor: 'pointer',
+                    display: 'flex', alignItems: 'center', justifyContent: 'center',
+                    gap: '0.5rem', transition: 'border-color 0.15s ease',
+                  }}
+                  onMouseEnter={e => { (e.currentTarget as HTMLButtonElement).style.borderColor = '#00685f'; }}
+                  onMouseLeave={e => { (e.currentTarget as HTMLButtonElement).style.borderColor = 'var(--border)'; }}
+                >
+                  Buy this Deep Dive · $1.99
+                </button>
+              </>
+            )}
+
             <p style={{ textAlign: 'center', fontFamily: "'Inter', sans-serif", fontSize: '0.75rem', color: 'var(--text-secondary)', margin: '0.75rem 0 0' }}>
-              AI-generated · cached for 30 days after first load
+              Research-backed · cached for 30 days after first load
             </p>
           </div>
         </div>

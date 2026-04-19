@@ -1,6 +1,7 @@
 import express from 'express';
 import cors from 'cors';
 import rateLimit from 'express-rate-limit';
+import Stripe from 'stripe';
 import OpenAI from 'openai';
 import Anthropic from '@anthropic-ai/sdk';
 import puppeteer from 'puppeteer';
@@ -1532,11 +1533,31 @@ app.post('/api/encyclopedia/deep-dive/:slug/refresh', async (req, res) => {
 // ====== PREMIUM ENDPOINTS ======
 
 // POST /api/premium/deep-dive/:slug
-// RAG-grounded deep dive — auth required, retrieves top studies, cites sources
-app.post('/api/premium/deep-dive/:slug', requireAuth, async (req, res) => {
+// Accepts either a Bearer JWT (premium subscriber) or a verified Stripe session ID
+async function requirePremiumAccess(req, res, next) {
+  const stripeSessionId = req.headers['x-stripe-session'];
+  if (stripeSessionId && stripe) {
+    try {
+      const session = await stripe.checkout.sessions.retrieve(stripeSessionId);
+      if (session.payment_status === 'paid') {
+        req.user = { id: `stripe:${stripeSessionId}`, stripeSessionSlug: session.metadata?.supplementSlug || null };
+        return next();
+      }
+    } catch (_) { /* fall through to Bearer auth */ }
+  }
+  return requireAuth(req, res, next);
+}
+
+// RAG-grounded deep dive — premium subscriber or paid single session
+app.post('/api/premium/deep-dive/:slug', requirePremiumAccess, async (req, res) => {
   const { slug } = req.params;
-  const { question } = req.body; // optional focused question from user
+  const { question } = req.body;
   console.log(`💎 POST /api/premium/deep-dive/${slug} user=${req.user.id}`);
+
+  // Stripe single-dive sessions are scoped to the purchased supplement
+  if (req.user.stripeSessionSlug && req.user.stripeSessionSlug !== slug) {
+    return res.status(403).json({ success: false, error: 'This session is not valid for this supplement' });
+  }
 
   try {
     const name = SLUG_TO_NAME[slug] || slug.split('-').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
@@ -1672,6 +1693,71 @@ app.get('/api/premium/interactions/:slug', requireAuth, async (req, res) => {
   } catch (error) {
     console.error(`💥 Interactions error for ${slug}:`, error);
     return res.status(500).json({ success: false, error: error.message });
+  }
+});
+
+// ── Stripe / Payment ──────────────────────────────────────────────────────────
+
+const stripe = process.env.STRIPE_SECRET_KEY
+  ? new Stripe(process.env.STRIPE_SECRET_KEY, { apiVersion: '2024-12-18.acacia' })
+  : null;
+
+const SITE_URL = process.env.SITE_URL || 'http://localhost:5173';
+
+// POST /api/payment/create-checkout
+// Creates a Stripe Checkout session for a single deep dive purchase.
+// Swish is offered first (SEK), card accepted as fallback.
+app.post('/api/payment/create-checkout', async (req, res) => {
+  if (!stripe) return res.status(503).json({ success: false, error: 'Payment not configured' });
+
+  const { supplementSlug } = req.body;
+
+  try {
+    const session = await stripe.checkout.sessions.create({
+      payment_method_types: ['card'],
+      line_items: [{
+        price_data: {
+          currency: 'usd',
+          product_data: {
+            name: 'Research Deep Dive',
+            description: 'Full evidence-grounded deep dive on one supplement — dosing, forms, synergies, cited sources.',
+          },
+          unit_amount: 199, // $1.99 USD
+        },
+        quantity: 1,
+      }],
+      mode: 'payment',
+      success_url: supplementSlug
+        ? `${SITE_URL}/encyclopedia/${supplementSlug}/premium-deep-dive?dive_paid=1&session_id={CHECKOUT_SESSION_ID}`
+        : `${SITE_URL}/premium`,
+      cancel_url: supplementSlug
+        ? `${SITE_URL}/encyclopedia/${supplementSlug}`
+        : `${SITE_URL}/premium`,
+      metadata: { supplementSlug: supplementSlug || '' },
+    });
+
+    return res.json({ success: true, url: session.url });
+  } catch (err) {
+    console.error('💥 Stripe checkout error:', err.message);
+    return res.status(500).json({ success: false, error: err.message });
+  }
+});
+
+// GET /api/payment/verify-session?id=<sessionId>
+// Called after redirect from Stripe to confirm the session is paid.
+app.get('/api/payment/verify-session', async (req, res) => {
+  if (!stripe) return res.status(503).json({ success: false, error: 'Payment not configured' });
+
+  const { id } = req.query;
+  if (!id) return res.status(400).json({ success: false, error: 'Missing session id' });
+
+  try {
+    const session = await stripe.checkout.sessions.retrieve(id);
+    const paid = session.payment_status === 'paid';
+    return res.json({ success: true, paid, supplementSlug: session.metadata?.supplementSlug || null });
+  } catch (err) {
+    console.error('💥 Stripe verify error:', err.message);
+    return res.status(500).json({ success: false, error: err.message });
   }
 });
 

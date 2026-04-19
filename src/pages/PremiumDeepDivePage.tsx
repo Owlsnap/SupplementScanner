@@ -24,6 +24,7 @@ interface PremiumDeepDivePageProps {
   evidenceTier: EvidenceTier;
   tagline: string;
   authToken: string;
+  stripeSessionId?: string;
   onBack: () => void;
 }
 
@@ -90,6 +91,7 @@ export default function PremiumDeepDivePage({
   evidenceTier,
   tagline,
   authToken,
+  stripeSessionId,
   onBack,
 }: PremiumDeepDivePageProps) {
   const [data, setData] = useState<PremiumDeepDiveData | null>(null);
@@ -102,12 +104,16 @@ export default function PremiumDeepDivePage({
 
   const apiUrl = (import.meta as any).env?.VITE_API_URL || 'http://localhost:3001';
 
-  const fetchFromApi = (body: object) =>
-    fetch(`${apiUrl}/api/premium/deep-dive/${slug}`, {
+  const fetchFromApi = (body: object) => {
+    const headers: Record<string, string> = { 'Content-Type': 'application/json' };
+    if (stripeSessionId) headers['x-stripe-session'] = stripeSessionId;
+    else headers['Authorization'] = `Bearer ${authToken}`;
+    return fetch(`${apiUrl}/api/premium/deep-dive/${slug}`, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${authToken}` },
+      headers,
       body: JSON.stringify(body),
     }).then(r => r.json());
+  };
 
   const load = useCallback(() => {
     setLoading(true);
