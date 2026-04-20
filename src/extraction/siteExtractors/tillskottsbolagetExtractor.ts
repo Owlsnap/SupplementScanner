@@ -25,7 +25,7 @@ export default class TillskottsbolagetExtractor implements SiteExtractor {
   public readonly siteDomain = 'tillskottsbolaget.se';
 
   canHandle(url: string): boolean {
-    return url && url.includes(this.siteDomain);
+    return !!url && url.includes(this.siteDomain);
   }
 
   /**
