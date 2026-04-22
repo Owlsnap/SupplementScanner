@@ -57,6 +57,20 @@ const SUPPLEMENT_SEARCH_TERMS = {
   'vitamin-c':             'vitamin C ascorbic acid supplementation',
   'berberine':             'berberine supplementation metabolic',
   'coq10':                 'coenzyme Q10 CoQ10 supplementation',
+  'taurine':               'taurine supplementation exercise performance',
+  '5-htp':                 '5-hydroxytryptophan 5-HTP supplementation sleep mood',
+  'valerian-root':         'valerian root Valeriana officinalis sleep supplementation',
+  'alcar':                 'acetyl-L-carnitine ALCAR supplementation cognitive',
+  'citicoline':            'citicoline CDP-choline supplementation cognitive',
+  'ginkgo-biloba':         'ginkgo biloba EGb761 cognitive supplementation',
+  'nac':                   'N-acetylcysteine NAC glutathione supplementation',
+  'msm':                   'methylsulfonylmethane MSM joint supplementation',
+  'spirulina':             'spirulina supplementation health anti-inflammatory',
+  'nmn':                   'nicotinamide mononucleotide NMN NAD supplementation',
+  'quercetin':             'quercetin supplementation anti-inflammatory immune',
+  'vitamin-b12':           'vitamin B12 cobalamin methylcobalamin supplementation',
+  'resveratrol':           'resveratrol supplementation cardiovascular longevity',
+  'selenium':              'selenium supplementation thyroid health selenomethionine',
 };
 
 const RESULTS_PER_SUPPLEMENT = 20; // abstracts fetched per supplement
