@@ -42,7 +42,7 @@ const PLANS = {
 } as const;
 
 const FREE_FEATURES = [
-  'Encyclopedia of 30 supplements',
+  'Index of 30 supplements',
   'Evidence tier badges',
   'URL & barcode scanner',
   'Basic ingredient breakdown',
@@ -193,7 +193,13 @@ export default function PremiumPage({ onBack }: PremiumPageProps) {
               color: '#ffffff', margin: '0 0 1rem', lineHeight: 1.1,
               letterSpacing: '-1px',
             }}>
-              Precision intelligence for <span style={{ opacity: 0.75 }}>human performance.</span>
+              Precision intelligence for{' '}
+              <span style={{
+                background: 'linear-gradient(90deg, #fde68a, #fb923c)',
+                WebkitBackgroundClip: 'text',
+                WebkitTextFillColor: 'transparent',
+                backgroundClip: 'text',
+              }}>human performance.</span>
             </h1>
             <p style={{
               color: 'rgba(255,255,255,0.75)', fontSize: '1rem',

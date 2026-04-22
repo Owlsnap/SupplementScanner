@@ -516,7 +516,7 @@ export default function SupplementAnalyzer(): JSX.Element {
               }}
             >
               <Books size={15} />
-              <span>Encyclopedia</span>
+              <span>Index</span>
             </button>
 
             <button
@@ -536,6 +536,17 @@ export default function SupplementAnalyzer(): JSX.Element {
             >
               <LinkSimple size={15} />
               <span>URL Scanner</span>
+              <span style={{
+                background: location.pathname === '/scanner' ? 'rgba(255,255,255,0.2)' : 'rgba(245,158,11,0.15)',
+                color: location.pathname === '/scanner' ? '#ffffff' : '#b45309',
+                border: `1px solid ${location.pathname === '/scanner' ? 'rgba(255,255,255,0.3)' : 'rgba(180,83,9,0.25)'}`,
+                fontSize: '0.5625rem', fontWeight: 800,
+                padding: '0.125rem 0.375rem', borderRadius: '999px',
+                letterSpacing: '0.5px', lineHeight: 1,
+                fontFamily: "'Inter', sans-serif",
+              }}>
+                BETA
+              </span>
             </button>
 
             <button
@@ -739,7 +750,7 @@ export default function SupplementAnalyzer(): JSX.Element {
         <Route path="/encyclopedia/:slug" element={<SupplementInfoRoute onShowPaywall={() => setShowPaywallModal(true)} />} />
         <Route path="/encyclopedia/:slug/deep-dive" element={<DeepDiveRoute />} />
         <Route path="/encyclopedia/:slug/premium-deep-dive" element={<PremiumDeepDiveRoute />} />
-        <Route path="/recommendations" element={<RecommendationsPage products={products} />} />
+        <Route path="/recommendations" element={<RecommendationsPage />} />
         <Route path="/app" element={<MobileAppPage onBack={() => navigate(-1 as any)} />} />
         <Route path="/premium" element={<PremiumPage onBack={() => navigate(-1 as any)} />} />
         <Route path="/profile" element={<HealthProfilePage onBack={() => navigate(-1 as any)} onSignIn={() => setShowAuthModal(true)} />} />
@@ -768,6 +779,16 @@ export default function SupplementAnalyzer(): JSX.Element {
               }}>
                 <LinkSimple size={14} color="#ffffff" />
                 <span style={{ color: '#ffffff', fontSize: '0.8125rem', fontWeight: 600, fontFamily: "'Inter', sans-serif" }}>URL Scanner</span>
+                <span style={{
+                  background: 'rgba(255,255,255,0.2)', color: '#ffffff',
+                  border: '1px solid rgba(255,255,255,0.35)',
+                  fontSize: '0.5625rem', fontWeight: 800,
+                  padding: '0.125rem 0.4rem', borderRadius: '999px',
+                  letterSpacing: '0.5px', lineHeight: 1,
+                  fontFamily: "'Inter', sans-serif",
+                }}>
+                  BETA
+                </span>
               </div>
 
               <h1 style={{
@@ -776,7 +797,7 @@ export default function SupplementAnalyzer(): JSX.Element {
                 color: '#ffffff', margin: '0 0 0.625rem', letterSpacing: '-0.5px',
                 lineHeight: 1.2,
               }}>
-                Analyze any supplement<br />from a product page
+                Analyze <span style={{ color: '#fde68a' }}>any supplement</span><br />from a product page
               </h1>
               <p style={{ color: 'rgba(255,255,255,0.75)', fontSize: '1rem', margin: '0 0 2rem', fontFamily: "'Inter', sans-serif" }}>
                 Paste a product URL — AI extracts ingredients, dosages and quality data automatically

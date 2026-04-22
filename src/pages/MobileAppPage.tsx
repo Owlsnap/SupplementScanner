@@ -53,8 +53,8 @@ const FEATURES = [
   },
   {
     icon: <BookOpen size={24} />,
-    title: 'Encyclopedia On the Go',
-    body: 'The full supplement encyclopedia — evidence tiers, dosing, deep dives — in your pocket.',
+    title: 'Index On the Go',
+    body: 'The full supplement index — evidence tiers, dosing, deep dives — in your pocket.',
   },
 ];
 
@@ -114,7 +114,7 @@ export default function MobileAppPage({ onBack }: MobileAppPageProps) {
           <div style={{ display: 'flex', alignItems: 'center', gap: '2rem' }}>
             <button onClick={() => scrollTo('features')} style={{ background: 'none', border: 'none', cursor: 'pointer', color: `${C.text}99`, fontWeight: 500, fontSize: '0.9375rem', padding: 0, transition: 'color 0.15s' }} onMouseEnter={e => (e.currentTarget.style.color = C.text)} onMouseLeave={e => (e.currentTarget.style.color = `${C.text}99`)}>Features</button>
             <button onClick={() => scrollTo('how-it-works')} style={{ background: 'none', border: 'none', cursor: 'pointer', color: `${C.text}99`, fontWeight: 500, fontSize: '0.9375rem', padding: 0, transition: 'color 0.15s' }} onMouseEnter={e => (e.currentTarget.style.color = C.text)} onMouseLeave={e => (e.currentTarget.style.color = `${C.text}99`)}>Methodology</button>
-            <button onClick={onBack} style={{ background: 'none', border: 'none', cursor: 'pointer', color: `${C.text}99`, fontWeight: 500, fontSize: '0.9375rem', padding: 0, transition: 'color 0.15s' }} onMouseEnter={e => (e.currentTarget.style.color = C.text)} onMouseLeave={e => (e.currentTarget.style.color = `${C.text}99`)}>Encyclopedia</button>
+            <button onClick={onBack} style={{ background: 'none', border: 'none', cursor: 'pointer', color: `${C.text}99`, fontWeight: 500, fontSize: '0.9375rem', padding: 0, transition: 'color 0.15s' }} onMouseEnter={e => (e.currentTarget.style.color = C.text)} onMouseLeave={e => (e.currentTarget.style.color = `${C.text}99`)}>Index</button>
             <button onClick={() => scrollTo('lead-capture')} style={{ background: `linear-gradient(135deg, ${C.primary} 0%, ${C.primaryContainer} 100%)`, color: C.onPrimary, border: 'none', borderRadius: '6px', padding: '0.5rem 1.25rem', fontWeight: 700, fontSize: '0.9375rem', cursor: 'pointer', transition: 'opacity 0.15s' }} onMouseEnter={e => (e.currentTarget.style.opacity = '0.85')} onMouseLeave={e => (e.currentTarget.style.opacity = '1')}>
               Get Notified
             </button>
