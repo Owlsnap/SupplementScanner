@@ -1,6 +1,9 @@
 import React, { useState, useEffect, KeyboardEvent } from 'react';
-import { ArrowLeft, CheckCircle, User, Tag, X as XIcon } from '@phosphor-icons/react';
+import { useNavigate } from 'react-router-dom';
+import { ArrowLeft, CheckCircle, User, Tag, X as XIcon, Sparkle } from '@phosphor-icons/react';
 import { useAuth, supabase } from '../contexts/AuthContext';
+import { useStack } from '../contexts/StackContext';
+import { encyclopediaSupplements } from '../data/encyclopediaData';
 
 interface HealthProfilePageProps {
   onBack: () => void;
@@ -42,6 +45,8 @@ const CONDITION_SUGGESTIONS = [
 
 export default function HealthProfilePage({ onBack, onSignIn }: HealthProfilePageProps) {
   const { user, session } = useAuth();
+  const navigate = useNavigate();
+  const { stack, removeFromStack } = useStack();
 
   const [profile, setProfile] = useState<Profile>({
     goal: '',
@@ -203,36 +208,142 @@ export default function HealthProfilePage({ onBack, onSignIn }: HealthProfilePag
     cursor: 'text',
   };
 
-  // Not signed in
+  const stackSupplements = encyclopediaSupplements.filter(s => stack.includes(s.slug));
+
+  const myStackSection = (
+    <div style={card}>
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '1rem' }}>
+        <div style={sectionLabel}>My Stack</div>
+        {stackSupplements.length > 0 && (
+          <span style={{ fontFamily: "'Inter', sans-serif", fontSize: '0.75rem', color: 'var(--text-secondary)', fontWeight: 500 }}>
+            {stackSupplements.length} supplement{stackSupplements.length !== 1 ? 's' : ''}
+          </span>
+        )}
+      </div>
+
+      {stackSupplements.length === 0 ? (
+        <p style={{ fontFamily: "'Inter', sans-serif", fontSize: '0.875rem', color: 'var(--text-secondary)', margin: '0 0 1rem', lineHeight: 1.55 }}>
+          No supplements added yet.{' '}
+          <button
+            onClick={() => navigate('/')}
+            style={{ color: '#00685f', background: 'none', border: 'none', cursor: 'pointer', fontWeight: 600, fontFamily: "'Inter', sans-serif", fontSize: '0.875rem', padding: 0 }}
+          >
+            Browse the Index
+          </button>{' '}
+          to build your stack.
+        </p>
+      ) : (
+        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.5rem', marginBottom: '1rem' }}>
+          {stackSupplements.map(supp => (
+            <span key={supp.slug} style={tagStyle}>
+              <Tag size={11} />
+              {supp.name}
+              <button
+                onClick={() => removeFromStack(supp.slug)}
+                style={{ background: 'none', border: 'none', cursor: 'pointer', display: 'flex', padding: 0, color: '#00685f' }}
+              >
+                <XIcon size={12} />
+              </button>
+            </span>
+          ))}
+        </div>
+      )}
+
+      <div style={{ borderTop: stackSupplements.length > 0 ? '1px solid var(--border)' : 'none', paddingTop: stackSupplements.length > 0 ? '1rem' : '0' }}>
+        <button
+          onClick={() => navigate('/premium')}
+          style={{
+            width: '100%',
+            padding: '0.75rem',
+            background: 'linear-gradient(135deg, #00685f 0%, #3f6560 100%)',
+            color: '#ffffff',
+            border: 'none',
+            borderRadius: '12px',
+            fontFamily: "'Inter', sans-serif",
+            fontWeight: 700,
+            fontSize: '0.875rem',
+            cursor: 'pointer',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            gap: '0.5rem',
+          }}
+        >
+          <Sparkle size={16} weight="fill" />
+          Evaluate Stack
+          <span style={{
+            background: 'rgba(255,255,255,0.2)',
+            border: '1px solid rgba(255,255,255,0.3)',
+            borderRadius: '999px',
+            padding: '0.0625rem 0.5rem',
+            fontSize: '0.625rem',
+            fontWeight: 700,
+            letterSpacing: '0.5px',
+            fontFamily: "'Inter', sans-serif",
+          }}>
+            PREMIUM
+          </span>
+        </button>
+      </div>
+    </div>
+  );
+
+  // Not signed in — still show the stack section
   if (!user && !loading) {
     return (
       <div style={{ background: 'var(--bg-page)', minHeight: '100vh', paddingTop: '100px' }}>
-        <div style={{ maxWidth: '560px', margin: '0 auto', padding: '2rem 1.5rem', textAlign: 'center' }}>
-          <div style={{
-            width: '56px', height: '56px', borderRadius: '50%',
-            background: '#e6f4f1', border: '1px solid #b3ddd8',
-            display: 'flex', alignItems: 'center', justifyContent: 'center',
-            margin: '0 auto 1.25rem',
-          }}>
-            <User size={26} color="#00685f" />
-          </div>
-          <h2 style={{ fontFamily: "'Manrope', sans-serif", fontWeight: 800, fontSize: '1.25rem', color: 'var(--text-primary)', margin: '0 0 0.5rem' }}>
-            Sign in to set up your profile
-          </h2>
-          <p style={{ fontFamily: "'Inter', sans-serif", fontSize: '0.9rem', color: 'var(--text-muted)', margin: '0 0 1.5rem', lineHeight: 1.6 }}>
-            Your health profile helps personalise supplement recommendations and deep dives.
-          </p>
+        <div style={{ maxWidth: '600px', margin: '0 auto', padding: '1.5rem 1.5rem 4rem' }}>
           <button
-            onClick={onSignIn}
+            onClick={onBack}
             style={{
-              background: '#00685f', color: '#fff', border: 'none',
-              borderRadius: '28px', padding: '0.75rem 1.5rem',
-              fontFamily: "'Inter', sans-serif", fontWeight: 700, fontSize: '0.9375rem',
-              cursor: 'pointer',
+              display: 'flex', alignItems: 'center', gap: '0.375rem',
+              background: 'transparent', border: 'none', padding: '0.25rem 0', marginBottom: '1.25rem',
+              color: 'var(--text-secondary)', cursor: 'pointer',
+              fontFamily: "'Inter', sans-serif", fontWeight: 600, fontSize: '0.875rem',
             }}
           >
-            Sign in
+            <ArrowLeft size={16} /> Back
           </button>
+
+          <div style={{ marginBottom: '1.75rem' }}>
+            <h1 style={{
+              fontFamily: "'Manrope', sans-serif", fontWeight: 800,
+              fontSize: 'clamp(1.375rem, 4vw, 1.75rem)',
+              color: 'var(--text-primary)', margin: '0 0 0.375rem', letterSpacing: '-0.5px',
+            }}>
+              My <span style={{ color: '#00685f' }}>Profile</span>
+            </h1>
+          </div>
+
+          {myStackSection}
+
+          <div style={{ textAlign: 'center', padding: '2rem 1rem', background: 'var(--bg-surface)', borderRadius: '16px', border: '1.5px solid var(--border)' }}>
+            <div style={{
+              width: '48px', height: '48px', borderRadius: '50%',
+              background: '#e6f4f1', border: '1px solid #b3ddd8',
+              display: 'flex', alignItems: 'center', justifyContent: 'center',
+              margin: '0 auto 1rem',
+            }}>
+              <User size={22} color="#00685f" />
+            </div>
+            <h2 style={{ fontFamily: "'Manrope', sans-serif", fontWeight: 800, fontSize: '1rem', color: 'var(--text-primary)', margin: '0 0 0.375rem' }}>
+              Sign in for your full profile
+            </h2>
+            <p style={{ fontFamily: "'Inter', sans-serif", fontSize: '0.875rem', color: 'var(--text-muted)', margin: '0 0 1.25rem', lineHeight: 1.6 }}>
+              Save goals, dietary preferences, and health conditions to personalise your experience.
+            </p>
+            <button
+              onClick={onSignIn}
+              style={{
+                background: '#00685f', color: '#fff', border: 'none',
+                borderRadius: '28px', padding: '0.75rem 1.5rem',
+                fontFamily: "'Inter', sans-serif", fontWeight: 700, fontSize: '0.9375rem',
+                cursor: 'pointer',
+              }}
+            >
+              Sign in
+            </button>
+          </div>
         </div>
       </div>
     );
@@ -262,10 +373,10 @@ export default function HealthProfilePage({ onBack, onSignIn }: HealthProfilePag
             fontSize: 'clamp(1.375rem, 4vw, 1.75rem)',
             color: 'var(--text-primary)', margin: '0 0 0.375rem', letterSpacing: '-0.5px',
           }}>
-            Your health profile
+            My <span style={{ color: '#00685f' }}>Profile</span>
           </h1>
           <p style={{ fontFamily: "'Inter', sans-serif", fontSize: '0.9rem', color: 'var(--text-muted)', margin: 0, lineHeight: 1.6 }}>
-            Used to personalise deep dive recommendations and your stack optimiser.
+            Personalise your supplement recommendations and stack optimiser.
           </p>
         </div>
 
@@ -275,6 +386,9 @@ export default function HealthProfilePage({ onBack, onSignIn }: HealthProfilePag
           </div>
         ) : (
           <>
+            {/* My Stack */}
+            {myStackSection}
+
             {/* Goal */}
             <div style={card}>
               <div style={sectionLabel}>Primary goal</div>
@@ -352,7 +466,7 @@ export default function HealthProfilePage({ onBack, onSignIn }: HealthProfilePag
 
             {/* Current stack */}
             <div style={card}>
-              <div style={sectionLabel}>Current supplement stack <span style={{ fontWeight: 500, color: 'var(--text-secondary)', fontSize: '0.8125rem' }}>(optional)</span></div>
+              <div style={sectionLabel}>Other supplements <span style={{ fontWeight: 500, color: 'var(--text-secondary)', fontSize: '0.8125rem' }}>(optional)</span></div>
               <div
                 style={tagWrap}
                 onClick={e => (e.currentTarget.querySelector('input') as HTMLInputElement)?.focus()}
@@ -368,7 +482,7 @@ export default function HealthProfilePage({ onBack, onSignIn }: HealthProfilePag
                 ))}
                 <input
                   style={tagInput}
-                  placeholder={profile.current_stack.length ? '' : 'e.g. Creatine, Vitamin D… press Enter to add'}
+                  placeholder={profile.current_stack.length ? '' : 'e.g. Ashwagandha, Omega-3… press Enter to add'}
                   value={stackInput}
                   onChange={e => setStackInput(e.target.value)}
                   onKeyDown={e => handleTagKey(e, 'current_stack', stackInput, setStackInput)}

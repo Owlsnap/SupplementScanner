@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { MagnifyingGlass, ArrowRight, Barbell, Moon, Brain, Lightning, Leaf, Robot, X } from '@phosphor-icons/react';
+import { MagnifyingGlass, ArrowRight, Barbell, Moon, Brain, Lightning, Leaf, Robot, X, Plus, Check } from '@phosphor-icons/react';
 import {
   encyclopediaSupplements,
   encyclopediaCategories,
@@ -7,6 +7,7 @@ import {
   type EncyclopediaCategory,
 } from '../data/encyclopediaData';
 import { useDarkMode } from '../contexts/DarkModeContext';
+import { useStack } from '../contexts/StackContext';
 
 interface EncyclopediaPageProps {
   onOpenInfo: (slug: string) => void;
@@ -46,6 +47,11 @@ export default function EncyclopediaPage({ onOpenInfo }: EncyclopediaPageProps) 
   const [showAiDisclaimer, setShowAiDisclaimer] = useState(false);
   const { isDark } = useDarkMode();
   const categoryConfig = isDark ? categoryConfigDark : categoryConfigLight;
+  const { inStack, addToStack, removeFromStack } = useStack();
+  const onToggleStack = (slug: string) => {
+    if (inStack(slug)) removeFromStack(slug);
+    else addToStack(slug);
+  };
 
   const filtered = encyclopediaSupplements.filter(s => {
     const matchesCategory = activeCategory === 'All' || s.category === activeCategory;
@@ -101,7 +107,7 @@ export default function EncyclopediaPage({ onOpenInfo }: EncyclopediaPageProps) 
             fontSize: 'clamp(1.75rem, 4vw, 2.5rem)', color: '#ffffff',
             margin: '0 0 0.625rem', letterSpacing: '-0.5px', lineHeight: 1.15,
           }}>
-            Supplement Encyclopedia
+            Supplement <span style={{ color: '#fde68a' }}>Index</span>
           </h1>
           <p style={{
             fontFamily: "'Inter', sans-serif", fontSize: '1rem',
@@ -226,7 +232,7 @@ export default function EncyclopediaPage({ onOpenInfo }: EncyclopediaPageProps) 
               {activeCategory !== 'All' ? ` in ${activeCategory}` : ''}
               {searchQuery ? ` for "${searchQuery}"` : ''}
             </p>
-            <CardGrid items={filtered} hoveredCard={hoveredCard} setHoveredCard={setHoveredCard} onOpenInfo={onOpenInfo} />
+            <CardGrid items={filtered} hoveredCard={hoveredCard} setHoveredCard={setHoveredCard} onOpenInfo={onOpenInfo} inStack={inStack} onToggleStack={onToggleStack} />
           </>
         ) : (
           /* Grouped by category */
@@ -259,7 +265,7 @@ export default function EncyclopediaPage({ onOpenInfo }: EncyclopediaPageProps) 
                   </div>
                   {/* Divider */}
                   <div style={{ height: '1px', background: `linear-gradient(to right, ${cfg.bg}40, transparent)`, marginBottom: '1.25rem' }} />
-                  <CardGrid items={items} hoveredCard={hoveredCard} setHoveredCard={setHoveredCard} onOpenInfo={onOpenInfo} />
+                  <CardGrid items={items} hoveredCard={hoveredCard} setHoveredCard={setHoveredCard} onOpenInfo={onOpenInfo} inStack={inStack} onToggleStack={onToggleStack} />
                 </div>
               );
             })}
@@ -271,11 +277,13 @@ export default function EncyclopediaPage({ onOpenInfo }: EncyclopediaPageProps) 
 }
 
 // Extracted card grid component for reuse
-function CardGrid({ items, hoveredCard, setHoveredCard, onOpenInfo }: {
+function CardGrid({ items, hoveredCard, setHoveredCard, onOpenInfo, inStack, onToggleStack }: {
   items: ReturnType<typeof encyclopediaSupplements.filter>;
   hoveredCard: string | null;
   setHoveredCard: (s: string | null) => void;
   onOpenInfo: (slug: string) => void;
+  inStack: (slug: string) => boolean;
+  onToggleStack: (slug: string) => void;
 }) {
   const { isDark } = useDarkMode();
   const categoryConfig = isDark ? categoryConfigDark : categoryConfigLight;
@@ -288,12 +296,16 @@ function CardGrid({ items, hoveredCard, setHoveredCard, onOpenInfo }: {
       {items.map(supp => {
         const cfg = categoryConfig[supp.category];
         const isHovered = hoveredCard === supp.slug;
+        const added = inStack(supp.slug);
         return (
-          <button
+          <div
             key={supp.slug}
             onClick={() => onOpenInfo(supp.slug)}
             onMouseEnter={() => setHoveredCard(supp.slug)}
             onMouseLeave={() => setHoveredCard(null)}
+            role="button"
+            tabIndex={0}
+            onKeyDown={e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); onOpenInfo(supp.slug); } }}
             style={{
               background: 'var(--bg-surface)', borderRadius: '16px',
               border: `1.5px solid ${isHovered ? cfg.bg : 'var(--border)'}`,
@@ -373,16 +385,37 @@ function CardGrid({ items, hoveredCard, setHoveredCard, onOpenInfo }: {
                 }}>
                   View details
                 </span>
-                <div style={{
-                  width: '26px', height: '26px', borderRadius: '999px',
-                  background: cfg.light, display: 'flex',
-                  alignItems: 'center', justifyContent: 'center',
-                }}>
-                  <ArrowRight size={13} color={cfg.bg} weight="bold" />
+                <div style={{ display: 'flex', alignItems: 'center', gap: '0.375rem' }}>
+                  <button
+                    onClick={e => { e.stopPropagation(); onToggleStack(supp.slug); }}
+                    title={added ? 'Remove from stack' : 'Add to stack'}
+                    style={{
+                      display: 'flex', alignItems: 'center', gap: '0.25rem',
+                      padding: '0.25rem 0.625rem', borderRadius: '999px',
+                      border: added ? 'none' : `1.5px dashed ${cfg.bg}`,
+                      background: added ? '#00685f' : 'transparent',
+                      color: added ? '#ffffff' : cfg.bg,
+                      cursor: 'pointer', fontFamily: "'Inter', sans-serif",
+                      fontWeight: 600, fontSize: '0.6875rem',
+                      transition: 'all 0.15s ease',
+                    }}
+                  >
+                    {added
+                      ? <><Check size={11} weight="bold" /> Added</>
+                      : <><Plus size={11} weight="bold" /> Stack</>
+                    }
+                  </button>
+                  <div style={{
+                    width: '26px', height: '26px', borderRadius: '999px',
+                    background: cfg.light, display: 'flex',
+                    alignItems: 'center', justifyContent: 'center',
+                  }}>
+                    <ArrowRight size={13} color={cfg.bg} weight="bold" />
+                  </div>
                 </div>
               </div>
             </div>
-          </button>
+          </div>
         );
       })}
     </div>
