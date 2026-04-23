@@ -4,17 +4,21 @@ import SupplementAnalyzer from './components/SupplementAnalyzer';
 import { DarkModeProvider } from './contexts/DarkModeContext';
 import { AuthProvider } from './contexts/AuthContext';
 import { StackProvider } from './contexts/StackContext';
+import { LanguageProvider } from './contexts/LanguageContext';
+import './i18n';
 
 function App(): JSX.Element {
   return (
     <BrowserRouter>
-      <DarkModeProvider>
-        <AuthProvider>
-          <StackProvider>
-            <SupplementAnalyzer />
-          </StackProvider>
-        </AuthProvider>
-      </DarkModeProvider>
+      <LanguageProvider>
+        <DarkModeProvider>
+          <AuthProvider>
+            <StackProvider>
+              <SupplementAnalyzer />
+            </StackProvider>
+          </AuthProvider>
+        </DarkModeProvider>
+      </LanguageProvider>
     </BrowserRouter>
   );
 }
