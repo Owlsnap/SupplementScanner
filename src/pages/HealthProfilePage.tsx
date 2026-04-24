@@ -47,6 +47,27 @@ const CONDITION_SUGGESTIONS = [
 export default function HealthProfilePage({ onBack, onSignIn }: HealthProfilePageProps) {
   const { t } = useLanguage();
   const { user, session } = useAuth();
+
+  const goalDisplayLabels: Record<string, string> = {
+    'Build muscle': t('healthProfileOptions.goals.buildMuscle'),
+    'Lose fat': t('healthProfileOptions.goals.loseFat'),
+    'Improve energy': t('healthProfileOptions.goals.improveEnergy'),
+    'Better sleep': t('healthProfileOptions.goals.betterSleep'),
+    'Immune support': t('healthProfileOptions.goals.immuneSupport'),
+    'Athletic performance': t('healthProfileOptions.goals.athleticPerformance'),
+    'Cognitive focus': t('healthProfileOptions.goals.cognitiveFocus'),
+    'General health': t('healthProfileOptions.goals.generalHealth'),
+  };
+
+  const dietDisplayLabels: Record<string, string> = {
+    'Standard': t('healthProfileOptions.diet.standard'),
+    'Vegetarian': t('healthProfileOptions.diet.vegetarian'),
+    'Vegan': t('healthProfileOptions.diet.vegan'),
+    'Keto': t('healthProfileOptions.diet.keto'),
+    'Paleo': t('healthProfileOptions.diet.paleo'),
+    'Gluten-free': t('healthProfileOptions.diet.glutenFree'),
+    'Dairy-free': t('healthProfileOptions.diet.dairyFree'),
+  };
   const navigate = useNavigate();
   const { stack, removeFromStack } = useStack();
 
@@ -401,7 +422,7 @@ export default function HealthProfilePage({ onBack, onSignIn }: HealthProfilePag
                     onClick={() => setProfile(p => ({ ...p, goal: p.goal === g ? '' : g }))}
                     style={chip(profile.goal === g)}
                   >
-                    {g}
+                    {goalDisplayLabels[g] || g}
                   </button>
                 ))}
               </div>
@@ -417,7 +438,7 @@ export default function HealthProfilePage({ onBack, onSignIn }: HealthProfilePag
                     onClick={() => setProfile(p => ({ ...p, diet: toggleArray(p.diet, d) }))}
                     style={chip(profile.diet.includes(d))}
                   >
-                    {d}
+                    {dietDisplayLabels[d] || d}
                   </button>
                 ))}
               </div>

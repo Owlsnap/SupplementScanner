@@ -104,6 +104,14 @@ export default function PremiumPage({ onBack }: PremiumPageProps) {
   const [notified, setNotified] = useState<boolean>(() => !!localStorage.getItem(NOTIFY_KEY));
   const [showAiDisclaimer, setShowAiDisclaimer] = useState(false);
 
+  const freeFeatures = t('premium.freeFeatures', { returnObjects: true }) as string[];
+  const premiumFeatures = t('premium.premiumFeatures', { returnObjects: true }) as string[];
+  const comingSoonFeatures = t('premium.comingSoonFeatures', { returnObjects: true }) as string[];
+  const faqItems = t('premium.faq', { returnObjects: true }) as Array<{ q: string; a: string }>;
+  const deepDiveFeaturesList = (t('premium.deepDiveFeatures', { returnObjects: true }) as Array<{ label: string; desc: string }>).map(
+    (f, i) => ({ Icon: DEEP_DIVE_FEATURES[i].Icon, label: f.label, desc: f.desc })
+  );
+
   const handleNotify = () => {
     localStorage.setItem(NOTIFY_KEY, '1');
     setNotified(true);
@@ -381,6 +389,7 @@ export default function PremiumPage({ onBack }: PremiumPageProps) {
           {Object.values(PLANS).map(plan => {
             const isHighlight = plan.highlight;
             const isDive = plan.id === 'dive';
+            const planT = t(`premium.plans.${plan.id}`, { returnObjects: true }) as { label: string; price: string; per: string; description: string; cta: string };
             return (
               <div
                 key={plan.id}
@@ -413,20 +422,20 @@ export default function PremiumPage({ onBack }: PremiumPageProps) {
                       : <Lightning size={16} color={textSecondary} />
                     }
                     <span style={{ fontFamily: "'Manrope', sans-serif", fontWeight: 800, fontSize: '0.9375rem', color: textPrimary }}>
-                      {plan.label}
+                      {planT.label}
                     </span>
                   </div>
                   <p style={{ fontFamily: "'Inter', sans-serif", fontSize: '0.8125rem', color: textMuted, margin: 0, lineHeight: 1.5 }}>
-                    {plan.description}
+                    {planT.description}
                   </p>
                 </div>
 
                 <div>
                   <span style={{ fontFamily: "'Manrope', sans-serif", fontWeight: 800, fontSize: '2rem', color: textPrimary, letterSpacing: '-1px' }}>
-                    {plan.price}
+                    {planT.price}
                   </span>
                   <span style={{ fontFamily: "'Inter', sans-serif", fontSize: '0.8125rem', color: textMuted, marginLeft: '0.375rem' }}>
-                    {plan.per}
+                    {planT.per}
                   </span>
                 </div>
 
@@ -443,7 +452,7 @@ export default function PremiumPage({ onBack }: PremiumPageProps) {
                     onMouseEnter={e => { (e.currentTarget as HTMLAnchorElement).style.opacity = '0.75'; }}
                     onMouseLeave={e => { (e.currentTarget as HTMLAnchorElement).style.opacity = '1'; }}
                   >
-                    {t('premium.browseSupplement')} <ArrowRight size={14} weight="bold" />
+                    {planT.cta} <ArrowRight size={14} weight="bold" />
                   </a>
                 ) : notified ? (
                   <div style={{
@@ -564,7 +573,7 @@ export default function PremiumPage({ onBack }: PremiumPageProps) {
 
             {/* Right — 2-col feature grid */}
             <div className="premium-feature-grid" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.5rem 2rem' }}>
-              {DEEP_DIVE_FEATURES.map(({ Icon, label, desc }) => (
+              {deepDiveFeaturesList.map(({ Icon, label, desc }) => (
                 <div key={label} style={{ display: 'flex', gap: '0.875rem' }}>
                   <div style={{
                     width: '38px', height: '38px', borderRadius: '10px',
@@ -608,7 +617,7 @@ export default function PremiumPage({ onBack }: PremiumPageProps) {
                 {t('premium.free')}
               </div>
               <div style={{ display: 'flex', flexDirection: 'column', gap: '0.625rem' }}>
-                {FREE_FEATURES.map(f => (
+                {freeFeatures.map(f => (
                   <div key={f} style={{ display: 'flex', alignItems: 'flex-start', gap: '0.625rem' }}>
                     <div style={{ width: '18px', height: '18px', borderRadius: '50%', background: checkBg, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, marginTop: '1px' }}>
                       <Check size={11} weight="bold" color="#00685f" />
@@ -625,7 +634,7 @@ export default function PremiumPage({ onBack }: PremiumPageProps) {
                 Premium
               </div>
               <div style={{ display: 'flex', flexDirection: 'column', gap: '0.625rem' }}>
-                {PREMIUM_FEATURES.map(f => (
+                {premiumFeatures.map(f => (
                   <div key={f} style={{ display: 'flex', alignItems: 'flex-start', gap: '0.625rem' }}>
                     <div style={{ width: '18px', height: '18px', borderRadius: '50%', background: checkBg, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, marginTop: '1px' }}>
                       <Check size={11} weight="bold" color="#00685f" />
@@ -639,7 +648,7 @@ export default function PremiumPage({ onBack }: PremiumPageProps) {
                   {t('premium.comingSoon')}
                 </div>
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
-                  {COMING_SOON.map(f => (
+                  {comingSoonFeatures.map(f => (
                     <div key={f} style={{ display: 'flex', alignItems: 'flex-start', gap: '0.625rem' }}>
                       <div style={{ width: '18px', height: '18px', borderRadius: '50%', background: isDark ? 'rgba(255,255,255,0.05)' : 'rgba(0,0,0,0.04)', border: `1.5px dashed ${borderStrong}`, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, marginTop: '1px' }}>
                         <span style={{ fontSize: '0.5rem', color: textMuted }}>●</span>
@@ -659,7 +668,7 @@ export default function PremiumPage({ onBack }: PremiumPageProps) {
             {t('premium.faqTitle')}
           </h2>
           <div style={{ display: 'flex', flexDirection: 'column', gap: '0.625rem' }}>
-            {FAQ.map((item, i) => (
+            {faqItems.map((item, i) => (
               <div
                 key={i}
                 style={{ background: surface, borderRadius: '14px', border: `1.5px solid ${openFaq === i ? borderStrong : border}`, overflow: 'hidden', cursor: 'pointer' }}

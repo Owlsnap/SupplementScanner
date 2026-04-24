@@ -1345,10 +1345,10 @@ export default function IngredientQualityComparison({ analyzedProducts = {} }: I
           <div style={{ background: 'var(--card-orange-bg)', border: '1px solid var(--card-orange-border)', borderRadius: '14px', padding: '1.75rem', textAlign: 'center' }}>
             <Warning size={36} color="#ea580c" style={{ marginBottom: '0.75rem', display: 'block', margin: '0 auto 0.75rem' }} />
             <h3 style={{ color: 'var(--card-orange-heading)', fontSize: '1.125rem', fontWeight: 700, marginBottom: '0.375rem', fontFamily: "'Manrope', sans-serif" }}>
-              No Supplement Data Available
+              {t('ingredientQuality.noDataTitle')}
             </h3>
             <p style={{ color: 'var(--card-orange-text)', fontSize: '0.875rem', margin: 0, fontFamily: "'Inter', sans-serif" }}>
-              Add supplement products with URLs to see ingredient quality analysis
+              {t('ingredientQuality.noDataBody')}
             </p>
           </div>
         )}
@@ -1365,17 +1365,16 @@ export default function IngredientQualityComparison({ analyzedProducts = {} }: I
               fontFamily: "'Manrope', sans-serif",
             }}>
               <Info size={18} color="#00685f" />
-              Detailed Analysis
+              {t('ingredientQuality.detailedAnalysis')}
             </h3>
 
             {categoryIngredients.length > 0 ? (
               categoryIngredients.map(ingredient => renderIngredientCard(ingredient))
             ) : (
               <div style={{ background: 'var(--card-orange-bg)', border: '1px solid var(--card-orange-border)', borderRadius: '12px', padding: '1.25rem', textAlign: 'center' }}>
-                <h4 style={{ color: 'var(--card-orange-heading)', marginBottom: '0.375rem', fontFamily: "'Manrope', sans-serif" }}>No ingredients found</h4>
+                <h4 style={{ color: 'var(--card-orange-heading)', marginBottom: '0.375rem', fontFamily: "'Manrope', sans-serif" }}>{t('ingredientQuality.noIngredientsFound')}</h4>
                 <p style={{ color: 'var(--card-orange-text)', fontSize: '0.875rem', margin: 0, fontFamily: "'Inter', sans-serif" }}>
-                  Products in this category don't have extractable ingredient data.
-                  Check console logs for debugging information.
+                  {t('ingredientQuality.noIngredientsFoundBody')}
                 </p>
               </div>
             )}

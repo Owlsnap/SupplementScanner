@@ -233,7 +233,7 @@ export default function RecommendationsPage(): JSX.Element {
             color: 'var(--text-secondary)', maxWidth: '560px',
             lineHeight: 1.7, margin: '0 auto',
           }}>
-            {goal.intro}
+            {t(`recommendations.goals.${goal.key}.intro`)}
           </p>
         </div>
 
@@ -375,7 +375,7 @@ export default function RecommendationsPage(): JSX.Element {
                     fontWeight: 900, textTransform: 'uppercase', letterSpacing: '0.12em',
                     color: tierCol, opacity: 0.9,
                   }}>
-                    {p1.evidenceTier} Evidence
+                    {p1.evidenceTier} {t('recommendations.evidenceSuffix')}
                   </div>
                 </div>
               </div>
