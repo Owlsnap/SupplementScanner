@@ -8,6 +8,7 @@ import {
 } from '../data/encyclopediaData';
 import { useDarkMode } from '../contexts/DarkModeContext';
 import { useStack } from '../contexts/StackContext';
+import { useLanguage } from '../contexts/LanguageContext';
 
 interface EncyclopediaPageProps {
   onOpenInfo: (slug: string) => void;
@@ -46,6 +47,7 @@ export default function EncyclopediaPage({ onOpenInfo }: EncyclopediaPageProps) 
   const [hoveredCategory, setHoveredCategory] = useState<string | null>(null);
   const [showAiDisclaimer, setShowAiDisclaimer] = useState(false);
   const { isDark } = useDarkMode();
+  const { t } = useLanguage();
   const categoryConfig = isDark ? categoryConfigDark : categoryConfigLight;
   const { inStack, addToStack, removeFromStack } = useStack();
   const onToggleStack = (slug: string) => {

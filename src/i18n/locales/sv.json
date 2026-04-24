@@ -1,0 +1,73 @@
+{
+  "nav": {
+    "index": "Index",
+    "urlScanner": "URL-skanner",
+    "goals": "Mål",
+    "premium": "Premium",
+    "signIn": "Logga in",
+    "signOut": "Logga ut",
+    "myProfile": "Min profil",
+    "mobileApp": "Mobilapp",
+    "mobileAppSubtitle": "iOS & Android — kommer snart"
+  },
+  "common": {
+    "beta": "BETA",
+    "loading": "Laddar...",
+    "extract": "Extrahera",
+    "extracting": "Extraherar…",
+    "viewPage": "Visa sida",
+    "signedInAs": "Inloggad som",
+    "mayBeLater": "Kanske senare",
+    "close": "Stäng"
+  },
+  "encyclopedia": {
+    "title": "Tillskottslexikon",
+    "subtitle": "Vetenskapligt baserade insikter om 30+ tillskott",
+    "searchPlaceholder": "Sök tillskott...",
+    "allCategories": "Alla",
+    "noResults": "Inga tillskott hittades",
+    "noResultsHint": "Prova att justera din sökning eller kategorifilter",
+    "categories": {
+      "Performance": "Prestation",
+      "Recovery": "Återhämtning", 
+      "Sleep": "Sömn",
+      "Nootropics": "Nootropics",
+      "Health": "Hälsa"
+    },
+    "evidenceTiers": {
+      "Strong": "Stark evidens",
+      "Moderate": "Måttlig evidens",
+      "Emerging": "Framväxande evidens", 
+      "Anecdotal": "Anekdotisk evidens"
+    }
+  },
+  "urlScanner": {
+    "title": "Analysera vilket tillskott som helst från en produktsida",
+    "subtitle": "Klistra in en produkt-URL — AI extraherar ingredienser, doser och kvalitetsdata automatiskt",
+    "placeholder": "https://www.tillskottsbolaget.se/produkt/...",
+    "hint": "Fungerar med Proteinbolaget, Gymgrossisten, Tillskottsbolaget med flera",
+    "aiReading": "AI läser sidan…",
+    "aiReadingSubtitle": "Extraherar ingredienser, doser och produktinformation",
+    "noProductYet": "Ingen produkt skannad ännu",
+    "noProductHint": "Klistra in en tillskottsprodukt-URL ovan och klicka på Extrahera",
+    "servings": "Portioner",
+    "servingSize": "Portionsstorlek", 
+    "keyIngredient": "Nyckelingrediens",
+    "detecting": "Upptäcker…",
+    "extractedVia": "Extraherat via"
+  },
+  "premium": {
+    "deepDivesArePremium": "Djupdykningar är Premium",
+    "premiumDescription": "Få den fullständiga uppdelningen — dosering, former, biotillgänglighet, synergier och interaktioner. Från 19 kr per dyk.",
+    "signInToUnlock": "Logga in för att låsa upp"
+  },
+  "tooltips": {
+    "switchToLight": "Växla till ljust läge",
+    "switchToDark": "Växla till mörkt läge"
+  },
+  "notifications": {
+    "extractSuccess": "Produktinformation extraherad framgångsrikt! Hittade {{productName}}",
+    "extractError": "Kunde inte extrahera produktinformation: {{error}}",
+    "networkError": "Fel: Se till att backend-servern körs! Kör: node server.js"
+  }
+}

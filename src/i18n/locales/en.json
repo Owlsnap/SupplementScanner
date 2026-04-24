@@ -1,0 +1,73 @@
+{
+  "nav": {
+    "index": "Index",
+    "urlScanner": "URL Scanner",
+    "goals": "Goals",
+    "premium": "Premium",
+    "signIn": "Sign in",
+    "signOut": "Sign out",
+    "myProfile": "My profile",
+    "mobileApp": "Mobile App",
+    "mobileAppSubtitle": "iOS & Android — coming soon"
+  },
+  "common": {
+    "beta": "BETA",
+    "loading": "Loading...",
+    "extract": "Extract",
+    "extracting": "Extracting…",
+    "viewPage": "View page",
+    "signedInAs": "Signed in as",
+    "mayBeLater": "Maybe later",
+    "close": "Close"
+  },
+  "encyclopedia": {
+    "title": "Supplement Encyclopedia",
+    "subtitle": "Science-backed insights on 30+ supplements",
+    "searchPlaceholder": "Search supplements...",
+    "allCategories": "All",
+    "noResults": "No supplements found",
+    "noResultsHint": "Try adjusting your search or category filter",
+    "categories": {
+      "Performance": "Performance",
+      "Recovery": "Recovery", 
+      "Sleep": "Sleep",
+      "Nootropics": "Nootropics",
+      "Health": "Health"
+    },
+    "evidenceTiers": {
+      "Strong": "Strong Evidence",
+      "Moderate": "Moderate Evidence",
+      "Emerging": "Emerging Evidence", 
+      "Anecdotal": "Anecdotal Evidence"
+    }
+  },
+  "urlScanner": {
+    "title": "Analyze any supplement from a product page",
+    "subtitle": "Paste a product URL — AI extracts ingredients, dosages and quality data automatically",
+    "placeholder": "https://www.tillskottsbolaget.se/produkt/...",
+    "hint": "Works with Proteinbolaget, Gymgrossisten, Tillskottsbolaget, and more",
+    "aiReading": "AI is reading the page…",
+    "aiReadingSubtitle": "Extracting ingredients, dosages, and product info",
+    "noProductYet": "No product scanned yet",
+    "noProductHint": "Paste a supplement product URL above and click Extract",
+    "servings": "Servings",
+    "servingSize": "Serving size", 
+    "keyIngredient": "Key ingredient",
+    "detecting": "Detecting…",
+    "extractedVia": "Extracted via"
+  },
+  "premium": {
+    "deepDivesArePremium": "Deep Dives are Premium",
+    "premiumDescription": "Get the full breakdown — dosing, forms, bioavailability, synergies, and interactions. Starting at $1.99 per dive.",
+    "signInToUnlock": "Sign in to unlock"
+  },
+  "tooltips": {
+    "switchToLight": "Switch to light mode",
+    "switchToDark": "Switch to dark mode"
+  },
+  "notifications": {
+    "extractSuccess": "Product info extracted successfully! Found {{productName}}",
+    "extractError": "Could not extract product info: {{error}}",
+    "networkError": "Error: Make sure the backend server is running! Run: node server.js"
+  }
+}

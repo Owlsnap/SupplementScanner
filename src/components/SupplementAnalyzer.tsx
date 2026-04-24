@@ -18,9 +18,11 @@ function getSessionIdForSlug(slug: string): string | null {
 import { DeviceMobile, Robot, LinkSimple, List, Target, Books, Moon, Sun, Sparkle, X, UserCircle, SignOut, User, MagnifyingGlass } from "@phosphor-icons/react";
 import { useDarkMode } from '../contexts/DarkModeContext';
 import { useAuth } from '../contexts/AuthContext';
+import { useLanguage } from '../contexts/LanguageContext';
 import AuthModal from './AuthModal';
 import CookieBanner from './CookieBanner';
 import IngredientQualityComparison from './IngredientQualityComparison';
+import LanguageSwitcher from './LanguageSwitcher';
 import RecommendationsPage from '../pages/RecommendationsPage';
 import MobileAppPage from '../pages/MobileAppPage';
 import EncyclopediaPage from '../pages/EncyclopediaPage';
@@ -266,6 +268,7 @@ function PremiumDeepDiveRoute() {
 export default function SupplementAnalyzer(): JSX.Element {
   const { isDark, toggle: toggleDark } = useDarkMode();
   const { user, signOut } = useAuth();
+  const { t } = useLanguage();
   const [showAuthModal, setShowAuthModal] = useState(false);
   const [showUserMenu, setShowUserMenu] = useState(false);
   const [products, setProducts] = useState<Product[]>([
@@ -429,14 +432,14 @@ export default function SupplementAnalyzer(): JSX.Element {
           setAnalyzedSupplements({});
         }
 
-        showToast(`Product info extracted successfully! Found ${data.productName}`, 'success');
+        showToast(t('notifications.extractSuccess', { productName: data.productName }), 'success');
       } else {
         console.error('Extraction failed:', responseData.error);
-        showToast(`Could not extract product info: ${responseData.error}`, 'error');
+        showToast(t('notifications.extractError', { error: responseData.error }), 'error');
       }
     } catch (error) {
       console.error('Network/API Error:', error);
-      showToast('Error: Make sure the backend server is running! Run: node server.js', 'error');
+      showToast(t('notifications.networkError'), 'error');
     } finally {
       setExtractingProducts(prev => {
         const newSet = new Set(prev);
@@ -523,7 +526,7 @@ export default function SupplementAnalyzer(): JSX.Element {
               }}
             >
               <Books size={15} />
-              <span>Index</span>
+              <span>{t('nav.index')}</span>
             </button>
 
             <button
@@ -542,7 +545,7 @@ export default function SupplementAnalyzer(): JSX.Element {
               }}
             >
               <LinkSimple size={15} />
-              <span>URL Scanner</span>
+              <span>{t('nav.urlScanner')}</span>
               <span style={{
                 background: location.pathname === '/scanner' ? 'rgba(255,255,255,0.2)' : 'rgba(245,158,11,0.15)',
                 color: location.pathname === '/scanner' ? '#ffffff' : '#b45309',
@@ -552,7 +555,7 @@ export default function SupplementAnalyzer(): JSX.Element {
                 letterSpacing: '0.5px', lineHeight: 1,
                 fontFamily: "'Inter', sans-serif",
               }}>
-                BETA
+                {t('common.beta')}
               </span>
             </button>
 
@@ -572,7 +575,7 @@ export default function SupplementAnalyzer(): JSX.Element {
               }}
             >
               <Target size={15} />
-              <span>Goals</span>
+              <span>{t('nav.goals')}</span>
             </button>
 
             <button
@@ -591,7 +594,7 @@ export default function SupplementAnalyzer(): JSX.Element {
               }}
             >
               <Sparkle size={14} weight="fill" />
-              <span>Premium</span>
+              <span>{t('nav.premium')}</span>
             </button>
 
             {/* Auth button */}
@@ -625,7 +628,7 @@ export default function SupplementAnalyzer(): JSX.Element {
                       minWidth: '180px', zIndex: 999, overflow: 'hidden',
                     }}>
                       <div style={{ padding: '0.75rem 1rem', borderBottom: '1px solid var(--border)' }}>
-                        <div style={{ fontFamily: "'Inter', sans-serif", fontSize: '0.75rem', color: 'var(--text-secondary)', fontWeight: 500 }}>Signed in as</div>
+                        <div style={{ fontFamily: "'Inter', sans-serif", fontSize: '0.75rem', color: 'var(--text-secondary)', fontWeight: 500 }}>{t('common.signedInAs')}</div>
                         <div style={{ fontFamily: "'Inter', sans-serif", fontSize: '0.8125rem', color: 'var(--text-primary)', fontWeight: 600, marginTop: '0.125rem', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{user.email}</div>
                       </div>
                       <button
@@ -642,7 +645,7 @@ export default function SupplementAnalyzer(): JSX.Element {
                         onMouseLeave={e => { (e.currentTarget as HTMLButtonElement).style.background = 'transparent'; }}
                       >
                         <User size={16} color="var(--text-secondary)" />
-                        My profile
+                        {t('nav.myProfile')}
                       </button>
                       <button
                         onClick={() => { signOut(); setShowUserMenu(false); }}
@@ -658,7 +661,7 @@ export default function SupplementAnalyzer(): JSX.Element {
                         onMouseLeave={e => { (e.currentTarget as HTMLButtonElement).style.background = 'transparent'; }}
                       >
                         <SignOut size={16} color="var(--text-secondary)" />
-                        Sign out
+                        {t('nav.signOut')}
                       </button>
                     </div>
                   </>
@@ -680,14 +683,14 @@ export default function SupplementAnalyzer(): JSX.Element {
                 onMouseLeave={e => { (e.currentTarget as HTMLButtonElement).style.borderColor = 'var(--border-strong)'; (e.currentTarget as HTMLButtonElement).style.color = 'var(--text-secondary)'; }}
               >
                 <UserCircle size={16} />
-                Sign in
+                {t('nav.signIn')}
               </button>
             )}
 
             {/* Dark mode toggle */}
             <button
               onClick={toggleDark}
-              title={isDark ? 'Switch to light mode' : 'Switch to dark mode'}
+              title={isDark ? t('tooltips.switchToLight') : t('tooltips.switchToDark')}
               style={{
                 display: 'flex', alignItems: 'center', justifyContent: 'center',
                 width: '36px', height: '36px', borderRadius: '999px',
@@ -859,12 +862,13 @@ export default function SupplementAnalyzer(): JSX.Element {
                   >
                     <DeviceMobile size={18} color="var(--text-secondary)" />
                     <div>
-                      <div>Mobile App</div>
+                      <div>{t('nav.mobileApp')}</div>
                       <div style={{ fontSize: '0.75rem', color: 'var(--text-secondary)', fontWeight: 400, marginTop: '0.125rem' }}>
-                        iOS & Android — coming soon
+                        {t('nav.mobileAppSubtitle')}
                       </div>
                     </div>
                   </button>
+                  <LanguageSwitcher onLanguageChange={() => setShowMenu(false)} />
                 </div>
               )}
             </div>
@@ -906,7 +910,7 @@ export default function SupplementAnalyzer(): JSX.Element {
                 border: '1px solid rgba(255,255,255,0.2)',
               }}>
                 <LinkSimple size={14} color="#ffffff" />
-                <span style={{ color: '#ffffff', fontSize: '0.8125rem', fontWeight: 600, fontFamily: "'Inter', sans-serif" }}>URL Scanner</span>
+                <span style={{ color: '#ffffff', fontSize: '0.8125rem', fontWeight: 600, fontFamily: "'Inter', sans-serif" }}>{t('nav.urlScanner')}</span>
                 <span style={{
                   background: 'rgba(255,255,255,0.2)', color: '#ffffff',
                   border: '1px solid rgba(255,255,255,0.35)',
@@ -915,7 +919,7 @@ export default function SupplementAnalyzer(): JSX.Element {
                   letterSpacing: '0.5px', lineHeight: 1,
                   fontFamily: "'Inter', sans-serif",
                 }}>
-                  BETA
+                  {t('common.beta')}
                 </span>
               </div>
 
@@ -925,10 +929,10 @@ export default function SupplementAnalyzer(): JSX.Element {
                 color: '#ffffff', margin: '0 0 0.625rem', letterSpacing: '-0.5px',
                 lineHeight: 1.2,
               }}>
-                Analyze <span style={{ color: '#fde68a' }}>any supplement</span><br />from a product page
+                {t('urlScanner.title')}
               </h1>
               <p style={{ color: 'rgba(255,255,255,0.75)', fontSize: '1rem', margin: '0 0 2rem', fontFamily: "'Inter', sans-serif" }}>
-                Paste a product URL — AI extracts ingredients, dosages and quality data automatically
+                {t('urlScanner.subtitle')}
               </p>
 
               {/* URL input bar */}
@@ -944,7 +948,7 @@ export default function SupplementAnalyzer(): JSX.Element {
                 <LinkSimple size={18} color="#6d7a77" style={{ flexShrink: 0 }} />
                 <input
                   type="url"
-                  placeholder="https://www.tillskottsbolaget.se/produkt/..."
+                  placeholder={t('urlScanner.placeholder')}
                   value={product.url}
                   onChange={(e) => updateProduct(product.id, "url", e.target.value)}
                   onKeyDown={(e) => { if (e.key === 'Enter' && product.url.trim() && !isExtracting) extractProductInfo(product.id, product.url); }}
@@ -973,13 +977,13 @@ export default function SupplementAnalyzer(): JSX.Element {
                   }}
                 >
                   <Robot size={17} />
-                  {isExtracting ? 'Extracting…' : 'Extract'}
+                  {isExtracting ? t('common.extracting') : t('common.extract')}
                 </button>
               </div>
 
               {/* Hint row */}
               <p style={{ color: 'rgba(255,255,255,0.5)', fontSize: '0.8rem', margin: '0.75rem 0 0', fontFamily: "'Inter', sans-serif" }}>
-                Works with Proteinbolaget, Gymgrossisten, Tillskottsbolaget, and more
+                {t('urlScanner.hint')}
               </p>
             </div>
           </div>
@@ -1005,10 +1009,10 @@ export default function SupplementAnalyzer(): JSX.Element {
                 </div>
                 <div style={{ textAlign: 'center' }}>
                   <div style={{ fontFamily: "'Manrope', sans-serif", fontWeight: 800, fontSize: '1rem', color: 'var(--text-primary)', marginBottom: '0.25rem' }}>
-                    AI is reading the page…
+                    {t('urlScanner.aiReading')}
                   </div>
                   <div style={{ color: 'var(--text-secondary)', fontSize: '0.875rem', fontFamily: "'Inter', sans-serif" }}>
-                    Extracting ingredients, dosages, and product info
+                    {t('urlScanner.aiReadingSubtitle')}
                   </div>
                 </div>
                 <style>{`
@@ -1078,16 +1082,16 @@ export default function SupplementAnalyzer(): JSX.Element {
                     }}
                   >
                     <LinkSimple size={13} />
-                    View page
+                    {t('common.viewPage')}
                   </button>
                 </div>
 
                 {/* Stats row */}
                 <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', padding: '0' }}>
                   {[
-                    { label: 'Servings', value: product.quantity ? `${product.quantity} ${product.unit || ''}`.trim() : '—' },
-                    { label: 'Serving size', value: product.servingSize || '—' },
-                    { label: 'Key ingredient', value: product.activeIngredient || 'Detecting…', highlight: true },
+                    { label: t('urlScanner.servings'), value: product.quantity ? `${product.quantity} ${product.unit || ''}`.trim() : '—' },
+                    { label: t('urlScanner.servingSize'), value: product.servingSize || '—' },
+                    { label: t('urlScanner.keyIngredient'), value: product.activeIngredient || t('urlScanner.detecting'), highlight: true },
                   ].map((stat, i) => (
                     <div key={i} style={{
                       padding: '1rem 1.25rem',
@@ -1120,7 +1124,7 @@ export default function SupplementAnalyzer(): JSX.Element {
                   }}>
                     <Robot size={13} color="var(--text-secondary)" />
                     <span style={{ color: 'var(--text-secondary)', fontSize: '0.75rem', fontFamily: "'Inter', sans-serif" }}>
-                      Extracted via {product.extractionMethod}
+                      {t('urlScanner.extractedVia')} {product.extractionMethod}
                     </span>
                   </div>
                 )}
@@ -1142,9 +1146,9 @@ export default function SupplementAnalyzer(): JSX.Element {
                   <LinkSimple size={24} color="#00685f" />
                 </div>
                 <div style={{ fontFamily: "'Manrope', sans-serif", fontWeight: 700, fontSize: '1rem', color: 'var(--text-muted)', marginBottom: '0.375rem' }}>
-                  No product scanned yet
+                  {t('urlScanner.noProductYet')}
                 </div>
-                <div style={{ fontSize: '0.875rem' }}>Paste a supplement product URL above and click Extract</div>
+                <div style={{ fontSize: '0.875rem' }}>{t('urlScanner.noProductHint')}</div>
               </div>
             )}
 
@@ -1202,14 +1206,13 @@ export default function SupplementAnalyzer(): JSX.Element {
               fontSize: '1.25rem', color: 'var(--text-primary)',
               margin: '0 0 0.5rem', letterSpacing: '-0.3px',
             }}>
-              Deep Dives are Premium
+              {t('premium.deepDivesArePremium')}
             </h3>
             <p style={{
               fontFamily: "'Inter', sans-serif", fontSize: '0.9rem',
               color: 'var(--text-muted)', lineHeight: 1.6, margin: '0 0 1.5rem',
             }}>
-              Get the full breakdown — dosing, forms, bioavailability, synergies,
-              and interactions. Starting at $1.99 per dive.
+              {t('premium.premiumDescription')}
             </p>
 
             <div style={{ display: 'flex', flexDirection: 'column', gap: '0.625rem' }}>
@@ -1225,7 +1228,7 @@ export default function SupplementAnalyzer(): JSX.Element {
                 }}
               >
                 <Sparkle size={15} weight="fill" />
-                Sign in to unlock
+                {t('premium.signInToUnlock')}
               </button>
               <button
                 onClick={() => setShowPaywallModal(false)}
@@ -1237,7 +1240,7 @@ export default function SupplementAnalyzer(): JSX.Element {
                   fontSize: '0.9375rem', cursor: 'pointer', width: '100%',
                 }}
               >
-                Maybe later
+                {t('common.mayBeLater')}
               </button>
             </div>
           </div>
