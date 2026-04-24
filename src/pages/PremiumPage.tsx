@@ -132,13 +132,17 @@ export default function PremiumPage({ onBack }: PremiumPageProps) {
     <div style={{ background: pageBg, minHeight: '100vh', fontFamily: "'Inter', sans-serif" }}>
       <style>{`
         @keyframes spin { to { transform: rotate(360deg); } }
-        @media (max-width: 720px) {
+        @media (max-width: 768px) {
           .premium-hero-grid { grid-template-columns: 1fr !important; }
           .premium-hero-preview { display: none !important; }
           .premium-research-grid { grid-template-columns: 1fr !important; }
-          .premium-feature-grid { grid-template-columns: 1fr 1fr !important; }
+          .premium-feature-grid { grid-template-columns: 1fr !important; }
           .premium-plans-grid { grid-template-columns: 1fr !important; }
           .premium-what-grid { grid-template-columns: 1fr !important; }
+        }
+        @media (max-width: 640px) {
+          .premium-feature-grid { grid-template-columns: 1fr !important; }
+          .premium-hero-grid { padding: 0 1rem !important; }
         }
       `}</style>
 

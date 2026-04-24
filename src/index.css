@@ -138,3 +138,73 @@ input:focus {
   border-color: #667eea;
   outline: none;
 }
+
+/* Mobile responsive navigation */
+@media (max-width: 768px) {
+  .desktop-nav {
+    display: none !important;
+  }
+  .mobile-nav {
+    display: flex !important;
+  }
+}
+
+@media (min-width: 769px) {
+  .desktop-nav {
+    display: flex !important;
+  }
+  .mobile-nav {
+    display: none !important;
+  }
+}
+
+/* General mobile responsive styles */
+@media (max-width: 768px) {
+  /* Reduce container padding on mobile */
+  body {
+    overflow-x: hidden;
+  }
+  
+  /* Prevent horizontal scroll */
+  * {
+    max-width: 100%;
+    box-sizing: border-box;
+  }
+  
+  /* Responsive hero sections */
+  .hero-section {
+    padding-left: 1rem !important;
+    padding-right: 1rem !important;
+  }
+  
+  /* Mobile search bar and category pills */
+  .category-pills {
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 0.375rem;
+  }
+  
+  /* Mobile card grids */
+  .supplement-grid {
+    grid-template-columns: 1fr !important;
+    gap: 1rem !important;
+  }
+}
+
+@media (max-width: 640px) {
+  /* Extra small mobile adjustments */
+  .hero-section {
+    padding-left: 0.75rem !important;
+    padding-right: 0.75rem !important;
+  }
+  
+  /* Smaller text on very small screens */
+  .mobile-heading {
+    font-size: 1.5rem !important;
+  }
+  
+  /* Tighter spacing */
+  .mobile-spacing {
+    padding: 1rem !important;
+  }
+}
