@@ -15,7 +15,7 @@ function savePaidDive(slug: string, sessionId: string) {
 function getSessionIdForSlug(slug: string): string | null {
   return getPaidDives().find(d => d.slug === slug)?.sessionId ?? null;
 }
-import { DeviceMobile, Robot, LinkSimple, List, Target, Books, Moon, Sun, Sparkle, X, UserCircle, SignOut, User } from "@phosphor-icons/react";
+import { DeviceMobile, Robot, LinkSimple, List, Target, Books, Moon, Sun, Sparkle, X, UserCircle, SignOut, User, MagnifyingGlass } from "@phosphor-icons/react";
 import { useDarkMode } from '../contexts/DarkModeContext';
 import { useAuth } from '../contexts/AuthContext';
 import AuthModal from './AuthModal';
@@ -289,6 +289,7 @@ export default function SupplementAnalyzer(): JSX.Element {
   const [urlFocused, setUrlFocused] = useState<boolean>(false);
   const [showPaywallModal, setShowPaywallModal] = useState<boolean>(false);
   const [hoveredNav, setHoveredNav] = useState<string | null>(null);
+  const [showMobileMenu, setShowMobileMenu] = useState<boolean>(false);
 
   useEffect(() => { window.scrollTo(0, 0); }, [location.pathname]);
 
@@ -298,11 +299,14 @@ export default function SupplementAnalyzer(): JSX.Element {
       if (showMenu && !event.target.closest('[data-menu]')) {
         setShowMenu(false);
       }
+      if (showMobileMenu && !event.target.closest('[data-mobile-menu]')) {
+        setShowMobileMenu(false);
+      }
     };
 
     document.addEventListener('mousedown', handleClickOutside);
     return () => document.removeEventListener('mousedown', handleClickOutside);
-  }, [showMenu]);
+  }, [showMenu, showMobileMenu]);
 
   // Toast functions
   const showToast = (message, type = 'success') => {
@@ -476,10 +480,13 @@ export default function SupplementAnalyzer(): JSX.Element {
   return (
     <>
       {/* Backdrop Overlay */}
-      {showMenu && (
+      {(showMenu || showMobileMenu) && (
         <div
           style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, background: 'rgba(0,0,0,0.2)', zIndex: 999 }}
-          onClick={() => setShowMenu(false)}
+          onClick={() => {
+            setShowMenu(false);
+            setShowMobileMenu(false);
+          }}
         />
       )}
 
@@ -495,11 +502,11 @@ export default function SupplementAnalyzer(): JSX.Element {
             onClick={() => navigate('/')}
             style={{ background: 'none', border: 'none', cursor: 'pointer', padding: 0, display: 'flex', alignItems: 'center', gap: '0.625rem', flexShrink: 0 }}
           >
-            <img src={logoSvg} alt="SupplementScanner" style={{ height: '80px', width: 'auto' }} />
+            <img src={logoSvg} alt="SupplementScanner" style={{ height: 'clamp(60px, 8vw, 80px)', width: 'auto' }} />
           </button>
 
-          {/* Tab buttons */}
-          <div style={{ display: 'flex', alignItems: 'center', gap: '0.375rem', flexWrap: 'nowrap' }}>
+          {/* Desktop Tab buttons */}
+          <div className="desktop-nav" style={{ display: 'flex', alignItems: 'center', gap: '0.375rem', flexWrap: 'nowrap' }}>
             <button
               onClick={() => { navigate('/'); setShowMenu(false); }}
               onMouseEnter={() => setHoveredNav('encyclopedia')}
@@ -694,8 +701,129 @@ export default function SupplementAnalyzer(): JSX.Element {
               {isDark ? <Sun size={16} /> : <Moon size={16} />}
             </button>
 
-            {/* Guide — menu icon */}
-            <div style={{ position: 'relative', marginLeft: '0.25rem' }} data-menu>
+            {/* Mobile hamburger menu */}
+            <div className="mobile-nav" style={{ display: 'none', position: 'relative', marginLeft: '0.25rem' }} data-mobile-menu>
+              <button
+                onClick={() => setShowMobileMenu(!showMobileMenu)}
+                style={{
+                  display: 'flex', alignItems: 'center', justifyContent: 'center',
+                  width: '36px', height: '36px', borderRadius: '999px',
+                  border: '1.5px solid var(--border-strong)', background: 'transparent',
+                  color: 'var(--text-secondary)', cursor: 'pointer', transition: 'all 0.15s ease',
+                }}
+                onMouseEnter={e => { (e.currentTarget as HTMLButtonElement).style.borderColor = '#00685f'; (e.currentTarget as HTMLButtonElement).style.color = '#00685f'; }}
+                onMouseLeave={e => { (e.currentTarget as HTMLButtonElement).style.borderColor = 'var(--border-strong)'; (e.currentTarget as HTMLButtonElement).style.color = 'var(--text-secondary)'; }}
+              >
+                <List size={16} />
+              </button>
+              {showMobileMenu && (
+                <div style={{
+                  position: 'absolute', top: 'calc(100% + 0.5rem)', right: 0,
+                  background: 'var(--bg-surface)', border: '1px solid var(--border)',
+                  borderRadius: '16px', boxShadow: '0 8px 24px rgba(0,0,0,0.12)',
+                  overflow: 'hidden', minWidth: '200px', zIndex: 1001,
+                }}>
+                  <button
+                    onClick={() => { navigate('/'); setShowMobileMenu(false); }}
+                    style={{
+                      width: '100%', padding: '1rem 1.25rem',
+                      background: encyclopediaActive ? 'var(--primary-light)' : 'transparent', 
+                      border: 'none', color: encyclopediaActive ? '#00685f' : 'var(--text-primary)',
+                      fontSize: '0.9375rem', fontFamily: "'Inter', sans-serif",
+                      fontWeight: 600, cursor: 'pointer',
+                      display: 'flex', alignItems: 'center', gap: '0.75rem',
+                      textAlign: 'left', transition: 'background 0.15s ease',
+                    }}
+                    onMouseEnter={e => { if (!encyclopediaActive) (e.currentTarget as HTMLButtonElement).style.background = 'var(--bg-hover)'; }}
+                    onMouseLeave={e => { if (!encyclopediaActive) (e.currentTarget as HTMLButtonElement).style.background = 'transparent'; }}
+                  >
+                    <Books size={18} color={encyclopediaActive ? '#00685f' : 'var(--text-secondary)'} />
+                    Index
+                  </button>
+                  <button
+                    onClick={() => { navigate('/scanner'); setShowMobileMenu(false); }}
+                    style={{
+                      width: '100%', padding: '1rem 1.25rem',
+                      background: location.pathname === '/scanner' ? 'var(--primary-light)' : 'transparent', 
+                      border: 'none', color: location.pathname === '/scanner' ? '#00685f' : 'var(--text-primary)',
+                      fontSize: '0.9375rem', fontFamily: "'Inter', sans-serif",
+                      fontWeight: 600, cursor: 'pointer',
+                      display: 'flex', alignItems: 'center', gap: '0.75rem',
+                      textAlign: 'left', transition: 'background 0.15s ease',
+                    }}
+                    onMouseEnter={e => { if (location.pathname !== '/scanner') (e.currentTarget as HTMLButtonElement).style.background = 'var(--bg-hover)'; }}
+                    onMouseLeave={e => { if (location.pathname !== '/scanner') (e.currentTarget as HTMLButtonElement).style.background = 'transparent'; }}
+                  >
+                    <LinkSimple size={18} color={location.pathname === '/scanner' ? '#00685f' : 'var(--text-secondary)'} />
+                    <div>
+                      <div>URL Scanner</div>
+                      <span style={{
+                        background: 'rgba(245,158,11,0.15)', color: '#b45309',
+                        border: '1px solid rgba(180,83,9,0.25)',
+                        fontSize: '0.5rem', fontWeight: 800,
+                        padding: '0.125rem 0.375rem', borderRadius: '999px',
+                        letterSpacing: '0.5px', lineHeight: 1, marginTop: '0.125rem',
+                        fontFamily: "'Inter', sans-serif", display: 'inline-block'
+                      }}>BETA</span>
+                    </div>
+                  </button>
+                  <button
+                    onClick={() => { navigate('/recommendations'); setShowMobileMenu(false); }}
+                    style={{
+                      width: '100%', padding: '1rem 1.25rem',
+                      background: location.pathname === '/recommendations' ? 'var(--primary-light)' : 'transparent', 
+                      border: 'none', color: location.pathname === '/recommendations' ? '#00685f' : 'var(--text-primary)',
+                      fontSize: '0.9375rem', fontFamily: "'Inter', sans-serif",
+                      fontWeight: 600, cursor: 'pointer',
+                      display: 'flex', alignItems: 'center', gap: '0.75rem',
+                      textAlign: 'left', transition: 'background 0.15s ease',
+                    }}
+                    onMouseEnter={e => { if (location.pathname !== '/recommendations') (e.currentTarget as HTMLButtonElement).style.background = 'var(--bg-hover)'; }}
+                    onMouseLeave={e => { if (location.pathname !== '/recommendations') (e.currentTarget as HTMLButtonElement).style.background = 'transparent'; }}
+                  >
+                    <Target size={18} color={location.pathname === '/recommendations' ? '#00685f' : 'var(--text-secondary)'} />
+                    Goals
+                  </button>
+                  <button
+                    onClick={() => { navigate('/premium'); setShowMobileMenu(false); }}
+                    style={{
+                      width: '100%', padding: '1rem 1.25rem',
+                      background: location.pathname === '/premium' ? 'var(--primary-light)' : 'transparent', 
+                      border: 'none', color: location.pathname === '/premium' ? '#00685f' : 'var(--text-primary)',
+                      fontSize: '0.9375rem', fontFamily: "'Inter', sans-serif",
+                      fontWeight: 600, cursor: 'pointer',
+                      display: 'flex', alignItems: 'center', gap: '0.75rem',
+                      textAlign: 'left', transition: 'background 0.15s ease',
+                    }}
+                    onMouseEnter={e => { if (location.pathname !== '/premium') (e.currentTarget as HTMLButtonElement).style.background = 'var(--bg-hover)'; }}
+                    onMouseLeave={e => { if (location.pathname !== '/premium') (e.currentTarget as HTMLButtonElement).style.background = 'transparent'; }}
+                  >
+                    <Sparkle size={18} weight="fill" color={location.pathname === '/premium' ? '#00685f' : 'var(--text-secondary)'} />
+                    Premium
+                  </button>
+                  <div style={{ borderTop: '1px solid var(--border)', margin: '0.5rem 0' }} />
+                  <button
+                    onClick={() => { navigate('/app'); setShowMobileMenu(false); }}
+                    style={{
+                      width: '100%', padding: '1rem 1.25rem',
+                      background: 'transparent', border: 'none', color: 'var(--text-primary)',
+                      fontSize: '0.9375rem', fontFamily: "'Inter', sans-serif",
+                      fontWeight: 600, cursor: 'pointer',
+                      display: 'flex', alignItems: 'center', gap: '0.75rem',
+                      textAlign: 'left', transition: 'background 0.15s ease',
+                    }}
+                    onMouseEnter={e => { (e.currentTarget as HTMLButtonElement).style.background = 'var(--bg-hover)'; }}
+                    onMouseLeave={e => { (e.currentTarget as HTMLButtonElement).style.background = 'transparent'; }}
+                  >
+                    <DeviceMobile size={18} color="var(--text-secondary)" />
+                    Mobile App
+                  </button>
+                </div>
+              )}
+            </div>
+
+            {/* Desktop Guide — menu icon */}
+            <div className="desktop-nav" style={{ position: 'relative', marginLeft: '0.25rem' }} data-menu>
               <button
                 onClick={() => setShowMenu(!showMenu)}
                 style={{
@@ -761,7 +889,7 @@ export default function SupplementAnalyzer(): JSX.Element {
           <div style={{ background: 'var(--bg-page)', minHeight: '100vh' }}>
 
           {/* Hero with embedded URL input */}
-          <div style={{
+          <div className="hero-section" style={{
             background: 'linear-gradient(135deg, #00685f 0%, #3f6560 100%)',
             padding: 'calc(100px + 2.5rem) 1.5rem 3rem',
             position: 'relative', overflow: 'hidden',
