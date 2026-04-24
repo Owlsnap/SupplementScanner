@@ -5,6 +5,7 @@ import {
 } from '@phosphor-icons/react';
 import type { EvidenceTier } from '../data/encyclopediaData';
 import SourceCard, { type Citation } from '../components/SourceCard';
+import { useLanguage } from '../contexts/LanguageContext';
 
 interface PremiumDeepDiveData {
   slug: string;
@@ -29,14 +30,15 @@ interface PremiumDeepDivePageProps {
 }
 
 function ConfidenceMeter({ score }: { score: number }) {
+  const { t } = useLanguage();
   const color = score >= 70 ? '#00685f' : score >= 45 ? '#d97706' : '#ba1a1a';
-  const label = score >= 70 ? 'High confidence' : score >= 45 ? 'Moderate confidence' : 'Low confidence';
+  const label = score >= 70 ? t('premiumDeepDive.confidenceLabels.high') : score >= 45 ? t('premiumDeepDive.confidenceLabels.moderate') : t('premiumDeepDive.confidenceLabels.low');
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
         <span style={{ fontFamily: "'Inter', sans-serif", fontSize: '0.8125rem', color: 'var(--text-secondary)', fontWeight: 500 }}>
-          Evidence confidence
+          {t('premiumDeepDive.evidenceConfidence')}
         </span>
         <span style={{ fontFamily: "'Manrope', sans-serif", fontSize: '0.875rem', fontWeight: 800, color }}>
           {score}% · {label}
@@ -54,7 +56,7 @@ function ConfidenceMeter({ score }: { score: number }) {
         fontFamily: "'Inter', sans-serif", fontSize: '0.75rem',
         color: 'var(--text-secondary)', margin: 0, lineHeight: 1.5,
       }}>
-        Weighted by study type: meta-analysis (100%) → RCT — Randomized Controlled Trial (80%) → observational (40%) → animal (10%)
+        {t('premiumDeepDive.confidenceWeighting')}
       </p>
     </div>
   );
@@ -94,6 +96,7 @@ export default function PremiumDeepDivePage({
   stripeSessionId,
   onBack,
 }: PremiumDeepDivePageProps) {
+  const { t } = useLanguage();
   const [data, setData] = useState<PremiumDeepDiveData | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -183,7 +186,7 @@ export default function PremiumDeepDivePage({
             fontFamily: "'Inter', sans-serif", fontWeight: 600, fontSize: '0.875rem',
           }}
         >
-          <ArrowLeft size={16} /> Back
+          <ArrowLeft size={16} /> {t('premiumDeepDive.back')}
         </button>
 
         {/* Header */}
@@ -194,7 +197,7 @@ export default function PremiumDeepDivePage({
               fontFamily: "'Inter', sans-serif", fontSize: '0.75rem', fontWeight: 600,
               color: '#00685f', letterSpacing: '0.4px', textTransform: 'uppercase',
             }}>
-              Premium · Evidence-grounded
+              {t('premiumDeepDive.badge')}
             </span>
           </div>
           <p style={{ ...bodyText, color: 'var(--text-secondary)', fontSize: '0.9375rem' }}>{tagline}</p>
@@ -209,10 +212,10 @@ export default function PremiumDeepDivePage({
               animation: 'spin 1s linear infinite', margin: '0 auto 1.25rem',
             }} />
             <p style={{ ...bodyText, color: 'var(--text-muted)', margin: '0 0 0.375rem' }}>
-              Retrieving clinical evidence…
+              {t('premiumDeepDive.retrievingEvidence')}
             </p>
             <p style={{ fontFamily: "'Inter', sans-serif", fontSize: '0.8125rem', color: 'var(--text-secondary)', margin: 0 }}>
-              Searching PubMed database · Grounding answer in studies
+              {t('premiumDeepDive.searchingPubMed')}
             </p>
           </div>
         )}
@@ -221,7 +224,7 @@ export default function PremiumDeepDivePage({
         {!loading && error && (
           <div style={{ ...cardStyle, borderLeft: '4px solid #ba1a1a' }}>
             <p style={{ color: '#ba1a1a', fontWeight: 600, margin: '0 0 0.5rem', fontFamily: "'Inter', sans-serif" }}>
-              Failed to load
+              {t('premiumDeepDive.failedToLoad')}
             </p>
             <p style={{ ...bodyText, color: 'var(--text-secondary)', marginBottom: '1rem' }}>{error}</p>
             <button
@@ -232,7 +235,7 @@ export default function PremiumDeepDivePage({
                 fontFamily: "'Inter', sans-serif", fontWeight: 600, fontSize: '0.875rem', cursor: 'pointer',
               }}
             >
-              Try again
+              {t('premiumDeepDive.tryAgain')}
             </button>
           </div>
         )}
@@ -251,7 +254,7 @@ export default function PremiumDeepDivePage({
             <div style={cardStyle}>
               <div style={sectionTitle}>
                 <Flask size={18} color="#00685f" weight="fill" />
-                Evidence Summary
+                {t('premiumDeepDive.evidenceSummary')}
               </div>
               <p style={{ ...bodyText, lineHeight: 1.75 }}>
                 {renderSummaryWithCitations(data.summary)}
@@ -263,10 +266,10 @@ export default function PremiumDeepDivePage({
               <div style={{ ...cardStyle, borderLeft: '3px solid var(--card-warning-border)' }}>
                 <div style={sectionTitle}>
                   <Warning size={18} color="#d97706" weight="fill" />
-                  The Catch
+                  {t('premiumDeepDive.theCatch')}
                 </div>
                 <p style={{ fontFamily: "'Inter', sans-serif", fontSize: '0.8125rem', color: 'var(--text-secondary)', margin: '0 0 0.75rem', lineHeight: 1.5 }}>
-                  Limitations identified in the available evidence:
+                  {t('premiumDeepDive.catchIntro')}
                 </p>
                 <ul style={{ margin: 0, padding: '0 0 0 1.25rem', display: 'flex', flexDirection: 'column', gap: '0.375rem' }}>
                   {data.the_catch.map((c, i) => (
@@ -281,7 +284,7 @@ export default function PremiumDeepDivePage({
               <div style={{ ...cardStyle, borderLeft: '3px solid #3f6560' }}>
                 <div style={sectionTitle}>
                   <Lightning size={18} color="#3f6560" weight="fill" />
-                  Dosage Gap
+                  {t('premiumDeepDive.dosageGap')}
                 </div>
                 <p style={{ ...bodyText, fontSize: '0.9rem' }}>{data.dosage_gap}</p>
               </div>
@@ -291,10 +294,10 @@ export default function PremiumDeepDivePage({
             <div style={cardStyle}>
               <div style={sectionTitle}>
                 <MagnifyingGlass size={18} color="#00685f" />
-                Ask the evidence
+                {t('premiumDeepDive.askEvidence')}
               </div>
               <p style={{ ...bodyText, fontSize: '0.875rem', color: 'var(--text-secondary)', marginBottom: '0.875rem' }}>
-                Ask a specific question — answered using only the retrieved PubMed studies.
+                {t('premiumDeepDive.askEvidenceSubtitle')}
               </p>
               <div style={{ display: 'flex', gap: '0.625rem' }}>
                 <input
@@ -302,7 +305,7 @@ export default function PremiumDeepDivePage({
                   value={question}
                   onChange={e => { setQuestion(e.target.value); setQuestionAnswer(null); setQuestionError(null); }}
                   onKeyDown={e => { if (e.key === 'Enter' && question.trim()) askQuestion(question.trim()); }}
-                  placeholder={`e.g. "What dose was most effective?"`}
+                  placeholder={t('premiumDeepDive.askPlaceholder')}
                   style={{
                     flex: 1,
                     fontFamily: "'Inter', sans-serif", fontSize: '0.875rem',
@@ -329,8 +332,8 @@ export default function PremiumDeepDivePage({
                   }}
                 >
                   {asking
-                    ? <><div style={{ width: '14px', height: '14px', borderRadius: '50%', border: '2px solid rgba(255,255,255,0.3)', borderTopColor: '#fff', animation: 'spin 1s linear infinite' }} /> Searching</>
-                    : <><ArrowsClockwise size={14} /> Ask</>
+                    ? <><div style={{ width: '14px', height: '14px', borderRadius: '50%', border: '2px solid rgba(255,255,255,0.3)', borderTopColor: '#fff', animation: 'spin 1s linear infinite' }} /> {t('premiumDeepDive.searching')}</>
+                    : <><ArrowsClockwise size={14} /> {t('premiumDeepDive.ask')}</>
                   }
                 </button>
               </div>
@@ -340,7 +343,7 @@ export default function PremiumDeepDivePage({
                 <div style={{ marginTop: '1rem', padding: '0.875rem', background: 'var(--bg-hover)', borderRadius: '10px', display: 'flex', alignItems: 'center', gap: '0.625rem' }}>
                   <div style={{ width: '14px', height: '14px', borderRadius: '50%', border: '2px solid var(--border)', borderTopColor: '#00685f', animation: 'spin 1s linear infinite', flexShrink: 0 }} />
                   <span style={{ fontFamily: "'Inter', sans-serif", fontSize: '0.875rem', color: 'var(--text-secondary)' }}>
-                    Searching studies for an answer…
+                    {t('premiumDeepDive.searchingStudies')}
                   </span>
                 </div>
               )}
@@ -356,7 +359,7 @@ export default function PremiumDeepDivePage({
               {questionAnswer && (
                 <div style={{ marginTop: '1rem', borderTop: '1px solid var(--border)', paddingTop: '1rem' }}>
                   <p style={{ fontFamily: "'Inter', sans-serif", fontSize: '0.75rem', fontWeight: 600, color: 'var(--text-secondary)', textTransform: 'uppercase', letterSpacing: '0.5px', margin: '0 0 0.625rem' }}>
-                    Answer
+                    {t('premiumDeepDive.answer')}
                   </p>
                   <p style={{ ...bodyText, fontSize: '0.9rem', lineHeight: 1.7, marginBottom: questionAnswer.citations.length ? '0.875rem' : 0 }}>
                     {renderSummaryWithCitations(questionAnswer.answer)}
@@ -375,7 +378,7 @@ export default function PremiumDeepDivePage({
               <div style={cardStyle}>
                 <div style={sectionTitle}>
                   <CheckCircle size={18} color="#00685f" />
-                  Sources ({data.citations.length})
+                  {t('premiumDeepDive.sources', { count: data.citations.length })}
                 </div>
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '0.625rem' }}>
                   {data.citations.map(citation => (
@@ -391,8 +394,7 @@ export default function PremiumDeepDivePage({
               color: 'var(--text-secondary)', textAlign: 'center',
               lineHeight: 1.6, margin: '0.5rem 0 0',
             }}>
-              Answers are grounded in retrieved PubMed abstracts and do not constitute medical advice.
-              Always consult a healthcare professional before changing your supplement regimen.
+              {t('premiumDeepDive.disclaimer')}
             </p>
           </>
         )}

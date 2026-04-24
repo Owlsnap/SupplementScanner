@@ -4,6 +4,7 @@ import { ArrowLeft, CheckCircle, User, Tag, X as XIcon, Sparkle } from '@phospho
 import { useAuth, supabase } from '../contexts/AuthContext';
 import { useStack } from '../contexts/StackContext';
 import { encyclopediaSupplements } from '../data/encyclopediaData';
+import { useLanguage } from '../contexts/LanguageContext';
 
 interface HealthProfilePageProps {
   onBack: () => void;
@@ -44,6 +45,7 @@ const CONDITION_SUGGESTIONS = [
 ];
 
 export default function HealthProfilePage({ onBack, onSignIn }: HealthProfilePageProps) {
+  const { t } = useLanguage();
   const { user, session } = useAuth();
   const navigate = useNavigate();
   const { stack, removeFromStack } = useStack();
@@ -213,24 +215,24 @@ export default function HealthProfilePage({ onBack, onSignIn }: HealthProfilePag
   const myStackSection = (
     <div style={card}>
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '1rem' }}>
-        <div style={sectionLabel}>My Stack</div>
+        <div style={sectionLabel}>{t('healthProfile.myStack')}</div>
         {stackSupplements.length > 0 && (
           <span style={{ fontFamily: "'Inter', sans-serif", fontSize: '0.75rem', color: 'var(--text-secondary)', fontWeight: 500 }}>
-            {stackSupplements.length} supplement{stackSupplements.length !== 1 ? 's' : ''}
+            {stackSupplements.length !== 1 ? t('healthProfile.supplementCountPlural', { count: stackSupplements.length }) : t('healthProfile.supplementCount', { count: stackSupplements.length })}
           </span>
         )}
       </div>
 
       {stackSupplements.length === 0 ? (
         <p style={{ fontFamily: "'Inter', sans-serif", fontSize: '0.875rem', color: 'var(--text-secondary)', margin: '0 0 1rem', lineHeight: 1.55 }}>
-          No supplements added yet.{' '}
+          {t('healthProfile.noStackYet')}{' '}
           <button
             onClick={() => navigate('/')}
             style={{ color: '#00685f', background: 'none', border: 'none', cursor: 'pointer', fontWeight: 600, fontFamily: "'Inter', sans-serif", fontSize: '0.875rem', padding: 0 }}
           >
-            Browse the Index
+            {t('healthProfile.browseIndex')}
           </button>{' '}
-          to build your stack.
+          {t('healthProfile.noStackBuildText')}
         </p>
       ) : (
         <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.5rem', marginBottom: '1rem' }}>
@@ -270,7 +272,7 @@ export default function HealthProfilePage({ onBack, onSignIn }: HealthProfilePag
           }}
         >
           <Sparkle size={16} weight="fill" />
-          Evaluate Stack
+          {t('healthProfile.evaluateStack')}
           <span style={{
             background: 'rgba(255,255,255,0.2)',
             border: '1px solid rgba(255,255,255,0.3)',
@@ -302,7 +304,7 @@ export default function HealthProfilePage({ onBack, onSignIn }: HealthProfilePag
               fontFamily: "'Inter', sans-serif", fontWeight: 600, fontSize: '0.875rem',
             }}
           >
-            <ArrowLeft size={16} /> Back
+            <ArrowLeft size={16} /> {t('common.back')}
           </button>
 
           <div style={{ marginBottom: '1.75rem' }}>
@@ -311,7 +313,7 @@ export default function HealthProfilePage({ onBack, onSignIn }: HealthProfilePag
               fontSize: 'clamp(1.375rem, 4vw, 1.75rem)',
               color: 'var(--text-primary)', margin: '0 0 0.375rem', letterSpacing: '-0.5px',
             }}>
-              My <span style={{ color: '#00685f' }}>Profile</span>
+              {t('healthProfile.title')} <span style={{ color: '#00685f' }}>{t('healthProfile.titleHighlight')}</span>
             </h1>
           </div>
 
@@ -327,10 +329,10 @@ export default function HealthProfilePage({ onBack, onSignIn }: HealthProfilePag
               <User size={22} color="#00685f" />
             </div>
             <h2 style={{ fontFamily: "'Manrope', sans-serif", fontWeight: 800, fontSize: '1rem', color: 'var(--text-primary)', margin: '0 0 0.375rem' }}>
-              Sign in for your full profile
+              {t('healthProfile.signInForProfile')}
             </h2>
             <p style={{ fontFamily: "'Inter', sans-serif", fontSize: '0.875rem', color: 'var(--text-muted)', margin: '0 0 1.25rem', lineHeight: 1.6 }}>
-              Save goals, dietary preferences, and health conditions to personalise your experience.
+              {t('healthProfile.signInForProfileSubtitle')}
             </p>
             <button
               onClick={onSignIn}
@@ -341,7 +343,7 @@ export default function HealthProfilePage({ onBack, onSignIn }: HealthProfilePag
                 cursor: 'pointer',
               }}
             >
-              Sign in
+              {t('healthProfile.signIn')}
             </button>
           </div>
         </div>
@@ -363,7 +365,7 @@ export default function HealthProfilePage({ onBack, onSignIn }: HealthProfilePag
             fontFamily: "'Inter', sans-serif", fontWeight: 600, fontSize: '0.875rem',
           }}
         >
-          <ArrowLeft size={16} /> Back
+          <ArrowLeft size={16} /> {t('common.back')}
         </button>
 
         {/* Header */}
@@ -373,16 +375,16 @@ export default function HealthProfilePage({ onBack, onSignIn }: HealthProfilePag
             fontSize: 'clamp(1.375rem, 4vw, 1.75rem)',
             color: 'var(--text-primary)', margin: '0 0 0.375rem', letterSpacing: '-0.5px',
           }}>
-            My <span style={{ color: '#00685f' }}>Profile</span>
+            {t('healthProfile.title')} <span style={{ color: '#00685f' }}>{t('healthProfile.titleHighlight')}</span>
           </h1>
           <p style={{ fontFamily: "'Inter', sans-serif", fontSize: '0.9rem', color: 'var(--text-muted)', margin: 0, lineHeight: 1.6 }}>
-            Personalise your supplement recommendations and stack optimiser.
+            {t('healthProfile.subtitle')}
           </p>
         </div>
 
         {loading ? (
           <div style={{ textAlign: 'center', padding: '3rem', color: 'var(--text-secondary)', fontFamily: "'Inter', sans-serif" }}>
-            Loading profile…
+            {t('healthProfile.loadingProfile')}
           </div>
         ) : (
           <>
@@ -391,7 +393,7 @@ export default function HealthProfilePage({ onBack, onSignIn }: HealthProfilePag
 
             {/* Goal */}
             <div style={card}>
-              <div style={sectionLabel}>Primary goal</div>
+              <div style={sectionLabel}>{t('healthProfile.primaryGoal')}</div>
               <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.5rem' }}>
                 {GOALS.map(g => (
                   <button
@@ -407,7 +409,7 @@ export default function HealthProfilePage({ onBack, onSignIn }: HealthProfilePag
 
             {/* Diet */}
             <div style={card}>
-              <div style={sectionLabel}>Dietary preference</div>
+              <div style={sectionLabel}>{t('healthProfile.dietaryPreference')}</div>
               <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.5rem' }}>
                 {DIET_OPTIONS.map(d => (
                   <button
@@ -423,7 +425,7 @@ export default function HealthProfilePage({ onBack, onSignIn }: HealthProfilePag
 
             {/* Conditions */}
             <div style={card}>
-              <div style={sectionLabel}>Health conditions <span style={{ fontWeight: 500, color: 'var(--text-secondary)', fontSize: '0.8125rem' }}>(optional)</span></div>
+              <div style={sectionLabel}>{t('healthProfile.healthConditions')} <span style={{ fontWeight: 500, color: 'var(--text-secondary)', fontSize: '0.8125rem' }}>{t('healthProfile.healthConditionsOptional')}</span></div>
               <div
                 style={tagWrap}
                 onClick={e => (e.currentTarget.querySelector('input') as HTMLInputElement)?.focus()}
@@ -438,7 +440,7 @@ export default function HealthProfilePage({ onBack, onSignIn }: HealthProfilePag
                 ))}
                 <input
                   style={tagInput}
-                  placeholder={profile.conditions.length ? '' : 'Type a condition and press Enter…'}
+                  placeholder={profile.conditions.length ? '' : t('healthProfile.conditionPlaceholder')}
                   value={conditionInput}
                   onChange={e => setConditionInput(e.target.value)}
                   onKeyDown={e => handleTagKey(e, 'conditions', conditionInput, setConditionInput)}
@@ -466,7 +468,7 @@ export default function HealthProfilePage({ onBack, onSignIn }: HealthProfilePag
 
             {/* Current stack */}
             <div style={card}>
-              <div style={sectionLabel}>Other supplements <span style={{ fontWeight: 500, color: 'var(--text-secondary)', fontSize: '0.8125rem' }}>(optional)</span></div>
+              <div style={sectionLabel}>{t('healthProfile.otherSupplements')} <span style={{ fontWeight: 500, color: 'var(--text-secondary)', fontSize: '0.8125rem' }}>{t('healthProfile.otherSupplementsOptional')}</span></div>
               <div
                 style={tagWrap}
                 onClick={e => (e.currentTarget.querySelector('input') as HTMLInputElement)?.focus()}
@@ -482,7 +484,7 @@ export default function HealthProfilePage({ onBack, onSignIn }: HealthProfilePag
                 ))}
                 <input
                   style={tagInput}
-                  placeholder={profile.current_stack.length ? '' : 'e.g. Ashwagandha, Omega-3… press Enter to add'}
+                  placeholder={profile.current_stack.length ? '' : t('healthProfile.supplementsPlaceholder')}
                   value={stackInput}
                   onChange={e => setStackInput(e.target.value)}
                   onKeyDown={e => handleTagKey(e, 'current_stack', stackInput, setStackInput)}
@@ -526,7 +528,7 @@ export default function HealthProfilePage({ onBack, onSignIn }: HealthProfilePag
             >
               {saving && <div style={{ width: '16px', height: '16px', border: '2px solid rgba(255,255,255,0.4)', borderTopColor: '#fff', borderRadius: '50%', animation: 'spin 1s linear infinite' }} />}
               {saved && <CheckCircle size={18} weight="fill" />}
-              {saving ? 'Saving…' : saved ? 'Profile saved' : 'Save profile'}
+              {saving ? t('healthProfile.saving') : saved ? t('healthProfile.profileSaved') : t('healthProfile.saveProfile')}
             </button>
           </>
         )}

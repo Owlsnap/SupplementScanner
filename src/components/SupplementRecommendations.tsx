@@ -2,20 +2,22 @@ import React, { useState } from "react";
 import { Target, Star, ArrowUp, Clock, CurrencyDollar, Medal, CaretDown, CaretUp, Info, Moon, Barbell, Leaf, Lightning, Lightbulb, CheckCircle, XCircle } from "@phosphor-icons/react";
 import { healthGoalRecommendations, getRecommendationsForGoal } from '../data/supplementData.js';
 import type { Product, AnalyzedProduct } from '../types/index.js';
+import { useLanguage } from '../contexts/LanguageContext';
 
 interface SupplementRecommendationsProps {
   analyzedProducts?: Record<string, AnalyzedProduct[]>;
 }
 
 export default function SupplementRecommendations({ analyzedProducts = {} }: SupplementRecommendationsProps): JSX.Element {
+  const { t } = useLanguage();
   const [selectedGoal, setSelectedGoal] = useState<string>('');
   const [expandedSupplement, setExpandedSupplement] = useState<string | null>(null);
 
   const goalOptions = [
-    { key: 'better sleep', Icon: Moon, label: 'Better Sleep', description: 'Natural sleep quality improvement' },
-    { key: 'build muscle', Icon: Barbell, label: 'Build Muscle', description: 'Muscle growth and recovery' },
-    { key: 'general health', Icon: Leaf, label: 'General Health', description: 'Overall wellness and vitality' },
-    { key: 'energy boost', Icon: Lightning, label: 'Energy & Focus', description: 'Natural energy and mental clarity' },
+    { key: 'better sleep', Icon: Moon, label: t('supplementRecommendations.goals.betterSleep.label'), description: t('supplementRecommendations.goals.betterSleep.description') },
+    { key: 'build muscle', Icon: Barbell, label: t('supplementRecommendations.goals.buildMuscle.label'), description: t('supplementRecommendations.goals.buildMuscle.description') },
+    { key: 'general health', Icon: Leaf, label: t('supplementRecommendations.goals.generalHealth.label'), description: t('supplementRecommendations.goals.generalHealth.description') },
+    { key: 'energy boost', Icon: Lightning, label: t('supplementRecommendations.goals.energyFocus.label'), description: t('supplementRecommendations.goals.energyFocus.description') },
   ];
 
   const recommendations = selectedGoal ? getRecommendationsForGoal(selectedGoal) : null;
@@ -67,7 +69,7 @@ export default function SupplementRecommendations({ analyzedProducts = {} }: Sup
                 fontFamily: "'Inter', sans-serif", flexShrink: 0,
               }}>
                 {supplement.priority === 1 && <Medal size={12} />}
-                Priority {supplement.priority}
+                {t('supplementRecommendations.priorityLabel', { number: supplement.priority })}
               </div>
 
               {/* Supplement Info */}
@@ -98,7 +100,7 @@ export default function SupplementRecommendations({ analyzedProducts = {} }: Sup
                   fontFamily: "'Inter', sans-serif",
                 }}>
                   <Star size={11} weight="fill" />
-                  In Your List
+                  {t('supplementRecommendations.inYourList')}
                 </div>
               )}
               {isExpanded
@@ -120,7 +122,7 @@ export default function SupplementRecommendations({ analyzedProducts = {} }: Sup
                 fontFamily: "'Inter', sans-serif",
               }}>
                 <Info size={15} />
-                Why It Works
+                {t('supplementRecommendations.whyItWorks')}
               </h4>
               <p style={{ color: 'var(--text-muted)', fontSize: '0.875rem', lineHeight: '1.6', margin: 0, fontFamily: "'Inter', sans-serif" }}>
                 {supplement.reason}
@@ -135,7 +137,7 @@ export default function SupplementRecommendations({ analyzedProducts = {} }: Sup
                 fontFamily: "'Inter', sans-serif",
               }}>
                 <ArrowUp size={15} />
-                Quality Comparison
+                {t('supplementRecommendations.qualityComparison')}
               </h4>
 
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.75rem' }}>
@@ -145,7 +147,7 @@ export default function SupplementRecommendations({ analyzedProducts = {} }: Sup
                 }}>
                   <h5 style={{ color: 'var(--card-success-heading)', fontSize: '0.8125rem', fontWeight: 700, margin: '0 0 0.5rem', display: 'flex', alignItems: 'center', gap: '0.375rem' }}>
                     <CheckCircle size={13} />
-                    Premium Forms
+                    {t('supplementRecommendations.premiumForms')}
                   </h5>
                   {supplement.qualityIngredients.map((ingredient, idx) => (
                     <div key={idx} style={{ color: 'var(--card-success-text)', fontSize: '0.75rem', marginBottom: '0.25rem', fontFamily: "'Inter', sans-serif" }}>
@@ -160,7 +162,7 @@ export default function SupplementRecommendations({ analyzedProducts = {} }: Sup
                 }}>
                   <h5 style={{ color: 'var(--card-danger-heading)', fontSize: '0.8125rem', fontWeight: 700, margin: '0 0 0.5rem', display: 'flex', alignItems: 'center', gap: '0.375rem' }}>
                     <XCircle size={13} />
-                    Avoid These
+                    {t('supplementRecommendations.avoidThese')}
                   </h5>
                   {supplement.poorIngredients.map((ingredient, idx) => (
                     <div key={idx} style={{ color: 'var(--card-danger-text)', fontSize: '0.75rem', marginBottom: '0.25rem', fontFamily: "'Inter', sans-serif" }}>
@@ -182,7 +184,7 @@ export default function SupplementRecommendations({ analyzedProducts = {} }: Sup
                 margin: '0 0 0.375rem', fontFamily: "'Inter', sans-serif",
               }}>
                 <CurrencyDollar size={14} />
-                Budget-Friendly Option
+                {t('supplementRecommendations.budgetFriendly')}
               </h5>
               <p style={{ color: '#3f6560', fontSize: '0.8125rem', margin: 0, fontFamily: "'Inter', sans-serif" }}>
                 {supplement.budgetOption}
@@ -201,15 +203,15 @@ export default function SupplementRecommendations({ analyzedProducts = {} }: Sup
                   margin: '0 0 0.75rem', fontFamily: "'Inter', sans-serif",
                 }}>
                   <Star size={14} />
-                  Found in Your Products
+                  {t('supplementRecommendations.foundInProducts')}
                 </h5>
                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.5rem' }}>
                   <div>
-                    <div style={{ color: 'var(--text-secondary)', fontSize: '0.75rem', fontFamily: "'Inter', sans-serif" }}>Product</div>
+                    <div style={{ color: 'var(--text-secondary)', fontSize: '0.75rem', fontFamily: "'Inter', sans-serif" }}>{t('supplementRecommendations.product')}</div>
                     <div style={{ color: 'var(--text-primary)', fontSize: '0.875rem', fontWeight: 600, fontFamily: "'Manrope', sans-serif" }}>{productMatch.name}</div>
                   </div>
                   <div>
-                    <div style={{ color: 'var(--text-secondary)', fontSize: '0.75rem', fontFamily: "'Inter', sans-serif" }}>Quality Score</div>
+                    <div style={{ color: 'var(--text-secondary)', fontSize: '0.75rem', fontFamily: "'Inter', sans-serif" }}>{t('supplementRecommendations.qualityScore')}</div>
                     <div style={{ color: 'var(--text-primary)', fontSize: '0.875rem', fontWeight: 600, fontFamily: "'Manrope', sans-serif" }}>
                       {productMatch.supplementInfo?.quality?.score || '—'}/100
                     </div>
@@ -238,10 +240,10 @@ export default function SupplementRecommendations({ analyzedProducts = {} }: Sup
           letterSpacing: '-0.3px',
         }}>
           <Target size={20} color="#00685f" />
-          Supplement Recommendations
+          {t('supplementRecommendations.title')}
         </h2>
         <p style={{ color: 'var(--text-secondary)', fontSize: '0.875rem', margin: '0 0 1.25rem', fontFamily: "'Inter', sans-serif" }}>
-          Select your primary health goal to get personalized supplement suggestions
+          {t('supplementRecommendations.subtitle')}
         </p>
 
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '0.75rem' }}>
@@ -303,7 +305,7 @@ export default function SupplementRecommendations({ analyzedProducts = {} }: Sup
               fontFamily: "'Inter', sans-serif",
             }}>
               <Clock size={16} color="#00685f" />
-              Recommended Supplements (in order of priority)
+              {t('supplementRecommendations.recommendedSupplements')}
             </h4>
 
             {recommendations.supplements.map((supplement, index) =>
@@ -324,14 +326,12 @@ export default function SupplementRecommendations({ analyzedProducts = {} }: Sup
               display: 'flex', alignItems: 'center', gap: '0.375rem',
             }}>
               <Lightbulb size={16} weight="fill" />
-              Pro Tips
+              {t('supplementRecommendations.proTips')}
             </h4>
             <ul style={{ color: 'var(--text-muted)', fontSize: '0.875rem', lineHeight: '1.7', margin: 0, paddingLeft: '1.25rem', fontFamily: "'Inter', sans-serif" }}>
-              <li>Start with Priority 1 supplements first, add others gradually</li>
-              <li>Take supplements consistently for at least 4–6 weeks to see benefits</li>
-              <li>Buy from reputable brands with third-party testing</li>
-              <li>Consider getting blood tests to check for deficiencies</li>
-              <li>Quality matters more than quantity — invest in better forms when possible</li>
+              {(t('supplementRecommendations.proTipsList', { returnObjects: true }) as string[]).map((tip, i) => (
+                <li key={i}>{tip}</li>
+              ))}
             </ul>
           </div>
         </div>

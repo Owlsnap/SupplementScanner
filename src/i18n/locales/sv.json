@@ -18,7 +18,15 @@
     "viewPage": "Visa sida",
     "signedInAs": "Inloggad som",
     "mayBeLater": "Kanske senare",
-    "close": "Stäng"
+    "close": "Stäng",
+    "back": "Tillbaka",
+    "save": "Spara",
+    "cancel": "Avbryt",
+    "tryAgain": "Försök igen",
+    "or": "eller",
+    "evidenceBased": "Evidensbaserat",
+    "researchBacked": "Forskningsbaserat · Inte medicinsk rådgivning",
+    "aiDisclaimer": "Innehållet är grundat i kollegialt granskad forskning och citerade källor. Det utgör inte medicinsk rådgivning och ersätter inte vägledning från en kvalificerad vårdprofessional. Rådfråga en läkare innan du ändrar ditt tillskottsintag."
   },
   "encyclopedia": {
     "title": "Tillskottslexikon",
@@ -27,9 +35,21 @@
     "allCategories": "Alla",
     "noResults": "Inga tillskott hittades",
     "noResultsHint": "Prova att justera din sökning eller kategorifilter",
+    "supplementCount": "{{count}} tillskott",
+    "evidenceLevel": "Evidensnivå",
+    "viewDetails": "Visa detaljer",
+    "addToStack": "Lägg till",
+    "removeFromStack": "Tillagd",
+    "addToStackTitle": "Lägg till i stack",
+    "removeFromStackTitle": "Ta bort från stack",
+    "indexTitle": "Tillskotts",
+    "indexTitleHighlight": "Index",
+    "indexSubtitle": "Mekanismer, dosering & AI-djupdykningar — allt på ett ställe",
+    "indexBadge": "{{count}} tillskott · Evidensbaserat",
+    "searchSupplements": "Sök tillskott…",
     "categories": {
       "Performance": "Prestation",
-      "Recovery": "Återhämtning", 
+      "Recovery": "Återhämtning",
       "Sleep": "Sömn",
       "Nootropics": "Nootropics",
       "Health": "Hälsa"
@@ -37,9 +57,13 @@
     "evidenceTiers": {
       "Strong": "Stark evidens",
       "Moderate": "Måttlig evidens",
-      "Emerging": "Framväxande evidens", 
+      "Emerging": "Framväxande evidens",
       "Anecdotal": "Anekdotisk evidens"
-    }
+    },
+    "results": "{{count}} resultat",
+    "resultsPlural": "{{count}} resultat",
+    "resultsInCategory": " i {{category}}",
+    "resultsForQuery": " för \"{{query}}\""
   },
   "urlScanner": {
     "title": "Analysera vilket tillskott som helst från en produktsida",
@@ -51,7 +75,7 @@
     "noProductYet": "Ingen produkt skannad ännu",
     "noProductHint": "Klistra in en tillskottsprodukt-URL ovan och klicka på Extrahera",
     "servings": "Portioner",
-    "servingSize": "Portionsstorlek", 
+    "servingSize": "Portionsstorlek",
     "keyIngredient": "Nyckelingrediens",
     "detecting": "Upptäcker…",
     "extractedVia": "Extraherat via"
@@ -59,7 +83,113 @@
   "premium": {
     "deepDivesArePremium": "Djupdykningar är Premium",
     "premiumDescription": "Få den fullständiga uppdelningen — dosering, former, biotillgänglighet, synergier och interaktioner. Från 19 kr per dyk.",
-    "signInToUnlock": "Logga in för att låsa upp"
+    "signInToUnlock": "Logga in för att låsa upp",
+    "back": "Tillbaka",
+    "badge": "Premium",
+    "heroTitle": "Precisionsintelligens för",
+    "heroTitleHighlight": "human performance.",
+    "heroSubtitle": "Evidensbaserade djupdykningar om varje tillskott — doseringsprotokoll, biotillgänglighet, interaktioner och synergier. Varje påstående backat av citerade källor.",
+    "notifyMe": "Notifiera mig när det är live",
+    "onTheList": "Du är på listan",
+    "browseSupplement": "Bläddra bland tillskott",
+    "bestValue": "BÄSTA VÄRDE",
+    "moneyBack": "7 dagars pengarna-tillbaka-garanti",
+    "cancelAnytime": "Avsluta när som helst",
+    "secureCheckout": "Säker betalning",
+    "researchStandardTitle": "Forsknings",
+    "researchStandardHighlight": "Standarden.",
+    "researchStandardBody": "Varje djupdykning syntetiserar kollegialt granskad litteratur till handlingsbara protokoll. Vi aggregerar inte bara — vi spårar varje påstående tillbaka till sin källa.",
+    "testimonial": "\"Äntligen ett tillskottsverktyg som citerar faktiska studier istället för att bara upprepa etikettpåståenden.\"",
+    "testimonialAuthor": "Betaanvändarfeedback",
+    "whatYouGet": "Det här får du",
+    "free": "Gratis",
+    "premiumLabel": "Premium",
+    "comingSoon": "Kommer snart",
+    "faqTitle": "Vanliga frågor",
+    "readyToDeeper": "Redo att gå djupare?",
+    "readyToDeeperBody": "Betalningar lanseras snart — lämna ditt intresse nedan så meddelar vi dig först.",
+    "moreSectionsLocked": "+ {{count}} fler avsnitt upplåsta med Premium",
+    "previewSubtitle": "Forskningsdjupdykning",
+    "previewBadge": "Stark evidens",
+    "previewMechanism": "Verkningsmekanism",
+    "previewDosing": "Doseringsprotokoll",
+    "dosingLabels": {
+      "conservative": "Konservativ",
+      "standard": "Standard",
+      "high": "Hög"
+    },
+    "plans": {
+      "dive": {
+        "label": "Betala per djupdyk",
+        "price": "19 kr",
+        "per": "per djupdykning",
+        "description": "Perfekt om du bara behöver enstaka slagningar.",
+        "cta": "Köp en djupdykning"
+      },
+      "monthly": {
+        "label": "Månadsvis",
+        "price": "79 kr",
+        "per": "per månad",
+        "description": "Obegränsade djupdykningar. Avsluta när som helst.",
+        "cta": "Starta månadsvis"
+      },
+      "yearly": {
+        "label": "Årsvis",
+        "price": "599 kr",
+        "per": "per år  ·  ~50 kr/mån",
+        "description": "Bästa värde. Spara 37 % jämfört med månadsvis.",
+        "cta": "Starta årsvis"
+      }
+    },
+    "freeFeatures": [
+      "Index över 30 tillskott",
+      "Evidensnivåmärken",
+      "URL- och streckkodsskanner",
+      "Grundläggande ingrediensanalys"
+    ],
+    "premiumFeatures": [
+      "Allt i Gratis",
+      "Fullständiga forskningsdjupdykningar",
+      "Doseringsguide — konservativ / standard / hög",
+      "Former & biotillgänglighetsrankning",
+      "Synergipar (t.ex. Mg + Zn)",
+      "Varningar & läkemedelsinteraktioner",
+      "Evidensciteringar länkade till PubMed-studier",
+      "Konfidenspoäng viktad efter studietyp",
+      "Doseringsgap: studerad dos vs. butiksregel",
+      "Motor för tillskottsinteraktioner (fara / varning / synergi)",
+      "Webb + mobilåtkomst med ett konto",
+      "Nya tillskott läggs till regelbundet"
+    ],
+    "comingSoonFeatures": [
+      "Personlig stackoptimerare (kräver konto)"
+    ],
+    "faq": [
+      {
+        "q": "Behöver jag ett konto?",
+        "a": "Inte för en enstaka djupdykning. För prenumerationer behöver du ett gratis konto så att din åtkomst följer med dig på alla enheter."
+      },
+      {
+        "q": "Fungerar det i mobilappen också?",
+        "a": "Ja. En prenumeration låser upp både webbdashboarden och iOS/Android-appen. Mobilspecifika fördelar (skanna-till-djupdykning, push-notiser) lanseras snart."
+      },
+      {
+        "q": "Vad händer när min prenumeration löper ut?",
+        "a": "Du faller tillbaka till gratistjänsten direkt. Ditt konto och din historik bevaras — du kan prenumerera igen när som helst."
+      },
+      {
+        "q": "Kan jag få pengarna tillbaka?",
+        "a": "Inom 7 dagar från köpet, ja. Maila oss så löser vi det."
+      }
+    ],
+    "deepDiveFeatures": [
+      { "label": "Citerad forskning", "desc": "Direktlänkar till PubMed och primärkällor för varje påstående" },
+      { "label": "Verkningsmekanism", "desc": "Molekylära vägar och cellulära receptorinteraktioner" },
+      { "label": "Optimal dosering", "desc": "Konservativa, standard- och laddningsintervall från kliniska prövningar" },
+      { "label": "Former & biotillgänglighet", "desc": "Vilken specifik form absorberas bäst och varför" },
+      { "label": "Synergier & stackar", "desc": "Strategiska kombinationer för att optimera vägar och kofaktorer" },
+      { "label": "Varningar & interaktioner", "desc": "Säkerhetsprofiler och kontraindikationer med läkemedel" }
+    ]
   },
   "tooltips": {
     "switchToLight": "Växla till ljust läge",
@@ -69,5 +199,351 @@
     "extractSuccess": "Produktinformation extraherad framgångsrikt! Hittade {{productName}}",
     "extractError": "Kunde inte extrahera produktinformation: {{error}}",
     "networkError": "Fel: Se till att backend-servern körs! Kör: node server.js"
+  },
+  "deepDive": {
+    "back": "Tillbaka",
+    "generatingAi": "Genererar djupdykning med AI…",
+    "generatingSubtitle": "~5–10 sekunder. Cachas i 30 dagar efter första laddning.",
+    "failedToLoad": "Det gick inte att ladda innehållet",
+    "tryAgain": "Försök igen",
+    "whatItIs": "Vad det är",
+    "howItWorks": "Hur det fungerar",
+    "dosing": "Dosering",
+    "timing": "Timing",
+    "formsAndBioavailability": "Former & Biotillgänglighet",
+    "synergies": "Synergier",
+    "cautionsAndInteractions": "Varningar & Interaktioner",
+    "dosingLabels": {
+      "conservative": "Konservativ",
+      "standard": "Standard",
+      "highLoading": "Hög / Laddning"
+    },
+    "recommendedFor": "Detta tillskott rekommenderas för:",
+    "seeGoalRecommendations": "Se målrekommendationer →",
+    "freshlyGenerated": "✦ Nygenererat av AI — cachas i 30 dagar"
+  },
+  "premiumDeepDive": {
+    "back": "Tillbaka",
+    "badge": "Premium · Evidensbaserat",
+    "retrievingEvidence": "Hämtar klinisk evidens…",
+    "searchingPubMed": "Söker i PubMed-databas · Grundar svaret i studier",
+    "failedToLoad": "Det gick inte att ladda",
+    "tryAgain": "Försök igen",
+    "evidenceConfidence": "Evidenskonfidans",
+    "confidenceLabels": {
+      "high": "Hög konfidans",
+      "moderate": "Måttlig konfidans",
+      "low": "Låg konfidans"
+    },
+    "confidenceWeighting": "Viktad efter studietyp: metaanalys (100 %) → RCT — Randomiserad kontrollerad studie (80 %) → observationsstudie (40 %) → djurstudie (10 %)",
+    "evidenceSummary": "Evidenssammanfattning",
+    "theCatch": "Begränsningar",
+    "catchIntro": "Begränsningar identifierade i tillgänglig evidens:",
+    "dosageGap": "Doseringsgap",
+    "askEvidence": "Fråga evidensen",
+    "askEvidenceSubtitle": "Ställ en specifik fråga — besvarad med enbart de hämtade PubMed-studierna.",
+    "askPlaceholder": "t.ex. \"Vilken dos var mest effektiv?\"",
+    "searching": "Söker",
+    "ask": "Fråga",
+    "searchingStudies": "Söker i studier efter ett svar…",
+    "answer": "Svar",
+    "sources": "Källor ({{count}})",
+    "disclaimer": "Svaren är grundade i hämtade PubMed-abstrakt och utgör inte medicinsk rådgivning. Rådfråga alltid en vårdprofessional innan du ändrar ditt tillskottsintag."
+  },
+  "recommendations": {
+    "pageTitle": "Mål &",
+    "pageTitleHighlight": "Rekommendationer",
+    "viewDeepDive": "Visa djupdykning",
+    "browseFullIndex": "Bläddra i hela indexet",
+    "footerNote": "Evidensrangordnat · Uppdaterat 2025 · Klicka på ett kort för djupdykning",
+    "evidenceSuffix": "Evidens",
+    "goals": {
+      "sleep": {
+        "label": "Bättre sömn",
+        "intro": "God sömn är grunden för alla andra hälsomål. Innan du staplar tillskott, ta itu med grunderna: konsekvent uppvakningstid, ett mörkt svalt rum och inga skärmar 30 minuter före sänggåendet."
+      },
+      "muscle": {
+        "label": "Bygg muskler",
+        "intro": "Tillskott påskyndar framsteg — men bara på en grund av tillräckligt protein (1,6–2,2 g/kg), progressiv belastning och 7–9 timmars sömn. Få rätt på det först."
+      },
+      "health": {
+        "label": "Allmän hälsa",
+        "intro": "En kort, evidensbaserad lista täcker de flesta näringsluckor från en modern kost. Hela livsmedel kommer först — men dessa fyller i det som kosten ensam ofta saknar, särskilt på nordliga breddgrader."
+      },
+      "energy": {
+        "label": "Energi & fokus",
+        "intro": "Låg energi är nästan alltid ett livsstilsproblem först — dålig sömn, kronisk stress eller näringsbrist. Åtgärda dessa grundorsaker innan du lägger till stimuleringsmedel."
+      },
+      "cognition": {
+        "label": "Hjärna & kognition",
+        "intro": "Sömn är det viktigaste nootropet. Aerob träning (BDNF) och stresshantering kommer härnäst. Tillskott optimerar sedan ovanpå den grunden."
+      }
+    }
+  },
+  "healthProfile": {
+    "title": "Min",
+    "titleHighlight": "Profil",
+    "subtitle": "Anpassa dina tillskottsrekommendationer och stackoptimerare.",
+    "loadingProfile": "Laddar profil…",
+    "myStack": "Min stack",
+    "noStackYet": "Inga tillskott tillagda ännu.",
+    "browseIndex": "Bläddra i indexet",
+    "noStackBuildText": "för att bygga din stack.",
+    "evaluateStack": "Utvärdera stack",
+    "signInForProfile": "Logga in för din fullständiga profil",
+    "signInForProfileSubtitle": "Spara mål, kostpreferenser och hälsotillstånd för att anpassa din upplevelse.",
+    "signIn": "Logga in",
+    "primaryGoal": "Primärt mål",
+    "dietaryPreference": "Kostpreferens",
+    "healthConditions": "Hälsotillstånd",
+    "healthConditionsOptional": "(valfritt)",
+    "conditionPlaceholder": "Skriv ett tillstånd och tryck Enter…",
+    "otherSupplements": "Andra tillskott",
+    "otherSupplementsOptional": "(valfritt)",
+    "supplementsPlaceholder": "t.ex. Ashwagandha, Omega-3… tryck Enter för att lägga till",
+    "saving": "Sparar…",
+    "profileSaved": "Profil sparad",
+    "saveProfile": "Spara profil",
+    "supplementCount": "{{count}} tillskott",
+    "supplementCountPlural": "{{count}} tillskott"
+  },
+  "mobileApp": {
+    "badge": "iOS & ANDROID — KOMMER SNART",
+    "heroTitle": "Tillskottsskannern i",
+    "heroTitleHighlight": "din ficka",
+    "heroSubtitle": "Skanna vilket tillskotts streckkod som helst och få en omedelbar AI-kvalitetsrapport — renhet, tillsatser, doseringsnoggrannhet och mer. Inga gissningar.",
+    "notifyOnLaunch": "Notifiera mig vid lansering",
+    "tryWebApp": "Prova webbappen",
+    "onTheList": "Du är på listan",
+    "featuresTitle": "Allt du behöver för att shoppa smartare",
+    "featuresSubtitle": "All kraft hos webbdashboarden, optimerad för butikshyllan.",
+    "howItWorksTitle": "Så här",
+    "howItWorksHighlight": "fungerar det",
+    "syncTitle": "Ett konto, webb och mobil.",
+    "syncBody": "Premium låser upp de fullständiga encyklopedidjupdykningarna på både webbdashboarden och mobilappen. Din historik, sparade skanningar och forskning synkroniseras sömlöst på alla enheter.",
+    "cloudSync": "Molnsynkronisering aktiverad",
+    "learnMoreTitle": "Var först att veta när det lanseras",
+    "emailPlaceholder": "Ange din e-postadress",
+    "notifyButton": "Notifiera mig",
+    "noSpam": "Ingen spam. Endast viktiga kliniska uppdateringar.",
+    "navFeatures": "Funktioner",
+    "navMethodology": "Metodik",
+    "navIndex": "Index",
+    "navGetNotified": "Få notis",
+    "copyright": "© {{year}} SupplementScanner. Alla rättigheter förbehållna.",
+    "features": [
+      {
+        "title": "Omedelbar streckkodsskanning",
+        "body": "Rikta kameran mot vilket tillskotts streckkod som helst och få en fullständig ingrediensanalys på sekunder."
+      },
+      {
+        "title": "Renhetskontroll",
+        "body": "AI granskar för föroreningar, underdoserade ingredienser och etikettnoggrannhetsproblem."
+      },
+      {
+        "title": "Tillsatsflaggning",
+        "body": "Flaggar automatiskt fyllmedel, konstgjorda färgämnen och tvivelaktiga hjälpämnen."
+      },
+      {
+        "title": "Index när som helst",
+        "body": "Det fullständiga tillskottsindexet — evidensnivåer, dosering, djupdykningar — i din ficka."
+      }
+    ],
+    "steps": [
+      {
+        "title": "Skanna streckkoden",
+        "body": "Öppna appen och rikta kameran mot vilket tillskotts streckkod som helst. Ingen inmatning behövs."
+      },
+      {
+        "title": "AI analyserar omedelbart",
+        "body": "Vår AI korsrefererar ingredienser mot evidensdatabaser och flaggar kvalitetsproblem i realtid."
+      },
+      {
+        "title": "Vet vad du tar",
+        "body": "Få en lättbegriplig kvalitetsrapport — renhetsscore, tillsatsvarningar och doseringsnoggrannhet."
+      }
+    ]
+  },
+  "supplementInfo": {
+    "back": "Tillbaka",
+    "typicalDose": "Typisk dos",
+    "evidenceLevel": "Evidensnivå",
+    "overview": "Översikt",
+    "howItWorks": "Hur det fungerar",
+    "keyFacts": "Viktiga fakta",
+    "bestFor": "Bäst för",
+    "commonMistakes": "Vanliga misstag",
+    "researchDeepDive": "Forskningsdjupdykning",
+    "researchDeepDiveSubtitle": "Kollegialt granskade källor · Genereras på begäran",
+    "unlockWithPremium": "Lås upp med Premium",
+    "openResearchDeepDive": "Öppna forskningsdjupdykning",
+    "buyThisDive": "Köp denna djupdykning · 19 kr",
+    "researchCached": "Forskningsbaserat · cachas i 30 dagar efter första laddning",
+    "evidenceTierLabels": {
+      "Strong": "Väletablerad vetenskap med flera RCT:er",
+      "Moderate": "Flera kvalitetsstudier med konsekventa resultat",
+      "Emerging": "Lovande tidig forskning, fler prövningar behövs",
+      "Anecdotal": "Främst användarrapporter, begränsad klinisk data"
+    },
+    "deepDiveFeatures": [
+      { "label": "Citerad forskning", "desc": "Nyckelstudier med länkade källor" },
+      { "label": "Verkningsmekanism", "desc": "Hur det fungerar på cellnivå" },
+      { "label": "Optimala doseringsprotokoll", "desc": "Konservativa, standard- och laddningsintervall" },
+      { "label": "Bästa former & biotillgänglighet", "desc": "Vilken form absorberas bäst och varför" },
+      { "label": "Synergier & stackar", "desc": "Vad du bör kombinera det med för bästa resultat" },
+      { "label": "Varningar & interaktioner", "desc": "Vad du bör vara uppmärksam på" }
+    ]
+  },
+  "auth": {
+    "titles": {
+      "signin": "Välkommen tillbaka",
+      "signup": "Skapa konto",
+      "magic": "Magisk länk-inloggning"
+    },
+    "subtitles": {
+      "signin": "Logga in för att komma åt Premium-djupdykningar",
+      "signup": "Kom igång — det är gratis att skapa ett konto",
+      "magic": "Vi skickar en klicka-för-att-logga-in-länk till din inkorg"
+    },
+    "continueWithGoogle": "Fortsätt med Google",
+    "emailPlaceholder": "du@example.com",
+    "passwordPlaceholder": "Lösenord",
+    "signIn": "Logga in",
+    "createAccount": "Skapa konto",
+    "sendMagicLink": "Skicka magisk länk",
+    "loading": "Laddar…",
+    "noAccount": "Inget konto?",
+    "signUp": "Registrera dig",
+    "magicLinkInstead": "Logga in med magisk länk istället",
+    "alreadyHaveAccount": "Har du redan ett konto?",
+    "backToPassword": "Tillbaka till lösenordsinloggning",
+    "magicLinkSent": "Magisk länk skickad — kolla din inkorg.",
+    "accountCreated": "Konto skapat! Kontrollera din e-post för att bekräfta, logga sedan in."
+  },
+  "cookieBanner": {
+    "title": "Kakorsamtycke",
+    "body": "Vi använder kakor för att förbättra din upplevelse och analysera användning. Nödvändiga kakor krävs för grundläggande funktionalitet.",
+    "noDataSold": "Vi säljer eller delar inte personuppgifter.",
+    "settings": "Inställningar",
+    "rejectAll": "Avvisa alla",
+    "acceptAll": "Acceptera alla",
+    "preferencesTitle": "Kakinställningar",
+    "preferencesBody": "Vi använder olika typer av kakor för att optimera din upplevelse:",
+    "essentialCookies": "Nödvändiga kakor (krävs)",
+    "essentialCookiesDesc": "Krävs för grundläggande webbplatsfunktionalitet och säkerhet.",
+    "analyticsCookies": "Analyskakor",
+    "analyticsCookiesDesc": "Hjälper oss förstå hur du använder vår webbplats för att förbättra prestanda.",
+    "essentialOnly": "Endast nödvändiga"
+  },
+  "supplementRecommendations": {
+    "title": "Tillskottsrekommendationer",
+    "subtitle": "Välj ditt primära hälsomål för att få personliga tillskottsförslag",
+    "inYourList": "I din lista",
+    "whyItWorks": "Varför det fungerar",
+    "qualityComparison": "Kvalitetsjämförelse",
+    "premiumForms": "Premiumformer",
+    "avoidThese": "Undvik dessa",
+    "budgetFriendly": "Budgetvänligt alternativ",
+    "foundInProducts": "Hittades i dina produkter",
+    "product": "Produkt",
+    "qualityScore": "Kvalitetspoäng",
+    "priorityLabel": "Prioritet {{number}}",
+    "recommendedSupplements": "Rekommenderade tillskott (i prioriteringsordning)",
+    "proTips": "Proffstips",
+    "proTipsList": [
+      "Börja med prioritet 1-tillskott först, lägg till andra gradvis",
+      "Ta tillskott konsekvent i minst 4–6 veckor för att se resultat",
+      "Köp från välrenommerade märken med tredjepartstestning",
+      "Överväg att ta blodprov för att kontrollera brister",
+      "Kvalitet spelar större roll än kvantitet — investera i bättre former när möjligt"
+    ],
+    "goals": {
+      "betterSleep": {
+        "label": "Bättre sömn",
+        "description": "Naturlig förbättring av sömnkvalitet"
+      },
+      "buildMuscle": {
+        "label": "Bygg muskler",
+        "description": "Muskeluppbyggnad och återhämtning"
+      },
+      "generalHealth": {
+        "label": "Allmän hälsa",
+        "description": "Övergripande välmående och vitalitet"
+      },
+      "energyFocus": {
+        "label": "Energi & fokus",
+        "description": "Naturlig energi och mental klarhet"
+      }
+    }
+  },
+  "ingredientQuality": {
+    "title": "Ingredienskvalitetsanalys",
+    "subtitle": "Jämför tillskottsformer för att fatta välgrundade köpbeslut",
+    "categoriesLabel": "Tillskottskategorier tillgängliga för analys:",
+    "productsFound": "{{count}} produkter hittade",
+    "noDataTitle": "Ingen tillskottsdata tillgänglig",
+    "noDataBody": "Lägg till tillskottsprodukter med URL:er för att se ingredienskvalitetsanalys",
+    "detailedAnalysis": "Detaljerad analys",
+    "noIngredientsFound": "Inga ingredienser hittades",
+    "noIngredientsFoundBody": "Produkter i denna kategori saknar extraherbara ingrediensdata. Kontrollera konsolloggarna för felsökningsinformation.",
+    "qualityComparisonTitle": "Kvalitetsjämförelse:",
+    "bestQuality": "BÄSTA KVALITET",
+    "avoidIfPossible": "UNDVIK OM MÖJLIGT",
+    "equallyGood": "LIKA BRA",
+    "goodOption": "BRA ALTERNATIV",
+    "qualityGap": "Kvalitetsgap: {{gap}} poäng",
+    "qualityGapSameScore": "Båda alternativen har identiska kvalitetspoäng — välj baserat på preferens",
+    "qualityGapClose": "Båda alternativen har hög kvalitet med minimal skillnad i effektivitet",
+    "qualityGapSignificant": "Detta representerar en betydande skillnad i biotillgänglighet och effektivitet",
+    "multiIngredientFormula": "Flerkomponentformula · Välj en ingrediens att analysera",
+    "foundIn": "Hittades i:",
+    "dosageAnalysis": "Dosanalys:",
+    "aiRecommended": "AI-REKOMMENDERAT",
+    "evidenceBasedRecommendation": "Evidensbaserad rekommendation:",
+    "recommendation": "Rekommendation:",
+    "generalUsage": "Allmän tillskottsanvändning",
+    "dosageRecommendations": "Doseringsrekommendationer",
+    "importantWarnings": "Viktiga varningar",
+    "avoidInferiorForms": "UNDVIK dessa sämre former:",
+    "individualConsiderations": "Individuella överväganden",
+    "benefits": "Fördelar",
+    "drawbacks": "Nackdelar",
+    "yourProductsUsingIngredient": "Dina produkter som använder denna ingrediens",
+    "proteinQualityTitle": "Proteinkvalitetsanalys",
+    "proteinSources": "Proteinkällor",
+    "sketchyIngredients": "Tveksamma ingredienser ({{count}})",
+    "goodIngredients": "Bra ingredienser ({{count}})",
+    "ingredientBreakdown": "Ingrediensöversikt",
+    "qualityScore": "Kvalitetspoäng",
+    "qualityLabels": {
+      "excellent": "Utmärkt",
+      "veryGood": "Mycket bra",
+      "good": "Bra",
+      "fair": "Godkänd",
+      "poor": "Dålig",
+      "individualChoice": "Individuellt val"
+    },
+    "qualitySuffix": "Kvalitet"
+  },
+  "healthProfileOptions": {
+    "goals": {
+      "buildMuscle": "Bygg muskler",
+      "loseFat": "Minska fett",
+      "improveEnergy": "Förbättra energi",
+      "betterSleep": "Bättre sömn",
+      "immuneSupport": "Immunförsvar",
+      "athleticPerformance": "Idrottsprestation",
+      "cognitiveFocus": "Kognitiv fokus",
+      "generalHealth": "Allmän hälsa"
+    },
+    "diet": {
+      "standard": "Standard",
+      "vegetarian": "Vegetarisk",
+      "vegan": "Vegansk",
+      "keto": "Keto",
+      "paleo": "Paleo",
+      "glutenFree": "Glutenfri",
+      "dairyFree": "Mjölkfri"
+    }
   }
 }

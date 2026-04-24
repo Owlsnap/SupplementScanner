@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Cookie, Shield, X, Gear } from '@phosphor-icons/react';
+import { useLanguage } from '../contexts/LanguageContext';
 
 declare global {
   interface Window {
@@ -16,6 +17,7 @@ declare global {
 }
 
 export default function CookieBanner(): JSX.Element | null {
+  const { t } = useLanguage();
   const [showBanner, setShowBanner] = useState<boolean>(false);
   const [showPreferences, setShowPreferences] = useState<boolean>(false);
 
@@ -97,11 +99,11 @@ export default function CookieBanner(): JSX.Element | null {
               fontFamily: "'Manrope', sans-serif",
             }}>
               <Shield size={16} color="#00685f" />
-              Cookie Consent
+              {t('cookieBanner.title')}
             </h3>
             <p style={{ margin: 0, color: 'var(--text-secondary)', fontSize: '0.8125rem', lineHeight: '1.4', fontFamily: "'Inter', sans-serif" }}>
-              We use cookies to enhance your experience and analyze usage. Essential cookies are required for basic functionality.{' '}
-              <span style={{ color: '#00685f', fontWeight: 600 }}>🔒 We don't sell or share personal data.</span>
+              {t('cookieBanner.body')}{' '}
+              <span style={{ color: '#00685f', fontWeight: 600 }}>🔒 {t('cookieBanner.noDataSold')}</span>
             </p>
           </div>
 
@@ -118,7 +120,7 @@ export default function CookieBanner(): JSX.Element | null {
               }}
             >
               <Gear size={15} />
-              Settings
+              {t('cookieBanner.settings')}
             </button>
 
             <button
@@ -130,7 +132,7 @@ export default function CookieBanner(): JSX.Element | null {
                 cursor: 'pointer', fontFamily: "'Inter', sans-serif",
               }}
             >
-              Reject All
+              {t('cookieBanner.rejectAll')}
             </button>
 
             <button
@@ -142,7 +144,7 @@ export default function CookieBanner(): JSX.Element | null {
                 cursor: 'pointer', fontFamily: "'Inter', sans-serif",
               }}
             >
-              Accept All
+              {t('cookieBanner.acceptAll')}
             </button>
           </div>
         </div>
@@ -168,7 +170,7 @@ export default function CookieBanner(): JSX.Element | null {
           >
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '1.25rem' }}>
               <h3 style={{ margin: 0, color: 'var(--text-primary)', fontSize: '1.125rem', fontWeight: 800, fontFamily: "'Manrope', sans-serif" }}>
-                Cookie Preferences
+                {t('cookieBanner.preferencesTitle')}
               </h3>
               <button
                 onClick={() => setShowPreferences(false)}
@@ -179,21 +181,21 @@ export default function CookieBanner(): JSX.Element | null {
             </div>
 
             <p style={{ color: 'var(--text-secondary)', fontSize: '0.875rem', lineHeight: '1.5', margin: '0 0 1rem', fontFamily: "'Inter', sans-serif" }}>
-              We use different types of cookies to optimize your experience:
+              {t('cookieBanner.preferencesBody')}
             </p>
 
             <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem', marginBottom: '1.25rem' }}>
               <div style={{ padding: '0.875rem', background: 'var(--primary-light)', borderRadius: '10px', border: '1px solid var(--primary-border)' }}>
-                <strong style={{ color: 'var(--text-primary)', fontSize: '0.875rem', fontFamily: "'Manrope', sans-serif" }}>Essential Cookies (Required)</strong>
+                <strong style={{ color: 'var(--text-primary)', fontSize: '0.875rem', fontFamily: "'Manrope', sans-serif" }}>{t('cookieBanner.essentialCookies')}</strong>
                 <p style={{ color: 'var(--text-secondary)', fontSize: '0.8rem', margin: '0.375rem 0 0', fontFamily: "'Inter', sans-serif" }}>
-                  Required for basic site functionality and security.
+                  {t('cookieBanner.essentialCookiesDesc')}
                 </p>
               </div>
 
               <div style={{ padding: '0.875rem', background: 'var(--bg-page)', borderRadius: '10px', border: '1px solid var(--border)' }}>
-                <strong style={{ color: 'var(--text-primary)', fontSize: '0.875rem', fontFamily: "'Manrope', sans-serif" }}>Analytics Cookies</strong>
+                <strong style={{ color: 'var(--text-primary)', fontSize: '0.875rem', fontFamily: "'Manrope', sans-serif" }}>{t('cookieBanner.analyticsCookies')}</strong>
                 <p style={{ color: 'var(--text-secondary)', fontSize: '0.8rem', margin: '0.375rem 0 0', fontFamily: "'Inter', sans-serif" }}>
-                  Help us understand how you use our site to improve performance.
+                  {t('cookieBanner.analyticsCookiesDesc')}
                 </p>
               </div>
             </div>
@@ -208,7 +210,7 @@ export default function CookieBanner(): JSX.Element | null {
                   cursor: 'pointer', fontFamily: "'Inter', sans-serif",
                 }}
               >
-                Essential Only
+                {t('cookieBanner.essentialOnly')}
               </button>
               <button
                 onClick={handleAcceptAll}
@@ -219,7 +221,7 @@ export default function CookieBanner(): JSX.Element | null {
                   cursor: 'pointer', fontFamily: "'Inter', sans-serif",
                 }}
               >
-                Accept All
+                {t('cookieBanner.acceptAll')}
               </button>
             </div>
           </div>

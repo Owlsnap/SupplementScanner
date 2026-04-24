@@ -5,6 +5,7 @@ import {
 } from '@phosphor-icons/react';
 import type { EvidenceTier, EncyclopediaCategory } from '../data/encyclopediaData';
 import { useDarkMode } from '../contexts/DarkModeContext';
+import { useLanguage } from '../contexts/LanguageContext';
 
 interface SupplementInfoPageProps {
   slug: string;
@@ -47,31 +48,31 @@ const categoryIcon: Record<EncyclopediaCategory, React.ElementType> = {
   Health:      Leaf,
 };
 
-const evidenceTierStyle: Record<EvidenceTier, { bg: string; color: string; border: string; label: string }> = {
-  Strong:    { bg: '#00685f',                color: '#ffffff',                    border: '#00685f',                       label: 'Well-established science with multiple RCTs' },
-  Moderate:  { bg: 'var(--card-info-bg)',    color: 'var(--card-info-heading)',   border: 'var(--card-info-border)',        label: 'Several quality studies with consistent results' },
-  Emerging:  { bg: 'var(--card-warning-bg)', color: 'var(--card-warning-heading)', border: 'var(--card-warning-border)',   label: 'Promising early research, more trials needed' },
-  Anecdotal: { bg: 'var(--bg-subtle)',       color: 'var(--text-secondary)',      border: 'var(--border)',                  label: 'Primarily user reports, limited clinical data' },
+const evidenceTierStyle: Record<EvidenceTier, { bg: string; color: string; border: string }> = {
+  Strong:    { bg: '#00685f',                color: '#ffffff',                    border: '#00685f'                       },
+  Moderate:  { bg: 'var(--card-info-bg)',    color: 'var(--card-info-heading)',   border: 'var(--card-info-border)'       },
+  Emerging:  { bg: 'var(--card-warning-bg)', color: 'var(--card-warning-heading)', border: 'var(--card-warning-border)'  },
+  Anecdotal: { bg: 'var(--bg-subtle)',       color: 'var(--text-secondary)',      border: 'var(--border)'                 },
 };
 
-const deepDiveFeatures: Array<{ Icon: React.ElementType; label: string; desc: string }> = [
-  { Icon: Article,          label: 'Cited research',               desc: 'Key studies with sources linked' },
-  { Icon: Flask,            label: 'Mechanism of action',          desc: 'How it works at the cellular level' },
-  { Icon: Gauge,            label: 'Optimal dosing protocols',     desc: 'Conservative, standard, and loading ranges' },
-  { Icon: ArrowsHorizontal, label: 'Best forms & bioavailability', desc: 'Which form absorbs best and why' },
-  { Icon: Sparkle,          label: 'Synergies & stacks',           desc: 'What to combine it with for best results' },
-  { Icon: ShieldWarning,    label: 'Cautions & interactions',      desc: 'What to watch out for' },
+const deepDiveFeatureIcons: React.ElementType[] = [
+  Article, Flask, Gauge, ArrowsHorizontal, Sparkle, ShieldWarning,
 ];
 
 export default function SupplementInfoPage({
   name, category, evidenceTier, tagline, primaryUse, overview,
   typicalDose, bestFor, keyFacts, commonMistakes, onBack, onDeepDive, onBuyDive, hasPaidDive,
 }: SupplementInfoPageProps) {
+  const { t } = useLanguage();
   const { isDark } = useDarkMode();
   const categoryColors = isDark ? categoryColorsDark : categoryColorsLight;
   const cat = categoryColors[category];
   const tier = evidenceTierStyle[evidenceTier];
   const CatIcon = categoryIcon[category];
+  const tierLabel = t(`supplementInfo.evidenceTierLabels.${evidenceTier}`);
+  const deepDiveFeatures = (t('supplementInfo.deepDiveFeatures', { returnObjects: true }) as Array<{ label: string; desc: string }>).map(
+    (f, i) => ({ Icon: deepDiveFeatureIcons[i], label: f.label, desc: f.desc })
+  );
 
   return (
     <div style={{ background: 'var(--bg-page)', minHeight: '100vh', fontFamily: "'Inter', sans-serif", paddingTop: '100px' }}>
@@ -95,7 +96,7 @@ export default function SupplementInfoPage({
               }}
             >
               <ArrowLeft size={14} />
-              Back
+              {t('supplementInfo.back')}
             </button>
             <div style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.625rem' }}>
               <div style={{ background: 'rgba(255,255,255,0.2)', borderRadius: '8px', padding: '0.375rem', display: 'flex' }}>
@@ -140,7 +141,7 @@ export default function SupplementInfoPage({
             borderTop: `3px solid ${cat.bg}`,
           }}>
             <div style={{ fontFamily: "'Inter', sans-serif", fontWeight: 600, fontSize: '0.75rem', color: 'var(--text-secondary)', textTransform: 'uppercase', letterSpacing: '0.7px', marginBottom: '0.5rem' }}>
-              Typical Dose
+              {t('supplementInfo.typicalDose')}
             </div>
             <div style={{ fontFamily: "'Manrope', sans-serif", fontWeight: 800, fontSize: '1rem', color: 'var(--text-primary)', letterSpacing: '-0.2px' }}>
               {typicalDose}
@@ -155,7 +156,7 @@ export default function SupplementInfoPage({
             textAlign: 'center',
           }}>
             <div style={{ fontFamily: "'Inter', sans-serif", fontWeight: 600, fontSize: '0.75rem', color: 'var(--text-secondary)', textTransform: 'uppercase', letterSpacing: '0.7px', marginBottom: '0.5rem' }}>
-              Evidence Level
+              {t('supplementInfo.evidenceLevel')}
             </div>
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem' }}>
               <span style={{
@@ -167,7 +168,7 @@ export default function SupplementInfoPage({
               </span>
             </div>
             <div style={{ fontFamily: "'Inter', sans-serif", fontSize: '0.75rem', color: 'var(--text-secondary)', marginTop: '0.375rem', lineHeight: 1.4 }}>
-              {tier.label}
+              {tierLabel}
             </div>
           </div>
         </div>
@@ -179,7 +180,7 @@ export default function SupplementInfoPage({
           padding: '1.375rem 1.5rem', marginBottom: '1rem',
         }}>
           <div style={{ fontFamily: "'Inter', sans-serif", fontWeight: 600, fontSize: '0.75rem', color: 'var(--text-secondary)', textTransform: 'uppercase', letterSpacing: '0.7px', marginBottom: '0.625rem' }}>
-            Overview
+            {t('supplementInfo.overview')}
           </div>
           <p style={{ fontFamily: "'Inter', sans-serif", fontSize: '0.9375rem', color: 'var(--text-primary)', lineHeight: 1.75, margin: 0 }}>
             {overview}
@@ -194,7 +195,7 @@ export default function SupplementInfoPage({
           borderLeft: `4px solid ${cat.bg}`,
         }}>
           <div style={{ fontFamily: "'Inter', sans-serif", fontWeight: 600, fontSize: '0.75rem', color: 'var(--text-secondary)', textTransform: 'uppercase', letterSpacing: '0.7px', marginBottom: '0.625rem' }}>
-            How It Works
+            {t('supplementInfo.howItWorks')}
           </div>
           <p style={{ fontFamily: "'Inter', sans-serif", fontSize: '0.9375rem', color: 'var(--text-primary)', lineHeight: 1.7, margin: 0 }}>
             {primaryUse}
@@ -208,7 +209,7 @@ export default function SupplementInfoPage({
           padding: '1.375rem 1.5rem', marginBottom: '1rem',
         }}>
           <div style={{ fontFamily: "'Inter', sans-serif", fontWeight: 600, fontSize: '0.75rem', color: 'var(--text-secondary)', textTransform: 'uppercase', letterSpacing: '0.7px', marginBottom: '0.875rem' }}>
-            Key Facts
+            {t('supplementInfo.keyFacts')}
           </div>
           <div style={{ display: 'flex', flexDirection: 'column', gap: '0.625rem' }}>
             {keyFacts.map((fact, i) => (
@@ -234,7 +235,7 @@ export default function SupplementInfoPage({
           padding: '1.375rem 1.5rem', marginBottom: '1rem',
         }}>
           <div style={{ fontFamily: "'Inter', sans-serif", fontWeight: 600, fontSize: '0.75rem', color: 'var(--text-secondary)', textTransform: 'uppercase', letterSpacing: '0.7px', marginBottom: '0.75rem' }}>
-            Best For
+            {t('supplementInfo.bestFor')}
           </div>
           <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.5rem' }}>
             {bestFor.map((item, i) => (
@@ -261,7 +262,7 @@ export default function SupplementInfoPage({
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.875rem' }}>
             <Warning size={15} color="var(--card-warning-heading, #92400e)" weight="fill" />
             <div style={{ fontFamily: "'Inter', sans-serif", fontWeight: 600, fontSize: '0.75rem', color: 'var(--card-warning-heading, #92400e)', textTransform: 'uppercase', letterSpacing: '0.7px' }}>
-              Common Mistakes
+              {t('supplementInfo.commonMistakes')}
             </div>
           </div>
           <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
@@ -304,10 +305,10 @@ export default function SupplementInfoPage({
                 display: 'flex', alignItems: 'center', gap: '0.5rem',
               }}>
                 <Article size={18} weight="fill" />
-                Research Deep Dive
+                {t('supplementInfo.researchDeepDive')}
               </div>
               <div style={{ fontFamily: "'Inter', sans-serif", fontSize: '0.8125rem', color: 'rgba(255,255,255,0.75)', marginTop: '0.25rem' }}>
-                Peer-reviewed sources · Generated on demand
+                {t('supplementInfo.researchDeepDiveSubtitle')}
               </div>
             </div>
             <span style={{
@@ -374,7 +375,7 @@ export default function SupplementInfoPage({
               onMouseLeave={e => { (e.currentTarget as HTMLButtonElement).style.background = '#00685f'; }}
             >
               <Sparkle size={18} weight="fill" />
-              {hasPaidDive ? 'Open Research Deep Dive' : 'Unlock with Premium'}
+              {hasPaidDive ? t('supplementInfo.openResearchDeepDive') : t('supplementInfo.unlockWithPremium')}
               <ArrowRight size={16} weight="bold" />
             </button>
 
@@ -382,7 +383,7 @@ export default function SupplementInfoPage({
               <>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', margin: '0.75rem 0' }}>
                   <div style={{ flex: 1, height: '1px', background: 'var(--border)' }} />
-                  <span style={{ fontFamily: "'Inter', sans-serif", fontSize: '0.75rem', color: 'var(--text-secondary)' }}>or</span>
+                  <span style={{ fontFamily: "'Inter', sans-serif", fontSize: '0.75rem', color: 'var(--text-secondary)' }}>{t('common.or')}</span>
                   <div style={{ flex: 1, height: '1px', background: 'var(--border)' }} />
                 </div>
                 <button
@@ -399,13 +400,13 @@ export default function SupplementInfoPage({
                   onMouseEnter={e => { (e.currentTarget as HTMLButtonElement).style.borderColor = '#00685f'; }}
                   onMouseLeave={e => { (e.currentTarget as HTMLButtonElement).style.borderColor = 'var(--border)'; }}
                 >
-                  Buy this Deep Dive · $1.99
+                  {t('supplementInfo.buyThisDive')}
                 </button>
               </>
             )}
 
             <p style={{ textAlign: 'center', fontFamily: "'Inter', sans-serif", fontSize: '0.75rem', color: 'var(--text-secondary)', margin: '0.75rem 0 0' }}>
-              Research-backed · cached for 30 days after first load
+              {t('supplementInfo.researchCached')}
             </p>
           </div>
         </div>

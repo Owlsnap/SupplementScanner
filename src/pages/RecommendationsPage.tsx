@@ -7,6 +7,7 @@ import {
 import { encyclopediaSupplements } from '../data/encyclopediaData';
 import type { EvidenceTier, EncyclopediaCategory } from '../data/encyclopediaData';
 import { useDarkMode } from '../contexts/DarkModeContext';
+import { useLanguage } from '../contexts/LanguageContext';
 
 // ── Data ──────────────────────────────────────────────────────────────────────
 
@@ -93,6 +94,7 @@ export default function RecommendationsPage(): JSX.Element {
   const [selectedGoal, setSelectedGoal] = useState<string>('sleep');
   const navigate = useNavigate();
   const { isDark } = useDarkMode();
+  const { t } = useLanguage();
 
   const goal = GOALS.find(g => g.key === selectedGoal) ?? GOALS[0];
 
@@ -219,12 +221,12 @@ export default function RecommendationsPage(): JSX.Element {
             color: 'var(--text-primary)', margin: '0 0 1rem',
             letterSpacing: '-1px', lineHeight: 1.1,
           }}>
-            Goals &amp; <span style={{
+            {t('recommendations.pageTitle')} <span style={{
               background: 'linear-gradient(135deg, #00685f 0%, #0284c7 100%)',
               WebkitBackgroundClip: 'text',
               WebkitTextFillColor: 'transparent',
               backgroundClip: 'text',
-            }}>Recommendations</span>
+            }}>{t('recommendations.pageTitleHighlight')}</span>
           </h1>
           <p style={{
             fontFamily: "'Inter', sans-serif", fontSize: '1.0625rem',
@@ -259,7 +261,7 @@ export default function RecommendationsPage(): JSX.Element {
                   transition: 'all 0.15s ease', whiteSpace: 'nowrap',
                 }}
               >
-                {g.label}
+                {t(`recommendations.goals.${g.key}.label`)}
               </button>
             );
           })}
@@ -300,7 +302,7 @@ export default function RecommendationsPage(): JSX.Element {
                       fontFamily: "'Manrope', sans-serif",
                       textTransform: 'uppercase', letterSpacing: '0.06em',
                     }}>
-                      {p1.evidenceTier} Evidence
+                      {p1.evidenceTier} {t('recommendations.evidenceSuffix')}
                     </span>
                   </div>
 
@@ -340,7 +342,7 @@ export default function RecommendationsPage(): JSX.Element {
                       fontSize: '0.8125rem', textTransform: 'uppercase', letterSpacing: '0.05em',
                     }}>
                       <Flask size={16} weight="fill" />
-                      View Deep Dive
+                      {t('recommendations.viewDeepDive')}
                     </div>
                   </div>
                 </div>
@@ -422,14 +424,14 @@ export default function RecommendationsPage(): JSX.Element {
             }}
           >
             <Books size={18} />
-            Browse Full Index
+            {t('recommendations.browseFullIndex')}
           </button>
           <p style={{
             fontFamily: "'Inter', sans-serif", fontSize: '0.6875rem',
             letterSpacing: '0.1em', textTransform: 'uppercase',
             color: 'var(--text-secondary)', opacity: 0.55, margin: 0,
           }}>
-            Evidence-ranked · Updated 2025 · Click any card to deep dive
+            {t('recommendations.footerNote')}
           </p>
         </div>
 

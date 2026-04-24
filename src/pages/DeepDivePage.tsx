@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { ArrowLeft, Warning, Lightning, CheckCircle, Info } from '@phosphor-icons/react';
 import type { EvidenceTier } from '../data/encyclopediaData';
+import { useLanguage } from '../contexts/LanguageContext';
 
 interface DosingInfo {
   low: string;
@@ -67,6 +68,7 @@ export default function DeepDivePage({
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [wasFreshlyGenerated, setWasFreshlyGenerated] = useState(false);
+  const { t } = useLanguage();
 
   const tierStyle = evidenceTierColors[evidenceTier];
 
@@ -141,7 +143,7 @@ export default function DeepDivePage({
           }}
         >
           <ArrowLeft size={16} />
-          Back
+          {t('deepDive.back')}
         </button>
 
         {/* Hero tagline */}
@@ -162,10 +164,10 @@ export default function DeepDivePage({
               margin: '0 auto 1.25rem',
             }} />
             <p style={{ ...bodyTextStyle, color: 'var(--text-muted)', margin: '0 0 0.5rem' }}>
-              Generating deep dive with AI…
+              {t('deepDive.generatingAi')}
             </p>
             <p style={{ fontFamily: "'Inter', sans-serif", fontSize: '0.8125rem', color: 'var(--text-secondary)', margin: 0 }}>
-              ~5–10 seconds. Cached for 30 days after first load.
+              {t('deepDive.generatingSubtitle')}
             </p>
           </div>
         )}
@@ -174,7 +176,7 @@ export default function DeepDivePage({
         {!loading && error && (
           <div style={{ ...cardStyle, borderLeft: '4px solid #ba1a1a', textAlign: 'center' }}>
             <p style={{ color: '#ba1a1a', fontWeight: 600, margin: '0 0 0.5rem', fontFamily: "'Inter', sans-serif" }}>
-              Failed to load content
+              {t('deepDive.failedToLoad')}
             </p>
             <p style={{ ...bodyTextStyle, color: 'var(--text-secondary)', marginBottom: '1.25rem' }}>{error}</p>
             <div style={{ display: 'flex', gap: '0.75rem', justifyContent: 'center' }}>
@@ -192,7 +194,7 @@ export default function DeepDivePage({
                   cursor: 'pointer',
                 }}
               >
-                Try again
+                {t('deepDive.tryAgain')}
               </button>
               <button
                 onClick={onBack}
@@ -208,7 +210,7 @@ export default function DeepDivePage({
                   cursor: 'pointer',
                 }}
               >
-                Back
+                {t('deepDive.back')}
               </button>
             </div>
           </div>
@@ -221,7 +223,7 @@ export default function DeepDivePage({
             <div style={cardStyle}>
               <div style={sectionTitleStyle}>
                 <Info size={18} color="#00685f" />
-                What it is
+                {t('deepDive.whatItIs')}
               </div>
               <p style={bodyTextStyle}>{deepDive.whatItIs}</p>
             </div>
@@ -230,7 +232,7 @@ export default function DeepDivePage({
             <div style={cardStyle}>
               <div style={sectionTitleStyle}>
                 <Lightning size={18} color="#00685f" weight="fill" />
-                How it works
+                {t('deepDive.howItWorks')}
               </div>
               <p style={bodyTextStyle}>{deepDive.howItWorks}</p>
             </div>
@@ -239,13 +241,13 @@ export default function DeepDivePage({
             <div style={cardStyle}>
               <div style={sectionTitleStyle}>
                 <CheckCircle size={18} color="#00685f" />
-                Dosing
+                {t('deepDive.dosing')}
               </div>
               <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '0.75rem', marginBottom: '0.75rem' }}>
                 {[
-                  { label: 'Conservative', value: deepDive.dosing.low, accent: 'var(--bg-hover)', border: 'var(--border-strong)' },
-                  { label: 'Standard', value: deepDive.dosing.standard, accent: 'var(--primary-light)', border: '#00685f' },
-                  { label: 'High / Loading', value: deepDive.dosing.high, accent: 'var(--bg-hover)', border: 'var(--border-strong)' },
+                  { label: t('deepDive.dosingLabels.conservative'), value: deepDive.dosing.low, accent: 'var(--bg-hover)', border: 'var(--border-strong)' },
+                  { label: t('deepDive.dosingLabels.standard'), value: deepDive.dosing.standard, accent: 'var(--primary-light)', border: '#00685f' },
+                  { label: t('deepDive.dosingLabels.highLoading'), value: deepDive.dosing.high, accent: 'var(--bg-hover)', border: 'var(--border-strong)' },
                 ].map(({ label, value, accent, border }) => (
                   <div key={label} style={{
                     background: accent,
@@ -272,7 +274,7 @@ export default function DeepDivePage({
                 gap: '0.5rem',
               }}>
                 <span style={{ fontSize: '0.75rem', fontWeight: 600, color: 'var(--text-secondary)', textTransform: 'uppercase', letterSpacing: '0.6px', fontFamily: "'Inter', sans-serif", whiteSpace: 'nowrap', paddingTop: '2px' }}>
-                  Timing
+                  {t('deepDive.timing')}
                 </span>
                 <span style={{ ...bodyTextStyle, fontSize: '0.875rem' }}>{deepDive.dosing.timing}</span>
               </div>
@@ -282,7 +284,7 @@ export default function DeepDivePage({
             {deepDive.forms && deepDive.forms.length > 0 && (
               <div style={cardStyle}>
                 <div style={sectionTitleStyle}>
-                  Forms & Bioavailability
+                  {t('deepDive.formsAndBioavailability')}
                 </div>
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
                   {deepDive.forms.map((form, i) => (
@@ -324,7 +326,7 @@ export default function DeepDivePage({
             {deepDive.synergies && deepDive.synergies.length > 0 && (
               <div style={cardStyle}>
                 <div style={sectionTitleStyle}>
-                  Synergies
+                  {t('deepDive.synergies')}
                 </div>
                 <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.5rem', marginBottom: '0.75rem' }}>
                   {deepDive.synergies.map((s, i) => (
@@ -357,7 +359,7 @@ export default function DeepDivePage({
               <div style={{ ...cardStyle, borderLeft: '3px solid var(--card-warning-border)' }}>
                 <div style={sectionTitleStyle}>
                   <Warning size={18} color="#d97706" weight="fill" />
-                  Cautions & Interactions
+                  {t('deepDive.cautionsAndInteractions')}
                 </div>
                 <ul style={{ margin: 0, padding: '0 0 0 1.25rem' }}>
                   {deepDive.cautions.map((c, i) => (
@@ -373,7 +375,7 @@ export default function DeepDivePage({
             {deepDive.recommendationsLink && onGoToRecommendations && (
               <div style={{ ...cardStyle, textAlign: 'center' }}>
                 <p style={{ ...bodyTextStyle, marginBottom: '1rem', color: 'var(--text-secondary)' }}>
-                  This supplement is recommended for: <strong style={{ color: 'var(--text-primary)' }}>{deepDive.recommendationsLink.replace(/\b\w/g, (c: string) => c.toUpperCase())}</strong>
+                  {t('deepDive.recommendedFor')} <strong style={{ color: 'var(--text-primary)' }}>{deepDive.recommendationsLink.replace(/\b\w/g, (c: string) => c.toUpperCase())}</strong>
                 </p>
                 <button
                   onClick={onGoToRecommendations}
@@ -392,7 +394,7 @@ export default function DeepDivePage({
                   onMouseEnter={e => { (e.currentTarget as HTMLButtonElement).style.background = '#00685f'; }}
                   onMouseLeave={e => { (e.currentTarget as HTMLButtonElement).style.background = '#3f6560'; }}
                 >
-                  See Goal Recommendations →
+                  {t('deepDive.seeGoalRecommendations')}
                 </button>
               </div>
             )}
@@ -410,7 +412,7 @@ export default function DeepDivePage({
                   fontWeight: 600,
                   fontFamily: "'Inter', sans-serif",
                 }}>
-                  ✦ Freshly generated by AI — cached for 30 days
+                  {t('deepDive.freshlyGenerated')}
                 </span>
               </div>
             )}

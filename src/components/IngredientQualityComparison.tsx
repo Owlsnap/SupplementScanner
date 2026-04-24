@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Flask, Scales, ArrowUp, ArrowDown, CheckCircle, XCircle, Info, Warning, Shield, WarningCircle, Target } from "@phosphor-icons/react";
 import { ingredientQuality, compareIngredients, getIngredientQuality } from '../data/supplementData.js';
 import type { Product, AnalyzedProduct, StructuredSupplementData, IngredientAnalysis } from '../types/index.js';
+import { useLanguage } from '../contexts/LanguageContext';
 
 interface IngredientQualityComparisonProps {
   analyzedProducts?: Record<string, AnalyzedProduct[]>;
@@ -16,6 +17,7 @@ interface ComparisonResult {
 }
 
 export default function IngredientQualityComparison({ analyzedProducts = {} }: IngredientQualityComparisonProps) {
+  const { t } = useLanguage();
   const [selectedCategory, setSelectedCategory] = useState<string>('');
   const [comparisonResults, setComparisonResults] = useState<ComparisonResult[] | null>(null);
   const [selectedIngredient, setSelectedIngredient] = useState<Record<string, string>>({});
@@ -65,12 +67,12 @@ export default function IngredientQualityComparison({ analyzedProducts = {} }: I
   }
 
   const getQualityLabel = (score) => {
-    if (score === null) return 'Individual Choice';
-    if (score >= 90) return 'Excellent';
-    if (score >= 80) return 'Very Good';
-    if (score >= 70) return 'Good';
-    if (score >= 50) return 'Fair';
-    return 'Poor';
+    if (score === null) return t('ingredientQuality.qualityLabels.individualChoice');
+    if (score >= 90) return t('ingredientQuality.qualityLabels.excellent');
+    if (score >= 80) return t('ingredientQuality.qualityLabels.veryGood');
+    if (score >= 70) return t('ingredientQuality.qualityLabels.good');
+    if (score >= 50) return t('ingredientQuality.qualityLabels.fair');
+    return t('ingredientQuality.qualityLabels.poor');
   };
 
   const getQualityColor = (score) => {
@@ -570,7 +572,7 @@ export default function IngredientQualityComparison({ analyzedProducts = {} }: I
                 </div>
                 
                 <div style={{ fontSize: '0.75rem', color: 'var(--text-secondary)', marginBottom: '0.5rem', fontFamily: "'Inter', sans-serif" }}>
-                  Multi-ingredient formula · Select an ingredient to analyze
+                  {t('ingredientQuality.multiIngredientFormula')}
                 </div>
               </div>
             ) : (
@@ -589,12 +591,12 @@ export default function IngredientQualityComparison({ analyzedProducts = {} }: I
               fontWeight: 700, marginTop: '0.25rem',
               fontFamily: "'Inter', sans-serif",
             }}>
-              {getQualityLabel(currentQuality?.score)} Quality
+              {getQualityLabel(currentQuality?.score)} {t('ingredientQuality.qualitySuffix')}
             </p>
             {matchingProducts.length > 0 && (
               <div style={{ marginTop: '0.375rem' }}>
                 <span style={{ color: 'var(--text-secondary)', fontSize: '0.75rem', fontFamily: "'Inter', sans-serif" }}>
-                  Found in: {matchingProducts.map(p => `Product #${p.id}`).join(', ')}
+                  {t('ingredientQuality.foundIn')} {matchingProducts.map(p => `Product #${p.id}`).join(', ')}
                 </span>
               </div>
             )}
@@ -646,7 +648,7 @@ export default function IngredientQualityComparison({ analyzedProducts = {} }: I
                   display: 'flex', alignItems: 'center', gap: '0.5rem',
                   fontFamily: "'Inter', sans-serif",
                 }}>
-                  {dosageAnalysis.isAIGenerated ? '🤖' : '🎯'} Dosage Analysis: {currentSelectedIngredient}
+                  {dosageAnalysis.isAIGenerated ? '🤖' : '🎯'} {t('ingredientQuality.dosageAnalysis')} {currentSelectedIngredient}
                   {dosageAnalysis.isAIGenerated && (
                     <span style={{
                       background: 'var(--card-info-bg)', color: 'var(--card-info-heading)',
@@ -655,7 +657,7 @@ export default function IngredientQualityComparison({ analyzedProducts = {} }: I
                       textTransform: 'uppercase', letterSpacing: '0.5px',
                       fontFamily: "'Inter', sans-serif",
                     }}>
-                      AI RECOMMENDED
+                      {t('ingredientQuality.aiRecommended')}
                     </span>
                   )}
                 </h5>
@@ -695,7 +697,7 @@ export default function IngredientQualityComparison({ analyzedProducts = {} }: I
                       color: 'var(--text-primary)', fontSize: '0.875rem', fontWeight: 700,
                       marginBottom: '0.25rem', fontFamily: "'Inter', sans-serif",
                     }}>
-                      {dosageAnalysis.isAIGenerated ? 'Evidence-Based Recommendation:' : 'Recommendation:'}
+                      {dosageAnalysis.isAIGenerated ? t('ingredientQuality.evidenceBasedRecommendation') : t('ingredientQuality.recommendation')}
                     </div>
                     <div style={{ color: 'var(--text-secondary)', fontSize: '0.75rem', lineHeight: '1.4', fontFamily: "'Inter', sans-serif" }}>
                       {dosageAnalysis.recommendation}
@@ -829,7 +831,7 @@ export default function IngredientQualityComparison({ analyzedProducts = {} }: I
               {/* General Usage */}
               <div style={{ background: 'var(--primary-light)', border: '1px solid var(--primary-border)', borderRadius: '12px', padding: '1rem', marginBottom: '0.875rem' }}>
                 <h5 style={{ color: '#00685f', fontSize: '0.875rem', fontWeight: 700, margin: '0 0 0.5rem', fontFamily: "'Inter', sans-serif" }}>
-                  📋 General Supplement Usage
+                  📋 {t('ingredientQuality.generalUsage')}
                 </h5>
                 <p style={{ color: '#3f6560', fontSize: '0.875rem', lineHeight: '1.6', margin: 0, fontFamily: "'Inter', sans-serif" }}>
                   {suppInfo.generalUsage}
@@ -840,7 +842,7 @@ export default function IngredientQualityComparison({ analyzedProducts = {} }: I
               <div style={{ background: 'var(--card-info-bg)', border: '1px solid var(--card-info-border)', borderRadius: '12px', padding: '1rem', marginBottom: '0.875rem' }}>
                 <h5 style={{ color: 'var(--card-info-heading)', fontSize: '0.875rem', fontWeight: 700, margin: '0 0 0.5rem', fontFamily: "'Inter', sans-serif", display: 'flex', alignItems: 'center', gap: '0.375rem' }}>
                   <Target size={14} />
-                  Dosage Recommendations
+                  {t('ingredientQuality.dosageRecommendations')}
                 </h5>
                 <p style={{ color: 'var(--card-info-text)', fontSize: '0.875rem', lineHeight: '1.6', margin: 0, fontFamily: "'Inter', sans-serif" }}>
                   {suppInfo.dosage}
@@ -851,7 +853,7 @@ export default function IngredientQualityComparison({ analyzedProducts = {} }: I
               <div style={{ background: 'var(--card-warning-bg)', border: '1px solid var(--card-warning-border)', borderRadius: '12px', padding: '1rem', marginBottom: '1.5rem' }}>
                 <h5 style={{ color: 'var(--card-warning-heading)', fontSize: '0.875rem', fontWeight: 700, margin: '0 0 0.5rem', fontFamily: "'Inter', sans-serif", display: 'flex', alignItems: 'center', gap: '0.375rem' }}>
                   <Warning size={14} />
-                  Important Warnings
+                  {t('ingredientQuality.importantWarnings')}
                 </h5>
                 <p style={{
                   color: 'var(--card-warning-text)', fontSize: '0.875rem', lineHeight: '1.6',
@@ -864,7 +866,7 @@ export default function IngredientQualityComparison({ analyzedProducts = {} }: I
                 {suppInfo.inferiorForms.length > 0 && (
                   <div>
                     <div style={{ color: 'var(--card-danger-heading)', fontSize: '0.75rem', fontWeight: 700, marginBottom: '0.5rem', fontFamily: "'Inter', sans-serif", display: 'flex', alignItems: 'center', gap: '0.375rem' }}>
-                      <XCircle size={12} /> AVOID these inferior forms:
+                      <XCircle size={12} /> {t('ingredientQuality.avoidInferiorForms')}
                     </div>
                     {suppInfo.inferiorForms.map((form, idx) => (
                       <div key={idx} style={{ color: 'var(--card-danger-text)', fontSize: '0.75rem', marginBottom: '0.25rem', display: 'flex', alignItems: 'center', gap: '0.5rem', fontFamily: "'Inter', sans-serif" }}>
@@ -884,7 +886,7 @@ export default function IngredientQualityComparison({ analyzedProducts = {} }: I
           <div style={{ background: 'var(--card-purple-bg)', border: '1px solid var(--card-purple-border)', borderRadius: '12px', padding: '1rem', marginBottom: '1.5rem' }}>
             <h5 style={{ color: 'var(--card-purple-heading)', fontSize: '0.875rem', fontWeight: 700, margin: '0 0 0.5rem', fontFamily: "'Inter', sans-serif", display: 'flex', alignItems: 'center', gap: '0.375rem' }}>
               <Info size={14} />
-              Individual Considerations
+              {t('ingredientQuality.individualConsiderations')}
             </h5>
             <p style={{ color: 'var(--card-purple-text)', fontSize: '0.875rem', lineHeight: '1.6', margin: 0, fontFamily: "'Inter', sans-serif" }}>
               {currentQuality.considerations}
@@ -897,7 +899,7 @@ export default function IngredientQualityComparison({ analyzedProducts = {} }: I
           <div style={{ background: 'var(--card-success-bg)', border: '1px solid var(--card-success-border)', borderRadius: '12px', padding: '1rem' }}>
             <h5 style={{ color: 'var(--card-success-heading)', fontSize: '0.875rem', fontWeight: 700, margin: '0 0 0.75rem', display: 'flex', alignItems: 'center', gap: '0.375rem', fontFamily: "'Inter', sans-serif" }}>
               <CheckCircle size={14} />
-              Benefits
+              {t('ingredientQuality.benefits')}
             </h5>
             {currentQuality?.benefits?.map((benefit, idx) => (
               <div key={idx} style={{ color: 'var(--card-success-text)', fontSize: '0.75rem', marginBottom: '0.25rem', display: 'flex', alignItems: 'center', gap: '0.5rem', fontFamily: "'Inter', sans-serif" }}>
@@ -910,7 +912,7 @@ export default function IngredientQualityComparison({ analyzedProducts = {} }: I
           <div style={{ background: 'var(--card-danger-bg)', border: '1px solid var(--card-danger-border)', borderRadius: '12px', padding: '1rem' }}>
             <h5 style={{ color: 'var(--card-danger-heading)', fontSize: '0.875rem', fontWeight: 700, margin: '0 0 0.75rem', display: 'flex', alignItems: 'center', gap: '0.375rem', fontFamily: "'Inter', sans-serif" }}>
               <XCircle size={14} />
-              Drawbacks
+              {t('ingredientQuality.drawbacks')}
             </h5>
             {currentQuality?.drawbacks?.map((drawback, idx) => (
               <div key={idx} style={{ color: 'var(--card-danger-text)', fontSize: '0.75rem', marginBottom: '0.25rem', display: 'flex', alignItems: 'center', gap: '0.5rem', fontFamily: "'Inter', sans-serif" }}>
@@ -925,7 +927,7 @@ export default function IngredientQualityComparison({ analyzedProducts = {} }: I
           <div style={{ background: 'var(--primary-light)', border: '1px solid var(--primary-border)', borderRadius: '12px', padding: '1rem' }}>
             <h5 style={{ color: '#00685f', fontSize: '0.875rem', fontWeight: 700, margin: '0 0 0.75rem', display: 'flex', alignItems: 'center', gap: '0.375rem', fontFamily: "'Inter', sans-serif" }}>
               <Info size={14} />
-              Your Products Using This Ingredient
+              {t('ingredientQuality.yourProductsUsingIngredient')}
             </h5>
             {matchingProducts.map((product, idx) => (
               <div key={idx} style={{ color: 'var(--text-primary)', fontSize: '0.875rem', fontWeight: 600, marginBottom: '0.25rem', fontFamily: "'Manrope', sans-serif" }}>
@@ -975,7 +977,7 @@ export default function IngredientQualityComparison({ analyzedProducts = {} }: I
             fontFamily: "'Manrope', sans-serif",
           }}>
             <Scales size={20} />
-            Quality Comparison: {selectedCategory.charAt(0).toUpperCase() + selectedCategory.slice(1)}
+            {t('ingredientQuality.qualityComparisonTitle')} {selectedCategory.charAt(0).toUpperCase() + selectedCategory.slice(1)}
           </h3>
 
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
@@ -989,7 +991,7 @@ export default function IngredientQualityComparison({ analyzedProducts = {} }: I
                 fontFamily: "'Inter', sans-serif",
               }}>
                 <ArrowUp size={12} />
-                BEST QUALITY
+                {t('ingredientQuality.bestQuality')}
               </div>
 
               <h4 style={{ color: 'var(--text-primary)', fontSize: '1.125rem', fontWeight: 800, margin: '0 0 0.375rem', textTransform: 'capitalize', fontFamily: "'Manrope', sans-serif" }}>
@@ -1018,9 +1020,9 @@ export default function IngredientQualityComparison({ analyzedProducts = {} }: I
                 fontFamily: "'Inter', sans-serif",
               }}>
                 {isCloseComparison ? (
-                  <><CheckCircle size={12} />{isSameScore ? 'EQUALLY GOOD' : 'GOOD OPTION'}</>
+                  <><CheckCircle size={12} />{isSameScore ? t('ingredientQuality.equallyGood') : t('ingredientQuality.goodOption')}</>
                 ) : (
-                  <><ArrowDown size={12} />AVOID IF POSSIBLE</>
+                  <><ArrowDown size={12} />{t('ingredientQuality.avoidIfPossible')}</>
                 )}
               </div>
 
@@ -1042,14 +1044,14 @@ export default function IngredientQualityComparison({ analyzedProducts = {} }: I
             background: 'var(--primary-light)', border: '1px solid var(--primary-border)', borderRadius: '12px',
           }}>
             <div style={{ fontSize: '1rem', fontWeight: 700, color: '#00685f', marginBottom: '0.25rem', fontFamily: "'Manrope', sans-serif" }}>
-              Quality Gap: {qualityGap} points
+              {t('ingredientQuality.qualityGap', { gap: qualityGap })}
             </div>
             <p style={{ color: '#3f6560', fontSize: '0.8125rem', margin: 0, fontFamily: "'Inter', sans-serif" }}>
               {isSameScore
-                ? 'Both options have identical quality scores — choose based on preference'
+                ? t('ingredientQuality.qualityGapSameScore')
                 : isCloseComparison
-                  ? 'Both options are high quality with minimal difference in effectiveness'
-                  : 'This represents a significant difference in bioavailability and effectiveness'
+                  ? t('ingredientQuality.qualityGapClose')
+                  : t('ingredientQuality.qualityGapSignificant')
               }
             </p>
           </div>
@@ -1110,7 +1112,7 @@ export default function IngredientQualityComparison({ analyzedProducts = {} }: I
             fontFamily: "'Manrope', sans-serif",
           }}>
             <Shield size={20} />
-            Protein Quality Analysis
+            {t('ingredientQuality.proteinQualityTitle')}
           </h2>
           <p style={{ color: 'var(--text-secondary)', fontSize: '0.875rem', margin: 0, fontFamily: "'Inter', sans-serif" }}>
             {(product as any).name || 'Protein Product'}
@@ -1135,7 +1137,7 @@ export default function IngredientQualityComparison({ analyzedProducts = {} }: I
               <div style={{ fontSize: '1.125rem', fontWeight: 800, color: scoreColor, marginBottom: '0.125rem', fontFamily: "'Manrope', sans-serif" }}>
                 {getScoreLabel(quality.score)}
               </div>
-              <div style={{ fontSize: '0.8125rem', color: 'var(--text-secondary)', fontFamily: "'Inter', sans-serif" }}>Quality Score</div>
+              <div style={{ fontSize: '0.8125rem', color: 'var(--text-secondary)', fontFamily: "'Inter', sans-serif" }}>{t('ingredientQuality.qualityScore')}</div>
             </div>
           </div>
         </div>
@@ -1145,7 +1147,7 @@ export default function IngredientQualityComparison({ analyzedProducts = {} }: I
           <div style={{ background: 'var(--primary-light)', border: '1px solid var(--primary-border)', borderRadius: '14px', padding: '1.25rem', marginBottom: '1.25rem' }}>
             <h4 style={{ color: '#00685f', fontSize: '1rem', fontWeight: 700, margin: '0 0 0.875rem', display: 'flex', alignItems: 'center', gap: '0.5rem', fontFamily: "'Manrope', sans-serif" }}>
               <Flask size={18} />
-              Protein Sources
+              {t('ingredientQuality.proteinSources')}
             </h4>
             {quality.proteinSources.map((source: any, idx: number) => (
               <div key={idx} style={{
@@ -1200,7 +1202,7 @@ export default function IngredientQualityComparison({ analyzedProducts = {} }: I
             <div style={{ background: 'var(--card-danger-bg)', border: '1px solid var(--card-danger-border)', borderRadius: '14px', padding: '1.25rem' }}>
               <h4 style={{ color: '#dc2626', fontSize: '0.9375rem', fontWeight: 700, margin: '0 0 0.875rem', display: 'flex', alignItems: 'center', gap: '0.5rem', fontFamily: "'Manrope', sans-serif" }}>
                 <WarningCircle size={18} />
-                Sketchy Ingredients ({quality.concerns.length})
+                {t('ingredientQuality.sketchyIngredients', { count: quality.concerns.length })}
               </h4>
               {quality.concerns.map((concern: any, idx: number) => (
                 <div key={idx} style={{
@@ -1230,7 +1232,7 @@ export default function IngredientQualityComparison({ analyzedProducts = {} }: I
             <div style={{ background: 'var(--card-success-bg)', border: '1px solid var(--card-success-border)', borderRadius: '14px', padding: '1.25rem' }}>
               <h4 style={{ color: '#16a34a', fontSize: '0.9375rem', fontWeight: 700, margin: '0 0 0.875rem', display: 'flex', alignItems: 'center', gap: '0.5rem', fontFamily: "'Manrope', sans-serif" }}>
                 <CheckCircle size={18} />
-                Good Ingredients ({quality.positives.length})
+                {t('ingredientQuality.goodIngredients', { count: quality.positives.length })}
               </h4>
               {quality.positives.map((positive: any, idx: number) => (
                 <div key={idx} style={{ marginBottom: '0.625rem', padding: '0.625rem 0.75rem', background: 'var(--bg-surface)', borderRadius: '10px', borderLeft: '3px solid #16a34a' }}>
@@ -1246,7 +1248,7 @@ export default function IngredientQualityComparison({ analyzedProducts = {} }: I
           <div style={{ background: 'var(--bg-page)', borderRadius: '14px', padding: '1.25rem', border: '1px solid var(--border)' }}>
             <h4 style={{ color: 'var(--text-primary)', fontSize: '0.9375rem', fontWeight: 700, margin: '0 0 0.875rem', display: 'flex', alignItems: 'center', gap: '0.5rem', fontFamily: "'Manrope', sans-serif" }}>
               <Info size={18} color="#00685f" />
-              Ingredient Breakdown
+              {t('ingredientQuality.ingredientBreakdown')}
             </h4>
             <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.5rem' }}>
               {quality.ingredientBreakdown.map((item: any, idx: number) => (
@@ -1288,10 +1290,10 @@ export default function IngredientQualityComparison({ analyzedProducts = {} }: I
             fontFamily: "'Manrope', sans-serif",
           }}>
             <Flask size={20} color="#00685f" />
-            Ingredient Quality Analysis
+            {t('ingredientQuality.title')}
           </h2>
           <p style={{ color: 'var(--text-secondary)', fontSize: '0.875rem', margin: 0, fontFamily: "'Inter', sans-serif" }}>
-            Compare supplement forms to make informed purchasing decisions
+            {t('ingredientQuality.subtitle')}
           </p>
         </div>
 
@@ -1302,7 +1304,7 @@ export default function IngredientQualityComparison({ analyzedProducts = {} }: I
               display: 'block', fontSize: '0.875rem', fontWeight: 600,
               color: 'var(--text-muted)', marginBottom: '0.75rem', fontFamily: "'Inter', sans-serif",
             }}>
-              🔬 Supplement categories available for analysis:
+              🔬 {t('ingredientQuality.categoriesLabel')}
             </label>
 
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '0.75rem' }}>
@@ -1330,7 +1332,7 @@ export default function IngredientQualityComparison({ analyzedProducts = {} }: I
                       {category.description}
                     </p>
                     <div style={{ fontSize: '0.75rem', color: '#00685f', fontWeight: 700, fontFamily: "'Inter', sans-serif" }}>
-                      {(analyzedProducts[category.key] || []).length} products found
+                      {t('ingredientQuality.productsFound', { count: (analyzedProducts[category.key] || []).length })}
                     </div>
                   </div>
                 ))}

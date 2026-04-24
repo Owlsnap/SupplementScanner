@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { X, Sparkle, EnvelopeSimple, Lock, ArrowRight } from '@phosphor-icons/react';
 import { useAuth } from '../contexts/AuthContext';
+import { useLanguage } from '../contexts/LanguageContext';
 
 type Mode = 'signin' | 'signup' | 'magic';
 
@@ -20,6 +21,7 @@ const GoogleIcon = () => (
 );
 
 export default function AuthModal({ onClose }: AuthModalProps) {
+  const { t } = useLanguage();
   const { signIn, signUp, signInWithMagicLink, signInWithGoogle } = useAuth();
   const [googleLoading, setGoogleLoading] = useState(false);
   const [mode, setMode] = useState<Mode>('signin');
@@ -44,7 +46,7 @@ export default function AuthModal({ onClose }: AuthModalProps) {
       const { error } = await signInWithMagicLink(email.trim());
       setLoading(false);
       if (error) { setError(error); return; }
-      setSuccess('Magic link sent — check your inbox.');
+      setSuccess(t('auth.magicLinkSent'));
       return;
     }
 
@@ -53,7 +55,7 @@ export default function AuthModal({ onClose }: AuthModalProps) {
       setLoading(false);
       if (error) { setError(error); return; }
       if (needsConfirmation) {
-        setSuccess('Account created! Check your email to confirm, then sign in.');
+        setSuccess(t('auth.accountCreated'));
         setMode('signin');
       } else {
         onClose();
@@ -126,15 +128,15 @@ export default function AuthModal({ onClose }: AuthModalProps) {
   };
 
   const titles: Record<Mode, string> = {
-    signin: 'Welcome back',
-    signup: 'Create account',
-    magic: 'Magic link sign-in',
+    signin: t('auth.titles.signin'),
+    signup: t('auth.titles.signup'),
+    magic: t('auth.titles.magic'),
   };
 
   const subtitles: Record<Mode, string> = {
-    signin: 'Sign in to access Premium Deep Dives',
-    signup: 'Get started — it\'s free to create an account',
-    magic: 'We\'ll send a one-click sign-in link to your inbox',
+    signin: t('auth.subtitles.signin'),
+    signup: t('auth.subtitles.signup'),
+    magic: t('auth.subtitles.magic'),
   };
 
   return (
@@ -260,12 +262,12 @@ export default function AuthModal({ onClose }: AuthModalProps) {
                 ? <div style={{ width: '16px', height: '16px', border: '2px solid var(--border-strong)', borderTopColor: '#4285F4', borderRadius: '50%', animation: 'spin 1s linear infinite' }} />
                 : <GoogleIcon />
               }
-              Continue with Google
+              {t('auth.continueWithGoogle')}
             </button>
 
             <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', margin: '0.125rem 0' }}>
               <div style={{ flex: 1, height: '1px', background: 'var(--border-strong)' }} />
-              <span style={{ fontFamily: "'Inter', sans-serif", fontSize: '0.75rem', color: 'var(--text-secondary)', fontWeight: 500 }}>or</span>
+              <span style={{ fontFamily: "'Inter', sans-serif", fontSize: '0.75rem', color: 'var(--text-secondary)', fontWeight: 500 }}>{t('common.or')}</span>
               <div style={{ flex: 1, height: '1px', background: 'var(--border-strong)' }} />
             </div>
           </>
@@ -278,7 +280,7 @@ export default function AuthModal({ onClose }: AuthModalProps) {
             <input
               type="email"
               required
-              placeholder="you@example.com"
+              placeholder={t('auth.emailPlaceholder')}
               value={email}
               onChange={e => setEmail(e.target.value)}
               style={inputStyle}
@@ -293,7 +295,7 @@ export default function AuthModal({ onClose }: AuthModalProps) {
               <input
                 type="password"
                 required
-                placeholder="Password"
+                placeholder={t('auth.passwordPlaceholder')}
                 value={password}
                 onChange={e => setPassword(e.target.value)}
                 style={inputStyle}
@@ -306,8 +308,8 @@ export default function AuthModal({ onClose }: AuthModalProps) {
           {/* Submit */}
           <button type="submit" style={{ ...primaryBtn, marginTop: '0.25rem' }} disabled={loading}>
             {loading
-              ? <><div style={{ width: '16px', height: '16px', border: '2px solid rgba(255,255,255,0.4)', borderTopColor: '#fff', borderRadius: '50%', animation: 'spin 1s linear infinite' }} /> Loading…</>
-              : <><ArrowRight size={16} /> {mode === 'signin' ? 'Sign in' : mode === 'signup' ? 'Create account' : 'Send magic link'}</>
+              ? <><div style={{ width: '16px', height: '16px', border: '2px solid rgba(255,255,255,0.4)', borderTopColor: '#fff', borderRadius: '50%', animation: 'spin 1s linear infinite' }} /> {t('auth.loading')}</>
+              : <><ArrowRight size={16} /> {mode === 'signin' ? t('auth.signIn') : mode === 'signup' ? t('auth.createAccount') : t('auth.sendMagicLink')}</>
             }
           </button>
         </form>
@@ -320,23 +322,23 @@ export default function AuthModal({ onClose }: AuthModalProps) {
           {mode === 'signin' && (
             <>
               <span style={{ fontFamily: "'Inter', sans-serif", fontSize: '0.875rem', color: 'var(--text-secondary)' }}>
-                No account?{' '}
-                <button style={linkBtn} onClick={() => reset('signup')}>Sign up</button>
+                {t('auth.noAccount')}{' '}
+                <button style={linkBtn} onClick={() => reset('signup')}>{t('auth.signUp')}</button>
               </span>
               <button style={linkBtn} onClick={() => reset('magic')}>
-                Sign in with magic link instead
+                {t('auth.magicLinkInstead')}
               </button>
             </>
           )}
           {mode === 'signup' && (
             <span style={{ fontFamily: "'Inter', sans-serif", fontSize: '0.875rem', color: 'var(--text-secondary)' }}>
-              Already have an account?{' '}
-              <button style={linkBtn} onClick={() => reset('signin')}>Sign in</button>
+              {t('auth.alreadyHaveAccount')}{' '}
+              <button style={linkBtn} onClick={() => reset('signin')}>{t('auth.signIn')}</button>
             </span>
           )}
           {mode === 'magic' && (
             <button style={linkBtn} onClick={() => reset('signin')}>
-              Back to password sign-in
+              {t('auth.backToPassword')}
             </button>
           )}
         </div>

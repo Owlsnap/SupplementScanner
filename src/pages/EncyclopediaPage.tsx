@@ -100,7 +100,7 @@ export default function EncyclopediaPage({ onOpenInfo }: EncyclopediaPageProps) 
             border: '1px solid rgba(255,255,255,0.2)',
           }}>
             <span style={{ fontSize: '0.75rem', fontWeight: 600, color: 'rgba(255,255,255,0.9)', fontFamily: "'Inter', sans-serif", letterSpacing: '0.4px' }}>
-              {encyclopediaSupplements.length} supplements · Evidence-based
+              {t('encyclopedia.indexBadge', { count: encyclopediaSupplements.length })}
             </span>
           </div>
 
@@ -109,14 +109,14 @@ export default function EncyclopediaPage({ onOpenInfo }: EncyclopediaPageProps) 
             fontSize: 'clamp(1.75rem, 4vw, 2.5rem)', color: '#ffffff',
             margin: '0 0 0.625rem', letterSpacing: '-0.5px', lineHeight: 1.15,
           }}>
-            Supplement <span style={{ color: '#fde68a' }}>Index</span>
+            {t('encyclopedia.indexTitle')} <span style={{ color: '#fde68a' }}>{t('encyclopedia.indexTitleHighlight')}</span>
           </h1>
           <p style={{
             fontFamily: "'Inter', sans-serif", fontSize: '1rem',
             color: 'rgba(255,255,255,0.8)', margin: '0 auto 1.75rem',
             fontWeight: 400, maxWidth: '460px', lineHeight: 1.6,
           }}>
-            Mechanisms, dosing &amp; AI deep dives — all in one place
+            {t('encyclopedia.indexSubtitle')}
           </p>
 
           {/* Search bar — white bg so text is readable */}
@@ -124,7 +124,7 @@ export default function EncyclopediaPage({ onOpenInfo }: EncyclopediaPageProps) 
             <MagnifyingGlass size={17} color="#6d7a77" style={{ position: 'absolute', left: '1rem', top: '50%', transform: 'translateY(-50%)', pointerEvents: 'none' }} />
             <input
               type="text"
-              placeholder="Search supplements…"
+              placeholder={t('encyclopedia.searchSupplements')}
               value={searchQuery}
               onChange={e => setSearchQuery(e.target.value)}
               style={{
@@ -145,6 +145,7 @@ export default function EncyclopediaPage({ onOpenInfo }: EncyclopediaPageProps) 
             {encyclopediaCategories.map(cat => {
               const isActive = activeCategory === cat;
               const cfg = cat !== 'All' ? categoryConfig[cat as EncyclopediaCategory] : null;
+              const catLabel = cat === 'All' ? t('encyclopedia.allCategories') : t(`encyclopedia.categories.${cat}`);
               return (
                 <button
                   key={cat}
@@ -163,7 +164,7 @@ export default function EncyclopediaPage({ onOpenInfo }: EncyclopediaPageProps) 
                   }}
                 >
                   {cfg && <cfg.Icon size={13} />}
-                  {cat}
+                  {catLabel}
                 </button>
               );
             })}
@@ -175,7 +176,7 @@ export default function EncyclopediaPage({ onOpenInfo }: EncyclopediaPageProps) 
         <div style={{ position: 'absolute', bottom: '1rem', left: 0, right: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 2 }}>
           <div style={{ position: 'relative', display: 'inline-flex', alignItems: 'center', gap: '0.25rem' }}>
             <span style={{ fontSize: '0.75rem', fontWeight: 500, color: 'rgba(255,255,255,0.5)', fontFamily: "'Inter', sans-serif", letterSpacing: '0.2px' }}>
-              Research-backed · Not medical advice
+              {t('common.researchBacked')}
             </span>
             <button
               onClick={() => setShowAiDisclaimer(v => !v)}
@@ -204,9 +205,7 @@ export default function EncyclopediaPage({ onOpenInfo }: EncyclopediaPageProps) 
                   margin: 0, fontFamily: "'Inter', sans-serif",
                   fontSize: '0.8125rem', color: 'var(--text-secondary)', lineHeight: 1.55,
                 }}>
-                  Content is grounded in peer-reviewed research and cited sources.
-                  It is <strong style={{ color: 'var(--text-primary)' }}>not medical advice</strong> and does not replace guidance from a qualified healthcare professional.
-                  Consult a doctor before changing your supplement regimen.
+                  {t('common.aiDisclaimer')}
                 </p>
               </div>
             )}
@@ -220,19 +219,19 @@ export default function EncyclopediaPage({ onOpenInfo }: EncyclopediaPageProps) 
           <div style={{ textAlign: 'center', padding: '4rem 1rem' }}>
             <MagnifyingGlass size={40} color="#bcc9c6" style={{ marginBottom: '1rem' }} />
             <p style={{ fontFamily: "'Manrope', sans-serif", fontWeight: 700, fontSize: '1.125rem', color: 'var(--text-muted)', margin: '0 0 0.5rem' }}>
-              No supplements found
+              {t('encyclopedia.noResults')}
             </p>
             <p style={{ fontFamily: "'Inter', sans-serif", fontSize: '0.9375rem', color: 'var(--text-secondary)', margin: 0 }}>
-              Try a different search or category
+              {t('encyclopedia.noResultsHint')}
             </p>
           </div>
         ) : isFiltered ? (
           /* Flat grid when searching/filtering */
           <>
             <p style={{ fontFamily: "'Inter', sans-serif", fontSize: '0.8125rem', color: 'var(--text-secondary)', marginBottom: '1.25rem' }}>
-              {filtered.length} result{filtered.length !== 1 ? 's' : ''}
-              {activeCategory !== 'All' ? ` in ${activeCategory}` : ''}
-              {searchQuery ? ` for "${searchQuery}"` : ''}
+              {filtered.length !== 1 ? t('encyclopedia.resultsPlural', { count: filtered.length }) : t('encyclopedia.results', { count: filtered.length })}
+              {activeCategory !== 'All' ? t('encyclopedia.resultsInCategory', { category: t(`encyclopedia.categories.${activeCategory}`) }) : ''}
+              {searchQuery ? t('encyclopedia.resultsForQuery', { query: searchQuery }) : ''}
             </p>
             <CardGrid items={filtered} hoveredCard={hoveredCard} setHoveredCard={setHoveredCard} onOpenInfo={onOpenInfo} inStack={inStack} onToggleStack={onToggleStack} />
           </>
@@ -261,7 +260,7 @@ export default function EncyclopediaPage({ onOpenInfo }: EncyclopediaPageProps) 
                         {cat}
                       </h2>
                       <p style={{ fontFamily: "'Inter', sans-serif", fontSize: '0.8125rem', color: 'var(--text-secondary)', margin: 0 }}>
-                        {items.length} supplement{items.length !== 1 ? 's' : ''}
+                        {t('encyclopedia.supplementCount', { count: items.length })}
                       </p>
                     </div>
                   </div>
@@ -288,7 +287,9 @@ function CardGrid({ items, hoveredCard, setHoveredCard, onOpenInfo, inStack, onT
   onToggleStack: (slug: string) => void;
 }) {
   const { isDark } = useDarkMode();
+  const { t } = useLanguage();
   const categoryConfig = isDark ? categoryConfigDark : categoryConfigLight;
+  const [hoveredStackSlug, setHoveredStackSlug] = useState<string | null>(null);
   return (
     <div style={{
       display: 'grid',
@@ -335,7 +336,7 @@ function CardGrid({ items, hoveredCard, setHoveredCard, onOpenInfo, inStack, onT
                   fontSize: '0.75rem', color: 'rgba(255,255,255,0.9)',
                   textTransform: 'uppercase', letterSpacing: '0.6px',
                 }}>
-                  {supp.category}
+                  {t(`encyclopedia.categories.${supp.category}`)}
                 </span>
               </div>
               <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: '2px' }}>
@@ -345,7 +346,7 @@ function CardGrid({ items, hoveredCard, setHoveredCard, onOpenInfo, inStack, onT
                   fontFamily: "'Inter', sans-serif",
                   textTransform: 'uppercase', letterSpacing: '0.4px',
                 }}>
-                  Evidence level
+                  {t('encyclopedia.evidenceLevel')}
                 </span>
                 <span style={{
                   ...evidenceTierStyle[supp.evidenceTier],
@@ -385,26 +386,31 @@ function CardGrid({ items, hoveredCard, setHoveredCard, onOpenInfo, inStack, onT
                   fontFamily: "'Inter', sans-serif", fontSize: '0.8125rem',
                   fontWeight: 600, color: cfg.bg,
                 }}>
-                  View details
+                  {t('encyclopedia.viewDetails')}
                 </span>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '0.375rem' }}>
                   <button
                     onClick={e => { e.stopPropagation(); onToggleStack(supp.slug); }}
-                    title={added ? 'Remove from stack' : 'Add to stack'}
+                    onMouseEnter={() => setHoveredStackSlug(supp.slug)}
+                    onMouseLeave={() => setHoveredStackSlug(null)}
+                    title={added ? t('encyclopedia.removeFromStackTitle') : t('encyclopedia.addToStackTitle')}
                     style={{
                       display: 'flex', alignItems: 'center', gap: '0.25rem',
                       padding: '0.25rem 0.625rem', borderRadius: '999px',
                       border: added ? 'none' : `1.5px dashed ${cfg.bg}`,
-                      background: added ? '#00685f' : 'transparent',
+                      background: added
+                        ? (hoveredStackSlug === supp.slug ? '#004d46' : '#00685f')
+                        : (hoveredStackSlug === supp.slug ? cfg.light : 'transparent'),
                       color: added ? '#ffffff' : cfg.bg,
                       cursor: 'pointer', fontFamily: "'Inter', sans-serif",
                       fontWeight: 600, fontSize: '0.6875rem',
                       transition: 'all 0.15s ease',
+                      transform: hoveredStackSlug === supp.slug ? 'scale(1.05)' : 'scale(1)',
                     }}
                   >
                     {added
-                      ? <><Check size={11} weight="bold" /> Added</>
-                      : <><Plus size={11} weight="bold" /> Stack</>
+                      ? <><Check size={11} weight="bold" /> {t('encyclopedia.removeFromStack')}</>
+                      : <><Plus size={11} weight="bold" /> {t('encyclopedia.addToStack')}</>
                     }
                   </button>
                   <div style={{

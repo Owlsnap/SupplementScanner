@@ -9,6 +9,7 @@ import {
   BookOpen,
   ArrowsClockwise,
 } from '@phosphor-icons/react';
+import { useLanguage } from '../contexts/LanguageContext';
 
 interface MobileAppPageProps {
   onBack: () => void;
@@ -35,51 +36,27 @@ const C = {
   onTertiaryContainer: '#ce9c86',
 };
 
-const FEATURES = [
-  {
-    icon: <Barcode size={24} />,
-    title: 'Instant Barcode Scan',
-    body: 'Point your camera at any supplement barcode and get a full ingredient breakdown in seconds.',
-  },
-  {
-    icon: <TestTube size={24} />,
-    title: 'Purity Check',
-    body: 'AI screens for contaminants, underdosed ingredients, and label accuracy issues.',
-  },
-  {
-    icon: <Warning size={24} />,
-    title: 'Additives Flagging',
-    body: 'Automatically flags fillers, artificial dyes, and questionable excipients.',
-  },
-  {
-    icon: <BookOpen size={24} />,
-    title: 'Index On the Go',
-    body: 'The full supplement index — evidence tiers, dosing, deep dives — in your pocket.',
-  },
+const FEATURE_ICONS = [
+  <Barcode size={24} />,
+  <TestTube size={24} />,
+  <Warning size={24} />,
+  <BookOpen size={24} />,
 ];
 
-const STEPS = [
-  {
-    number: '01',
-    title: 'Scan the barcode',
-    body: 'Open the app and point your camera at any supplement barcode. No typing required.',
-  },
-  {
-    number: '02',
-    title: 'AI analyzes instantly',
-    body: 'Our AI cross-references ingredients against evidence databases and flags quality issues in real time.',
-  },
-  {
-    number: '03',
-    title: "Know what you're taking",
-    body: 'Get a plain-English quality report — purity score, additive warnings, and dosage accuracy.',
-  },
-];
+const STEP_NUMBERS = ['01', '02', '03'];
 
 export default function MobileAppPage({ onBack }: MobileAppPageProps) {
+  const { t } = useLanguage();
   const [notified, setNotified] = useState<boolean>(() => !!localStorage.getItem(NOTIFY_KEY));
   const [email, setEmail] = useState('');
   const [emailSubmitted, setEmailSubmitted] = useState(false);
+
+  const features = (t('mobileApp.features', { returnObjects: true }) as Array<{ title: string; body: string }>).map(
+    (f, i) => ({ icon: FEATURE_ICONS[i], title: f.title, body: f.body })
+  );
+  const steps = (t('mobileApp.steps', { returnObjects: true }) as Array<{ title: string; body: string }>).map(
+    (s, i) => ({ number: STEP_NUMBERS[i], title: s.title, body: s.body })
+  );
 
   const handleNotify = () => {
     localStorage.setItem(NOTIFY_KEY, '1');
@@ -112,11 +89,11 @@ export default function MobileAppPage({ onBack }: MobileAppPageProps) {
             SupplementScanner
           </button>
           <div style={{ display: 'flex', alignItems: 'center', gap: '2rem' }}>
-            <button onClick={() => scrollTo('features')} style={{ background: 'none', border: 'none', cursor: 'pointer', color: `${C.text}99`, fontWeight: 500, fontSize: '0.9375rem', padding: 0, transition: 'color 0.15s' }} onMouseEnter={e => (e.currentTarget.style.color = C.text)} onMouseLeave={e => (e.currentTarget.style.color = `${C.text}99`)}>Features</button>
-            <button onClick={() => scrollTo('how-it-works')} style={{ background: 'none', border: 'none', cursor: 'pointer', color: `${C.text}99`, fontWeight: 500, fontSize: '0.9375rem', padding: 0, transition: 'color 0.15s' }} onMouseEnter={e => (e.currentTarget.style.color = C.text)} onMouseLeave={e => (e.currentTarget.style.color = `${C.text}99`)}>Methodology</button>
-            <button onClick={onBack} style={{ background: 'none', border: 'none', cursor: 'pointer', color: `${C.text}99`, fontWeight: 500, fontSize: '0.9375rem', padding: 0, transition: 'color 0.15s' }} onMouseEnter={e => (e.currentTarget.style.color = C.text)} onMouseLeave={e => (e.currentTarget.style.color = `${C.text}99`)}>Index</button>
+            <button onClick={() => scrollTo('features')} style={{ background: 'none', border: 'none', cursor: 'pointer', color: `${C.text}99`, fontWeight: 500, fontSize: '0.9375rem', padding: 0, transition: 'color 0.15s' }} onMouseEnter={e => (e.currentTarget.style.color = C.text)} onMouseLeave={e => (e.currentTarget.style.color = `${C.text}99`)}>{t('mobileApp.navFeatures')}</button>
+            <button onClick={() => scrollTo('how-it-works')} style={{ background: 'none', border: 'none', cursor: 'pointer', color: `${C.text}99`, fontWeight: 500, fontSize: '0.9375rem', padding: 0, transition: 'color 0.15s' }} onMouseEnter={e => (e.currentTarget.style.color = C.text)} onMouseLeave={e => (e.currentTarget.style.color = `${C.text}99`)}>{t('mobileApp.navMethodology')}</button>
+            <button onClick={onBack} style={{ background: 'none', border: 'none', cursor: 'pointer', color: `${C.text}99`, fontWeight: 500, fontSize: '0.9375rem', padding: 0, transition: 'color 0.15s' }} onMouseEnter={e => (e.currentTarget.style.color = C.text)} onMouseLeave={e => (e.currentTarget.style.color = `${C.text}99`)}>{t('mobileApp.navIndex')}</button>
             <button onClick={() => scrollTo('lead-capture')} style={{ background: `linear-gradient(135deg, ${C.primary} 0%, ${C.primaryContainer} 100%)`, color: C.onPrimary, border: 'none', borderRadius: '6px', padding: '0.5rem 1.25rem', fontWeight: 700, fontSize: '0.9375rem', cursor: 'pointer', transition: 'opacity 0.15s' }} onMouseEnter={e => (e.currentTarget.style.opacity = '0.85')} onMouseLeave={e => (e.currentTarget.style.opacity = '1')}>
-              Get Notified
+              {t('mobileApp.navGetNotified')}
             </button>
           </div>
         </div>
@@ -129,27 +106,27 @@ export default function MobileAppPage({ onBack }: MobileAppPageProps) {
           {/* Left text */}
           <div style={{ position: 'relative', zIndex: 1 }}>
             <span style={{ display: 'inline-block', padding: '0.25rem 0.75rem', borderRadius: '9999px', background: C.tertiaryContainer, color: C.onTertiaryContainer, fontSize: '0.625rem', fontWeight: 700, letterSpacing: '0.1em', textTransform: 'uppercase', marginBottom: '1.5rem' }}>
-              iOS &amp; ANDROID — COMING SOON
+              {t('mobileApp.badge')}
             </span>
             <h1 style={{ fontFamily: "'Manrope', sans-serif", fontWeight: 800, fontSize: 'clamp(2.5rem, 6vw, 4.5rem)', lineHeight: 1.1, letterSpacing: '-1.5px', margin: '0 0 1.5rem', maxWidth: '600px' }}>
-              The supplement scanner in{' '}
-              <span style={{ color: C.primary }}>your pocket</span>
+              {t('mobileApp.heroTitle')}{' '}
+              <span style={{ color: C.primary }}>{t('mobileApp.heroTitleHighlight')}</span>
             </h1>
             <p style={{ fontSize: '1.0625rem', color: C.textMuted, maxWidth: '520px', marginBottom: '2.5rem', lineHeight: 1.7, margin: '0 0 2.5rem' }}>
-              Scan any supplement barcode and get an instant AI quality report — purity, additives, dosage accuracy, and more. No guessing.
+              {t('mobileApp.heroSubtitle')}
             </p>
             <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap' }}>
               {notified ? (
                 <div style={{ display: 'inline-flex', alignItems: 'center', gap: '0.5rem', background: 'rgba(149,209,207,0.1)', border: `1.5px solid ${C.primary}`, borderRadius: '6px', padding: '1rem 2rem', fontWeight: 700, color: C.primary }}>
-                  <Check size={17} weight="bold" /> You're on the list
+                  <Check size={17} weight="bold" /> {t('mobileApp.onTheList')}
                 </div>
               ) : (
                 <>
                   <button onClick={handleNotify} style={{ background: `linear-gradient(135deg, ${C.primary} 0%, ${C.primaryContainer} 100%)`, color: C.onPrimary, border: 'none', borderRadius: '6px', padding: '1rem 2rem', fontWeight: 700, fontSize: '1.0625rem', cursor: 'pointer', display: 'inline-flex', alignItems: 'center', gap: '0.5rem', transition: 'transform 0.15s' }} onMouseEnter={e => (e.currentTarget.style.transform = 'scale(0.97)')} onMouseLeave={e => (e.currentTarget.style.transform = 'scale(1)')}>
-                    <Bell size={17} /> Notify me on launch
+                    <Bell size={17} /> {t('mobileApp.notifyOnLaunch')}
                   </button>
                   <button onClick={onBack} style={{ background: C.surfaceHighest, color: C.text, border: `1px solid ${C.outlineVariant}33`, borderRadius: '6px', padding: '1rem 2rem', fontWeight: 600, fontSize: '1.0625rem', cursor: 'pointer', display: 'inline-flex', alignItems: 'center', gap: '0.5rem', transition: 'background 0.15s' }} onMouseEnter={e => (e.currentTarget.style.background = C.surfaceVariant)} onMouseLeave={e => (e.currentTarget.style.background = C.surfaceHighest)}>
-                    Try the web app <ArrowRight size={16} />
+                    {t('mobileApp.tryWebApp')} <ArrowRight size={16} />
                   </button>
                 </>
               )}
@@ -190,12 +167,12 @@ export default function MobileAppPage({ onBack }: MobileAppPageProps) {
         <div style={{ maxWidth: '1280px', margin: '0 auto' }}>
           <div style={{ marginBottom: '4rem' }}>
             <h2 style={{ fontFamily: "'Manrope', sans-serif", fontWeight: 800, fontSize: 'clamp(1.75rem, 4vw, 3rem)', margin: '0 0 1rem', letterSpacing: '-0.5px' }}>
-              Everything you need to shop smarter
+              {t('mobileApp.featuresTitle')}
             </h2>
-            <p style={{ fontSize: '1.0625rem', color: C.textMuted }}>All the power of the web dashboard, optimized for the shelf.</p>
+            <p style={{ fontSize: '1.0625rem', color: C.textMuted }}>{t('mobileApp.featuresSubtitle')}</p>
           </div>
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: '1.5rem' }}>
-            {FEATURES.map(f => (
+            {features.map(f => (
               <div key={f.title} style={{ background: C.surface, padding: '2rem', borderRadius: '12px', border: `1px solid ${C.outlineVariant}1a`, transition: 'border-color 0.2s' }} onMouseEnter={e => ((e.currentTarget as HTMLDivElement).style.borderColor = `${C.primary}4d`)} onMouseLeave={e => ((e.currentTarget as HTMLDivElement).style.borderColor = `${C.outlineVariant}1a`)}>
                 <div style={{ width: '48px', height: '48px', background: C.surfaceVariant, borderRadius: '8px', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '1.5rem', color: C.primary }}>
                   {f.icon}
@@ -213,11 +190,11 @@ export default function MobileAppPage({ onBack }: MobileAppPageProps) {
         <div style={{ maxWidth: '1280px', margin: '0 auto', display: 'flex', gap: '4rem', flexWrap: 'wrap' }}>
           <div style={{ flex: '0 0 auto', width: '280px' }}>
             <h2 style={{ fontFamily: "'Manrope', sans-serif", fontWeight: 800, fontSize: 'clamp(1.75rem, 3vw, 2.5rem)', position: 'sticky', top: '8rem', margin: 0, letterSpacing: '-0.5px' }}>
-              How It <span style={{ color: C.tertiary }}>Works</span>
+              {t('mobileApp.howItWorksTitle')} <span style={{ color: C.tertiary }}>{t('mobileApp.howItWorksHighlight')}</span>
             </h2>
           </div>
           <div style={{ flex: 1, minWidth: '280px', display: 'flex', flexDirection: 'column', gap: '3rem' }}>
-            {STEPS.map(step => (
+            {steps.map(step => (
               <div key={step.number} style={{ display: 'flex', gap: '2rem', alignItems: 'flex-start' }}>
                 <span style={{ fontFamily: "'Manrope', sans-serif", fontWeight: 800, fontSize: '3rem', color: `${C.primary}33`, lineHeight: 1, flexShrink: 0 }}>{step.number}</span>
                 <div>
@@ -237,14 +214,14 @@ export default function MobileAppPage({ onBack }: MobileAppPageProps) {
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '3rem', alignItems: 'center', position: 'relative', zIndex: 1 }}>
               <div>
                 <h2 style={{ fontFamily: "'Manrope', sans-serif", fontWeight: 800, fontSize: 'clamp(1.5rem, 3vw, 2.25rem)', margin: '0 0 1.5rem', letterSpacing: '-0.5px' }}>
-                  One account, web and mobile.
+                  {t('mobileApp.syncTitle')}
                 </h2>
                 <p style={{ fontSize: '1.0625rem', color: C.textMuted, marginBottom: '2rem', lineHeight: 1.7 }}>
-                  Premium unlocks the full encyclopedia deep dives on both the web dashboard and the mobile app. Your history, saved scans, and research sync seamlessly across all devices.
+                  {t('mobileApp.syncBody')}
                 </p>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', color: C.primary, fontWeight: 700 }}>
                   <ArrowsClockwise size={20} weight="bold" />
-                  <span>Cloud Sync Enabled</span>
+                  <span>{t('mobileApp.cloudSync')}</span>
                 </div>
               </div>
               <div style={{ borderRadius: '12px', overflow: 'hidden', height: '256px', background: `${C.surfaceVariant}66`, border: `1px solid ${C.outlineVariant}1a` }}>
@@ -265,11 +242,11 @@ export default function MobileAppPage({ onBack }: MobileAppPageProps) {
       <section id="lead-capture" style={{ padding: '8rem 1.5rem' }}>
         <div style={{ maxWidth: '760px', margin: '0 auto', textAlign: 'center' }}>
           <h2 style={{ fontFamily: "'Manrope', sans-serif", fontWeight: 800, fontSize: 'clamp(1.75rem, 4vw, 3rem)', margin: '0 0 2rem', letterSpacing: '-0.5px' }}>
-            Be first to know when it launches
+            {t('mobileApp.learnMoreTitle')}
           </h2>
           {emailSubmitted || notified ? (
             <div style={{ display: 'inline-flex', alignItems: 'center', gap: '0.5rem', background: 'rgba(149,209,207,0.1)', border: `1.5px solid ${C.primary}`, borderRadius: '8px', padding: '1rem 2rem', fontWeight: 700, color: C.primary, fontSize: '1.0625rem' }}>
-              <Check size={20} weight="bold" /> You're on the list
+              <Check size={20} weight="bold" /> {t('mobileApp.onTheList')}
             </div>
           ) : (
             <div style={{ display: 'flex', gap: '0.5rem', padding: '0.5rem', background: C.surface, borderRadius: '8px', border: `1px solid ${C.outlineVariant}33` }}>
@@ -278,16 +255,16 @@ export default function MobileAppPage({ onBack }: MobileAppPageProps) {
                 value={email}
                 onChange={e => setEmail(e.target.value)}
                 onKeyDown={e => e.key === 'Enter' && handleEmailSubmit()}
-                placeholder="Enter your email address"
+                placeholder={t('mobileApp.emailPlaceholder')}
                 style={{ flex: 1, background: 'transparent', border: 'none', outline: 'none', padding: '0.75rem 1rem', color: C.text, fontSize: '1rem', fontFamily: "'Inter', sans-serif' " }}
               />
               <button onClick={handleEmailSubmit} style={{ background: `linear-gradient(135deg, ${C.primary} 0%, ${C.primaryContainer} 100%)`, color: C.onPrimary, border: 'none', borderRadius: '6px', padding: '0.75rem 2rem', fontWeight: 700, fontSize: '1rem', cursor: 'pointer', transition: 'transform 0.15s', whiteSpace: 'nowrap' }} onMouseEnter={e => (e.currentTarget.style.transform = 'scale(0.98)')} onMouseLeave={e => (e.currentTarget.style.transform = 'scale(1)')}>
-                Notify Me
+                {t('mobileApp.notifyButton')}
               </button>
             </div>
           )}
           <p style={{ marginTop: '1.5rem', fontSize: '0.875rem', color: `${C.textMuted}99` }}>
-            No spam. Only mission-critical clinical updates.
+            {t('mobileApp.noSpam')}
           </p>
         </div>
       </section>
@@ -295,7 +272,7 @@ export default function MobileAppPage({ onBack }: MobileAppPageProps) {
       {/* Footer */}
       <footer style={{ padding: '2rem 1.5rem', borderTop: `1px solid ${C.outlineVariant}33`, background: C.bg }}>
         <div style={{ maxWidth: '1280px', margin: '0 auto', display: 'flex', justifyContent: 'center' }}>
-          <p style={{ color: `${C.text}40`, fontSize: '0.875rem', margin: 0 }}>© {new Date().getFullYear()} SupplementScanner. All rights reserved.</p>
+          <p style={{ color: `${C.text}40`, fontSize: '0.875rem', margin: 0 }}>{t('mobileApp.copyright', { year: new Date().getFullYear() })}</p>
         </div>
       </footer>
 

@@ -18,7 +18,15 @@
     "viewPage": "View page",
     "signedInAs": "Signed in as",
     "mayBeLater": "Maybe later",
-    "close": "Close"
+    "close": "Close",
+    "back": "Back",
+    "save": "Save",
+    "cancel": "Cancel",
+    "tryAgain": "Try again",
+    "or": "or",
+    "evidenceBased": "Evidence-based",
+    "researchBacked": "Research-backed · Not medical advice",
+    "aiDisclaimer": "Content is grounded in peer-reviewed research and cited sources. It is not medical advice and does not replace guidance from a qualified healthcare professional. Consult a doctor before changing your supplement regimen."
   },
   "encyclopedia": {
     "title": "Supplement Encyclopedia",
@@ -27,9 +35,21 @@
     "allCategories": "All",
     "noResults": "No supplements found",
     "noResultsHint": "Try adjusting your search or category filter",
+    "supplementCount": "{{count}} supplements",
+    "evidenceLevel": "Evidence level",
+    "viewDetails": "View details",
+    "addToStack": "Stack",
+    "removeFromStack": "Added",
+    "addToStackTitle": "Add to stack",
+    "removeFromStackTitle": "Remove from stack",
+    "indexTitle": "Supplement",
+    "indexTitleHighlight": "Index",
+    "indexSubtitle": "Mechanisms, dosing & AI deep dives — all in one place",
+    "indexBadge": "{{count}} supplements · Evidence-based",
+    "searchSupplements": "Search supplements…",
     "categories": {
       "Performance": "Performance",
-      "Recovery": "Recovery", 
+      "Recovery": "Recovery",
       "Sleep": "Sleep",
       "Nootropics": "Nootropics",
       "Health": "Health"
@@ -37,9 +57,13 @@
     "evidenceTiers": {
       "Strong": "Strong Evidence",
       "Moderate": "Moderate Evidence",
-      "Emerging": "Emerging Evidence", 
+      "Emerging": "Emerging Evidence",
       "Anecdotal": "Anecdotal Evidence"
-    }
+    },
+    "results": "{{count}} result",
+    "resultsPlural": "{{count}} results",
+    "resultsInCategory": " in {{category}}",
+    "resultsForQuery": " for \"{{query}}\""
   },
   "urlScanner": {
     "title": "Analyze any supplement from a product page",
@@ -51,7 +75,7 @@
     "noProductYet": "No product scanned yet",
     "noProductHint": "Paste a supplement product URL above and click Extract",
     "servings": "Servings",
-    "servingSize": "Serving size", 
+    "servingSize": "Serving size",
     "keyIngredient": "Key ingredient",
     "detecting": "Detecting…",
     "extractedVia": "Extracted via"
@@ -59,7 +83,113 @@
   "premium": {
     "deepDivesArePremium": "Deep Dives are Premium",
     "premiumDescription": "Get the full breakdown — dosing, forms, bioavailability, synergies, and interactions. Starting at $1.99 per dive.",
-    "signInToUnlock": "Sign in to unlock"
+    "signInToUnlock": "Sign in to unlock",
+    "back": "Back",
+    "badge": "Premium",
+    "heroTitle": "Precision intelligence for",
+    "heroTitleHighlight": "human performance.",
+    "heroSubtitle": "Evidence-grounded deep dives on every supplement — dosing protocols, bioavailability, interactions, and synergies. Every claim backed by cited sources.",
+    "notifyMe": "Notify me when live",
+    "onTheList": "You're on the list",
+    "browseSupplement": "Browse supplements",
+    "bestValue": "BEST VALUE",
+    "moneyBack": "7-day money-back guarantee",
+    "cancelAnytime": "Cancel anytime",
+    "secureCheckout": "Secure checkout",
+    "researchStandardTitle": "The Research",
+    "researchStandardHighlight": "Standard.",
+    "researchStandardBody": "Every deep dive synthesises peer-reviewed literature into actionable protocols. We don't just aggregate — we trace every claim back to its source.",
+    "testimonial": "\"Finally a supplement tool that cites actual studies instead of just repeating label claims.\"",
+    "testimonialAuthor": "Beta user feedback",
+    "whatYouGet": "What you get",
+    "free": "Free",
+    "premiumLabel": "Premium",
+    "comingSoon": "Coming soon",
+    "faqTitle": "Frequently asked",
+    "readyToDeeper": "Ready to go deeper?",
+    "readyToDeeperBody": "Payments launching soon — drop your interest below and we'll let you know first.",
+    "moreSectionsLocked": "+ {{count}} more sections unlocked with Premium",
+    "previewSubtitle": "Research Deep Dive",
+    "previewBadge": "Strong evidence",
+    "previewMechanism": "Mechanism of Action",
+    "previewDosing": "Dosing Protocol",
+    "dosingLabels": {
+      "conservative": "Conservative",
+      "standard": "Standard",
+      "high": "High"
+    },
+    "plans": {
+      "dive": {
+        "label": "Pay per Dive",
+        "price": "$1.99",
+        "per": "per deep dive",
+        "description": "Perfect if you only need occasional lookups.",
+        "cta": "Buy a Deep Dive"
+      },
+      "monthly": {
+        "label": "Monthly",
+        "price": "$7.99",
+        "per": "per month",
+        "description": "Unlimited deep dives. Cancel anytime.",
+        "cta": "Start Monthly"
+      },
+      "yearly": {
+        "label": "Yearly",
+        "price": "$59.99",
+        "per": "per year  ·  ~$5/mo",
+        "description": "Best value. Save 37% vs monthly.",
+        "cta": "Start Yearly"
+      }
+    },
+    "freeFeatures": [
+      "Index of 30 supplements",
+      "Evidence tier badges",
+      "URL & barcode scanner",
+      "Basic ingredient breakdown"
+    ],
+    "premiumFeatures": [
+      "Everything in Free",
+      "Full Research Deep Dives",
+      "Dosing guide — conservative / standard / high",
+      "Forms & bioavailability rankings",
+      "Synergy pairings (e.g. Mg + Zn)",
+      "Cautions & drug interactions",
+      "Evidence citations linked to PubMed studies",
+      "Confidence score weighted by study type",
+      "Dosage gap: studied dose vs. retail dose",
+      "Supplement interaction engine (danger / caution / synergy)",
+      "Web + mobile access with one account",
+      "New supplements added regularly"
+    ],
+    "comingSoonFeatures": [
+      "Personalized stack optimizer (requires account)"
+    ],
+    "faq": [
+      {
+        "q": "Do I need an account?",
+        "a": "Not for a single deep dive. For subscriptions you will need a free account so your access follows you across devices."
+      },
+      {
+        "q": "Does it work on the mobile app too?",
+        "a": "Yes. One subscription unlocks both the web dashboard and the iOS/Android app. Mobile-specific perks (scan-to-deep-dive, push notifications) are rolling out shortly."
+      },
+      {
+        "q": "What happens when my subscription expires?",
+        "a": "You drop back to the free tier instantly. Your account and history are preserved — you can resubscribe any time."
+      },
+      {
+        "q": "Can I get a refund?",
+        "a": "Within 7 days of purchase, yes. Email us and we will sort it."
+      }
+    ],
+    "deepDiveFeatures": [
+      { "label": "Cited Research", "desc": "Direct links to PubMed and primary sources for every claim" },
+      { "label": "Mechanism of Action", "desc": "Molecular pathways and cellular receptor interactions" },
+      { "label": "Optimal Dosing", "desc": "Conservative, standard, and loading ranges from clinical trials" },
+      { "label": "Forms & Bioavailability", "desc": "Which specific form absorbs best and why" },
+      { "label": "Synergies & Stacks", "desc": "Strategic combinations to optimise pathways and co-factors" },
+      { "label": "Cautions & Interactions", "desc": "Safety profiles and contraindications with pharmaceuticals" }
+    ]
   },
   "tooltips": {
     "switchToLight": "Switch to light mode",
@@ -69,5 +199,351 @@
     "extractSuccess": "Product info extracted successfully! Found {{productName}}",
     "extractError": "Could not extract product info: {{error}}",
     "networkError": "Error: Make sure the backend server is running! Run: node server.js"
+  },
+  "deepDive": {
+    "back": "Back",
+    "generatingAi": "Generating deep dive with AI…",
+    "generatingSubtitle": "~5–10 seconds. Cached for 30 days after first load.",
+    "failedToLoad": "Failed to load content",
+    "tryAgain": "Try again",
+    "whatItIs": "What it is",
+    "howItWorks": "How it works",
+    "dosing": "Dosing",
+    "timing": "Timing",
+    "formsAndBioavailability": "Forms & Bioavailability",
+    "synergies": "Synergies",
+    "cautionsAndInteractions": "Cautions & Interactions",
+    "dosingLabels": {
+      "conservative": "Conservative",
+      "standard": "Standard",
+      "highLoading": "High / Loading"
+    },
+    "recommendedFor": "This supplement is recommended for:",
+    "seeGoalRecommendations": "See Goal Recommendations →",
+    "freshlyGenerated": "✦ Freshly generated by AI — cached for 30 days"
+  },
+  "premiumDeepDive": {
+    "back": "Back",
+    "badge": "Premium · Evidence-grounded",
+    "retrievingEvidence": "Retrieving clinical evidence…",
+    "searchingPubMed": "Searching PubMed database · Grounding answer in studies",
+    "failedToLoad": "Failed to load",
+    "tryAgain": "Try again",
+    "evidenceConfidence": "Evidence confidence",
+    "confidenceLabels": {
+      "high": "High confidence",
+      "moderate": "Moderate confidence",
+      "low": "Low confidence"
+    },
+    "confidenceWeighting": "Weighted by study type: meta-analysis (100%) → RCT — Randomized Controlled Trial (80%) → observational (40%) → animal (10%)",
+    "evidenceSummary": "Evidence Summary",
+    "theCatch": "The Catch",
+    "catchIntro": "Limitations identified in the available evidence:",
+    "dosageGap": "Dosage Gap",
+    "askEvidence": "Ask the evidence",
+    "askEvidenceSubtitle": "Ask a specific question — answered using only the retrieved PubMed studies.",
+    "askPlaceholder": "e.g. \"What dose was most effective?\"",
+    "searching": "Searching",
+    "ask": "Ask",
+    "searchingStudies": "Searching studies for an answer…",
+    "answer": "Answer",
+    "sources": "Sources ({{count}})",
+    "disclaimer": "Answers are grounded in retrieved PubMed abstracts and do not constitute medical advice. Always consult a healthcare professional before changing your supplement regimen."
+  },
+  "recommendations": {
+    "pageTitle": "Goals &",
+    "pageTitleHighlight": "Recommendations",
+    "viewDeepDive": "View Deep Dive",
+    "browseFullIndex": "Browse Full Index",
+    "footerNote": "Evidence-ranked · Updated 2025 · Click any card to deep dive",
+    "evidenceSuffix": "Evidence",
+    "goals": {
+      "sleep": {
+        "label": "Better Sleep",
+        "intro": "Good sleep is the foundation of every other health goal. Before stacking supplements, address the basics: consistent wake time, a dark cool room, and no screens 30 minutes before bed."
+      },
+      "muscle": {
+        "label": "Build Muscle",
+        "intro": "Supplements accelerate gains — but only on a foundation of adequate protein (1.6–2.2 g/kg), progressive overload, and 7–9 h sleep. Get those right first."
+      },
+      "health": {
+        "label": "General Health",
+        "intro": "A short, evidence-led list covers most nutritional gaps from a modern diet. Whole foods come first — but these fill in what diet alone commonly misses, especially at northern latitudes."
+      },
+      "energy": {
+        "label": "Energy & Focus",
+        "intro": "Low energy is almost always a lifestyle problem first — poor sleep, chronic stress, or nutrient deficiency. Fix those root causes before adding stimulants."
+      },
+      "cognition": {
+        "label": "Brain & Cognition",
+        "intro": "Sleep is the number-one nootropic. Aerobic exercise (BDNF) and stress management come next. Supplements then optimize on top of that foundation."
+      }
+    }
+  },
+  "healthProfile": {
+    "title": "My",
+    "titleHighlight": "Profile",
+    "subtitle": "Personalise your supplement recommendations and stack optimiser.",
+    "loadingProfile": "Loading profile…",
+    "myStack": "My Stack",
+    "noStackYet": "No supplements added yet.",
+    "browseIndex": "Browse the Index",
+    "noStackBuildText": "to build your stack.",
+    "evaluateStack": "Evaluate Stack",
+    "signInForProfile": "Sign in for your full profile",
+    "signInForProfileSubtitle": "Save goals, dietary preferences, and health conditions to personalise your experience.",
+    "signIn": "Sign in",
+    "primaryGoal": "Primary goal",
+    "dietaryPreference": "Dietary preference",
+    "healthConditions": "Health conditions",
+    "healthConditionsOptional": "(optional)",
+    "conditionPlaceholder": "Type a condition and press Enter…",
+    "otherSupplements": "Other supplements",
+    "otherSupplementsOptional": "(optional)",
+    "supplementsPlaceholder": "e.g. Ashwagandha, Omega-3… press Enter to add",
+    "saving": "Saving…",
+    "profileSaved": "Profile saved",
+    "saveProfile": "Save profile",
+    "supplementCount": "{{count}} supplement",
+    "supplementCountPlural": "{{count}} supplements"
+  },
+  "mobileApp": {
+    "badge": "iOS & ANDROID — COMING SOON",
+    "heroTitle": "The supplement scanner in",
+    "heroTitleHighlight": "your pocket",
+    "heroSubtitle": "Scan any supplement barcode and get an instant AI quality report — purity, additives, dosage accuracy, and more. No guessing.",
+    "notifyOnLaunch": "Notify me on launch",
+    "tryWebApp": "Try the web app",
+    "onTheList": "You're on the list",
+    "featuresTitle": "Everything you need to shop smarter",
+    "featuresSubtitle": "All the power of the web dashboard, optimized for the shelf.",
+    "howItWorksTitle": "How It",
+    "howItWorksHighlight": "Works",
+    "syncTitle": "One account, web and mobile.",
+    "syncBody": "Premium unlocks the full encyclopedia deep dives on both the web dashboard and the mobile app. Your history, saved scans, and research sync seamlessly across all devices.",
+    "cloudSync": "Cloud Sync Enabled",
+    "learnMoreTitle": "Be first to know when it launches",
+    "emailPlaceholder": "Enter your email address",
+    "notifyButton": "Notify Me",
+    "noSpam": "No spam. Only mission-critical clinical updates.",
+    "navFeatures": "Features",
+    "navMethodology": "Methodology",
+    "navIndex": "Index",
+    "navGetNotified": "Get Notified",
+    "copyright": "© {{year}} SupplementScanner. All rights reserved.",
+    "features": [
+      {
+        "title": "Instant Barcode Scan",
+        "body": "Point your camera at any supplement barcode and get a full ingredient breakdown in seconds."
+      },
+      {
+        "title": "Purity Check",
+        "body": "AI screens for contaminants, underdosed ingredients, and label accuracy issues."
+      },
+      {
+        "title": "Additives Flagging",
+        "body": "Automatically flags fillers, artificial dyes, and questionable excipients."
+      },
+      {
+        "title": "Index On the Go",
+        "body": "The full supplement index — evidence tiers, dosing, deep dives — in your pocket."
+      }
+    ],
+    "steps": [
+      {
+        "title": "Scan the barcode",
+        "body": "Open the app and point your camera at any supplement barcode. No typing required."
+      },
+      {
+        "title": "AI analyzes instantly",
+        "body": "Our AI cross-references ingredients against evidence databases and flags quality issues in real time."
+      },
+      {
+        "title": "Know what you're taking",
+        "body": "Get a plain-English quality report — purity score, additive warnings, and dosage accuracy."
+      }
+    ]
+  },
+  "supplementInfo": {
+    "back": "Back",
+    "typicalDose": "Typical Dose",
+    "evidenceLevel": "Evidence Level",
+    "overview": "Overview",
+    "howItWorks": "How It Works",
+    "keyFacts": "Key Facts",
+    "bestFor": "Best For",
+    "commonMistakes": "Common Mistakes",
+    "researchDeepDive": "Research Deep Dive",
+    "researchDeepDiveSubtitle": "Peer-reviewed sources · Generated on demand",
+    "unlockWithPremium": "Unlock with Premium",
+    "openResearchDeepDive": "Open Research Deep Dive",
+    "buyThisDive": "Buy this Deep Dive · $1.99",
+    "researchCached": "Research-backed · cached for 30 days after first load",
+    "evidenceTierLabels": {
+      "Strong": "Well-established science with multiple RCTs",
+      "Moderate": "Several quality studies with consistent results",
+      "Emerging": "Promising early research, more trials needed",
+      "Anecdotal": "Primarily user reports, limited clinical data"
+    },
+    "deepDiveFeatures": [
+      { "label": "Cited research", "desc": "Key studies with sources linked" },
+      { "label": "Mechanism of action", "desc": "How it works at the cellular level" },
+      { "label": "Optimal dosing protocols", "desc": "Conservative, standard, and loading ranges" },
+      { "label": "Best forms & bioavailability", "desc": "Which form absorbs best and why" },
+      { "label": "Synergies & stacks", "desc": "What to combine it with for best results" },
+      { "label": "Cautions & interactions", "desc": "What to watch out for" }
+    ]
+  },
+  "auth": {
+    "titles": {
+      "signin": "Welcome back",
+      "signup": "Create account",
+      "magic": "Magic link sign-in"
+    },
+    "subtitles": {
+      "signin": "Sign in to access Premium Deep Dives",
+      "signup": "Get started — it's free to create an account",
+      "magic": "We'll send a one-click sign-in link to your inbox"
+    },
+    "continueWithGoogle": "Continue with Google",
+    "emailPlaceholder": "you@example.com",
+    "passwordPlaceholder": "Password",
+    "signIn": "Sign in",
+    "createAccount": "Create account",
+    "sendMagicLink": "Send magic link",
+    "loading": "Loading…",
+    "noAccount": "No account?",
+    "signUp": "Sign up",
+    "magicLinkInstead": "Sign in with magic link instead",
+    "alreadyHaveAccount": "Already have an account?",
+    "backToPassword": "Back to password sign-in",
+    "magicLinkSent": "Magic link sent — check your inbox.",
+    "accountCreated": "Account created! Check your email to confirm, then sign in."
+  },
+  "cookieBanner": {
+    "title": "Cookie Consent",
+    "body": "We use cookies to enhance your experience and analyze usage. Essential cookies are required for basic functionality.",
+    "noDataSold": "We don't sell or share personal data.",
+    "settings": "Settings",
+    "rejectAll": "Reject All",
+    "acceptAll": "Accept All",
+    "preferencesTitle": "Cookie Preferences",
+    "preferencesBody": "We use different types of cookies to optimize your experience:",
+    "essentialCookies": "Essential Cookies (Required)",
+    "essentialCookiesDesc": "Required for basic site functionality and security.",
+    "analyticsCookies": "Analytics Cookies",
+    "analyticsCookiesDesc": "Help us understand how you use our site to improve performance.",
+    "essentialOnly": "Essential Only"
+  },
+  "supplementRecommendations": {
+    "title": "Supplement Recommendations",
+    "subtitle": "Select your primary health goal to get personalized supplement suggestions",
+    "inYourList": "In Your List",
+    "whyItWorks": "Why It Works",
+    "qualityComparison": "Quality Comparison",
+    "premiumForms": "Premium Forms",
+    "avoidThese": "Avoid These",
+    "budgetFriendly": "Budget-Friendly Option",
+    "foundInProducts": "Found in Your Products",
+    "product": "Product",
+    "qualityScore": "Quality Score",
+    "priorityLabel": "Priority {{number}}",
+    "recommendedSupplements": "Recommended Supplements (in order of priority)",
+    "proTips": "Pro Tips",
+    "proTipsList": [
+      "Start with Priority 1 supplements first, add others gradually",
+      "Take supplements consistently for at least 4–6 weeks to see benefits",
+      "Buy from reputable brands with third-party testing",
+      "Consider getting blood tests to check for deficiencies",
+      "Quality matters more than quantity — invest in better forms when possible"
+    ],
+    "goals": {
+      "betterSleep": {
+        "label": "Better Sleep",
+        "description": "Natural sleep quality improvement"
+      },
+      "buildMuscle": {
+        "label": "Build Muscle",
+        "description": "Muscle growth and recovery"
+      },
+      "generalHealth": {
+        "label": "General Health",
+        "description": "Overall wellness and vitality"
+      },
+      "energyFocus": {
+        "label": "Energy & Focus",
+        "description": "Natural energy and mental clarity"
+      }
+    }
+  },
+  "ingredientQuality": {
+    "title": "Ingredient Quality Analysis",
+    "subtitle": "Compare supplement forms to make informed purchasing decisions",
+    "categoriesLabel": "Supplement categories available for analysis:",
+    "productsFound": "{{count}} products found",
+    "noDataTitle": "No Supplement Data Available",
+    "noDataBody": "Add supplement products with URLs to see ingredient quality analysis",
+    "detailedAnalysis": "Detailed Analysis",
+    "noIngredientsFound": "No ingredients found",
+    "noIngredientsFoundBody": "Products in this category don't have extractable ingredient data. Check console logs for debugging information.",
+    "qualityComparisonTitle": "Quality Comparison:",
+    "bestQuality": "BEST QUALITY",
+    "avoidIfPossible": "AVOID IF POSSIBLE",
+    "equallyGood": "EQUALLY GOOD",
+    "goodOption": "GOOD OPTION",
+    "qualityGap": "Quality Gap: {{gap}} points",
+    "qualityGapSameScore": "Both options have identical quality scores — choose based on preference",
+    "qualityGapClose": "Both options are high quality with minimal difference in effectiveness",
+    "qualityGapSignificant": "This represents a significant difference in bioavailability and effectiveness",
+    "multiIngredientFormula": "Multi-ingredient formula · Select an ingredient to analyze",
+    "foundIn": "Found in:",
+    "dosageAnalysis": "Dosage Analysis:",
+    "aiRecommended": "AI RECOMMENDED",
+    "evidenceBasedRecommendation": "Evidence-Based Recommendation:",
+    "recommendation": "Recommendation:",
+    "generalUsage": "General Supplement Usage",
+    "dosageRecommendations": "Dosage Recommendations",
+    "importantWarnings": "Important Warnings",
+    "avoidInferiorForms": "AVOID these inferior forms:",
+    "individualConsiderations": "Individual Considerations",
+    "benefits": "Benefits",
+    "drawbacks": "Drawbacks",
+    "yourProductsUsingIngredient": "Your Products Using This Ingredient",
+    "proteinQualityTitle": "Protein Quality Analysis",
+    "proteinSources": "Protein Sources",
+    "sketchyIngredients": "Sketchy Ingredients ({{count}})",
+    "goodIngredients": "Good Ingredients ({{count}})",
+    "ingredientBreakdown": "Ingredient Breakdown",
+    "qualityScore": "Quality Score",
+    "qualityLabels": {
+      "excellent": "Excellent",
+      "veryGood": "Very Good",
+      "good": "Good",
+      "fair": "Fair",
+      "poor": "Poor",
+      "individualChoice": "Individual Choice"
+    },
+    "qualitySuffix": "Quality"
+  },
+  "healthProfileOptions": {
+    "goals": {
+      "buildMuscle": "Build muscle",
+      "loseFat": "Lose fat",
+      "improveEnergy": "Improve energy",
+      "betterSleep": "Better sleep",
+      "immuneSupport": "Immune support",
+      "athleticPerformance": "Athletic performance",
+      "cognitiveFocus": "Cognitive focus",
+      "generalHealth": "General health"
+    },
+    "diet": {
+      "standard": "Standard",
+      "vegetarian": "Vegetarian",
+      "vegan": "Vegan",
+      "keto": "Keto",
+      "paleo": "Paleo",
+      "glutenFree": "Gluten-free",
+      "dairyFree": "Dairy-free"
+    }
   }
 }

@@ -4,6 +4,7 @@ import {
   Bell, X, Article, Flask, Gauge, ArrowsHorizontal, ShieldWarning, Lock,
 } from '@phosphor-icons/react';
 import { useDarkMode } from '../contexts/DarkModeContext';
+import { useLanguage } from '../contexts/LanguageContext';
 
 interface PremiumPageProps {
   onBack: () => void;
@@ -98,6 +99,7 @@ const DEEP_DIVE_FEATURES = [
 
 export default function PremiumPage({ onBack }: PremiumPageProps) {
   const { isDark } = useDarkMode();
+  const { t } = useLanguage();
   const [openFaq, setOpenFaq] = useState<number | null>(null);
   const [notified, setNotified] = useState<boolean>(() => !!localStorage.getItem(NOTIFY_KEY));
   const [showAiDisclaimer, setShowAiDisclaimer] = useState(false);
@@ -176,7 +178,7 @@ export default function PremiumPage({ onBack }: PremiumPageProps) {
                 }}
               >
                 <ArrowLeft size={14} />
-                Back
+                {t('common.back')}
               </button>
               <div style={{
                 display: 'inline-flex', alignItems: 'center', gap: '0.375rem',
@@ -197,21 +199,20 @@ export default function PremiumPage({ onBack }: PremiumPageProps) {
               color: '#ffffff', margin: '0 0 1rem', lineHeight: 1.1,
               letterSpacing: '-1px',
             }}>
-              Precision intelligence for{' '}
+              {t('premium.heroTitle')}{' '}
               <span style={{
                 background: 'linear-gradient(90deg, #fde68a, #fb923c)',
                 WebkitBackgroundClip: 'text',
                 WebkitTextFillColor: 'transparent',
                 backgroundClip: 'text',
-              }}>human performance.</span>
+              }}>{t('premium.heroTitleHighlight')}</span>
             </h1>
             <p style={{
               color: 'rgba(255,255,255,0.75)', fontSize: '1rem',
               fontWeight: 400, lineHeight: 1.65, margin: '0 0 1.75rem',
               fontFamily: "'Inter', sans-serif",
             }}>
-              Evidence-grounded deep dives on every supplement — dosing protocols, bioavailability,
-              interactions, and synergies. Every claim backed by cited sources.
+              {t('premium.heroSubtitle')}
             </p>
 
             <button
@@ -228,7 +229,7 @@ export default function PremiumPage({ onBack }: PremiumPageProps) {
               onMouseEnter={e => { (e.currentTarget as HTMLButtonElement).style.opacity = '0.9'; }}
               onMouseLeave={e => { (e.currentTarget as HTMLButtonElement).style.opacity = '1'; }}
             >
-              {notified ? <><Check size={16} weight="bold" /> You're on the list</> : <><Bell size={16} /> Notify me when live</>}
+              {notified ? <><Check size={16} weight="bold" /> {t('premium.onTheList')}</> : <><Bell size={16} /> {t('premium.notifyMe')}</>}
             </button>
           </div>
 
@@ -259,7 +260,7 @@ export default function PremiumPage({ onBack }: PremiumPageProps) {
                     Magnesium Glycinate
                   </div>
                   <div style={{ fontSize: '0.75rem', color: textSecondary, marginTop: '0.125rem', fontFamily: "'Inter', sans-serif" }}>
-                    Research Deep Dive
+                    {t('premium.previewSubtitle')}
                   </div>
                 </div>
                 <div style={{
@@ -268,7 +269,7 @@ export default function PremiumPage({ onBack }: PremiumPageProps) {
                   fontSize: '0.625rem', fontWeight: 700, letterSpacing: '0.5px',
                   fontFamily: "'Inter', sans-serif", textTransform: 'uppercase',
                 }}>
-                  Strong evidence
+                  {t('premium.previewBadge')}
                 </div>
               </div>
 
@@ -276,7 +277,7 @@ export default function PremiumPage({ onBack }: PremiumPageProps) {
               <div style={{ padding: '1.125rem 1.25rem', display: 'flex', flexDirection: 'column', gap: '1rem' }}>
                 <div>
                   <div style={{ fontSize: '0.6875rem', fontWeight: 700, color: '#00685f', letterSpacing: '0.6px', textTransform: 'uppercase', fontFamily: "'Inter', sans-serif", marginBottom: '0.375rem' }}>
-                    Mechanism of Action
+                    {t('premium.previewMechanism')}
                   </div>
                   <p style={{ margin: 0, fontSize: '0.8125rem', color: textSecondary, lineHeight: 1.6, fontFamily: "'Inter', sans-serif" }}>
                     Acts as a cofactor in 300+ enzymatic reactions. Glycinate chelation improves CNS penetration and sleep-onset latency vs. oxide forms.
@@ -294,13 +295,13 @@ export default function PremiumPage({ onBack }: PremiumPageProps) {
 
                 <div>
                   <div style={{ fontSize: '0.6875rem', fontWeight: 700, color: '#00685f', letterSpacing: '0.6px', textTransform: 'uppercase', fontFamily: "'Inter', sans-serif", marginBottom: '0.5rem' }}>
-                    Dosing Protocol
+                    {t('premium.previewDosing')}
                   </div>
                   <div style={{ display: 'flex', flexDirection: 'column', gap: '0.3rem' }}>
                     {[
-                      { label: 'Conservative', dose: '200 mg', active: false },
-                      { label: 'Standard', dose: '400 mg', active: true },
-                      { label: 'High', dose: '800 mg', active: false },
+                      { label: t('premium.dosingLabels.conservative'), dose: '200 mg', active: false },
+                      { label: t('premium.dosingLabels.standard'), dose: '400 mg', active: true },
+                      { label: t('premium.dosingLabels.high'), dose: '800 mg', active: false },
                     ].map(({ label, dose, active }) => (
                       <div key={label} style={{
                         display: 'flex', alignItems: 'center', justifyContent: 'space-between',
@@ -324,7 +325,7 @@ export default function PremiumPage({ onBack }: PremiumPageProps) {
                 paddingBottom: '0.875rem',
               }}>
                 <span style={{ fontSize: '0.75rem', fontWeight: 600, color: textSecondary, fontFamily: "'Inter', sans-serif" }}>
-                  + 4 more sections unlocked with Premium
+                  {t('premium.moreSectionsLocked', { count: 4 })}
                 </span>
               </div>
             </div>
@@ -335,7 +336,7 @@ export default function PremiumPage({ onBack }: PremiumPageProps) {
         <div style={{ position: 'absolute', bottom: '1rem', left: 0, right: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 2 }}>
           <div style={{ position: 'relative', display: 'inline-flex', alignItems: 'center', gap: '0.25rem' }}>
             <span style={{ fontSize: '0.75rem', fontWeight: 500, color: 'rgba(255,255,255,0.5)', fontFamily: "'Inter', sans-serif", letterSpacing: '0.2px' }}>
-              Research-backed · Not medical advice
+              {t('common.researchBacked')}
             </span>
             <button
               onClick={() => setShowAiDisclaimer(v => !v)}
@@ -360,9 +361,7 @@ export default function PremiumPage({ onBack }: PremiumPageProps) {
                 width: '300px', zIndex: 10, textAlign: 'left',
               }}>
                 <p style={{ margin: 0, fontFamily: "'Inter', sans-serif", fontSize: '0.8125rem', color: 'var(--text-secondary)', lineHeight: 1.55 }}>
-                  Content is grounded in peer-reviewed research and cited sources.
-                  It is <strong style={{ color: 'var(--text-primary)' }}>not medical advice</strong> and does not replace guidance from a qualified healthcare professional.
-                  Consult a doctor before changing your supplement regimen.
+                  {t('common.aiDisclaimer')}
                 </p>
               </div>
             )}
@@ -403,7 +402,7 @@ export default function PremiumPage({ onBack }: PremiumPageProps) {
                     fontSize: '0.6875rem', fontWeight: 700, letterSpacing: '0.5px',
                     whiteSpace: 'nowrap', fontFamily: "'Inter', sans-serif",
                   }}>
-                    BEST VALUE
+                    {t('premium.bestValue')}
                   </div>
                 )}
 
@@ -444,7 +443,7 @@ export default function PremiumPage({ onBack }: PremiumPageProps) {
                     onMouseEnter={e => { (e.currentTarget as HTMLAnchorElement).style.opacity = '0.75'; }}
                     onMouseLeave={e => { (e.currentTarget as HTMLAnchorElement).style.opacity = '1'; }}
                   >
-                    Browse supplements <ArrowRight size={14} weight="bold" />
+                    {t('premium.browseSupplement')} <ArrowRight size={14} weight="bold" />
                   </a>
                 ) : notified ? (
                   <div style={{
@@ -455,7 +454,7 @@ export default function PremiumPage({ onBack }: PremiumPageProps) {
                     fontFamily: "'Inter', sans-serif", fontWeight: 600, fontSize: '0.875rem', color: '#00685f',
                   }}>
                     <Check size={15} weight="bold" />
-                    You're on the list
+                    {t('premium.onTheList')}
                   </div>
                 ) : (
                   <button
@@ -474,7 +473,7 @@ export default function PremiumPage({ onBack }: PremiumPageProps) {
                     onClick={handleNotify}
                   >
                     <Bell size={15} />
-                    Notify me when live
+                    {t('premium.notifyMe')}
                   </button>
                 )}
               </div>
@@ -495,7 +494,7 @@ export default function PremiumPage({ onBack }: PremiumPageProps) {
             <div style={{ width: '28px', height: '28px', borderRadius: '50%', background: checkBg, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
               <Check size={14} weight="bold" color="#00685f" />
             </div>
-            <span style={{ fontFamily: "'Inter', sans-serif", fontSize: '0.8125rem', fontWeight: 600, color: textPrimary }}>7-day money-back guarantee</span>
+            <span style={{ fontFamily: "'Inter', sans-serif", fontSize: '0.8125rem', fontWeight: 600, color: textPrimary }}>{t('premium.moneyBack')}</span>
           </div>
 
           <div style={{ width: '1px', height: '20px', background: border }} />
@@ -505,7 +504,7 @@ export default function PremiumPage({ onBack }: PremiumPageProps) {
             <div style={{ width: '28px', height: '28px', borderRadius: '50%', background: checkBg, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
               <Check size={14} weight="bold" color="#00685f" />
             </div>
-            <span style={{ fontFamily: "'Inter', sans-serif", fontSize: '0.8125rem', fontWeight: 600, color: textPrimary }}>Cancel anytime</span>
+            <span style={{ fontFamily: "'Inter', sans-serif", fontSize: '0.8125rem', fontWeight: 600, color: textPrimary }}>{t('premium.cancelAnytime')}</span>
           </div>
 
           <div style={{ width: '1px', height: '20px', background: border }} />
@@ -513,7 +512,7 @@ export default function PremiumPage({ onBack }: PremiumPageProps) {
           {/* Secure + payment logos */}
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.625rem' }}>
             <Lock size={14} color={textMuted} />
-            <span style={{ fontFamily: "'Inter', sans-serif", fontSize: '0.8125rem', color: textMuted }}>Secure checkout</span>
+            <span style={{ fontFamily: "'Inter', sans-serif", fontSize: '0.8125rem', color: textMuted }}>{t('premium.secureCheckout')}</span>
             <span style={{ fontFamily: "'Inter', sans-serif", fontSize: '0.75rem', color: textMuted, opacity: 0.6 }}>·</span>
             <span style={{ fontFamily: "'Inter', sans-serif", fontSize: '0.75rem', fontWeight: 700, color: textMuted, letterSpacing: '0.3px' }}>Stripe</span>
           </div>
@@ -538,10 +537,10 @@ export default function PremiumPage({ onBack }: PremiumPageProps) {
                 fontSize: 'clamp(1.5rem, 3vw, 2rem)',
                 color: textPrimary, margin: '0 0 0.875rem', letterSpacing: '-0.5px', lineHeight: 1.2,
               }}>
-                The Research <span style={{ color: '#00685f' }}>Standard.</span>
+                {t('premium.researchStandardTitle')} <span style={{ color: '#00685f' }}>{t('premium.researchStandardHighlight')}</span>
               </h2>
               <p style={{ fontFamily: "'Inter', sans-serif", fontSize: '0.875rem', color: textMuted, lineHeight: 1.7, margin: '0 0 1.5rem' }}>
-                Every deep dive synthesises peer-reviewed literature into actionable protocols. We don't just aggregate — we trace every claim back to its source.
+                {t('premium.researchStandardBody')}
               </p>
               <div style={{
                 background: isDark ? '#0d2420' : '#f0f7f5',
@@ -550,14 +549,14 @@ export default function PremiumPage({ onBack }: PremiumPageProps) {
                 padding: '1rem 1.125rem',
               }}>
                 <p style={{ margin: 0, fontFamily: "'Inter', sans-serif", fontSize: '0.8125rem', color: textSecondary, lineHeight: 1.6, fontStyle: 'italic' }}>
-                  "Finally a supplement tool that cites actual studies instead of just repeating label claims."
+                  {t('premium.testimonial')}
                 </p>
                 <div style={{ marginTop: '0.75rem', display: 'flex', alignItems: 'center', gap: '0.625rem' }}>
                   <div style={{ width: '28px', height: '28px', borderRadius: '50%', background: checkBg, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '0.6875rem', fontWeight: 700, color: '#00685f', fontFamily: "'Inter', sans-serif" }}>
                     SS
                   </div>
                   <span style={{ fontSize: '0.6875rem', textTransform: 'uppercase', letterSpacing: '0.8px', fontWeight: 700, color: textMuted, fontFamily: "'Inter', sans-serif" }}>
-                    Beta user feedback
+                    {t('premium.testimonialAuthor')}
                   </span>
                 </div>
               </div>
@@ -599,14 +598,14 @@ export default function PremiumPage({ onBack }: PremiumPageProps) {
             fontSize: '1.375rem', color: textPrimary,
             margin: '0 0 1.5rem', letterSpacing: '-0.3px',
           }}>
-            What you get
+            {t('premium.whatYouGet')}
           </h2>
 
           <div className="premium-what-grid" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.25rem' }}>
 
             <div style={cardBase}>
               <div style={{ fontFamily: "'Manrope', sans-serif", fontWeight: 700, fontSize: '0.9375rem', color: textSecondary, marginBottom: '0.5rem' }}>
-                Free
+                {t('premium.free')}
               </div>
               <div style={{ display: 'flex', flexDirection: 'column', gap: '0.625rem' }}>
                 {FREE_FEATURES.map(f => (
@@ -637,7 +636,7 @@ export default function PremiumPage({ onBack }: PremiumPageProps) {
               </div>
               <div style={{ marginTop: '0.5rem', borderTop: `1px solid ${border}`, paddingTop: '0.875rem' }}>
                 <div style={{ fontSize: '0.6875rem', fontWeight: 600, color: textSecondary, letterSpacing: '0.5px', textTransform: 'uppercase', fontFamily: "'Inter', sans-serif", marginBottom: '0.5rem' }}>
-                  Coming soon
+                  {t('premium.comingSoon')}
                 </div>
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
                   {COMING_SOON.map(f => (
@@ -657,7 +656,7 @@ export default function PremiumPage({ onBack }: PremiumPageProps) {
         {/* ── FAQ ── */}
         <div style={{ marginBottom: '3rem' }}>
           <h2 style={{ fontFamily: "'Manrope', sans-serif", fontWeight: 800, fontSize: '1.375rem', color: textPrimary, margin: '0 0 1.25rem', letterSpacing: '-0.3px' }}>
-            Frequently asked
+            {t('premium.faqTitle')}
           </h2>
           <div style={{ display: 'flex', flexDirection: 'column', gap: '0.625rem' }}>
             {FAQ.map((item, i) => (
@@ -689,15 +688,15 @@ export default function PremiumPage({ onBack }: PremiumPageProps) {
           border: 'none', textAlign: 'center', alignItems: 'center',
         }}>
           <h3 style={{ fontFamily: "'Manrope', sans-serif", fontWeight: 800, fontSize: '1.375rem', color: '#ffffff', margin: 0, letterSpacing: '-0.3px' }}>
-            Ready to go deeper?
+            {t('premium.readyToDeeper')}
           </h3>
           <p style={{ fontFamily: "'Inter', sans-serif", fontSize: '0.9375rem', color: 'rgba(255,255,255,0.8)', margin: 0, lineHeight: 1.6 }}>
-            Payments launching soon — drop your interest below and we'll let you know first.
+            {t('premium.readyToDeeperBody')}
           </p>
           {notified ? (
             <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', background: 'rgba(255,255,255,0.15)', border: '1px solid rgba(255,255,255,0.3)', borderRadius: '28px', padding: '0.875rem 2rem', fontFamily: "'Inter', sans-serif", fontWeight: 700, fontSize: '1rem', color: '#ffffff' }}>
               <Check size={17} weight="bold" />
-              You're on the list
+              {t('premium.onTheList')}
             </div>
           ) : (
             <button
@@ -707,7 +706,7 @@ export default function PremiumPage({ onBack }: PremiumPageProps) {
               onClick={handleNotify}
             >
               <Bell size={17} />
-              Notify me when live
+              {t('premium.notifyMe')}
             </button>
           )}
         </div>
