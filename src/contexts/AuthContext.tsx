@@ -42,15 +42,13 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [isPremium, setIsPremium] = useState(false);
 
   useEffect(() => {
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      setSession(session);
-      setUser(session?.user ?? null);
-      setLoading(false);
-    });
-
+    // onAuthStateChange fires INITIAL_SESSION on mount in v2, replacing getSession().
+    // Owning setLoading(false) here avoids the race where getSession() resolves before
+    // detectSessionInUrl processes the OAuth hash, which would flash the sign-in button.
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
       setSession(session);
       setUser(session?.user ?? null);
+      setLoading(false);
     });
 
     return () => subscription.unsubscribe();
