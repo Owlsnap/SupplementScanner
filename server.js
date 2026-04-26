@@ -36,9 +36,9 @@ const corsOptions = {
     'http://localhost:5173',
     'http://localhost:3000',
     'http://localhost:8081', // Expo development server
-    'https://supp-scanner.vercel.app',
     'https://supplementscanner.io',
-    'https://www.supplementscanner.io'
+    'https://www.supplementscanner.io',
+    'https://supplementscanner-production.up.railway.app',
   ],
   credentials: true
 };
