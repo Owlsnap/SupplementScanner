@@ -884,7 +884,7 @@ export default function SupplementAnalyzer(): JSX.Element {
         <Route path="/encyclopedia/:slug/premium-deep-dive" element={<PremiumDeepDiveRoute />} />
         <Route path="/recommendations" element={<RecommendationsPage />} />
         <Route path="/app" element={<MobileAppPage onBack={() => navigate(-1 as any)} />} />
-        <Route path="/premium" element={<PremiumPage onBack={() => navigate(-1 as any)} />} />
+        <Route path="/premium" element={<PremiumPage onBack={() => navigate(-1 as any)} onOpenAuthModal={() => setShowAuthModal(true)} />} />
         <Route path="/profile" element={<HealthProfilePage onBack={() => navigate(-1 as any)} onSignIn={() => setShowAuthModal(true)} />} />
         <Route path="/scanner" element={(() => {
           const product = products[0];

@@ -21,10 +21,25 @@ interface AuthContextValue {
 
 const AuthContext = createContext<AuthContextValue | null>(null);
 
+async function checkPremiumStatus(userId: string, email: string): Promise<boolean> {
+  const [{ data: tester }, { data: sub }] = await Promise.all([
+    supabase.from('beta_testers').select('email').eq('email', email).maybeSingle(),
+    supabase
+      .from('subscriptions')
+      .select('status')
+      .eq('user_id', userId)
+      .eq('status', 'active')
+      .gt('current_period_end', new Date().toISOString())
+      .maybeSingle(),
+  ]);
+  return !!(tester || sub);
+}
+
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [session, setSession] = useState<Session | null>(null);
   const [loading, setLoading] = useState(true);
+  const [isPremium, setIsPremium] = useState(false);
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
@@ -40,6 +55,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
     return () => subscription.unsubscribe();
   }, []);
+
+  useEffect(() => {
+    if (!user?.id || !user?.email) { setIsPremium(false); return; }
+    checkPremiumStatus(user.id, user.email).then(setIsPremium);
+  }, [user?.id]);
 
   const signIn = async (email: string, password: string) => {
     const { error } = await supabase.auth.signInWithPassword({ email, password });
@@ -77,7 +97,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       user,
       session,
       loading,
-      isPremium: !!user,
+      isPremium,
       signIn,
       signUp,
       signInWithMagicLink,

@@ -49,6 +49,81 @@ if (process.env.NODE_ENV !== 'production') {
 } else {
   app.use(cors(corsOptions));
 }
+// ── Stripe webhook (raw body required — must be before express.json) ──────────
+app.post('/api/payment/webhook', express.raw({ type: 'application/json' }), async (req, res) => {
+  const sig = req.headers['stripe-signature'];
+  const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET;
+  if (!stripe || !webhookSecret) return res.status(503).send('Not configured');
+
+  let event;
+  try {
+    event = stripe.webhooks.constructEvent(req.body, sig, webhookSecret);
+  } catch (err) {
+    console.error('💥 Webhook signature error:', err.message);
+    return res.status(400).send(`Webhook error: ${err.message}`);
+  }
+
+  const db = getSupabaseService();
+
+  try {
+    switch (event.type) {
+      case 'checkout.session.completed': {
+        const session = event.data.object;
+        if (session.mode === 'subscription' && session.metadata?.userId) {
+          const sub = await stripe.subscriptions.retrieve(session.subscription);
+          await db.from('subscriptions').upsert({
+            user_id: session.metadata.userId,
+            stripe_customer_id: session.customer,
+            stripe_subscription_id: session.subscription,
+            plan: session.metadata.plan || 'monthly',
+            status: 'active',
+            current_period_end: new Date(sub.current_period_end * 1000).toISOString(),
+            updated_at: new Date().toISOString(),
+          }, { onConflict: 'user_id' });
+          console.log(`✅ Subscription created for user ${session.metadata.userId}`);
+        }
+        break;
+      }
+      case 'customer.subscription.updated': {
+        const sub = event.data.object;
+        const isActive = sub.status === 'active' || sub.status === 'trialing';
+        await db.from('subscriptions')
+          .update({
+            status: isActive ? 'active' : 'inactive',
+            current_period_end: new Date(sub.current_period_end * 1000).toISOString(),
+            updated_at: new Date().toISOString(),
+          })
+          .eq('stripe_subscription_id', sub.id);
+        console.log(`✅ Subscription updated: ${sub.id} → ${sub.status}`);
+        break;
+      }
+      case 'customer.subscription.deleted': {
+        const sub = event.data.object;
+        await db.from('subscriptions')
+          .update({ status: 'cancelled', updated_at: new Date().toISOString() })
+          .eq('stripe_subscription_id', sub.id);
+        console.log(`✅ Subscription cancelled: ${sub.id}`);
+        break;
+      }
+      case 'invoice.payment_failed': {
+        const invoice = event.data.object;
+        if (invoice.subscription) {
+          await db.from('subscriptions')
+            .update({ status: 'inactive', updated_at: new Date().toISOString() })
+            .eq('stripe_subscription_id', invoice.subscription);
+          console.log(`⚠️ Payment failed, subscription marked inactive: ${invoice.subscription}`);
+        }
+        break;
+      }
+    }
+  } catch (err) {
+    console.error('💥 Webhook DB error:', err.message);
+    // Still return 200 so Stripe doesn't retry — DB errors shouldn't block Stripe
+  }
+
+  return res.json({ received: true });
+});
+
 app.use(express.json({ limit: '50mb' })); // Increase payload limit for large HTML extractions
 
 // Rate limiting
@@ -1535,6 +1610,7 @@ app.post('/api/encyclopedia/deep-dive/:slug/refresh', async (req, res) => {
 // POST /api/premium/deep-dive/:slug
 // Accepts either a Bearer JWT (premium subscriber) or a verified Stripe session ID
 async function requirePremiumAccess(req, res, next) {
+  // 1. Stripe single-dive session (no auth required)
   const stripeSessionId = req.headers['x-stripe-session'];
   if (stripeSessionId && stripe) {
     try {
@@ -1543,9 +1619,38 @@ async function requirePremiumAccess(req, res, next) {
         req.user = { id: `stripe:${stripeSessionId}`, stripeSessionSlug: session.metadata?.supplementSlug || null };
         return next();
       }
-    } catch (_) { /* fall through to Bearer auth */ }
+    } catch (_) { /* fall through */ }
   }
-  return requireAuth(req, res, next);
+
+  // 2. Authenticate via JWT, then verify subscription or tester status
+  return requireAuth(req, res, async () => {
+    try {
+      const db = getSupabaseService();
+
+      // Beta tester — full premium access
+      const { data: tester } = await db
+        .from('beta_testers')
+        .select('email')
+        .eq('email', req.user.email)
+        .maybeSingle();
+      if (tester) return next();
+
+      // Active subscription
+      const { data: sub } = await db
+        .from('subscriptions')
+        .select('status, current_period_end')
+        .eq('user_id', req.user.id)
+        .eq('status', 'active')
+        .gt('current_period_end', new Date().toISOString())
+        .maybeSingle();
+      if (sub) return next();
+
+      return res.status(403).json({ success: false, error: 'Premium subscription required' });
+    } catch (err) {
+      console.error('💥 Premium access check error:', err.message);
+      return res.status(500).json({ success: false, error: 'Access check failed' });
+    }
+  });
 }
 
 // RAG-grounded deep dive — premium subscriber or paid single session
@@ -1757,6 +1862,35 @@ app.get('/api/payment/verify-session', async (req, res) => {
     return res.json({ success: true, paid, supplementSlug: session.metadata?.supplementSlug || null });
   } catch (err) {
     console.error('💥 Stripe verify error:', err.message);
+    return res.status(500).json({ success: false, error: err.message });
+  }
+});
+
+// POST /api/payment/create-subscription-checkout
+// Creates a Stripe Checkout session for monthly or yearly subscription.
+app.post('/api/payment/create-subscription-checkout', requireAuth, async (req, res) => {
+  if (!stripe) return res.status(503).json({ success: false, error: 'Payment not configured' });
+
+  const { plan } = req.body;
+  const priceId = plan === 'yearly'
+    ? process.env.STRIPE_PRICE_ID_YEARLY
+    : process.env.STRIPE_PRICE_ID_MONTHLY;
+
+  if (!priceId) return res.status(503).json({ success: false, error: `Price ID for '${plan}' not configured` });
+
+  try {
+    const session = await stripe.checkout.sessions.create({
+      payment_method_types: ['card'],
+      mode: 'subscription',
+      customer_email: req.user.email,
+      line_items: [{ price: priceId, quantity: 1 }],
+      success_url: `${SITE_URL}/premium?subscribed=1`,
+      cancel_url: `${SITE_URL}/premium`,
+      metadata: { userId: req.user.id, plan },
+    });
+    return res.json({ success: true, url: session.url });
+  } catch (err) {
+    console.error('💥 Subscription checkout error:', err.message);
     return res.status(500).json({ success: false, error: err.message });
   }
 });

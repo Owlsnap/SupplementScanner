@@ -1,16 +1,17 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   ArrowLeft, Check, Lightning, Star, Sparkle, ArrowRight,
-  Bell, X, Article, Flask, Gauge, ArrowsHorizontal, ShieldWarning, Lock,
+  X, Article, Flask, Gauge, ArrowsHorizontal, ShieldWarning, Lock,
 } from '@phosphor-icons/react';
 import { useDarkMode } from '../contexts/DarkModeContext';
 import { useLanguage } from '../contexts/LanguageContext';
+import { useAuth } from '../contexts/AuthContext';
 
 interface PremiumPageProps {
   onBack: () => void;
+  onOpenAuthModal?: () => void;
 }
 
-const NOTIFY_KEY = 'ss_premium_notify';
 
 const PLANS = {
   dive: {
@@ -97,12 +98,52 @@ const DEEP_DIVE_FEATURES = [
 ];
 
 
-export default function PremiumPage({ onBack }: PremiumPageProps) {
+export default function PremiumPage({ onBack, onOpenAuthModal }: PremiumPageProps) {
   const { isDark } = useDarkMode();
   const { t } = useLanguage();
+  const { user, session, isPremium } = useAuth();
   const [openFaq, setOpenFaq] = useState<number | null>(null);
-  const [notified, setNotified] = useState<boolean>(() => !!localStorage.getItem(NOTIFY_KEY));
   const [showAiDisclaimer, setShowAiDisclaimer] = useState(false);
+  const [checkoutLoading, setCheckoutLoading] = useState<string | null>(null);
+  const [subscribeError, setSubscribeError] = useState<string | null>(null);
+  const [justSubscribed, setJustSubscribed] = useState(false);
+
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    if (params.get('subscribed') === '1') {
+      setJustSubscribed(true);
+      window.history.replaceState({}, '', '/premium');
+    }
+  }, []);
+
+  const handleSubscribe = async (plan: 'monthly' | 'yearly') => {
+    setSubscribeError(null);
+    if (!user || !session) {
+      onOpenAuthModal?.();
+      return;
+    }
+    setCheckoutLoading(plan);
+    try {
+      const res = await fetch('/api/payment/create-subscription-checkout', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${session.access_token}`,
+        },
+        body: JSON.stringify({ plan }),
+      });
+      const data = await res.json();
+      if (data.url) {
+        window.location.href = data.url;
+      } else {
+        setSubscribeError(data.error || 'Something went wrong. Please try again.');
+      }
+    } catch {
+      setSubscribeError('Network error. Please try again.');
+    } finally {
+      setCheckoutLoading(null);
+    }
+  };
 
   const freeFeatures = t('premium.freeFeatures', { returnObjects: true }) as string[];
   const premiumFeatures = t('premium.premiumFeatures', { returnObjects: true }) as string[];
@@ -111,12 +152,6 @@ export default function PremiumPage({ onBack }: PremiumPageProps) {
   const deepDiveFeaturesList = (t('premium.deepDiveFeatures', { returnObjects: true }) as Array<{ label: string; desc: string }>).map(
     (f, i) => ({ Icon: DEEP_DIVE_FEATURES[i].Icon, label: f.label, desc: f.desc })
   );
-
-  const handleNotify = () => {
-    localStorage.setItem(NOTIFY_KEY, '1');
-    setNotified(true);
-  };
-
 
   const surface = isDark ? '#1a2420' : '#ffffff';
   const pageBg = isDark ? '#0f1a17' : '#f5faf8';
@@ -223,22 +258,26 @@ export default function PremiumPage({ onBack }: PremiumPageProps) {
               {t('premium.heroSubtitle')}
             </p>
 
-            <button
-              onClick={handleNotify}
-              style={{
-                display: 'inline-flex', alignItems: 'center', gap: '0.5rem',
-                background: '#ffffff', color: '#00685f',
-                border: 'none', borderRadius: '28px',
-                padding: '0.875rem 1.75rem',
-                fontFamily: "'Inter', sans-serif", fontWeight: 700,
-                fontSize: '0.9375rem', cursor: 'pointer',
-                transition: 'opacity 0.15s ease',
-              }}
-              onMouseEnter={e => { (e.currentTarget as HTMLButtonElement).style.opacity = '0.9'; }}
-              onMouseLeave={e => { (e.currentTarget as HTMLButtonElement).style.opacity = '1'; }}
-            >
-              {notified ? <><Check size={16} weight="bold" /> {t('premium.onTheList')}</> : <><Bell size={16} /> {t('premium.notifyMe')}</>}
-            </button>
+            {justSubscribed ? (
+              <div style={{ display: 'inline-flex', alignItems: 'center', gap: '0.5rem', background: 'rgba(255,255,255,0.15)', border: '1px solid rgba(255,255,255,0.3)', borderRadius: '28px', padding: '0.875rem 1.75rem', fontFamily: "'Inter', sans-serif", fontWeight: 700, fontSize: '0.9375rem', color: '#ffffff' }}>
+                <Check size={16} weight="bold" /> Welcome to Premium!
+              </div>
+            ) : isPremium ? (
+              <div style={{ display: 'inline-flex', alignItems: 'center', gap: '0.5rem', background: 'rgba(255,255,255,0.15)', border: '1px solid rgba(255,255,255,0.3)', borderRadius: '28px', padding: '0.875rem 1.75rem', fontFamily: "'Inter', sans-serif", fontWeight: 700, fontSize: '0.9375rem', color: '#ffffff' }}>
+                <Check size={16} weight="bold" /> You have Premium
+              </div>
+            ) : (
+              <button
+                onClick={() => handleSubscribe('yearly')}
+                disabled={!!checkoutLoading}
+                style={{ display: 'inline-flex', alignItems: 'center', gap: '0.5rem', background: '#ffffff', color: '#00685f', border: 'none', borderRadius: '28px', padding: '0.875rem 1.75rem', fontFamily: "'Inter', sans-serif", fontWeight: 700, fontSize: '0.9375rem', cursor: checkoutLoading ? 'not-allowed' : 'pointer', opacity: checkoutLoading ? 0.7 : 1, transition: 'opacity 0.15s ease' }}
+                onMouseEnter={e => { if (!checkoutLoading) (e.currentTarget as HTMLButtonElement).style.opacity = '0.9'; }}
+                onMouseLeave={e => { (e.currentTarget as HTMLButtonElement).style.opacity = checkoutLoading ? '0.7' : '1'; }}
+              >
+                {checkoutLoading === 'yearly' ? <div style={{ width: '16px', height: '16px', border: '2px solid rgba(0,104,95,0.3)', borderTopColor: '#00685f', borderRadius: '50%', animation: 'spin 1s linear infinite' }} /> : <Sparkle size={16} weight="fill" />}
+                Get Premium
+              </button>
+            )}
           </div>
 
           {/* Right — deep dive preview card */}
@@ -379,6 +418,40 @@ export default function PremiumPage({ onBack }: PremiumPageProps) {
 
       <div style={{ maxWidth: '960px', margin: '0 auto', padding: '3rem 1.25rem 5rem' }}>
 
+        {/* ── Success banner ── */}
+        {justSubscribed && (
+          <div style={{
+            background: isDark ? '#0d2e2a' : '#e6f4f1',
+            border: '1.5px solid #6bd8cb',
+            borderRadius: '16px', padding: '1rem 1.25rem',
+            display: 'flex', alignItems: 'center', gap: '0.75rem',
+            marginBottom: '2rem',
+          }}>
+            <Check size={20} weight="bold" color="#00685f" />
+            <div>
+              <div style={{ fontFamily: "'Manrope', sans-serif", fontWeight: 800, fontSize: '0.9375rem', color: textPrimary }}>
+                You're in — welcome to Premium!
+              </div>
+              <div style={{ fontFamily: "'Inter', sans-serif", fontSize: '0.8125rem', color: textMuted, marginTop: '0.125rem' }}>
+                All deep dives are now unlocked. Head to the encyclopedia to explore.
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* ── Checkout error ── */}
+        {subscribeError && (
+          <div style={{
+            background: '#fff1f1', border: '1.5px solid #ffcdd2',
+            borderRadius: '16px', padding: '1rem 1.25rem',
+            display: 'flex', alignItems: 'center', gap: '0.75rem',
+            marginBottom: '2rem',
+          }}>
+            <X size={18} color="#ba1a1a" />
+            <span style={{ fontFamily: "'Inter', sans-serif", fontSize: '0.875rem', color: '#ba1a1a' }}>{subscribeError}</span>
+          </div>
+        )}
+
         {/* ── Pricing cards ── */}
         <div className="premium-plans-grid" style={{
           display: 'grid',
@@ -441,7 +514,7 @@ export default function PremiumPage({ onBack }: PremiumPageProps) {
 
                 {isDive ? (
                   <a
-                    href="/"
+                    href="/encyclopedia"
                     style={{
                       display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.375rem',
                       padding: '0.75rem 1rem', borderRadius: '28px',
@@ -454,7 +527,7 @@ export default function PremiumPage({ onBack }: PremiumPageProps) {
                   >
                     {planT.cta} <ArrowRight size={14} weight="bold" />
                   </a>
-                ) : notified ? (
+                ) : isPremium ? (
                   <div style={{
                     display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.375rem',
                     padding: '0.75rem 1rem', borderRadius: '28px',
@@ -463,26 +536,31 @@ export default function PremiumPage({ onBack }: PremiumPageProps) {
                     fontFamily: "'Inter', sans-serif", fontWeight: 600, fontSize: '0.875rem', color: '#00685f',
                   }}>
                     <Check size={15} weight="bold" />
-                    {t('premium.onTheList')}
+                    Active
                   </div>
                 ) : (
                   <button
+                    disabled={!!checkoutLoading}
                     style={{
                       background: isHighlight ? '#00685f' : 'transparent',
                       color: isHighlight ? '#ffffff' : '#00685f',
                       border: isHighlight ? 'none' : '1.5px solid #00685f',
                       borderRadius: '28px', padding: '0.75rem 1rem',
                       fontFamily: "'Inter', sans-serif", fontWeight: 600, fontSize: '0.9375rem',
-                      cursor: 'pointer', width: '100%',
+                      cursor: checkoutLoading ? 'not-allowed' : 'pointer', width: '100%',
                       display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.375rem',
+                      opacity: checkoutLoading === plan.id ? 0.7 : 1,
                       transition: 'opacity 0.15s ease',
                     }}
-                    onMouseEnter={e => { (e.currentTarget as HTMLButtonElement).style.opacity = '0.85'; }}
-                    onMouseLeave={e => { (e.currentTarget as HTMLButtonElement).style.opacity = '1'; }}
-                    onClick={handleNotify}
+                    onMouseEnter={e => { if (!checkoutLoading) (e.currentTarget as HTMLButtonElement).style.opacity = '0.85'; }}
+                    onMouseLeave={e => { (e.currentTarget as HTMLButtonElement).style.opacity = checkoutLoading === plan.id ? '0.7' : '1'; }}
+                    onClick={() => handleSubscribe(plan.id as 'monthly' | 'yearly')}
                   >
-                    <Bell size={15} />
-                    {t('premium.notifyMe')}
+                    {checkoutLoading === plan.id
+                      ? <div style={{ width: '15px', height: '15px', border: `2px solid ${isHighlight ? 'rgba(255,255,255,0.3)' : 'rgba(0,104,95,0.3)'}`, borderTopColor: isHighlight ? '#ffffff' : '#00685f', borderRadius: '50%', animation: 'spin 1s linear infinite' }} />
+                      : <Sparkle size={15} weight="fill" />
+                    }
+                    {planT.cta}
                   </button>
                 )}
               </div>
@@ -702,20 +780,24 @@ export default function PremiumPage({ onBack }: PremiumPageProps) {
           <p style={{ fontFamily: "'Inter', sans-serif", fontSize: '0.9375rem', color: 'rgba(255,255,255,0.8)', margin: 0, lineHeight: 1.6 }}>
             {t('premium.readyToDeeperBody')}
           </p>
-          {notified ? (
+          {isPremium ? (
             <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', background: 'rgba(255,255,255,0.15)', border: '1px solid rgba(255,255,255,0.3)', borderRadius: '28px', padding: '0.875rem 2rem', fontFamily: "'Inter', sans-serif", fontWeight: 700, fontSize: '1rem', color: '#ffffff' }}>
               <Check size={17} weight="bold" />
-              {t('premium.onTheList')}
+              You have Premium
             </div>
           ) : (
             <button
-              style={{ background: '#ffffff', color: '#00685f', border: 'none', borderRadius: '28px', padding: '0.875rem 2rem', fontFamily: "'Inter', sans-serif", fontWeight: 700, fontSize: '1rem', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '0.5rem', transition: 'opacity 0.15s ease' }}
-              onMouseEnter={e => { (e.currentTarget as HTMLButtonElement).style.opacity = '0.9'; }}
-              onMouseLeave={e => { (e.currentTarget as HTMLButtonElement).style.opacity = '1'; }}
-              onClick={handleNotify}
+              disabled={!!checkoutLoading}
+              style={{ background: '#ffffff', color: '#00685f', border: 'none', borderRadius: '28px', padding: '0.875rem 2rem', fontFamily: "'Inter', sans-serif", fontWeight: 700, fontSize: '1rem', cursor: checkoutLoading ? 'not-allowed' : 'pointer', display: 'flex', alignItems: 'center', gap: '0.5rem', opacity: checkoutLoading ? 0.7 : 1, transition: 'opacity 0.15s ease' }}
+              onMouseEnter={e => { if (!checkoutLoading) (e.currentTarget as HTMLButtonElement).style.opacity = '0.9'; }}
+              onMouseLeave={e => { (e.currentTarget as HTMLButtonElement).style.opacity = checkoutLoading ? '0.7' : '1'; }}
+              onClick={() => handleSubscribe('yearly')}
             >
-              <Bell size={17} />
-              {t('premium.notifyMe')}
+              {checkoutLoading === 'yearly'
+                ? <div style={{ width: '17px', height: '17px', border: '2px solid rgba(0,104,95,0.3)', borderTopColor: '#00685f', borderRadius: '50%', animation: 'spin 1s linear infinite' }} />
+                : <Sparkle size={17} weight="fill" />
+              }
+              Get Premium
             </button>
           )}
         </div>
