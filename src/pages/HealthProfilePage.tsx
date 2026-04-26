@@ -46,7 +46,7 @@ const CONDITION_SUGGESTIONS = [
 
 export default function HealthProfilePage({ onBack, onSignIn }: HealthProfilePageProps) {
   const { t } = useLanguage();
-  const { user, session } = useAuth();
+  const { user, session, isPremium } = useAuth();
 
   const goalDisplayLabels: Record<string, string> = {
     'Build muscle': t('healthProfileOptions.goals.buildMuscle'),
@@ -274,7 +274,7 @@ export default function HealthProfilePage({ onBack, onSignIn }: HealthProfilePag
 
       <div style={{ borderTop: stackSupplements.length > 0 ? '1px solid var(--border)' : 'none', paddingTop: stackSupplements.length > 0 ? '1rem' : '0' }}>
         <button
-          onClick={() => navigate('/premium')}
+          onClick={() => isPremium ? navigate('/stack-evaluation') : navigate('/premium')}
           style={{
             width: '100%',
             padding: '0.75rem',
@@ -294,18 +294,20 @@ export default function HealthProfilePage({ onBack, onSignIn }: HealthProfilePag
         >
           <Sparkle size={16} weight="fill" />
           {t('healthProfile.evaluateStack')}
-          <span style={{
-            background: 'rgba(255,255,255,0.2)',
-            border: '1px solid rgba(255,255,255,0.3)',
-            borderRadius: '999px',
-            padding: '0.0625rem 0.5rem',
-            fontSize: '0.625rem',
-            fontWeight: 700,
-            letterSpacing: '0.5px',
-            fontFamily: "'Inter', sans-serif",
-          }}>
-            PREMIUM
-          </span>
+          {!isPremium && (
+            <span style={{
+              background: 'rgba(255,255,255,0.2)',
+              border: '1px solid rgba(255,255,255,0.3)',
+              borderRadius: '999px',
+              padding: '0.0625rem 0.5rem',
+              fontSize: '0.625rem',
+              fontWeight: 700,
+              letterSpacing: '0.5px',
+              fontFamily: "'Inter', sans-serif",
+            }}>
+              PREMIUM
+            </span>
+          )}
         </button>
       </div>
     </div>

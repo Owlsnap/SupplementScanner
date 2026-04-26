@@ -1624,6 +1624,9 @@ async function requirePremiumAccess(req, res, next) {
 
   // 2. Authenticate via JWT, then verify subscription or tester status
   return requireAuth(req, res, async () => {
+    // Dev-bypass token — granted full premium access in non-production
+    if (req.user.id === 'dev-user') return next();
+
     try {
       const db = getSupabaseService();
 
@@ -1797,6 +1800,40 @@ app.get('/api/premium/interactions/:slug', requireAuth, async (req, res) => {
 
   } catch (error) {
     console.error(`💥 Interactions error for ${slug}:`, error);
+    return res.status(500).json({ success: false, error: error.message });
+  }
+});
+
+// POST /api/premium/evaluate-stack
+// Returns all interactions between supplements in the provided slug list
+app.post('/api/premium/evaluate-stack', requirePremiumAccess, async (req, res) => {
+  const { slugs } = req.body;
+  console.log(`💎 POST /api/premium/evaluate-stack user=${req.user.id} slugs=[${(slugs || []).join(',')}]`);
+
+  if (!Array.isArray(slugs) || slugs.length < 2) {
+    return res.json({ success: true, data: { interactions: [], by_severity: { danger: [], caution: [], synergy: [] } } });
+  }
+
+  try {
+    const { data, error } = await getSupabaseService()
+      .from('interactions')
+      .select('*')
+      .in('substance_a', slugs)
+      .in('substance_b', slugs)
+      .order('severity');
+
+    if (error) throw error;
+
+    const interactions = data || [];
+    const by_severity = {
+      danger: interactions.filter(i => i.severity === 'danger'),
+      caution: interactions.filter(i => i.severity === 'caution'),
+      synergy: interactions.filter(i => i.severity === 'synergy'),
+    };
+
+    return res.json({ success: true, data: { interactions, by_severity } });
+  } catch (error) {
+    console.error('💥 Evaluate stack error:', error);
     return res.status(500).json({ success: false, error: error.message });
   }
 });

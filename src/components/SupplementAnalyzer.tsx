@@ -31,6 +31,7 @@ import DeepDivePage from '../pages/DeepDivePage';
 import PremiumDeepDivePage from '../pages/PremiumDeepDivePage';
 import PremiumPage from '../pages/PremiumPage';
 import HealthProfilePage from '../pages/HealthProfilePage';
+import StackEvaluationPage from '../pages/StackEvaluationPage';
 import { encyclopediaSupplements } from '../data/encyclopediaData';
 
 // Dev bypass: set VITE_DEV_PREMIUM_BYPASS=true in .env.local to skip the paywall
@@ -189,7 +190,7 @@ function SupplementInfoRoute({ onShowPaywall }: { onShowPaywall: () => void }) {
       keyFacts={supp.keyFacts}
       commonMistakes={supp.commonMistakes}
       onBack={() => navigate(-1 as any)}
-      hasPaidDive={hasPaidDive}
+      hasPaidDive={canAccess}
       onBuyDive={handleBuyDive}
       onDeepDive={() => {
         if (canAccess) navigate(`/encyclopedia/${slug}/premium-deep-dive`);
@@ -886,6 +887,7 @@ export default function SupplementAnalyzer(): JSX.Element {
         <Route path="/app" element={<MobileAppPage onBack={() => navigate(-1 as any)} />} />
         <Route path="/premium" element={<PremiumPage onBack={() => navigate(-1 as any)} onOpenAuthModal={() => setShowAuthModal(true)} />} />
         <Route path="/profile" element={<HealthProfilePage onBack={() => navigate(-1 as any)} onSignIn={() => setShowAuthModal(true)} />} />
+        <Route path="/stack-evaluation" element={<StackEvaluationPage />} />
         <Route path="/scanner" element={(() => {
           const product = products[0];
           const isExtracting = extractingProducts.has(product.id);
