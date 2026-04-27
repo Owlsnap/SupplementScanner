@@ -1875,7 +1875,7 @@ app.post('/api/payment/create-checkout', async (req, res) => {
       }],
       mode: 'payment',
       success_url: supplementSlug
-        ? `${SITE_URL}/encyclopedia/${supplementSlug}/premium-deep-dive?dive_paid=1&session_id={CHECKOUT_SESSION_ID}`
+        ? `${SITE_URL}/encyclopedia/${supplementSlug}/premium-deep-dive?dive_paid=1&session_id=%7BCHECKOUT_SESSION_ID%7D`
         : `${SITE_URL}/premium`,
       cancel_url: supplementSlug
         ? `${SITE_URL}/encyclopedia/${supplementSlug}`
