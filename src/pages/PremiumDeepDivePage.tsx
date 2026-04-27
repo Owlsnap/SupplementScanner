@@ -153,14 +153,6 @@ function InteractionCard({ interaction }: { interaction: Interaction }) {
         }}>
           {formatSubstanceName(interaction.substance_b)}
         </span>
-        <span style={{
-          marginLeft: 'auto', background: cfg.color, color: '#fff',
-          borderRadius: '999px', padding: '0.125rem 0.5rem',
-          fontSize: '0.6875rem', fontWeight: 600, fontFamily: "'Inter', sans-serif",
-          whiteSpace: 'nowrap',
-        }}>
-          {t(`premiumDeepDive.${cfg.labelKey}` as any)}
-        </span>
       </div>
       <p style={{
         fontFamily: "'Inter', sans-serif", fontSize: '0.8125rem',
@@ -475,9 +467,9 @@ export default function PremiumDeepDivePage({
             )}
 
             {/* 8 — Interactions [PREMIUM] */}
-            <div style={{ ...cardStyle, borderLeft: dangerInteractions.length > 0 ? '3px solid #ba1a1a' : undefined }}>
+            <div style={cardStyle}>
               <div style={sectionTitle}>
-                <Warning size={18} color={dangerInteractions.length > 0 ? '#ba1a1a' : '#d97706'} weight="fill" />
+                <Warning size={18} color="#d97706" weight="fill" />
                 {t('premiumDeepDive.interactionsTitle')}
               </div>
               <p style={{ fontFamily: "'Inter', sans-serif", fontSize: '0.8125rem', color: 'var(--text-secondary)', margin: '0 0 0.875rem', lineHeight: 1.5 }}>
@@ -489,9 +481,9 @@ export default function PremiumDeepDivePage({
                 </p>
               ) : (
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '0.625rem' }}>
+                  {synergyInteractions.map(i => <InteractionCard key={i.id} interaction={i} />)}
                   {dangerInteractions.map(i => <InteractionCard key={i.id} interaction={i} />)}
                   {cautionInteractions.map(i => <InteractionCard key={i.id} interaction={i} />)}
-                  {synergyInteractions.map(i => <InteractionCard key={i.id} interaction={i} />)}
                 </div>
               )}
             </div>
