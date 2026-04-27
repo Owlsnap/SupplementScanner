@@ -21,9 +21,14 @@ dotenv.config({ path: '.env.local' });
 const app = express();
 const PORT = process.env.PORT || 3001;
 
+// Railway (and most hosts) sit behind a reverse proxy — trust one hop so
+// express-rate-limit can read X-Forwarded-For correctly.
+app.set('trust proxy', 1);
+
 // Debug environment variables
 console.log('🔑 OpenAI API Key available:', !!process.env.OPENAI_API_KEY);
 console.log('🚀 Starting server on port:', PORT);
+console.log('🌐 SITE_URL:', process.env.SITE_URL || '(not set — defaulting to localhost)');
 
 // Initialize OpenAI
 const openai = new OpenAI({
