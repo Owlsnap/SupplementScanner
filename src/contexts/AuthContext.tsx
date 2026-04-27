@@ -1,13 +1,8 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
-import { createClient } from '@supabase/supabase-js';
 import type { User, Session } from '@supabase/supabase-js';
+import { supabase } from '../lib/supabase';
 
-const supabaseUrl = (import.meta as any).env.VITE_SUPABASE_URL as string;
-const supabaseAnonKey = (import.meta as any).env.VITE_SUPABASE_ANON_KEY as string;
-
-export const supabase = createClient(supabaseUrl, supabaseAnonKey, {
-  auth: { flowType: 'implicit' },
-});
+export { supabase } from '../lib/supabase';
 
 interface AuthContextValue {
   user: User | null;
@@ -69,8 +64,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const signUp = async (email: string, password: string) => {
     const { data, error } = await supabase.auth.signUp({ email, password });
     if (error) return { error: error.message };
-    // Supabase returns a session immediately if email confirmation is disabled,
-    // or null session + identities[] if confirmation is required.
     const needsConfirmation = !data.session;
     return { error: null, needsConfirmation };
   };
