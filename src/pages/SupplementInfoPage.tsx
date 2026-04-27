@@ -1,7 +1,7 @@
 import React from 'react';
 import {
   ArrowLeft, Lock, Sparkle, Flask, Gauge, ArrowsHorizontal,
-  ShieldWarning, ArrowRight, Barbell, Moon, Brain, Lightning, Leaf, Warning, Article,
+  ShieldWarning, ArrowRight, Barbell, Moon, Brain, Lightning, Leaf, Warning, Article, Export,
 } from '@phosphor-icons/react';
 import type { EvidenceTier, EncyclopediaCategory } from '../data/encyclopediaData';
 import { useDarkMode } from '../contexts/DarkModeContext';
@@ -66,6 +66,18 @@ export default function SupplementInfoPage({
   const { t } = useLanguage();
   const { isDark } = useDarkMode();
   const categoryColors = isDark ? categoryColorsDark : categoryColorsLight;
+  const [copied, setCopied] = React.useState(false);
+
+  const handleShare = async () => {
+    const url = window.location.href;
+    if (navigator.share) {
+      try { await navigator.share({ title: `${name} — SupplementScanner`, url }); } catch { /* cancelled */ }
+    } else {
+      await navigator.clipboard.writeText(url);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    }
+  };
   const cat = categoryColors[category];
   const tier = evidenceTierStyle[evidenceTier];
   const CatIcon = categoryIcon[category];
@@ -111,7 +123,22 @@ export default function SupplementInfoPage({
                 {category}
               </span>
             </div>
-            <div style={{ width: '60px', flexShrink: 0 }} />
+            <button
+              onClick={handleShare}
+              style={{
+                display: 'inline-flex', alignItems: 'center', gap: '0.375rem',
+                background: 'rgba(255,255,255,0.15)', border: '1px solid rgba(255,255,255,0.25)',
+                borderRadius: '999px', padding: '0.375rem 0.75rem 0.375rem 0.5rem',
+                color: '#ffffff', cursor: 'pointer',
+                fontFamily: "'Inter', sans-serif", fontWeight: 600, fontSize: '0.8125rem',
+                flexShrink: 0, transition: 'background 0.15s ease',
+              }}
+              onMouseEnter={e => { (e.currentTarget as HTMLButtonElement).style.background = 'rgba(255,255,255,0.25)'; }}
+              onMouseLeave={e => { (e.currentTarget as HTMLButtonElement).style.background = 'rgba(255,255,255,0.15)'; }}
+            >
+              <Export size={14} />
+              {copied ? t('common.copied') : t('supplementInfo.share')}
+            </button>
           </div>
           <h1 style={{
             fontFamily: "'Manrope', sans-serif", fontWeight: 800,

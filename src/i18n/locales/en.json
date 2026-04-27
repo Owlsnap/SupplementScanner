@@ -24,6 +24,7 @@
     "cancel": "Cancel",
     "tryAgain": "Try again",
     "or": "or",
+    "copied": "Copied!",
     "evidenceBased": "Evidence-based",
     "researchBacked": "Research-backed · Not medical advice",
     "aiDisclaimer": "Content is grounded in peer-reviewed research and cited sources. It is not medical advice and does not replace guidance from a qualified healthcare professional. Consult a doctor before changing your supplement regimen."
@@ -386,6 +387,7 @@
     "unlockWithPremium": "Unlock with Premium",
     "openResearchDeepDive": "Open Research Deep Dive",
     "buyThisDive": "Buy this Deep Dive · $1.99",
+    "share": "Share",
     "researchCached": "Research-backed · cached for 30 days after first load",
     "evidenceTierLabels": {
       "Strong": "Well-established science with multiple RCTs",

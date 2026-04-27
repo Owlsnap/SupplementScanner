@@ -24,6 +24,7 @@
     "cancel": "Avbryt",
     "tryAgain": "Försök igen",
     "or": "eller",
+    "copied": "Kopierat!",
     "evidenceBased": "Evidensbaserat",
     "researchBacked": "Forskningsbaserat · Inte medicinsk rådgivning",
     "aiDisclaimer": "Innehållet är grundat i kollegialt granskad forskning och citerade källor. Det utgör inte medicinsk rådgivning och ersätter inte vägledning från en kvalificerad vårdprofessional. Rådfråga en läkare innan du ändrar ditt tillskottsintag."
@@ -386,6 +387,7 @@
     "unlockWithPremium": "Lås upp med Premium",
     "openResearchDeepDive": "Öppna forskningsdjupdykning",
     "buyThisDive": "Köp denna djupdykning · 19 kr",
+    "share": "Dela",
     "researchCached": "Forskningsbaserat · cachas i 30 dagar efter första laddning",
     "evidenceTierLabels": {
       "Strong": "Väletablerad vetenskap med flera RCT:er",
