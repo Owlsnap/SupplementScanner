@@ -83,6 +83,11 @@ export default function HealthProfilePage({ onBack, onSignIn }: HealthProfilePag
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [planDetails, setPlanDetails] = useState<{
+    type: 'free' | 'beta' | 'paid';
+    plan?: string;
+    periodEnd?: string;
+  } | null>(null);
 
   useEffect(() => {
     if (!user) { setLoading(false); return; }
@@ -105,6 +110,28 @@ export default function HealthProfilePage({ onBack, onSignIn }: HealthProfilePag
         setLoading(false);
       });
   }, [user]);
+
+  useEffect(() => {
+    if (!user?.id || !user?.email) { setPlanDetails({ type: 'free' }); return; }
+    Promise.all([
+      supabase.from('beta_testers').select('email').eq('email', user.email).maybeSingle(),
+      supabase
+        .from('subscriptions')
+        .select('plan, current_period_end')
+        .eq('user_id', user.id)
+        .eq('status', 'active')
+        .gt('current_period_end', new Date().toISOString())
+        .maybeSingle(),
+    ]).then(([{ data: tester }, { data: sub }]) => {
+      if (sub) {
+        setPlanDetails({ type: 'paid', plan: sub.plan, periodEnd: sub.current_period_end });
+      } else if (tester) {
+        setPlanDetails({ type: 'beta' });
+      } else {
+        setPlanDetails({ type: 'free' });
+      }
+    });
+  }, [user?.id, user?.email]);
 
   const toggleArray = (arr: string[], value: string): string[] =>
     arr.includes(value) ? arr.filter(v => v !== value) : [...arr, value];
@@ -411,6 +438,86 @@ export default function HealthProfilePage({ onBack, onSignIn }: HealthProfilePag
           </div>
         ) : (
           <>
+            {/* Plan */}
+            {planDetails && (
+              <div style={card}>
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: planDetails.type === 'free' ? '0.75rem' : '0.375rem' }}>
+                  <div style={sectionLabel}>Your Plan</div>
+                  <span style={{
+                    background: planDetails.type === 'free' ? 'var(--bg-hover)' : '#00685f',
+                    color: planDetails.type === 'free' ? 'var(--text-secondary)' : '#ffffff',
+                    borderRadius: '999px',
+                    padding: '0.1875rem 0.625rem',
+                    fontSize: '0.6875rem',
+                    fontWeight: 700,
+                    fontFamily: "'Inter', sans-serif",
+                    letterSpacing: '0.4px',
+                    textTransform: 'uppercase' as const,
+                  }}>
+                    {planDetails.type === 'free'
+                      ? 'Free'
+                      : planDetails.type === 'beta'
+                      ? 'Beta Access'
+                      : planDetails.plan === 'yearly'
+                      ? 'Premium · Yearly'
+                      : 'Premium · Monthly'}
+                  </span>
+                </div>
+
+                {planDetails.type === 'free' && (
+                  <>
+                    <p style={{ fontFamily: "'Inter', sans-serif", fontSize: '0.875rem', color: 'var(--text-muted)', margin: '0 0 1rem', lineHeight: 1.6 }}>
+                      Upgrade to unlock full evidence deep dives — dosing, sources, bioavailability, and interactions.
+                    </p>
+                    <button
+                      onClick={() => navigate('/premium')}
+                      style={{
+                        width: '100%', padding: '0.75rem',
+                        background: '#00685f', color: '#ffffff', border: 'none',
+                        borderRadius: '12px', fontFamily: "'Inter', sans-serif",
+                        fontWeight: 700, fontSize: '0.875rem', cursor: 'pointer',
+                        display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem',
+                      }}
+                    >
+                      <Sparkle size={15} weight="fill" />
+                      Upgrade to Premium
+                    </button>
+                  </>
+                )}
+
+                {planDetails.type === 'beta' && (
+                  <p style={{ fontFamily: "'Inter', sans-serif", fontSize: '0.875rem', color: 'var(--text-muted)', margin: 0, lineHeight: 1.6 }}>
+                    You have full access as a beta tester. Thank you for helping shape SupplementScanner.
+                  </p>
+                )}
+
+                {planDetails.type === 'paid' && (
+                  <>
+                    <p style={{ fontFamily: "'Inter', sans-serif", fontSize: '0.875rem', color: 'var(--text-muted)', margin: '0 0 0.5rem', lineHeight: 1.6 }}>
+                      Full access to all deep dives, stack evaluation, and interactions.
+                    </p>
+                    {planDetails.periodEnd && (
+                      <p style={{ fontFamily: "'Inter', sans-serif", fontSize: '0.8125rem', color: 'var(--text-secondary)', margin: '0 0 0.875rem' }}>
+                        Renews {new Date(planDetails.periodEnd).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}
+                      </p>
+                    )}
+                    <button
+                      onClick={() => navigate('/premium')}
+                      style={{
+                        padding: '0.5rem 1rem',
+                        background: 'transparent', color: '#00685f',
+                        border: '1.5px solid #00685f', borderRadius: '28px',
+                        fontFamily: "'Inter', sans-serif", fontWeight: 600, fontSize: '0.8125rem',
+                        cursor: 'pointer',
+                      }}
+                    >
+                      Manage plan
+                    </button>
+                  </>
+                )}
+              </div>
+            )}
+
             {/* My Stack */}
             {myStackSection}
 

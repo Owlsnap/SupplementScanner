@@ -164,7 +164,8 @@ function SupplementInfoRoute({ onShowPaywall }: { onShowPaywall: () => void }) {
 
   const handleBuyDive = async () => {
     try {
-      const res = await fetch('/api/payment/create-checkout', {
+      const apiUrl = (import.meta as any).env?.VITE_API_URL || 'http://localhost:3001';
+      const res = await fetch(`${apiUrl}/api/payment/create-checkout`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ supplementSlug: supp.slug }),
@@ -1219,7 +1220,11 @@ export default function SupplementAnalyzer(): JSX.Element {
 
             <div style={{ display: 'flex', flexDirection: 'column', gap: '0.625rem' }}>
               <button
-                onClick={() => { setShowPaywallModal(false); setShowAuthModal(true); }}
+                onClick={() => {
+                  setShowPaywallModal(false);
+                  if (user) navigate('/premium');
+                  else setShowAuthModal(true);
+                }}
                 style={{
                   background: '#00685f', color: '#ffffff',
                   border: 'none', borderRadius: '28px',
@@ -1230,7 +1235,7 @@ export default function SupplementAnalyzer(): JSX.Element {
                 }}
               >
                 <Sparkle size={15} weight="fill" />
-                {t('premium.signInToUnlock')}
+                {user ? t('supplementInfo.unlockWithPremium') : t('premium.signInToUnlock')}
               </button>
               <button
                 onClick={() => setShowPaywallModal(false)}
