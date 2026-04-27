@@ -895,6 +895,79 @@ export default function SupplementAnalyzer(): JSX.Element {
                   <DeviceMobile size={18} color="var(--text-secondary)" />
                   Mobile App
                 </button>
+                <div style={{ borderTop: '1px solid var(--border)', margin: '0.5rem 0' }} />
+                {user ? (
+                  <>
+                    <button
+                      onClick={() => { navigate('/profile'); setShowMobileMenu(false); }}
+                      style={{
+                        width: '100%', padding: '1rem 1.25rem',
+                        background: 'transparent', border: 'none', color: 'var(--text-primary)',
+                        fontSize: '0.9375rem', fontFamily: "'Inter', sans-serif",
+                        fontWeight: 600, cursor: 'pointer',
+                        display: 'flex', alignItems: 'center', gap: '0.75rem',
+                        textAlign: 'left', transition: 'background 0.15s ease',
+                      }}
+                      onMouseEnter={e => { (e.currentTarget as HTMLButtonElement).style.background = 'var(--bg-hover)'; }}
+                      onMouseLeave={e => { (e.currentTarget as HTMLButtonElement).style.background = 'transparent'; }}
+                    >
+                      <User size={18} color="var(--text-secondary)" />
+                      <div>
+                        <div>{t('nav.myProfile')}</div>
+                        <div style={{ fontSize: '0.75rem', color: 'var(--text-secondary)', fontWeight: 400, marginTop: '0.125rem', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', maxWidth: '140px' }}>{user.email}</div>
+                      </div>
+                    </button>
+                    <button
+                      onClick={() => { signOut(); setShowMobileMenu(false); }}
+                      style={{
+                        width: '100%', padding: '1rem 1.25rem',
+                        background: 'transparent', border: 'none', color: 'var(--text-primary)',
+                        fontSize: '0.9375rem', fontFamily: "'Inter', sans-serif",
+                        fontWeight: 600, cursor: 'pointer',
+                        display: 'flex', alignItems: 'center', gap: '0.75rem',
+                        textAlign: 'left', transition: 'background 0.15s ease',
+                      }}
+                      onMouseEnter={e => { (e.currentTarget as HTMLButtonElement).style.background = 'var(--bg-hover)'; }}
+                      onMouseLeave={e => { (e.currentTarget as HTMLButtonElement).style.background = 'transparent'; }}
+                    >
+                      <SignOut size={18} color="var(--text-secondary)" />
+                      {t('nav.signOut')}
+                    </button>
+                  </>
+                ) : (
+                  <button
+                    onClick={() => { setShowMobileMenu(false); setShowAuthModal(true); }}
+                    style={{
+                      width: '100%', padding: '1rem 1.25rem',
+                      background: 'transparent', border: 'none', color: 'var(--text-primary)',
+                      fontSize: '0.9375rem', fontFamily: "'Inter', sans-serif",
+                      fontWeight: 600, cursor: 'pointer',
+                      display: 'flex', alignItems: 'center', gap: '0.75rem',
+                      textAlign: 'left', transition: 'background 0.15s ease',
+                    }}
+                    onMouseEnter={e => { (e.currentTarget as HTMLButtonElement).style.background = 'var(--bg-hover)'; }}
+                    onMouseLeave={e => { (e.currentTarget as HTMLButtonElement).style.background = 'transparent'; }}
+                  >
+                    <UserCircle size={18} color="var(--text-secondary)" />
+                    {t('nav.signIn')}
+                  </button>
+                )}
+                <button
+                  onClick={() => { toggleDark(); setShowMobileMenu(false); }}
+                  style={{
+                    width: '100%', padding: '1rem 1.25rem',
+                    background: 'transparent', border: 'none', color: 'var(--text-primary)',
+                    fontSize: '0.9375rem', fontFamily: "'Inter', sans-serif",
+                    fontWeight: 600, cursor: 'pointer',
+                    display: 'flex', alignItems: 'center', gap: '0.75rem',
+                    textAlign: 'left', transition: 'background 0.15s ease',
+                  }}
+                  onMouseEnter={e => { (e.currentTarget as HTMLButtonElement).style.background = 'var(--bg-hover)'; }}
+                  onMouseLeave={e => { (e.currentTarget as HTMLButtonElement).style.background = 'transparent'; }}
+                >
+                  {isDark ? <Sun size={18} color="var(--text-secondary)" /> : <Moon size={18} color="var(--text-secondary)" />}
+                  {isDark ? t('tooltips.switchToLight') : t('tooltips.switchToDark')}
+                </button>
               </div>
             )}
           </div>
