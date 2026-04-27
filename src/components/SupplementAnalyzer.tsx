@@ -230,6 +230,13 @@ function PremiumDeepDiveRoute() {
   const navigate = useNavigate();
   const { session, isPremium } = useAuth();
   const [stripeSessionId, setStripeSessionId] = useState<string | null>(() => getSessionIdForSlug(slug ?? ''));
+
+  // If we're landing here from a Stripe redirect, hold off on the canAccess
+  // check until verification completes — otherwise the guard fires immediately
+  // before localStorage is written.
+  const pendingOnMount = new URLSearchParams(window.location.search).get('dive_paid') === '1';
+  const [verifying, setVerifying] = useState(pendingOnMount);
+
   const supp = encyclopediaSupplements.find(s => s.slug === slug);
 
   // Handle redirect back from Stripe after single-dive purchase
@@ -239,7 +246,8 @@ function PremiumDeepDiveRoute() {
     const sessionId = params.get('session_id');
     if (divePaid === '1' && sessionId && slug) {
       window.history.replaceState({}, '', `/encyclopedia/${slug}/premium-deep-dive`);
-      fetch(`/api/payment/verify-session?id=${sessionId}`)
+      const apiUrl = (import.meta as any).env?.VITE_API_URL || 'http://localhost:3001';
+      fetch(`${apiUrl}/api/payment/verify-session?id=${sessionId}`)
         .then(r => r.json())
         .then(data => {
           if (data.paid) {
@@ -247,7 +255,8 @@ function PremiumDeepDiveRoute() {
             setStripeSessionId(sessionId);
           }
         })
-        .catch(() => {});
+        .catch(() => {})
+        .finally(() => setVerifying(false));
     }
   }, [slug]);
 
@@ -255,6 +264,16 @@ function PremiumDeepDiveRoute() {
 
   const authToken = DEV_PREMIUM_BYPASS ? 'dev-bypass' : (session?.access_token ?? '');
   const canAccess = DEV_PREMIUM_BYPASS || isPremium || !!stripeSessionId;
+
+  if (verifying) return (
+    <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'var(--bg-page)' }}>
+      <div style={{ textAlign: 'center' }}>
+        <div style={{ width: '40px', height: '40px', borderRadius: '50%', border: '3px solid var(--border)', borderTopColor: '#00685f', animation: 'spin 1s linear infinite', margin: '0 auto 1rem' }} />
+        <p style={{ fontFamily: "'Inter', sans-serif", color: 'var(--text-secondary)', fontSize: '0.9375rem' }}>Verifying payment…</p>
+      </div>
+      <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
+    </div>
+  );
 
   if (!canAccess) return <Navigate to={`/encyclopedia/${slug}`} replace />;
 
