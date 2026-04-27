@@ -152,7 +152,7 @@ function transformMultiLayerData(multiLayerResponse: MultiLayerResponse) {
 }
 
 /** Route wrapper: /encyclopedia/:slug */
-function SupplementInfoRoute({ onShowPaywall }: { onShowPaywall: () => void }) {
+function SupplementInfoRoute({ onShowPaywall, onBuyError }: { onShowPaywall: () => void; onBuyError: (msg: string) => void }) {
   const { slug } = useParams<{ slug: string }>();
   const navigate = useNavigate();
   const { isPremium } = useAuth();
@@ -171,9 +171,13 @@ function SupplementInfoRoute({ onShowPaywall }: { onShowPaywall: () => void }) {
         body: JSON.stringify({ supplementSlug: supp.slug }),
       });
       const data = await res.json();
-      if (data.url) window.location.href = data.url;
+      if (data.url) {
+        window.location.href = data.url;
+      } else {
+        onBuyError(data.error || 'Checkout failed — please try again');
+      }
     } catch (err) {
-      console.error('Checkout error:', err);
+      onBuyError('Network error — could not reach the payment server');
     }
   };
 
@@ -881,7 +885,7 @@ export default function SupplementAnalyzer(): JSX.Element {
       {/* Page content — routed below fixed navbar */}
       <Routes>
         <Route path="/" element={<EncyclopediaPage onOpenInfo={(slug: string) => navigate(`/encyclopedia/${slug}`)} />} />
-        <Route path="/encyclopedia/:slug" element={<SupplementInfoRoute onShowPaywall={() => setShowPaywallModal(true)} />} />
+        <Route path="/encyclopedia/:slug" element={<SupplementInfoRoute onShowPaywall={() => setShowPaywallModal(true)} onBuyError={(msg) => showToast(msg, 'error')} />} />
         <Route path="/encyclopedia/:slug/deep-dive" element={<DeepDiveRoute />} />
         <Route path="/encyclopedia/:slug/premium-deep-dive" element={<PremiumDeepDiveRoute />} />
         <Route path="/recommendations" element={<RecommendationsPage />} />
