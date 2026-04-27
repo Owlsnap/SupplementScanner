@@ -469,7 +469,6 @@ export default function PremiumDeepDivePage({
             {/* 8 — Interactions [PREMIUM] */}
             <div style={cardStyle}>
               <div style={sectionTitle}>
-                <Warning size={18} color="#d97706" weight="fill" />
                 {t('premiumDeepDive.interactionsTitle')}
               </div>
               <p style={{ fontFamily: "'Inter', sans-serif", fontSize: '0.8125rem', color: 'var(--text-secondary)', margin: '0 0 0.875rem', lineHeight: 1.5 }}>
