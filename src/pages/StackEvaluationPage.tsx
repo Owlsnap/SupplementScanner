@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ArrowLeft, Warning, Lightning, Sparkle, CheckCircle } from '@phosphor-icons/react';
+import { ArrowLeft, Warning, Lightning, Sparkle, CheckCircle, UserCircle } from '@phosphor-icons/react';
 import { useStack } from '../contexts/StackContext';
 import { useAuth } from '../contexts/AuthContext';
 import { encyclopediaSupplements } from '../data/encyclopediaData';
+import AuthModal from '../components/AuthModal';
 
 interface Interaction {
   id: string;
@@ -97,13 +98,14 @@ export default function StackEvaluationPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [bySeverity, setBySeverity] = useState<BySeverity | null>(null);
+  const [showAuthModal, setShowAuthModal] = useState(false);
 
   const stackSupplements = encyclopediaSupplements.filter(s => stack.includes(s.slug));
 
   const apiUrl = (import.meta as any).env?.VITE_API_URL || 'http://localhost:3001';
 
   useEffect(() => {
-    if (stack.length < 2) { setLoading(false); return; }
+    if (stack.length < 2 || !session) { setLoading(false); return; }
 
     fetch(`${apiUrl}/api/premium/evaluate-stack`, {
       method: 'POST',
@@ -204,7 +206,43 @@ export default function StackEvaluationPage() {
           </div>
         )}
 
-        {loading && stack.length >= 2 && (
+        {stack.length >= 2 && !session && (
+          <div style={{
+            textAlign: 'center', padding: '2.5rem 1.5rem',
+            background: 'var(--bg-surface)', borderRadius: '16px',
+            border: '1.5px solid var(--border)',
+          }}>
+            <div style={{
+              width: '48px', height: '48px', borderRadius: '14px',
+              background: '#e6f4f1', display: 'flex', alignItems: 'center',
+              justifyContent: 'center', margin: '0 auto 1rem',
+            }}>
+              <UserCircle size={28} color="#00685f" />
+            </div>
+            <div style={{ fontFamily: "'Manrope', sans-serif", fontWeight: 800, fontSize: '1.0625rem', color: 'var(--text-primary)', marginBottom: '0.5rem' }}>
+              Sign in to evaluate your stack
+            </div>
+            <p style={{ fontFamily: "'Inter', sans-serif", fontSize: '0.875rem', color: 'var(--text-muted)', margin: '0 0 1.5rem', lineHeight: 1.6 }}>
+              Create a free account to check interactions, synergies, and warnings between the supplements in your stack.
+            </p>
+            <button
+              onClick={() => setShowAuthModal(true)}
+              style={{
+                background: '#00685f', color: '#ffffff',
+                border: 'none', borderRadius: '28px',
+                padding: '0.75rem 1.5rem',
+                fontFamily: "'Inter', sans-serif", fontWeight: 600,
+                fontSize: '0.9375rem', cursor: 'pointer',
+                display: 'inline-flex', alignItems: 'center', gap: '0.375rem',
+              }}
+            >
+              <UserCircle size={16} />
+              Sign in / Create account
+            </button>
+          </div>
+        )}
+
+        {loading && stack.length >= 2 && session && (
           <div style={{
             textAlign: 'center', padding: '2.5rem 1rem',
             color: 'var(--text-secondary)', fontFamily: "'Inter', sans-serif",
@@ -218,7 +256,7 @@ export default function StackEvaluationPage() {
           </div>
         )}
 
-        {error && (
+        {error && session && (
           <div style={{
             background: '#fff1f1', border: '1px solid #ffcdd2',
             borderRadius: '12px', padding: '0.875rem 1.125rem',
@@ -228,7 +266,7 @@ export default function StackEvaluationPage() {
           </div>
         )}
 
-        {!loading && !error && bySeverity && (
+        {!loading && !error && bySeverity && session && (
           <>
             {total === 0 ? (
               <div style={{
@@ -270,6 +308,7 @@ export default function StackEvaluationPage() {
         )}
       </div>
       <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
+      {showAuthModal && <AuthModal onClose={() => setShowAuthModal(false)} />}
     </div>
   );
 }

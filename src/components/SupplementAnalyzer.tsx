@@ -15,9 +15,10 @@ function savePaidDive(slug: string, sessionId: string) {
 function getSessionIdForSlug(slug: string): string | null {
   return getPaidDives().find(d => d.slug === slug)?.sessionId ?? null;
 }
-import { DeviceMobile, Robot, LinkSimple, List, Target, Books, Moon, Sun, Sparkle, X, UserCircle, SignOut, User, MagnifyingGlass } from "@phosphor-icons/react";
+import { DeviceMobile, Robot, LinkSimple, List, Target, Books, Moon, Sun, Sparkle, X, UserCircle, SignOut, User, MagnifyingGlass, Stack } from "@phosphor-icons/react";
 import { useDarkMode } from '../contexts/DarkModeContext';
 import { useAuth } from '../contexts/AuthContext';
+import { useStack } from '../contexts/StackContext';
 import { useLanguage } from '../contexts/LanguageContext';
 import AuthModal from './AuthModal';
 import CookieBanner from './CookieBanner';
@@ -293,6 +294,7 @@ function PremiumDeepDiveRoute() {
 export default function SupplementAnalyzer(): JSX.Element {
   const { isDark, toggle: toggleDark } = useDarkMode();
   const { user, signOut } = useAuth();
+  const { stack } = useStack();
   const { t } = useLanguage();
   const [showAuthModal, setShowAuthModal] = useState(false);
   const [showUserMenu, setShowUserMenu] = useState(false);
@@ -603,6 +605,37 @@ export default function SupplementAnalyzer(): JSX.Element {
               <span>{t('nav.goals')}</span>
             </button>
 
+            {stack.length > 0 && (
+              <button
+                onClick={() => { navigate('/stack-evaluation'); setShowMenu(false); }}
+                onMouseEnter={() => setHoveredNav('stack')}
+                onMouseLeave={() => setHoveredNav(null)}
+                style={{
+                  display: 'flex', alignItems: 'center', gap: '0.375rem',
+                  padding: '0.5rem 0.875rem', borderRadius: '28px',
+                  border: location.pathname === '/stack-evaluation' ? 'none' : '1.5px solid var(--border-strong)',
+                  background: location.pathname === '/stack-evaluation' ? '#00685f' : hoveredNav === 'stack' ? 'var(--bg-hover)' : 'transparent',
+                  color: location.pathname === '/stack-evaluation' ? '#ffffff' : 'var(--text-secondary)',
+                  fontFamily: "'Inter', sans-serif", fontWeight: 600,
+                  fontSize: '0.875rem', cursor: 'pointer',
+                  transition: 'all 0.15s ease', whiteSpace: 'nowrap',
+                }}
+              >
+                <Stack size={15} />
+                <span>My Stack</span>
+                <span style={{
+                  background: location.pathname === '/stack-evaluation' ? 'rgba(255,255,255,0.25)' : '#00685f',
+                  color: '#ffffff',
+                  fontSize: '0.625rem', fontWeight: 800,
+                  padding: '0.125rem 0.4375rem', borderRadius: '999px',
+                  fontFamily: "'Inter', sans-serif", lineHeight: 1,
+                  minWidth: '16px', textAlign: 'center',
+                }}>
+                  {stack.length}
+                </span>
+              </button>
+            )}
+
             <button
               onClick={() => { navigate('/premium'); setShowMenu(false); }}
               onMouseEnter={() => setHoveredNav('premium')}
@@ -878,6 +911,35 @@ export default function SupplementAnalyzer(): JSX.Element {
                   <Sparkle size={18} weight="fill" color={location.pathname === '/premium' ? '#00685f' : 'var(--text-secondary)'} />
                   Premium
                 </button>
+                {stack.length > 0 && (
+                  <button
+                    onClick={() => { navigate('/stack-evaluation'); setShowMobileMenu(false); }}
+                    style={{
+                      width: '100%', padding: '1rem 1.25rem',
+                      background: location.pathname === '/stack-evaluation' ? 'var(--primary-light)' : 'transparent',
+                      border: 'none', color: location.pathname === '/stack-evaluation' ? '#00685f' : 'var(--text-primary)',
+                      fontSize: '0.9375rem', fontFamily: "'Inter', sans-serif",
+                      fontWeight: 600, cursor: 'pointer',
+                      display: 'flex', alignItems: 'center', gap: '0.75rem',
+                      textAlign: 'left', transition: 'background 0.15s ease',
+                    }}
+                    onMouseEnter={e => { if (location.pathname !== '/stack-evaluation') (e.currentTarget as HTMLButtonElement).style.background = 'var(--bg-hover)'; }}
+                    onMouseLeave={e => { if (location.pathname !== '/stack-evaluation') (e.currentTarget as HTMLButtonElement).style.background = 'transparent'; }}
+                  >
+                    <Stack size={18} color={location.pathname === '/stack-evaluation' ? '#00685f' : 'var(--text-secondary)'} />
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                      My Stack
+                      <span style={{
+                        background: '#00685f', color: '#ffffff',
+                        fontSize: '0.625rem', fontWeight: 800,
+                        padding: '0.125rem 0.4375rem', borderRadius: '999px',
+                        fontFamily: "'Inter', sans-serif", lineHeight: 1,
+                      }}>
+                        {stack.length}
+                      </span>
+                    </div>
+                  </button>
+                )}
                 <div style={{ borderTop: '1px solid var(--border)', margin: '0.5rem 0' }} />
                 <button
                   onClick={() => { navigate('/app'); setShowMobileMenu(false); }}
