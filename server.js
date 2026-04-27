@@ -1849,7 +1849,7 @@ const stripe = process.env.STRIPE_SECRET_KEY
   ? new Stripe(process.env.STRIPE_SECRET_KEY, { apiVersion: '2024-06-20' })
   : null;
 
-const SITE_URL = process.env.SITE_URL || 'http://localhost:5173';
+const SITE_URL = (process.env.SITE_URL || 'http://localhost:5173').trim();
 
 // POST /api/payment/create-checkout
 // Creates a Stripe Checkout session for a single deep dive purchase.
