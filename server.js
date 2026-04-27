@@ -1846,7 +1846,7 @@ app.post('/api/premium/evaluate-stack', requirePremiumAccess, async (req, res) =
 // ── Stripe / Payment ──────────────────────────────────────────────────────────
 
 const stripe = process.env.STRIPE_SECRET_KEY
-  ? new Stripe(process.env.STRIPE_SECRET_KEY, { apiVersion: '2024-12-18.acacia' })
+  ? new Stripe(process.env.STRIPE_SECRET_KEY, { apiVersion: '2024-06-20' })
   : null;
 
 const SITE_URL = process.env.SITE_URL || 'http://localhost:5173';
@@ -1858,6 +1858,15 @@ app.post('/api/payment/create-checkout', async (req, res) => {
   if (!stripe) return res.status(503).json({ success: false, error: 'Payment not configured' });
 
   const { supplementSlug } = req.body;
+
+  const successUrl = supplementSlug
+    ? `${SITE_URL}/encyclopedia/${supplementSlug}/premium-deep-dive?dive_paid=1&session_id={CHECKOUT_SESSION_ID}`
+    : `${SITE_URL}/premium`;
+  const cancelUrl = supplementSlug
+    ? `${SITE_URL}/encyclopedia/${supplementSlug}`
+    : `${SITE_URL}/premium`;
+
+  console.log('🛒 Creating checkout — slug:', supplementSlug, '| success_url:', successUrl);
 
   try {
     const session = await stripe.checkout.sessions.create({
@@ -1874,19 +1883,15 @@ app.post('/api/payment/create-checkout', async (req, res) => {
         quantity: 1,
       }],
       mode: 'payment',
-      success_url: supplementSlug
-        ? `${SITE_URL}/encyclopedia/${supplementSlug}/premium-deep-dive?dive_paid=1&session_id=%7BCHECKOUT_SESSION_ID%7D`
-        : `${SITE_URL}/premium`,
-      cancel_url: supplementSlug
-        ? `${SITE_URL}/encyclopedia/${supplementSlug}`
-        : `${SITE_URL}/premium`,
+      success_url: successUrl,
+      cancel_url: cancelUrl,
       metadata: { supplementSlug: supplementSlug || '' },
     });
 
     return res.json({ success: true, url: session.url });
   } catch (err) {
-    console.error('💥 Stripe checkout error:', err.message);
-    return res.status(500).json({ success: false, error: err.message });
+    console.error('💥 Stripe checkout error:', err.message, '| param:', err.param, '| raw:', JSON.stringify(err.raw));
+    return res.status(500).json({ success: false, error: err.message, param: err.param });
   }
 });
 
