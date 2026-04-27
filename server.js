@@ -1443,6 +1443,54 @@ const SLUG_TO_NAME = {
   'coq10': 'CoQ10 (Ubiquinol)',
 };
 
+// Slug → typical retail dose (used to ground dosage_gap comparison in the RAG prompt)
+const SLUG_TO_TYPICAL_DOSE = {
+  'creatine-monohydrate': '3–5g daily',
+  'caffeine': '150–400mg pre-workout',
+  'beta-alanine': '3.2–6.4g daily',
+  'citrulline-malate': '6–8g 60 min pre-workout',
+  'betaine-anhydrous': '2.5g twice daily',
+  'hmb': '3g daily (split doses)',
+  'sodium-bicarbonate': '200–300mg per kg bodyweight',
+  'taurine': '1–3g daily',
+  'magnesium-glycinate': '200–400mg elemental Mg before bed',
+  'melatonin': '0.5–3mg 30–60 min before bed',
+  'l-theanine': '100–200mg before bed',
+  'ashwagandha': '300–600mg KSM-66 daily',
+  'glycine': '3g 30–60 min before bed',
+  '5-htp': '50–200mg 30–45 min before bed',
+  'valerian-root': '300–600mg standardized extract 30–60 min before bed',
+  'lions-mane': '500mg–2g fruiting body extract daily',
+  'bacopa-monnieri': '300–450mg standardized extract daily',
+  'alpha-gpc': '300–600mg daily',
+  'rhodiola-rosea': '200–600mg 3% rosavins / 1% salidroside',
+  'panax-ginseng': '200–400mg standardized extract daily',
+  'phosphatidylserine': '100–300mg daily with a meal',
+  'alcar': '500–2000mg daily, preferably morning or pre-workout',
+  'citicoline': '250–500mg daily',
+  'ginkgo-biloba': '120–240mg standardized extract daily (24% flavonoids / 6% terpenes)',
+  'tart-cherry': '480mg extract or 240–480ml juice twice daily',
+  'omega-3': '1–3g EPA+DHA daily with a meal',
+  'collagen-peptides': '10–15g daily, ideally with Vitamin C',
+  'curcumin': '500–1000mg daily with piperine or fat',
+  'glutamine': '5–10g daily (or up to 20g in clinical settings)',
+  'msm': '1.5–3g daily',
+  'vitamin-d3-k2': '2000–5000 IU D3 + 100–200mcg K2 (MK-7) daily',
+  'zinc-bisglycinate': '15–30mg elemental zinc daily',
+  'magnesium-malate': '200–400mg elemental Mg daily',
+  'probiotics': '10–50 billion CFU daily',
+  'vitamin-c': '250–1000mg daily (split doses)',
+  'berberine': '500mg 2–3× daily with meals',
+  'coq10': '100–300mg ubiquinol daily with a meal',
+  'nac': '600–1800mg daily',
+  'spirulina': '1–3g daily (up to 8–10g in more therapeutic protocols)',
+  'nmn': '250–500mg daily, morning',
+  'quercetin': '500–1000mg daily with a meal and Vitamin C',
+  'vitamin-b12': '500–1000mcg daily (sublingual for fastest absorption)',
+  'resveratrol': '100–500mg daily with a meal',
+  'selenium': '100–200mcg daily',
+};
+
 const DEEP_DIVE_TOOL = {
   name: 'generate_supplement_deep_dive',
   description: 'Generate a comprehensive, science-based deep-dive encyclopedia entry for a supplement.',
@@ -1705,6 +1753,7 @@ app.post('/api/premium/deep-dive/:slug', requirePremiumAccess, async (req, res) 
     }).join('\n\n---\n\n');
 
     const userQuery = question || `What does the clinical evidence say about ${name}? Cover efficacy, dosage, and any important caveats.`;
+    const typicalDose = SLUG_TO_TYPICAL_DOSE[slug] || null;
 
     const systemPrompt = `You are a precise clinical nutrition analyst. Answer using ONLY the provided study snippets. Do not use any outside knowledge.
 
@@ -1712,9 +1761,13 @@ Rules:
 - Cite every factual claim with [N] referencing the snippet number.
 - If information is not in the snippets, say "The available studies don't address this."
 - Be exact, not creative. Temperature is 0.
-
+${typicalDose ? `\nKNOWN RETAIL DOSE: The typical retail dose for ${name} is ${typicalDose}.\n` : ''}
 STUDY SNIPPETS:
 ${snippets || 'No studies found for this supplement.'}`;
+
+    const dosageGapInstruction = typicalDose
+      ? `"dosage_gap": "Compare the dose(s) used in the study snippets to the known typical retail dose of ${typicalDose}. One sentence, e.g. 'Studies used Xg/day vs the typical retail dose of ${typicalDose}.' If no specific doses are mentioned in the snippets, return null."`
+      : '"dosage_gap": "One sentence describing the dose range used across these studies, or null if no doses are mentioned in the snippets"';
 
     // 4. Generate grounded structured response (temp=0.0)
     const completion = await openai.chat.completions.create({
@@ -1731,7 +1784,8 @@ Respond with a JSON object with exactly these fields:
 {
   "summary": "Main evidence-based answer with [N] inline citations",
   "the_catch": ["array of study limitations: small samples, industry funding, short duration, animal-only evidence, etc."],
-  "dosage_gap": "One sentence comparing the dose used in the studies vs typical retail dose, or null if not determinable"
+  ${dosageGapInstruction},
+  "interesting_findings": ["2–4 noteworthy findings from the snippets that are NOT covered in the summary above — e.g. unexpected secondary outcomes, surprising subgroup results, counterintuitive mechanistic details, or novel comparisons. Each item is one sentence with a [N] citation. Return an empty array if nothing stands out beyond what is in the summary."]
 }`,
         },
       ],
@@ -1767,6 +1821,7 @@ Respond with a JSON object with exactly these fields:
         summary: parsed.summary || '',
         the_catch: Array.isArray(parsed.the_catch) ? parsed.the_catch : [],
         dosage_gap: parsed.dosage_gap || null,
+        interesting_findings: Array.isArray(parsed.interesting_findings) ? parsed.interesting_findings : [],
         confidence_score: confidenceScore,
         citations,
         studies_found: citations.length,
@@ -1781,7 +1836,7 @@ Respond with a JSON object with exactly these fields:
 
 // GET /api/premium/interactions/:slug
 // Returns all interactions for a supplement (danger + caution + synergy)
-app.get('/api/premium/interactions/:slug', requireAuth, async (req, res) => {
+app.get('/api/premium/interactions/:slug', requirePremiumAccess, async (req, res) => {
   const { slug } = req.params;
   console.log(`💎 GET /api/premium/interactions/${slug} user=${req.user.id}`);
 

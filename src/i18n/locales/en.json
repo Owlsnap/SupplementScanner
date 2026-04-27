@@ -248,7 +248,15 @@
     "searchingStudies": "Searching studies for an answer…",
     "answer": "Answer",
     "sources": "Sources ({{count}})",
-    "disclaimer": "Answers are grounded in retrieved PubMed abstracts and do not constitute medical advice. Always consult a healthcare professional before changing your supplement regimen."
+    "disclaimer": "Answers are grounded in retrieved PubMed abstracts and do not constitute medical advice. Always consult a healthcare professional before changing your supplement regimen.",
+    "interestingFindings": "Interesting Findings",
+    "interestingFindingsIntro": "Notable results from the retrieved studies not covered in the summary above.",
+    "interactionsTitle": "Interactions",
+    "interactionsSubtitle": "Known drug and supplement interactions from published literature.",
+    "dangerLabel": "Danger",
+    "cautionLabel": "Caution",
+    "synergyLabel": "Synergy",
+    "noInteractions": "No documented interactions found for this supplement."
   },
   "recommendations": {
     "pageTitle": "Goals &",
