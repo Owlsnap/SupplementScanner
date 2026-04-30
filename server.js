@@ -50,8 +50,11 @@ const corsOptions = {
 
 // Allow all origins in development (for mobile app on local network)
 if (process.env.NODE_ENV !== 'production') {
+  app.options('*', cors());
   app.use(cors());
 } else {
+  // Explicitly handle OPTIONS preflight before any route matching
+  app.options('*', cors(corsOptions));
   app.use(cors(corsOptions));
 }
 // ── Stripe webhook (raw body required — must be before express.json) ──────────
