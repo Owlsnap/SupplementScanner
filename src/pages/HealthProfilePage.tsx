@@ -87,6 +87,7 @@ export default function HealthProfilePage({ onBack, onSignIn }: HealthProfilePag
     type: 'free' | 'beta' | 'paid';
     plan?: string;
     periodEnd?: string;
+    cancelAtPeriodEnd?: boolean;
   } | null>(null);
   const [portalLoading, setPortalLoading] = useState(false);
 
@@ -118,14 +119,14 @@ export default function HealthProfilePage({ onBack, onSignIn }: HealthProfilePag
       supabase.from('beta_testers').select('email').eq('email', user.email).maybeSingle(),
       supabase
         .from('subscriptions')
-        .select('plan, current_period_end')
+        .select('plan, current_period_end, cancel_at_period_end')
         .eq('user_id', user.id)
         .eq('status', 'active')
         .gt('current_period_end', new Date().toISOString())
         .maybeSingle(),
     ]).then(([{ data: tester }, { data: sub }]) => {
       if (sub) {
-        setPlanDetails({ type: 'paid', plan: sub.plan, periodEnd: sub.current_period_end });
+        setPlanDetails({ type: 'paid', plan: sub.plan, periodEnd: sub.current_period_end, cancelAtPeriodEnd: sub.cancel_at_period_end });
       } else if (tester) {
         setPlanDetails({ type: 'beta' });
       } else {
@@ -498,8 +499,11 @@ export default function HealthProfilePage({ onBack, onSignIn }: HealthProfilePag
                       Full access to all deep dives, stack evaluation, and interactions.
                     </p>
                     {planDetails.periodEnd && (
-                      <p style={{ fontFamily: "'Inter', sans-serif", fontSize: '0.8125rem', color: 'var(--text-secondary)', margin: '0 0 0.875rem' }}>
-                        Renews {new Date(planDetails.periodEnd).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}
+                      <p style={{ fontFamily: "'Inter', sans-serif", fontSize: '0.8125rem', color: planDetails.cancelAtPeriodEnd ? '#b45309' : 'var(--text-secondary)', margin: '0 0 0.875rem' }}>
+                        {planDetails.cancelAtPeriodEnd
+                          ? `Cancelled — access until ${new Date(planDetails.periodEnd).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}`
+                          : `Renews ${new Date(planDetails.periodEnd).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}`
+                        }
                       </p>
                     )}
                     <button

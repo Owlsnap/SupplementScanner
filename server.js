@@ -86,6 +86,7 @@ app.post('/api/payment/webhook', express.raw({ type: 'application/json' }), asyn
             plan: session.metadata.plan || 'monthly',
             status: 'active',
             current_period_end: new Date(sub.current_period_end * 1000).toISOString(),
+            cancel_at_period_end: sub.cancel_at_period_end,
             updated_at: new Date().toISOString(),
           }, { onConflict: 'stripe_subscription_id' });
           console.log(`✅ Subscription created for user ${session.metadata.userId}`);
@@ -99,6 +100,7 @@ app.post('/api/payment/webhook', express.raw({ type: 'application/json' }), asyn
           .update({
             status: isActive ? 'active' : 'inactive',
             current_period_end: new Date(sub.current_period_end * 1000).toISOString(),
+            cancel_at_period_end: sub.cancel_at_period_end,
             updated_at: new Date().toISOString(),
           })
           .eq('stripe_subscription_id', sub.id);

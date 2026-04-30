@@ -326,9 +326,13 @@ create table if not exists public.subscriptions (
   status                   text not null default 'inactive',
   plan                     text,
   current_period_end       timestamptz,
+  cancel_at_period_end     boolean not null default false,
   created_at               timestamptz default now(),
   updated_at               timestamptz default now()
 );
+
+-- Add column to existing table if upgrading from an earlier schema version
+alter table public.subscriptions add column if not exists cancel_at_period_end boolean not null default false;
 
 create index if not exists idx_subscriptions_user_id on public.subscriptions(user_id);
 create index if not exists idx_subscriptions_stripe_sub_id on public.subscriptions(stripe_subscription_id);
