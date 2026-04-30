@@ -50,11 +50,11 @@ const corsOptions = {
 
 // Allow all origins in development (for mobile app on local network)
 if (process.env.NODE_ENV !== 'production') {
-  app.options('*', cors());
+  app.options('*path', cors());
   app.use(cors());
 } else {
   // Explicitly handle OPTIONS preflight before any route matching
-  app.options('*', cors(corsOptions));
+  app.options('*path', cors(corsOptions));
   app.use(cors(corsOptions));
 }
 // ── Stripe webhook (raw body required — must be before express.json) ──────────
@@ -2011,7 +2011,7 @@ const distPath = join(__dirname, 'dist');
 if (existsSync(distPath)) {
   app.use(express.static(distPath));
   // SPA catch-all — serve index.html for any non-API route
-  app.get('*', (req, res) => {
+  app.get('*path', (req, res) => {
     res.sendFile(join(distPath, 'index.html'));
   });
 }
