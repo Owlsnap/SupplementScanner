@@ -6,8 +6,15 @@
 
 SupplementScanner is two products in one repo:
 
-1. **Web app** (`SuppScanner/`) — supplement encyclopedia with AI-generated deep dives on 30+ supplements. This is the primary product. Deployed to Railway.
+1. **Web app** (`SuppScanner/`) — supplement encyclopedia with AI-generated deep dives on 30+ supplements. This is the primary product.
 2. **Mobile app** (`SuppScanner/SuppScannerApp/`) — companion barcode scanner that calls the same backend API. Built with Expo/React Native.
+
+> ⚠️ **Deployment split — read before touching API calls or env vars:**
+> - **Frontend (Vite/React)** → deployed on **Vercel** at `https://www.supplementscanner.io`
+> - **Backend (Express API)** → deployed on **Railway** at `https://supplementscanner-production.up.railway.app`
+> - These are **two separate origins**. All frontend API calls must use `VITE_API_URL` (set in Vercel env vars to the Railway URL) rather than relative `/api/...` paths, otherwise requests go to Vercel (which has no API) and fail.
+> - CORS is configured in `server.js` to allow `supplementscanner.io` → Railway. If you add a new domain, add it to `corsOptions` in `server.js`.
+> - `server.js` also serves the built `dist/` folder via `express.static` — this is intentional as a fallback but the live frontend is Vercel, not Railway's static serving.
 
 **Target market:** Swedish health-conscious consumers.  
 **State:** MVP. Encyclopedia and scan-to-result flow are working in production.
