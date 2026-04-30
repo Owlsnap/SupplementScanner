@@ -1997,6 +1997,22 @@ app.post('/api/payment/create-subscription-checkout', requireAuth, async (req, r
   }
 });
 
+// ── Serve Vite frontend build (must be after all API routes) ──────────────────
+import { fileURLToPath } from 'url';
+import { dirname, join } from 'path';
+import { existsSync } from 'fs';
+
+const __dirname = dirname(fileURLToPath(import.meta.url));
+const distPath = join(__dirname, 'dist');
+
+if (existsSync(distPath)) {
+  app.use(express.static(distPath));
+  // SPA catch-all — serve index.html for any non-API route
+  app.get('*', (req, res) => {
+    res.sendFile(join(distPath, 'index.html'));
+  });
+}
+
 app.listen(PORT, '0.0.0.0', () => {
   console.log(`🚀 AI Extraction API running on http://localhost:${PORT}`);
   console.log(`🌐 Available on network: http://192.168.0.31:${PORT}`);

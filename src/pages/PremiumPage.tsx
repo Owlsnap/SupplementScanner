@@ -123,8 +123,9 @@ export default function PremiumPage({ onBack, onOpenAuthModal }: PremiumPageProp
       return;
     }
     setCheckoutLoading(plan);
+    const apiUrl = (import.meta as any).env?.VITE_API_URL || '';
     try {
-      const res = await fetch('/api/payment/create-subscription-checkout', {
+      const res = await fetch(`${apiUrl}/api/payment/create-subscription-checkout`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
