@@ -84,7 +84,7 @@ const FAQ = [
   },
   {
     q: 'Can I get a refund?',
-    a: 'Within 7 days of purchase, yes. Email us and we will sort it.',
+    a: 'Within 7 days of purchase, yes. Email us at supplementscanner.io@gmail.com and we will sort it.',
   },
 ];
 
