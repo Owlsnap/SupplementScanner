@@ -84,7 +84,7 @@ app.post('/api/payment/webhook', express.raw({ type: 'application/json' }), asyn
             status: 'active',
             current_period_end: new Date(sub.current_period_end * 1000).toISOString(),
             updated_at: new Date().toISOString(),
-          }, { onConflict: 'user_id' });
+          }, { onConflict: 'stripe_subscription_id' });
           console.log(`✅ Subscription created for user ${session.metadata.userId}`);
         }
         break;

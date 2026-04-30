@@ -310,3 +310,61 @@ as $$
   order by embedding <=> query_embedding
   limit match_count;
 $$;
+
+-- ============================================================
+-- 10. Payments: Subscriptions
+-- Written to by the Stripe webhook on checkout.session.completed,
+-- customer.subscription.updated, customer.subscription.deleted,
+-- and invoice.payment_failed events.
+-- ============================================================
+
+create table if not exists public.subscriptions (
+  id                       uuid primary key default gen_random_uuid(),
+  user_id                  uuid not null references auth.users(id) on delete cascade,
+  stripe_customer_id       text,
+  stripe_subscription_id   text unique,
+  status                   text not null default 'inactive',
+  plan                     text,
+  current_period_end       timestamptz,
+  created_at               timestamptz default now(),
+  updated_at               timestamptz default now()
+);
+
+create index if not exists idx_subscriptions_user_id on public.subscriptions(user_id);
+create index if not exists idx_subscriptions_stripe_sub_id on public.subscriptions(stripe_subscription_id);
+
+alter table public.subscriptions enable row level security;
+
+-- Users can read their own row (used by checkPremiumStatus in the browser).
+-- No write policies — service role bypasses RLS, so the webhook can always write.
+-- Without a write policy, authenticated browser clients cannot insert/update/delete.
+drop policy if exists "Users can read own subscription" on public.subscriptions;
+create policy "Users can read own subscription"
+  on public.subscriptions for select
+  using (auth.uid() = user_id);
+
+drop policy if exists "Service role can manage subscriptions" on public.subscriptions;
+-- (intentionally removed — service role bypasses RLS; this policy was allowing any
+--  authenticated user to write directly to the table and grant themselves premium)
+
+-- ============================================================
+-- 11. Payments: Beta Testers
+-- Rows here grant premium access without a Stripe subscription.
+-- Insert email addresses directly in the Supabase SQL editor.
+-- ============================================================
+
+create table if not exists public.beta_testers (
+  email      text primary key,
+  created_at timestamptz default now()
+);
+
+alter table public.beta_testers enable row level security;
+
+-- Each authenticated user can check only their own email row (used by checkPremiumStatus).
+-- No write policies — service role bypasses RLS for all inserts/deletes.
+drop policy if exists "Service role can manage beta testers" on public.beta_testers;
+-- (intentionally removed — same exploit vector as subscriptions)
+drop policy if exists "Authenticated users can check own beta tester status" on public.beta_testers;
+create policy "Authenticated users can check own beta tester status"
+  on public.beta_testers for select
+  using (email = (auth.jwt() ->> 'email'));

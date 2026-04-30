@@ -246,7 +246,6 @@ function PremiumDeepDiveRoute() {
     const divePaid = params.get('dive_paid');
     const sessionId = params.get('session_id');
     if (divePaid === '1' && sessionId && slug) {
-      window.history.replaceState({}, '', `/encyclopedia/${slug}/premium-deep-dive`);
       const apiUrl = (import.meta as any).env?.VITE_API_URL || 'http://localhost:3001';
       fetch(`${apiUrl}/api/payment/verify-session?id=${sessionId}`)
         .then(r => r.json())
@@ -254,9 +253,17 @@ function PremiumDeepDiveRoute() {
           if (data.paid) {
             savePaidDive(slug, sessionId);
             setStripeSessionId(sessionId);
+            // Only clean the URL after confirming payment — preserves session_id
+            // for retry if the tab was closed mid-verify.
+            window.history.replaceState({}, '', `/encyclopedia/${slug}/premium-deep-dive`);
+          } else {
+            // Stripe returned unpaid — clean URL, bounce back so they can retry.
+            window.history.replaceState({}, '', `/encyclopedia/${slug}`);
           }
         })
-        .catch(() => {})
+        .catch(() => {
+          // Network failure — leave URL intact so user can reload and retry.
+        })
         .finally(() => setVerifying(false));
     }
   }, [slug]);
