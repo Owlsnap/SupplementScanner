@@ -88,6 +88,7 @@ export default function HealthProfilePage({ onBack, onSignIn }: HealthProfilePag
     plan?: string;
     periodEnd?: string;
   } | null>(null);
+  const [portalLoading, setPortalLoading] = useState(false);
 
   useEffect(() => {
     if (!user) { setLoading(false); return; }
@@ -502,16 +503,36 @@ export default function HealthProfilePage({ onBack, onSignIn }: HealthProfilePag
                       </p>
                     )}
                     <button
-                      onClick={() => navigate('/premium')}
+                      onClick={async () => {
+                        setPortalLoading(true);
+                        try {
+                          const apiUrl = (import.meta as any).env?.VITE_API_URL || '';
+                          const res = await fetch(`${apiUrl}/api/payment/create-portal-session`, {
+                            method: 'POST',
+                            headers: {
+                              'Content-Type': 'application/json',
+                              'Authorization': `Bearer ${session?.access_token}`,
+                            },
+                          });
+                          const data = await res.json();
+                          if (data.url) window.location.href = data.url;
+                        } catch {
+                          // fall through — button re-enables
+                        } finally {
+                          setPortalLoading(false);
+                        }
+                      }}
+                      disabled={portalLoading}
                       style={{
                         padding: '0.5rem 1rem',
                         background: 'transparent', color: '#00685f',
                         border: '1.5px solid #00685f', borderRadius: '28px',
                         fontFamily: "'Inter', sans-serif", fontWeight: 600, fontSize: '0.8125rem',
-                        cursor: 'pointer',
+                        cursor: portalLoading ? 'not-allowed' : 'pointer',
+                        opacity: portalLoading ? 0.6 : 1,
                       }}
                     >
-                      Manage plan
+                      {portalLoading ? 'Loading…' : 'Manage plan'}
                     </button>
                   </>
                 )}

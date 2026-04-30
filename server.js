@@ -2000,6 +2000,35 @@ app.post('/api/payment/create-subscription-checkout', requireAuth, async (req, r
   }
 });
 
+// POST /api/payment/create-portal-session
+// Returns a Stripe Customer Portal URL so subscribers can manage/cancel.
+app.post('/api/payment/create-portal-session', requireAuth, async (req, res) => {
+  if (!stripe) return res.status(503).json({ success: false, error: 'Payment not configured' });
+
+  try {
+    const db = getSupabaseService();
+    const { data: sub } = await db
+      .from('subscriptions')
+      .select('stripe_customer_id')
+      .eq('user_id', req.user.id)
+      .maybeSingle();
+
+    if (!sub?.stripe_customer_id) {
+      return res.status(404).json({ success: false, error: 'No active subscription found' });
+    }
+
+    const session = await stripe.billingPortal.sessions.create({
+      customer: sub.stripe_customer_id,
+      return_url: `${SITE_URL}/profile`,
+    });
+
+    return res.json({ success: true, url: session.url });
+  } catch (err) {
+    console.error('💥 Portal session error:', err.message);
+    return res.status(500).json({ success: false, error: err.message });
+  }
+});
+
 // ── Serve Vite frontend build (must be after all API routes) ──────────────────
 import { fileURLToPath } from 'url';
 import { dirname, join } from 'path';
