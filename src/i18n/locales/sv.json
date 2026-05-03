@@ -617,6 +617,712 @@
     },
     "qualitySuffix": "Kvalitet"
   },
+  "supplements": {
+    "creatine-monohydrate": {
+      "tagline": "Det mest beforskade styrke- och krafttillskottet på planeten",
+      "primaryUse": "Ökar ATP-regenerering för uthållig kraftutveckling och muskelmassaökning",
+      "overview": "Kreatin är tillskottet med bäst avkastning för styrka och muskelmassa — utan tvekan. Musklerna lagrar det som fosfokreatin, som snabbt återfyller ATP under explosiva ansträngningar som tunga set och sprintar. Det drar också in vatten i muskelcellerna, bidrar till ett fylligare utseende och accelererar proteinsyntesen över tid.",
+      "typicalDose": "3–5 g dagligen",
+      "bestFor": ["Styrke- och kraftidrottare", "Muskelmassemål", "Högintensiv intervallträning"],
+      "keyFacts": [
+        "Backat av 500+ humanstudier — det mest studerade tillskottet inom idrottsvetenskap",
+        "Laddningsfas (20 g/dag i 5 dagar) är valfri — dagliga 3 g ger samma resultat på ~4 veckor",
+        "Säkert för långtidsbruk; inga bevis på njurskada hos friska individer"
+      ],
+      "commonMistakes": [
+        "Att göra en laddningsfas — det är valfritt, inte nödvändigt. Dagliga 3–5 g når mättnad på ~4 veckor utan de mag-tarmbesvär som en laddningsfas orsakar.",
+        "Att sluta under en viktnedgångsfas — kreatin är lika värdefullt i ett kaloriunderskott där det hjälper till att bevara styrka och muskelmassa."
+      ]
+    },
+    "caffeine": {
+      "tagline": "Bevisat ergogent medel för uthållighet, styrka och fokus",
+      "primaryUse": "Stimulerar CNS via adenosinreceptorantagonism och minskar upplevd ansträngning",
+      "overview": "Koffein blockerar adenosin — det ämne som ansamlas i hjärnan och gör dig trött. Resultatet är minskad upplevd ansträngning: tunga pass känns lättare. Det förbättrar tillförlitligt både uthållighetsprestanda och styrka, vilket gör det till ett av de mest validerade ergogena medlen inom idrottsvetenskap.",
+      "typicalDose": "150–400 mg före träning",
+      "bestFor": ["Uthållighetsidrottare", "Styrketräningspass", "Morgonträning"],
+      "keyFacts": [
+        "Tolerans byggs upp inom 1–2 veckor; att cykla av återställer känsligheten",
+        "Vattenfritt koffein absorberas snabbare än kaffe för mer förutsägbar timing",
+        "Halveringstid ~5 timmar — undvik doser inom 6 timmar före sömn"
+      ],
+      "commonMistakes": [
+        "Att ta det för sent — med ~5 timmars halveringstid kan en dos kl. 15 fortfarande vara aktiv kl. 23 och avsevärt försämra sömnkvaliteten även om du somnar bra.",
+        "Att använda det kontinuerligt — tolerans byggs upp snabbt. Att cykla av 1–2 dagar per vecka (eller en vecka per månad) håller känsligheten hög och effekten potent."
+      ]
+    },
+    "beta-alanine": {
+      "tagline": "Buffra muskelsyra för att träna hårdare längre",
+      "primaryUse": "Höjer muskelkarnosinhalterna och försenar utmattning vid 60–240-sekundersansträngningar",
+      "overview": "Beta-alanin fungerar inte i realtid — det bygger upp karnosin i musklerna under veckor. Karnosin fungerar som en pH-buffert och suger upp den syra som ansamlas under intensiva ansträngningar och fördröjer den brännande känslan som tvingar dig att stanna. Det är mest effektivt för ihållande ansträngningar i 1–4-minutersintervallet som rodd, cykelintervaller eller kampsportsronder.",
+      "typicalDose": "3,2–6,4 g dagligen",
+      "bestFor": ["Rodd, simning och cykling", "Kampsporter", "Alla ansträngningar som varar 1–4 minuter"],
+      "keyFacts": [
+        "\"Stickningskänslan\" (parestesi) är ofarlig och försvinner med regelbunden användning",
+        "Tar 4–6 veckor att meningsfullt höja muskelkarnosinhalterna",
+        "Dela upp i 2×1,6 g för att minska stickningsintensiteten"
+      ],
+      "commonMistakes": [
+        "Att förvänta sig en akut preträningseffekt — beta-alanin kräver 4–6 veckors daglig användning för att bygga meningsfulla karnosinhalter; enstaka doser gör ingenting.",
+        "Att hoppa över det på icke-träningsdagar — konsekvent daglig användning är det som bygger karnosinreserven, inte bara doser före träning."
+      ]
+    },
+    "citrulline-malate": {
+      "tagline": "Kväveoxidprekursor för pump och uthållighet",
+      "primaryUse": "Ökar argininets biotillgänglighet, förstärker NO-produktionen och minskar trötthet",
+      "overview": "Citrullin omvandlas till arginin i njurarna och kringgår den leveranedbrytning som gör argintillskott ineffektiva. Mer arginin innebär mer kväveoxid, vilket vidgar blodkärlen för bättre syre- och näringstillförsel — den pump du känner under träning. Det hjälper också till att återvinna ammoniak, en trötthetsbiproduk, vilket minskar nästa dags träningsvärk.",
+      "typicalDose": "6–8 g 60 min före träning",
+      "bestFor": ["Hypertrofi / \"pump\"-träning", "Uthållighet och set med höga reps", "Stackas med kreatin"],
+      "keyFacts": [
+        "Mer effektivt än L-Arginin direkt — kringgår leverans första-passagemetabolism",
+        "2:1 malatförhållande är den bäst studerade formen; rent L-citrullin är också effektivt",
+        "Minskar muskelvärksuppskattningar med ~40 % i flera studier"
+      ],
+      "commonMistakes": [
+        "Att använda L-Arginin istället — det bryts ned av levern innan det når cirkulationen, vilket gör citrullin 2–3× mer effektivt för att höja kväveoxidnivåerna.",
+        "Att underdosera — de flesta studier som visar fördelar använde 6–8 g, men många preträningsblandningar innehåller bara 2–3 g citrullin."
+      ]
+    },
+    "betaine-anhydrous": {
+      "tagline": "Osmolyt som stöder kraftutveckling och kroppssammansättning",
+      "primaryUse": "Fungerar som metyldonator och osmolyt; stöder kreatinsyntes och hydrering",
+      "overview": "Betain finns naturligt i rödbetor, spenat och quinoa. Din kropp använder det som metyldonator för dussintals metaboliska processer, och under träning fungerar det som en osmolyt — hjälper celler att bibehålla hydrering under stress. Resultaten är subtila men ackumuleras under veckor, med kroppssammansättningsförbättringar mest uppenbara efter 6+ veckors konsekvent användning.",
+      "typicalDose": "2,5 g två gånger dagligen",
+      "bestFor": ["Styrkeporter", "Kroppssammansättningsmål", "Högvolymiga träningsblock"],
+      "keyFacts": [
+        "Finns naturligt i rödbetor och spenat — har använts i livsmedelsbearbetning i århundraden",
+        "Metyldonatorfunktionen stöder homocysteinmetabolism och leverhälsa",
+        "Konsekvent användning under 6+ veckor visar förbättringar i kroppssammansättning"
+      ],
+      "commonMistakes": [
+        "Att förvänta sig omedelbara effekter som koffein — betain fungerar genom långsamma metaboliska processer; förskjutningar i kroppssammansättning tar 6+ veckor att visa sig.",
+        "Att ta allt på en gång — att dela upp doser (morgon + före träning) förbättrar cellmättnad och tolerabilitet jämfört med en enda stor dos."
+      ]
+    },
+    "hmb": {
+      "tagline": "Leucinmetabolit för muskelbevarande",
+      "primaryUse": "Minskar muskelnedbrytning, särskilt användbart vid kaloriunderskott",
+      "overview": "HMB är vad din kropp naturligt producerar från leucin — den viktigaste muskelbyggande aminosyran. Det fungerar som ett bromssystem mot muskelnedbrytning, vilket är särskilt värdefullt när kalorier är begränsade eller vid återgång efter träningspaus. Fördelarna är tydligast hos äldre idrottare och under perioder med hög stress där muskelförlust är den primära oro.",
+      "typicalDose": "3 g dagligen (uppdelade doser)",
+      "bestFor": ["Bantnings-/kaloriunderskottsfaser", "Äldre idrottare (35+)", "Träning efter långa pauser"],
+      "keyFacts": [
+        "En metabolit av leucin — kroppen producerar ~0,2–0,4 g naturligt från kostprotein",
+        "Störst nytta ses hos otränade individer eller under perioder med hög muskelstress",
+        "Frisyreform (HMB-FA) absorberas snabbare än kalcium-HMB"
+      ],
+      "commonMistakes": [
+        "Att använda det som primärt muskelbyggande medel — evidens för HMB hos vältränade idrottare med tillräckligt protein är svag. Det lyser mest under kaloriunderskott eller detraining.",
+        "Att använda kalcium-HMB istället för frisyreformen — HMB-FA absorberas avsevärt snabbare och har bättre akuta prestandadata."
+      ]
+    },
+    "sodium-bicarbonate": {
+      "tagline": "Gammeldags syrabuffert för högintensiva ansträngningar",
+      "primaryUse": "Höjer extracellulärt pH, buffrar syra och förbättrar prestanda vid 1–7-minutersansträngningar",
+      "overview": "Vanligt bakpulver fungerar som ett prestationshjälpmedel eftersom det höjer blodets pH och ger dina muskler mer bufferkapacitet för att rensa syra under intensiva ansträngningar. Det har använts av tävlingsidrottare sedan 1930-talet och har solid evidens för tävlingar som varar 1–7 minuter — från 800 m löpning till MMA-ronder. Den största utmaningen är att tolerera det utan mag-tarmbesvär.",
+      "typicalDose": "200–300 mg per kg kroppsvikt",
+      "bestFor": ["Simmare och roddare", "800 m–1500 m-löpare", "MMA och boxning"],
+      "keyFacts": [
+        "Ett av de ursprungliga idrottstillskotten — används av idrottare sedan 1930-talet",
+        "Ta 60–90 min före träning; mag-tarmbesvär är den viktigaste biverkan (använd enterokapslar)",
+        "Laddning under 3–5 dagar kan minska mag-tarmbesvär och bibehålla prestanda"
+      ],
+      "commonMistakes": [
+        "Att ta det på fastande mage — mag-tarmbesvär (illamående, kramper) är det största hindret; ta alltid med en lätt måltid och rikligt med vatten.",
+        "Att ta det för nära tävlingen — tillåt 60–90 minuter för absorption, och överväg en 3–5-dagars inledningsdos för att anpassa tarmen inför tävling."
+      ]
+    },
+    "taurine": {
+      "tagline": "Essentiell aminosyra för hydrering, uthållighet och hjärtfunktion",
+      "primaryUse": "Fungerar som osmolyt som reglerar cellvolym under stress; stöder mitokondriell funktion och minskar träningsinducerad oxidativ skada",
+      "overview": "Taurin är en av de mest förekommande aminosyrorna i muskelvävnad och spelar en strukturell roll i att hålla celler hydrerade under träning. Det fungerar som en osmolyt — drar vatten in i celler för att bibehålla volym under stress — och minskar träningsinducerad oxidativ skada. Det är anledningen till att taurin är ett basämne i varje stor energidryck, även om dess effekt inte är stimulantbaserad. Till skillnad från koffein är taurin lugnande och neuroprotektivt, och motverkar den överstimulering som koffein kan producera.",
+      "typicalDose": "1–3 g dagligen",
+      "bestFor": ["Uthållighetsidrottare", "Preträningsformler utan extra stimulanter", "Hjärtfälsostöd"],
+      "keyFacts": [
+        "Näst mest förekommande aminosyra i muskelvävnad efter glutamin",
+        "Finns i energidrycker inte för stimulering utan för cellulär hydrering och trötthetsskydd — koffeinet ger stimuleringen",
+        "Villkorligt essentiellt under intensiv träning — efterfrågan kan överstiga endogen syntes"
+      ],
+      "commonMistakes": [
+        "Att tro att taurin är ett stimulantmedel för att det finns i energidrycker — det är faktiskt lugnande och neuroprotektivt; stimuleringen kommer från koffein. De tjänar komplementära, inte överlappande, roller.",
+        "Att underdosera — de flesta energidrycker innehåller bara 500–1000 mg. Prestationsfördelar stöds bättre vid 1–3 g per dag."
+      ]
+    },
+    "magnesium-glycinate": {
+      "tagline": "Det förstklassiga avslappningsmineralet — skonsamt och väl absorberat",
+      "primaryUse": "Aktiverar GABA-receptorer och stöder det parasympatiska nervsystemet",
+      "overview": "Magnesium är involverat i över 300 enzymatiska reaktioner, inklusive direkt aktivering av GABA — hjärnans viktigaste lugnande neurotransmittor. De flesta får inte tillräckligt från kosten enbart, och brist visar sig ofta som rastlöshet, muskelkramper och fragmenterad sömn. Glycinat parar magnesium med aminosyran glycin, som i sig har oberoende sömnfrämjande egenskaper.",
+      "typicalDose": "200–400 mg elementärt Mg före sänggåendet",
+      "bestFor": ["Stressrelaterade sömnproblem", "Muskelkramper nattetid", "Personer med lågt magnesium i kosten"],
+      "keyFacts": [
+        "Glysinatkelation gör det till en av de mest biotillgängliga formerna med minimal laxativ effekt",
+        "Upp till 68 % av befolkningen beräknas ha magnesiumbrist",
+        "Tar 4–8 veckor av konsekvent användning för att normalisera bristsymtom"
+      ],
+      "commonMistakes": [
+        "Att använda magnesiumoxid för sömn — det har <10 % absorption och stark laxativ effekt och ger liten faktisk lugnande fördel.",
+        "Att förvänta sig omedelbara resultat — att korrigera en brist tar 4–8 veckor av nattlig användning; bedöm det inte under första veckan."
+      ]
+    },
+    "melatonin": {
+      "tagline": "Reglera din dygnsrytm med precision",
+      "primaryUse": "Signalerar sömnstart genom att binda MT1/MT2-receptorer i suprakiasmatiska kärnan",
+      "overview": "Melatonin är ett hormon som din hjärna naturligt producerar när det blir mörkt — det signalerar till din kropp att det är dags att sova. Att ta tillskott slår inte ut dig som ett sedativum; istället förskjuter det din inre klocka, vilket gör det mest värdefullt vid jetlag, skiftarbete eller försenad sömnfas. Både timing och dos spelar mycket större roll än de flesta inser.",
+      "typicalDose": "0,5–3 mg 30–60 min före sänggåendet",
+      "bestFor": ["Jetlag och skiftarbetare", "Försenad sömnfas", "Anpassning till nya sömnscheman"],
+      "keyFacts": [
+        "Mer är inte bättre — 0,5 mg är lika effektivt som 5 mg för sömnstart hos de flesta vuxna",
+        "Fungerar bäst för cirkadisk fasförskjutning, inte som sedativum",
+        "Ljusexponering (särskilt blått ljus) hämmar naturlig melatoninproduktion med 50 %+"
+      ],
+      "commonMistakes": [
+        "Att ta för hög dos — 0,5 mg är lika effektivt som 5 mg för de flesta och undviker nästa dags dåsighet. Högre doser är inte starkare, bara längre verkande.",
+        "Att använda det som nattligt sedativum vid kroniska sömnproblem — melatonin är en cirkadisk regulator. För pågående sömnproblem, åtgärda sömnhygien och ljusexponering först."
+      ]
+    },
+    "l-theanine": {
+      "tagline": "Lugna sinnet utan sedering",
+      "primaryUse": "Ökar alfa-hjärnvågsaktivitet och främjar avslappnad vakenhet och sömnstart",
+      "overview": "L-Teanin är en aminosyra som är unik för teblad och som främjar alfa-hjärnvågor — det mentala tillståndet förknippat med lugn, ofokuserad medvetenhet. Det är icke-sedativt, så det gör dig inte dåsig under dagen, men det tystar det mentala bruset som kan förhindra sömnstart på natten. Det passar också exceptionellt bra med koffein för att jämna ut nervositet.",
+      "typicalDose": "100–200 mg före sänggåendet",
+      "bestFor": ["Ångestdrivna sömnproblem", "Stackas med koffein för lugnt fokus", "Lätta sovare"],
+      "keyFacts": [
+        "Finns naturligt i grönt te — vanligtvis 20–30 mg per kopp",
+        "Orsakar inte dåsighet; alfa-vågseffekten är icke-sedativt",
+        "200 mg + 100 mg koffein är ett av de mest studerade kognitiva stacken"
+      ],
+      "commonMistakes": [
+        "Att underdosera — grönt te innehåller bara 20–30 mg per kopp. Terapeutiska effekter för sömn eller fokus kräver 100–200 mg från ett tillskott.",
+        "Att förvänta sig en stark sedativeffekt — det är subtilt och lugnande, inte en knockout. De med betydande ångest eller sömnlöshet kan behöva kombinera det med andra metoder."
+      ]
+    },
+    "ashwagandha": {
+      "tagline": "Adaptogen som sänker kortisol och förbättrar sömnkvalitet",
+      "primaryUse": "Minskar kortisol och stressbiomarkörer och förbättrar icke-REM-sömnlängd",
+      "overview": "Ashwagandha är en av de mest välbeforskade adaptogenerna — växter som hjälper din kropp att modulera sin stressrespons. Det sänker direkt kortisol, hormonet som håller ditt nervsystem i alarmberedskap och fragmenterar djupsömn. KSM-66-extraktet använder specifikt rotbaserat material och har den starkaste kliniska valideringen bland ashwagandhaformer.",
+      "typicalDose": "300–600 mg KSM-66 dagligen",
+      "bestFor": ["Högt stressade livsstilar", "Kortisolstörd sömn", "Idrottare i tunga träningsblock"],
+      "keyFacts": [
+        "KSM-66 är ett rotbaserat extrakt med 5 % withanolider — den mest kliniskt testade formen",
+        "Kortisolminskning på ~28 % rapporterad i 8-veckors RCT mot placebo",
+        "Dubbel fördel: förbättrar sömnkvalitet OCH kan blygsamt öka testosteron"
+      ],
+      "commonMistakes": [
+        "Att använda billigt rotpulver istället för ett standardiserat extrakt — aktivt witanolidinnehåll varierar enormt i overifierade pulver; KSM-66 eller Sensoril med angivna procenttal är avgörande.",
+        "Att förvänta sig snabba resultat — kortisolnormalisering är en långsam process. Ge det 4–8 veckor av konsekvent daglig användning innan du utvärderar."
+      ]
+    },
+    "glycine": {
+      "tagline": "Aminosyra som sänker kärnkroppstemperaturen för bättre sömn",
+      "primaryUse": "Underlättar sömn genom att sänka kärnkroppstemperaturen och modulera NMDA-receptorer",
+      "overview": "Glycin är en enkel aminosyra med en förvånansvärt direkt effekt på sömn: den sänker din kärnkroppstemperatur genom att vidga blodkärlen i huden, och nedkylning är en av kroppens viktigaste utlösare för sömnstart. Användare rapporterar konsekvent att de vaknar upp och känner sig mindre trötta nästa morgon — ett tecken på förbättrad sömnarkitektur snarare än bara längre tid i sängen.",
+      "typicalDose": "3 g 30–60 min före sänggåendet",
+      "bestFor": ["Dålig sömnkvalitet utan tydlig orsak", "Skiftarbetare", "Stackas med magnesium"],
+      "keyFacts": [
+        "Sänker kärnkroppstemperaturen med ~0,3°C — en känd utlösare för sömnstart",
+        "Subjektiva rapporter visar avsevärt minskad dagtrötthet nästa morgon",
+        "Extremt säkert i alla doser — används också vid 15–60 g dagligen för metaboliska tillstånd"
+      ],
+      "commonMistakes": [
+        "Att förbise det för att det 'bara är en aminosyra' — temperatursänkningsmekanismen är distinkt från andra sömnmedel och kompletterar magnesium väl.",
+        "Att ta det för tidigt — temperaturminskningen behöver sammanfalla med ditt sömnfönster; ta det 30–60 minuter innan du faktiskt avser att sova."
+      ]
+    },
+    "5-htp": {
+      "tagline": "Serotoninprekursor för humör, sömnstart och aptitreglering",
+      "primaryUse": "Omvandlas direkt till serotonin i hjärnan, som sedan omvandlas till melatonin i tallkottkörteln",
+      "overview": "5-HTP är den omedelbara föregångaren till serotonin och passerar blod-hjärnbarriären mer effektivt än tryptofan, som konkurrerar med andra aminosyror om transport. Resultatet är en mer tillförlitlig ökning av serotonin och nedströms melatonin, vilket gör det användbart för sömnstart, humörstabilisering och aptitreglering. Dess dubbla serotonin/melatoninverkan gör det särskilt effektivt för personer vars sömnproblem drivs av ångest eller lågt humör.",
+      "typicalDose": "50–200 mg 30–45 min före sänggåendet",
+      "bestFor": ["Ångestdrivna sömnproblem", "Humörstöd parallellt med sömn", "Minskning av kolhydratsug"],
+      "keyFacts": [
+        "Mer effektivt för att höja hjärnserotonin än L-tryptofan — kringgår det hastighetsbegränsande omvandlingssteget",
+        "Kombinera inte med SSRI eller MAOI utan medicinsk tillsyn — risk för serotoninssyndrom",
+        "Utvinns från Griffonia simplicifolia-fröextrakt — inga animaliska ingredienser"
+      ],
+      "commonMistakes": [
+        "Att kombinera med SSRI eller MAOI — 5-HTP ökar serotoninaktiviteten, vilket direkt överlappar med antidepressiva mekanismer; denna kombination kan orsaka serotoninssyndrom, ett potentiellt allvarligt tillstånd.",
+        "Att ta det på obestämd tid utan cykling — långvarig kontinuerlig användning kan nedreglera serotoninreceptorer; cykla av var 4–6 vecka eller använd vid behov."
+      ]
+    },
+    "valerian-root": {
+      "tagline": "Traditionell sömnört med GABA-modulerande egenskaper",
+      "primaryUse": "Ökar GABA-tillgängligheten genom att hämma dess nedbrytning och återupptagning, minskar neurologisk excitation",
+      "overview": "Valerianrot är ett av de äldsta sömnmedlen i västerländsk örtmedicin, använt sedan antikens Grekland och Rom. Modern forskning tyder på att det fungerar genom att öka GABA — hjärnans primära hämmande neurotransmittor — genom att hämma dess nedbrytning och återupptagning. Till skillnad från farmaceutiska GABA-modulatorer uppnår det detta skonsamt utan betydande sedativt bakrus hos de flesta användare. Effekterna är ofta mer uttalade efter 2–4 veckors konsekvent användning än på första natten.",
+      "typicalDose": "300–600 mg standardiserat extrakt 30–60 min före sänggåendet",
+      "bestFor": ["Svårighet att somna", "Stressrelaterad sömnstörning", "Stackas med magnesium eller L-teanin"],
+      "keyFacts": [
+        "Valerensyra är den primära aktiva föreningen — sök efter standardiserade extrakt som anger valerensyrainnehåll",
+        "Evidensen är starkare för konsekvent 2–4 veckors användning än för enkeldosakuta effekter",
+        "Passar bra med citronmeliss (Melissa officinalis) — flera kliniska prövningar använder denna kombination"
+      ],
+      "commonMistakes": [
+        "Att bedöma det på första natten — akuta enkeldoseffekter är milda; den starkaste kliniska evidensen gäller regelbunden användning under 2–4 veckor för förbättring av sömnlatens.",
+        "Att anta att mer är bättre — doser över 900 mg kan ha en paradoxal stimulerande effekt hos vissa individer; håll dig till 300–600 mg."
+      ]
+    },
+    "lions-mane": {
+      "tagline": "Nervtillväxtfaktormvampen för hjärnhälsa",
+      "primaryUse": "Stimulerar NGF-syntes och stöder neuroplasticitet och långsiktig kognitiv hälsa",
+      "overview": "Lejonmane är ett av de få tillskotten med evidens för att stimulera nervtillväxtfaktor (NGF) — ett protein som är essentiellt för tillväxt och underhåll av hjärnneuroner. Det är inget stimulantmedel; effekterna byggs upp långsamt och kumulativt under månader och stöder kognitiv hälsa snarare än att leverera akut fokus. Mest värdefullt för långsiktig hjärnunderhåll och ångestrelaterade fokusstörningar.",
+      "typicalDose": "500 mg–2 g fruktkroppsextrakt dagligen",
+      "bestFor": ["Långsiktig hjärnhälsa", "Kognitiv återhämtning", "Ångestrelaterade fokusstörningar"],
+      "keyFacts": [
+        "Hericenoner och erinaciner är de aktiva föreningarna som passerar blod-hjärnbarriären",
+        "Fruktkroppsextrakt är mer potenta än mycelbaserade produkter",
+        "Humanstudier visar lovande resultat för mild kognitiv nedsättning; mer data behövs"
+      ],
+      "commonMistakes": [
+        "Att köpa mycelium-på-spannmål-produkter — dessa innehåller mestadels stärkelsefyllnad, inte aktiva föreningar. Leta efter fruktkroppsextrakt standardiserade till betaglukaninnehåll.",
+        "Att förvänta sig en omedelbar nootropisk effekt — fördelarna ackumuleras under 8+ veckor och handlar om långsiktig hjärnhälsa, inte akut fokus eller energi."
+      ]
+    },
+    "bacopa-monnieri": {
+      "tagline": "Ayurvedisk ört för långsiktig minnekonsolidering",
+      "primaryUse": "Förstärker minnesbildning via antioxidantaktivitet och kolinerg modulering",
+      "overview": "Bacopa är en av de mest studerade örterna för minnet, använd i ayurvedisk medicin i århundraden och validerad i moderna RCT:er. Den förstärker synaptisk kommunikation och skyddar neuroner från oxidativ stress, vilket översätts till snabbare informationsåterkallelse och bättre inlärningsretention över tid. Det gör dig inte skarpare imorgon — men konsekvent under 8–12 veckor är evidensen övertygande.",
+      "typicalDose": "300–450 mg standardiserat extrakt dagligen",
+      "bestFor": ["Studenter och minnesarbete", "Åldersrelaterad kognitiv försämring", "Långsiktiga tillskottsplaner"],
+      "keyFacts": [
+        "Effekterna byggs upp långsamt — de flesta studier visar signifikanta resultat vid 8–12 veckor",
+        "Bacosider A och B är de aktiva komponenterna — sök efter 20–55 % standardisering",
+        "Tas bäst till en fettinnehållande måltid för förbättrad absorption"
+      ],
+      "commonMistakes": [
+        "Att ge upp för tidigt — de flesta studier visar meningsfull kognitiv förbättring bara vid 8–12 veckor; att sluta efter 2–3 veckor innebär att man missar fördelen helt.",
+        "Att ta det på fastande mage — bacosider är fettlösliga; absorption förbättras avsevärt när det tas till en fettinnehållande måltid."
+      ]
+    },
+    "alpha-gpc": {
+      "tagline": "Förstklassig kolinkälla för acetylkolinsyntes",
+      "primaryUse": "Passerar blod-hjärnbarriären för att snabbt höja acetylkolinnivåerna",
+      "overview": "Acetylkolin är neurotransmittorn bakom fokus, inlärning och sinne-muskel-kopplingen under träning. Alpha-GPC är det effektivaste sättet att höja hjärnans acetylkolinnivåer eftersom det passerar blod-hjärnbarriären direkt, till skillnad från de flesta kolinkällor. Idrottare använder det för kognitiv skärpa och dess rapporterade ökning av kraftutveckling och tillväxthormonutsöndring.",
+      "typicalDose": "300–600 mg dagligen",
+      "bestFor": ["Fokuskrävande uppgifter", "Stackas med racetamer", "Idrottare som söker ökad kraftutveckling"],
+      "keyFacts": [
+        "Innehåller ~40 % kolin per vikt — en av de mest biotillgängliga kolinformerna",
+        "Har också oberoende nootropiska effekter utöver kolindonation",
+        "En enstaka 600 mg-dos kan akut öka tillväxthormonutsöndringen"
+      ],
+      "commonMistakes": [
+        "Att ersätta med CDP-kolin utan att justera dosen — CDP-kolin innehåller ~18 % kolin mot Alpha-GPC:s ~40 %; du skulle behöva ungefär dubbla mängden milligram.",
+        "Att stacka med racetamer utan tillräckligt kolin — racetamer ökar acetylkolinefterfrågan; otillräcklig kolintillförsel leder till hjärndimma och huvudvärk."
+      ]
+    },
+    "rhodiola-rosea": {
+      "tagline": "Adaptogen som bekämpar mental trötthet under stress",
+      "primaryUse": "Modulerar stresshormoner och stöder serotoninerg/dopaminerg transmission",
+      "overview": "Rhodiola har en nyckelfördel jämfört med de flesta adaptogener: det fungerar akut. Du kan känna anti-utmattnings- och humörstabiliserande effekter inom timmar efter en dos, inte bara efter veckor av användning. Det modulerar stressresponsaxeln och stöder dopaminerg och serotoninerg transmission — genuint användbart under tentaperioder, veckor med högt tryck eller tunga träningsblock.",
+      "typicalDose": "200–600 mg 3 % rosaviner / 1 % salidrosid",
+      "bestFor": ["Återhämtning från utbrändhet och överträning", "Tentamen-/deadlineperioder", "Morgonenergi utan koffein"],
+      "keyFacts": [
+        "Verkar inom timmar för akuta anti-utmattningseffekter — till skillnad från de flesta adaptogener",
+        "Cyklisk användning (5 dagar på, 2 dagar av) kan förhindra toleransuppbyggnad",
+        "Används av sovjetiska militären och idrottare i decennier innan västerländsk forskning börjat"
+      ],
+      "commonMistakes": [
+        "Att använda det kontinuerligt utan pauser — tolerans verkar byggas upp; cykling 5 dagar på / 2 dagar av (eller ta ledigt på helger) bevarar effektiviteten över tid.",
+        "Att ta det sent på dagen — det är milt aktiverande och kan störa sömnen om det tas på eftermiddagen eller kvällen."
+      ]
+    },
+    "panax-ginseng": {
+      "tagline": "Klassisk adaptogen för energi och kognitiv motståndskraft",
+      "primaryUse": "Ginsenosider modulerar HPA-axeln och flera neurotransmittorsystem",
+      "overview": "Panax-ginseng är en av de mest noggrant beforskade adaptogenerna, med evidens som sträcker sig över kognitiv prestanda, immunfunktion och blodsockerreglering. Dess aktiva ginsenosider modulerar hypotalamus-hypofys-binjure-axeln — i huvudsak kroppens kontrollcentral för stressrespons. Koreansk röd ginseng, gjord genom ångning av roten, har den starkaste kliniska meritlistan av alla former.",
+      "typicalDose": "200–400 mg standardiserat extrakt dagligen",
+      "bestFor": ["Mental uthållighet och ihållande fokus", "Immunmotståndskraft", "Äldre vuxna (kognitiv underhåll)"],
+      "keyFacts": [
+        "Koreansk röd ginseng (ångad och torkad) har den mest kliniska evidensen",
+        "Ginsenosid Rg1 och Rb1 är primära aktiva föreningar",
+        "Kan blygsamt förbättra blodsockerreglering vid konsekvent användning"
+      ],
+      "commonMistakes": [
+        "Att förväxla det med sibirisk (Eleuthero) eller amerikansk ginseng — olika växter med olika aktiva föreningar och användningsområden; inte utbytbara.",
+        "Att använda ostandardiserade produkter — aktivt ginsenosidinnehåll varierar enormt mellan märken. Sök alltid efter en produkt som anger total ginsenosidprocent."
+      ]
+    },
+    "phosphatidylserine": {
+      "tagline": "Cellmembranosfolipid essentiell för hjärnfunktion",
+      "primaryUse": "Stöder neuronal membranfluiditet och dämpar kortisolresponsen vid stress",
+      "overview": "Fosfatidylserin är en fosfolipid som utgör en kritisk komponent i varje hjärncellemembran. När vi åldras sjunker PS-nivåerna och påverkar minne och bearbetningshastighet. Det dämpar också kortisoltoppen efter intensiv träning — vilket gör det unikt värdefullt för idrottare som vill återhämta sig snabbare utan att undertrycka de träningsanpassningar som kortisol också driver.",
+      "typicalDose": "100–300 mg dagligen till en måltid",
+      "bestFor": ["Högt stressade idrottare (förebyggande av överträning)", "Åldersrelaterade minnesproblem", "Stöd för exekutiv funktion"],
+      "keyFacts": [
+        "FDA tillåter ett kvalificerat hälsopåstående för PS och riskminskning för kognitiv försämring",
+        "Sojaderiverat PS (vanligast) har likvärdig biotillgänglighet som solrosderiverat",
+        "Kortisolhämmande effekt är mest uttalad vid 400–800 mg — relevant efter träning"
+      ],
+      "commonMistakes": [
+        "Att hoppa över det på grund av kostnad — lägre doser på 100–200 mg ger fortfarande meningsfulla kortisolhämmande effekter för idrottare till ett mer hanterbart pris.",
+        "Att ta det på fastande mage — PS är fettlösligt och absorption förbättras avsevärt när det tas till en fettinnehållande måltid."
+      ]
+    },
+    "alcar": {
+      "tagline": "Mitokondriell bränsletransportör med en nootropisk fördel",
+      "primaryUse": "Transporterar fettsyror till mitokondrier för energi; acetylgruppen passerar blod-hjärnbarriären för att stöda acetylkolinsyntes",
+      "overview": "ALCAR gör två saker simultant: karnitinmoieteten transporterar långkedjiga fettsyror till mitokondrier för att förbrännas som energi, och acetylgruppen passerar blod-hjärnbarriären och bidrar till acetylkolinsyntes — samma neurotransmittor som Alpha-GPC riktar sig mot. Denna dubbla verkan gör det till ett sällsynt mellanting mellan ett metaboliskt tillskott och ett nootropikum. Evidensen är starkast för åldersrelaterad kognitiv försämring, neuropatisk smärta och trötthet.",
+      "typicalDose": "500–2000 mg dagligen, helst morgon eller före träning",
+      "bestFor": ["Fettmetabolism och energistöd", "Kognitiv skärpa och fokus", "Äldre vuxna med åldersrelaterad energi- och kognitiv försämring"],
+      "keyFacts": [
+        "Bara den acetylerade formen (ALCAR) — inte vanligt L-karnitin — passerar blod-hjärnbarriären för kognitiva effekter",
+        "Bäst dokumenterad klinisk användning är neuropatisk smärta och åldersrelaterad kognitiv försämring",
+        "Karnitinbiosyntes minskar med åldern; rött kött i kosten är den primära matkällan"
+      ],
+      "commonMistakes": [
+        "Att använda vanligt L-karnitin för nootropiska effekter — bara den acetylerade ALCAR-formen passerar blod-hjärnbarriären; vanligt karnitin stannar i periferin och har ingen CNS-aktivitet.",
+        "Att förvänta sig dramatisk fettförlust — den metaboliska fördelen är verklig men blygsam; ALCAR förbättrar fett som bränsle under träning, inte som ett fristående termogent medel."
+      ]
+    },
+    "citicoline": {
+      "tagline": "Förstklassig kolinkälla som också bygger hjärnmembran",
+      "primaryUse": "Donerar kolin för acetylkolinsyntes medan cytidinkomponenten omvandlas till uridin och stöder neuronal membranfosfolipidsyntes",
+      "overview": "Citicolin är ett tvådelat nootropikum: det tillhandahåller kolin för acetylkolinsyntes (som Alpha-GPC) medan dess cytidinkomponent omvandlas till uridin — en förening som stöder neuronal membranreparation och dopaminerg aktivitet. Det innebär att citicolin inte bara ökar acetylkolin utan också stöder det strukturella underhållet av neuroner och kan förbättra humöret via dopaminbanor. Det är godkänt som läkemedel för strokeåterhämtning och kognitiv nedsättning i Europa och Japan.",
+      "typicalDose": "250–500 mg dagligen",
+      "bestFor": ["Fokus och arbetsminne", "Stackas med racetamer", "Kognitiv underhåll hos äldre vuxna"],
+      "keyFacts": [
+        "Tillhandahåller ~18 % kolin per vikt mot Alpha-GPC:s ~40 % — men uridinkomponenten lägger till oberoende neuroplasticitetsfördelar som Alpha-GPC inte erbjuder",
+        "Godkänt som läkemedel för stroke och kognitiva störningar i Europa och Japan",
+        "Kan öka dopaminreceptordensiteten vid långtidsanvändning — relevant för motivation och humör"
+      ],
+      "commonMistakes": [
+        "Att direkt ersätta Alpha-GPC vid samma dos — citicolin innehåller ~18 % kolin mot Alpha-GPC:s ~40 %; du skulle behöva ungefär dubbla mängden milligram för likvärdig kolinoutput, även om uridinfordelen delvis kompenserar.",
+        "Att förvänta sig en akut stimulantliknande effekt — kognitiva förbättringar från citicolin är subtila och kumulativa under veckor, inte omedelbar skärpa."
+      ]
+    },
+    "ginkgo-biloba": {
+      "tagline": "Urgammalt träextrakt för cerebral cirkulation och kognitiv livslängd",
+      "primaryUse": "Ökar cerebralt blodflöde via hämning av blodplättsaktivering och ger neuroprotektiv antioxidantaktivitet",
+      "overview": "Ginkgo biloba är en av de äldsta levande trädarter och ett av de mest köpta tillskotten globalt. Dess löv innehåller flavonoidglykosider och ginkgolider som ökar cerebralt blodflöde och skyddar neuroner från oxidativ skada. Evidensen är starkast för åldersrelaterad kognitiv försämring, där förbättrad cirkulation ger meningsfulla funktionella skillnader. Hos friska yngre vuxna är förbättringar i uppmärksamhetshastighet och bearbetning det mest reproducerbara fyndet.",
+      "typicalDose": "120–240 mg standardiserat extrakt dagligen (24 % flavonoider / 6 % terpener)",
+      "bestFor": ["Åldersrelaterad kognitiv försämring", "Tinnitus och yrsel från cirkulationsproblem", "Perifert cirkulationsstöd"],
+      "keyFacts": [
+        "EGb 761® är det mest kliniskt studerade extraktet — standardiserat till 24 % ginkgoflavonglykosider och 6 % terpenolider",
+        "Hämmar blodplättsaktivering — en mild blodförtunnande effekt; var försiktig med antikoagulantia",
+        "Ett av de mest studerade naturliga föreningarna för demensprevention i europeisk geriatrik"
+      ],
+      "commonMistakes": [
+        "Att använda ostandardiserade ginkgoprodukter — aktiv föreningskoncentration varierar enormt mellan märken; sök alltid efter EGb 761® eller explicit 24 % flavonoider / 6 % terpener på etiketten.",
+        "Att ta det tillsammans med antikoagulantia utan medicinsk rådgivning — ginkgos blodplättshämmande effekt ökar meningsfullt blödningsrisken i kombination med warfarin eller daglig aspirin."
+      ]
+    },
+    "tart-cherry": {
+      "tagline": "Naturligt antiinflammatoriskt medel mot träningsvärk",
+      "primaryUse": "Antocyaniner minskar oxidativ stress och muskelskadesmarkörer efter träning",
+      "overview": "Surkörsbär är exceptionellt rika på antocyaniner — pigmenten bakom deras djupa röda färg som fungerar som potenta antioxidanter. Efter hård träning genomgår dina muskler betydande oxidativ stress; dessa antocyaniner påskyndar rensningsprocessen, minskar träningsvärk och påskyndar styrkehämtningen. Som bonus innehåller surkörsbär också naturligt melatonin för en sömnkvalitetsfördel.",
+      "typicalDose": "480 mg extrakt eller 240–480 ml juice två gånger dagligen",
+      "bestFor": ["Uthållighetsidrottare", "Träning dag efter dag", "Tävlingsvecka / topprestationsförberedelse"],
+      "keyFacts": [
+        "Förbättrar också sömnkvaliteten tack vare naturligt melatonininnehåll",
+        "Mest effektivt när det påbörjas 4–5 dagar före ett högstressevent",
+        "Montmorency-varianten har den högsta antocyaninkoncentrationen"
+      ],
+      "commonMistakes": [
+        "Att börja det morgonen av ett event — de flesta av evidensen använder en 4–7-dagars laddningsperiod före den högstressiga aktiviteten för att mätta vävnader med antocyaniner.",
+        "Att använda sötkörsbärsjuice istället för surt Montmorency — antocyaninkoncentrationen i söta varianter är dramatiskt lägre och troligen otillräcklig för effekten."
+      ]
+    },
+    "omega-3": {
+      "tagline": "Essentiella fettsyror för systemisk inflammationskontroll",
+      "primaryUse": "EPA/DHA minskar prostaglandinmedierad inflammation och stöder ledhälsa",
+      "overview": "EPA och DHA är långkedjiga fettsyror som kroppen inte kan syntetisera effektivt — de måste komma från kost eller tillskott. EPA är den primära drivkraften för antiinflammatorisk aktivitet och konkurrerar direkt med de inflammationsvägar som orsakar ledvärk och träningsvärk. DHA koncentreras i hjärncellemembran och stöder kognitiv funktion. De flesta västerländska kostar är svårt bristfälliga på båda.",
+      "typicalDose": "1–3 g EPA+DHA dagligen till en måltid",
+      "bestFor": ["Ledhälsa och flexibilitet", "Post-träningsinflammation", "Hjärt-kärlhälsa"],
+      "keyFacts": [
+        "EPA driver primärt antiinflammatoriska effekter; DHA stöder hjärnstrukturen",
+        "Triglyceridform (fiskolja) absorberas ~70 % bättre än etylesterform",
+        "Sök efter IFOS eller liknande tredjepartscertifiering för renhet och oxidationsnivåer"
+      ],
+      "commonMistakes": [
+        "Att räkna totala fiskoljemilligram istället för EPA+DHA — en '1000 mg fiskolja'-kapsel innehåller vanligtvis bara 300 mg faktiska omega-3-fettsyror. Kontrollera etiketten.",
+        "Att använda härsken olja — oxiderad fiskolja är proinflammatorisk. Kontrollera efter en frisk lukt (inte fiskig), sök efter IFOS-certifiering och förvara i kylskåp efter öppning."
+      ]
+    },
+    "collagen-peptides": {
+      "tagline": "Strukturprotein för senor, leder och bindväv",
+      "primaryUse": "Tillhandahåller hydroxiprolin och glycinsubstrat för bindvävens kollagensyntes",
+      "overview": "Senor, ligament och brosk är gjorda av kollagen men har dålig blodtillförsel, vilket gör bindvävsskador notoriskt långsamma att läka. Att ta hydrolyserat kollagen 30–60 minuter före träning har visat sig öka kollagensyntes specifikt i senor under det post-träningsfönstret. C-vitamin är ett nödvändigt kofaktor — utan det är syntesprocessen ofullständig.",
+      "typicalDose": "10–15 g dagligen, helst med C-vitamin",
+      "bestFor": ["Sen- och ligamentskador", "Ledvärk hos idrottare", "Hud- och hårhälsa"],
+      "keyFacts": [
+        "Ta 30–60 min före träning för maximal kollagensyntesisstimulering i bindväven",
+        "C-vitamin är ett nödvändigt kofaktor för kollagensyntes — kombinera dem",
+        "Hydrolyserad form (peptider) har avsevärt bättre absorption än gelatin"
+      ],
+      "commonMistakes": [
+        "Att ta det utan C-vitamin — kollagensyntes kräver C-vitamin som kofaktor. Att hoppa över det innebär avsevärt minskad bindvävsfördel.",
+        "Att använda kollagen som allmänt proteintillskott — dess aminosyraprofil saknar tryptofan och är inte optimal för muskeluppbyggnad; dess syfte är specifikt bindväv."
+      ]
+    },
+    "curcumin": {
+      "tagline": "Potent antiinflammatorisk förening från gurkmejrot",
+      "primaryUse": "Hämmar NF-kB-vägen och minskar systemiska inflammatoriska cytokiner",
+      "overview": "Kurkumin är den aktiva föreningen i gurkmeja och fungerar genom att blockera NF-kB — en av kroppens huvudkontakter för inflammation. Den kritiska fördelen är biotillgänglighet: standardkurkumin är nästan helt olösligt och knappt absorberat. Med piperin från svartpeppar hoppar absorptionen med upp till 2000 %. Utan en absorptionsförbättrare tar du i praktiken ett inert pulver.",
+      "typicalDose": "500–1000 mg dagligen med piperin eller fett",
+      "bestFor": ["Kronisk inflammation och ledproblem", "Träningsvärk", "Tarminflammation"],
+      "keyFacts": [
+        "Standardkurkumin har <1 % biotillgänglighet ensamt — piperin ökar absorptionen med ~2000 %",
+        "Nyare former som Meriva® (fytosom), BCM-95® och Longvida® absorberas ännu bättre",
+        "Kurkumin är bara ~3 % av torkad gurkmeja per vikt — tillskott överstiger långt mängder från mat"
+      ],
+      "commonMistakes": [
+        "Att förlita sig på gurkmeja i mat för en terapeutisk effekt — du skulle behöva äta enorma mängder, och det fett och piperin som krävs för absorption är fortfarande inte garanterat.",
+        "Att köpa standardkurkumin utan absorptionsförbättrare — piperin, Meriva® eller BCM-95® är inte valfria; utan dem är biotillgängligheten under 1 %."
+      ]
+    },
+    "glutamine": {
+      "tagline": "Villkorligt essentiell aminosyra för tarm- och immunhälsa",
+      "primaryUse": "Mest förekommande aminosyra; stöder tarmbarriärintegritet och immuncellfunktion",
+      "overview": "Glutamin är den mest förekommande aminosyran i muskelvävnad och den primära bränslekällan för tarmfoderceller och immunlymfocyter. Under intensiv träning, sjukdom eller skada kan kroppens glutaminefterfrågan överstiga dess produktionskapacitet — vilket leder till muskelkatabolism och immunsuppression. Tillskott hjälper till att täppa till detta gap, med starkast evidens för tarmbarriärintegritet.",
+      "typicalDose": "5–10 g dagligen (eller upp till 20 g i kliniska sammanhang)",
+      "bestFor": ["Tarmpermeabilitetsproblem (\"läckande tarm\")", "Intensiv träning och överträningsåterhämtning", "Post-sjukdomsimmunuppbyggnad"],
+      "keyFacts": [
+        "Blir 'villkorligt essentiellt' under hög fysiologisk stress eller skada",
+        "Primär bränsleälla för enterocyter (tarmfoderceller) och immunlymfocyter",
+        "Hög dos-evidens för prestanda är svag; tarm/immunfördelar är bättre stödda"
+      ],
+      "commonMistakes": [
+        "Att förvänta sig muskelbyggande effekter jämförbara med kreatin — evidens för glutamin som förbättrar hypertrofi eller styrka hos välnärda idrottare är svag.",
+        "Att förbise tarmhälsotillämpningen — det starkaste skälet för glutamintillskott är tarmbarriärintegritet ('läckande tarm'), inte muskelprestanda."
+      ]
+    },
+    "msm": {
+      "tagline": "Biotillgängligt svavel för leder, brosk och post-träningsinflammation",
+      "primaryUse": "Tillhandahåller organiskt svavel för kollagen-, brosk- och glutationsyntes; minskar inflammatoriska cytokiner efter träning",
+      "overview": "MSM är en organisk svavelförening som finns naturligt i växter, kött och mejeriprodukter — men tillagning förstör det mesta. Svavel är en strukturell komponent i kollagen, brosk, keratin och glutation, vilket gör MSM till ett användbart substrat för bindvävssreparation och antioxidantförsvar. Klinisk evidens visar att det minskar ledvärk och stelhet vid artros och minskar träningsinducerade muskelskademarkörer.",
+      "typicalDose": "1,5–3 g dagligen",
+      "bestFor": ["Ledvärk och artros", "Träningsvärk", "Bindvävsstöd vid sidan av kollagen"],
+      "keyFacts": [
+        "Svavel från MSM inkorporeras i kollagen och brosk inom 24 timmar — mycket biotillgängligt",
+        "Synergistiskt med glukosamin och kondroitin — de flesta ledformler kombinerar alla tre",
+        "Minskar också allergisymtom genom att hämma IgE-medierad mastcells histaminutsläpp"
+      ],
+      "commonMistakes": [
+        "Att förvänta sig snabb lindring som ett NSAID — MSM fungerar genom att stödja vävnadsstruktur under veckor, inte genom att akut blockera smärta; ge det 4–6 veckor innan du utvärderar effektiviteten.",
+        "Att ta en enda stor daglig dos — att dela upp i två doser (morgon och kväll) förbättrar tolerabiliteten och ger mer konsekvent svaveltillgänglighet i vävnaden under dagen."
+      ]
+    },
+    "vitamin-d3-k2": {
+      "tagline": "Det essentiella solskenparsalade vitaminet för ben- och immunhälsa",
+      "primaryUse": "D3 reglerar kalciumabsorption; K2 dirigerar kalcium till ben snarare än artärer",
+      "overview": "D-vitamin fungerar mer som ett hormon än ett vitamin — det reglerar genuttryck i hundratals vävnader och är essentiellt för immunfunktion, bentäthet och testosteronproduktion. De flesta människor på nordliga breddgrader eller som arbetar inomhus har brist. K2 är den kritiska partnern: D3 ökar kalciumabsorptionen, och K2 säkerställer att kalciumet går till dina ben snarare än att förkalkna dina artärer.",
+      "typicalDose": "2000–5000 IE D3 + 100–200 mcg K2 (MK-7) dagligen",
+      "bestFor": ["Nordbor / låg solexponering", "Bentäthetsminskning", "Immunsystemets baslinjenivå"],
+      "keyFacts": [
+        "Uppskattningsvis 40–50 % av vuxna världen över har brist; brist kopplad till 200+ tillstånd",
+        "K2 förhindrar 'kalciumparadoxen' — D3 ökar kalciumabsorption, K2 säkerställer att det går till ben inte artärer",
+        "Kolekalciferol (D3) höjer blodnivåerna ~3× mer effektivt än ergokalciferol (D2)"
+      ],
+      "commonMistakes": [
+        "Att ta D3 långsiktigt utan K2 — utan K2 kan ökad kalciumabsorption från D3 deponeras i artärer istället för ben. De två fungerar som ett par.",
+        "Att sluta ta tillskott när nivåerna ser 'normala' ut — standardlaboratoriernas referensintervall är ofta satta för lågt. Optimal funktion är vanligtvis vid 40–60 ng/ml, inte bara över bristgränsen."
+      ]
+    },
+    "zinc-bisglycinate": {
+      "tagline": "Essentiellt mineral för immunitet, hormoner och sårläkning",
+      "primaryUse": "Kofaktor i 300+ enzymatiska reaktioner; kritisk för testosteronsyntes och immunfunktion",
+      "overview": "Zink är en kofaktor i över 300 enzymer och spelar en direkt roll i testosteronsyntes, immunaktivering och sårläkning. Idrottare löper särskilt stor risk för utarmning eftersom zink förloras i svett och höga träningsvolymer ökar det metaboliska behovet. Bsiglycinat-kelatformen absorberas dramatiskt mer effektivt än zinkoxid som finns i billiga multivitaminer.",
+      "typicalDose": "15–30 mg elementärt zink dagligen",
+      "bestFor": ["Idrottare (zink förloras i svett)", "Immunstöd under intensiv träning", "Hormoniell hälsa"],
+      "keyFacts": [
+        "Bisglycinatkylat absorberar ~43 % mer effektivt än zinkoxid",
+        "Zink konkurrerar med koppar — höga långtidsdoser (>40 mg) kan behöva kopparbalansering",
+        "Brist är förknippad med minskat testosteron, försämrad sårläkning och ökad sjuklighet"
+      ],
+      "commonMistakes": [
+        "Att förlita sig på zinkoxid från billiga multivitaminer — det har <10 % absorption. Bisglycinate eller pikolinate-former är avsevärt mer effektiva per milligram.",
+        "Att ta höga doser långsiktigt utan att balansera koppar — zink och koppar konkurrerar om absorption; ihållande doser över 40 mg/dag kan gradvis tömma koppret."
+      ]
+    },
+    "magnesium-malate": {
+      "tagline": "Dagtidsmagnesiuform som stöder energiemetabolism",
+      "primaryUse": "Malat deltar i Krebs-cykeln; stöder ATP-produktion och energiutveckling",
+      "overview": "Magnesiummalat är den dagtidsoptimerade magnesiumformen, som parar mineralet med äpplesyra — ett nyckelmellanprodukt i Krebs-cykeln som dina celler använder för att producera ATP. Till skillnad från magnesiumglycinat (som har en lugnande, sömnorienterad effekt) stöder malat cellulär energi utan den sederande komponenten, vilket gör det bättre lämpat för morgon- eller preträningsanvändning.",
+      "typicalDose": "200–400 mg elementärt Mg dagligen",
+      "bestFor": ["Dagtidsenergi och trötthetsreduktion", "Idrottare med hög träningsvolym", "Fibromyalgihantering"],
+      "keyFacts": [
+        "Äppelsyra är ett nyckelmellanprodukt i Krebs-cykeln — denna form stöder cellulär energi, inte bara avslappning",
+        "Mindre sederande än glycinat — bättre taget på morgonen eller före träning",
+        "Används i fibromyalgiforskning där äppelsyra + magnesium visade smärtlindring"
+      ],
+      "commonMistakes": [
+        "Att använda magnesiumglycinat på morgonen och känna sig trög — glycinatets lugnande effekt passar bättre för kvällen. Malat är rätt form för dagtidsenergi.",
+        "Att förväxla total föreningsvikt med elementärt magnesiuminnehåll — etikettens milligram avser hela föreningen, inte bara det aktiva magnesiumet; kontrollera det elementära beloppet."
+      ]
+    },
+    "probiotics": {
+      "tagline": "Tarmikrobiomsstöd för matsmältning och immunitet",
+      "primaryUse": "Återställer hälsosam tarmflorabalans och modulerar tarm-immunaxeln",
+      "overview": "Ditt tarmmikrobiom påverkar långt mer än matsmältning — det modulerar immunfunktion, mental hälsa via tarm-hjärn-axeln och systemisk inflammation. Probiotika introducerar välgörande bakterier för att konkurrera med skadliga stammar och stöda tarmfodret. Flerstammsformler överträffar enstaka stam i de flesta studier eftersom olika stammar koloniserar olika delar av tarmen.",
+      "typicalDose": "10–50 miljarder CFU dagligen",
+      "bestFor": ["Post-antibiotisk mikrobiomsåterhämtning", "IBS / matsmältningsbesvär", "Immununderhåll"],
+      "keyFacts": [
+        "Lactobacillus- och Bifidobacterium-släkterna har den mest kliniska evidensen",
+        "Flerstammsformler visar bättre utfall än enstaka stam i de flesta studier",
+        "Kylda probiotika bibehåller högre livsduglighet — kontrollera utgångsdatum och förvaring"
+      ],
+      "commonMistakes": [
+        "Att lämna kylda probiotika i rumstemperatur — livskraft försämras snabbt utan kylförvaring; kontrollera alltid förvaringsriktlinjer och utgångsdatum före köp.",
+        "Att börja med hög CFU-dos omedelbart — vissa upplever betydande gaser och uppblåsthet. Börja med 5–10 miljarder CFU och öka gradvis under 1–2 veckor."
+      ]
+    },
+    "vitamin-c": {
+      "tagline": "Grundläggande antioxidant och immunsystemets pelare",
+      "primaryUse": "Kofaktor vid kollagensyntes; minskar oxidativ stress och stöder immunfunktion",
+      "overview": "C-vitamin är ett essentiellt kofaktor för kollagensyntes och en frontlinjeantioxidant som neutraliserar fria radikaler som genereras under träning och sjukdom. Kroppen kan inte lagra stora mängder, så konsekvent dagligt intag spelar större roll än enstaka megadosering. Det är också essentiellt att para med kollagenpeptider — utan tillräckligt C-vitamin är kollagensyntes ofullständig oavsett dos.",
+      "typicalDose": "250–1000 mg dagligen (uppdelade doser)",
+      "bestFor": ["Immunsystemets baslinjenivå", "Kollagensyntes (hud, leder)", "Perioder med hög oxidativ stress (sjukdom, intensiv träning)"],
+      "keyFacts": [
+        "Absorptionen mättas vid ~400 mg per dos — dela upp i 2x för bättre upptag",
+        "Förhindrar inte förkylningar men minskar varaktigheten med ~8 % hos vuxna (14 % hos idrottare)",
+        "Buffrade former (natriumaskorbat) är skonsamma mot magen vid höga doser"
+      ],
+      "commonMistakes": [
+        "Att megadosera på en gång — absorptionen platear vid ~400 mg per dos; en enda 1000 mg-dos slösar bort det mesta i urinen. Dela upp i två mindre doser istället.",
+        "Att bara ta det när man är sjuk — C-vitamin förhindrar inte förkylningar men minskar varaktigheten när nivåerna redan upprätthålls genom dagligt intag."
+      ]
+    },
+    "berberine": {
+      "tagline": "Växtalkaloïd med betydande metabola effekter",
+      "primaryUse": "Aktiverar AMPK och förbättrar insulinkänslighet och blodsockerreglering",
+      "overview": "Berberin är en växtalkaloïd som aktiverar AMPK — ofta kallad 'metabolisk masterswitch' — vilket leder till förbättrad insulinkänslighet och lägre blodsocker. Det har en remarkabelt konsekvent meritlista i kliniska studier, med flera metaanalyser som jämför dess blodsockereffekter fördelaktigt med Metformin. Det är en av de mest evidensbaserade naturliga föreningarna för metabolisk hälsa.",
+      "typicalDose": "500 mg 2–3× dagligen till måltider",
+      "bestFor": ["Blodsockerhantering", "Metaboliskt syndrom", "PCOS-relaterad insulinresistens"],
+      "keyFacts": [
+        "Flera metaanalyser visar blodsockersänkningar jämförbara med Metformin",
+        "Dålig biotillgänglighet — dihydroherberin (DHB) absorberar ~5× bättre",
+        "Rekommenderas inte under graviditet; kan interagera med CYP-enzymer"
+      ],
+      "commonMistakes": [
+        "Att använda standardberberin och bli besviken på svaga effekter — dess biotillgänglighet är dålig. Dihydroherberin (DHB) absorberar ~5× mer effektivt.",
+        "Att ta det utan anknytning till måltider — berberins glukoussänkande effekt är mest relevant runt måltidstider; ta 20–30 minuter före ätande för bästa resultat."
+      ]
+    },
+    "coq10": {
+      "tagline": "Mitokondriell elektronbärare för cellulär energi och hjärtfälsohälsa",
+      "primaryUse": "Överför elektroner i mitokondriernas elektrontransportkedja för ATP-produktion",
+      "overview": "CoQ10 är en fettlöslig förening som fungerar som ett elektronpendel i dina mitokondrers energiproduktionskedja. Kroppen syntetiserar det naturligt, men nivåerna toppar vid ungefär 20 års ålder och sjunker stadigt efter 40. Statiner accelererar dramatiskt denna utarmning genom att blockera samma metaboliska väg. Ubikvinol är den aktiva, reducerade formen som kringgår ett omvandlingssteg som blir mindre effektivt med åldern.",
+      "typicalDose": "100–300 mg ubikvinol dagligen till en måltid",
+      "bestFor": ["Statinanvändare (CoQ10 utarmas av statiner)", "Hjärt-kärlhälsostöd", "Åldersrelaterad energiminskning (sjunker efter 40)"],
+      "keyFacts": [
+        "Ubikvinol (reducerad form) absorberar upp till 8× bättre än ubikinon för vuxna över 40",
+        "Statinläkemedel hämmar samma väg som producerar CoQ10 — tillskott rekommenderas allmänt",
+        "Kroppsnivåerna sjunker naturligt med åldern, med start runt 40 år"
+      ],
+      "commonMistakes": [
+        "Att använda ubikinon (standard CoQ10) över 40 års ålder — förmågan att omvandla ubikinon till aktiv ubikvinol minskar med åldern; ubikvinol absorberar direkt och är värt premiet.",
+        "Att ta det utan mat — CoQ10 är fettlösligt och absorption minskar dramatiskt när det tas på fastande mage."
+      ]
+    },
+    "nac": {
+      "tagline": "Föregångare till master-antioxidant och hörnsten för luftvägshälsa",
+      "primaryUse": "Fyller på intracellulärt glutation — kroppens primära endogena antioxidantförsvarssystem",
+      "overview": "NAC är den hastighetsbegränsande föregångaren till glutation — din kropps viktigaste antioxidant, som finns i nästan varje cell. Till skillnad från glutation självt absorberas NAC effektivt och omvandlas intracellullärt vid behov. Det har en remarkabelt bred evidensbas: det är ett godkänt farmaceutiskt antidot för paracetamoloverdos, används kliniskt för KOL och slemutrensning, och har ackumulerande evidens för psykiatriska tillstånd inklusive OCD.",
+      "typicalDose": "600–1800 mg dagligen",
+      "bestFor": ["Oxidativ stress från intensiv träning", "Luftvägshälsa och slemutrensning", "Leverskyddsstöd"],
+      "keyFacts": [
+        "Godkänt farmaceutiskt antidot vid höga doser för paracetamoloverdos — ett av akutmedicinens mest etablerade användningsområden",
+        "Kan minska alkoholbegär — ett av de mer replikerade fynden inom beroendeforskning",
+        "Kronisk användning direkt runt träningspass kan dämpa anpassningssignaler — viss oxidativ stress krävs för träningsrespons"
+      ],
+      "commonMistakes": [
+        "Att ta det före och efter varje träningspass — vissa reaktiva syrearter krävs för träningsanpassningssignalering; kronisk antioxidantdämpning runt träningspass kan minska långsiktiga framsteg.",
+        "Att kombinera med nitroglycerin eller andra vasodilatatoriska läkemedel — NAC potentierar vasodilatation och kan orsaka snabba blodtrycksfall i kombination med dessa läkemedel."
+      ]
+    },
+    "spirulina": {
+      "tagline": "Näringsdensalg med antiinflammatoriska och järnrika egenskaper",
+      "primaryUse": "Tät källa till fullständigt protein, fycocyanin, järn och B-vitaminer med bred antioxidant- och antiinflammatorisk aktivitet",
+      "overview": "Spirulina är en blågrön alg med extraordinär näringsdensitet: upp till 70 % protein per torrvikt med en komplett aminosyraprofil, järn, B-vitaminer och fycocyanin — det blå pigmentet som driver de flesta av dess antiinflammatoriska och antioxidanteffekter. Det är särskilt relevant för växtbaserade idrottare som fyller mikronäringsämnegap, för alla med suboptimal järnstatus och som ett allmänt antiinflammatoriskt tillägg till stacken.",
+      "typicalDose": "1–3 g dagligen (upp till 8–10 g i mer terapeutiska protokoll)",
+      "bestFor": ["Växtbaserade idrottare som behöver protein och järn", "Minskning av allergi- och rinitsymtom", "Allmänt mikronäringsämne- och antioxidantstöd"],
+      "keyFacts": [
+        "Upp till 70 % protein per torrvikt med en komplett aminosyraprofil — en av de mest proteintäta hela livsmedlen",
+        "Fycocyanin, det blågrön pigmentet, är den primära antiinflammatoriska aktiva föreningen",
+        "Rik på järn och B-vitaminer — särskilt värdefullt för veganska och vegetariska idrottare"
+      ],
+      "commonMistakes": [
+        "Att förlita sig på spirulina som en meningsfull proteinkälla — procentandelen är hög men totala gram per dos är låga; du skulle behöva mycket stora dagliga mängder för att ersätta kostprotein.",
+        "Att köpa det billigaste utan källtransparens — spirulina absorberar tungmetaller från förorenat vatten; köp alltid från märken som publicerar tredjepartsprovning för tungmetaller."
+      ]
+    },
+    "nmn": {
+      "tagline": "NAD+-föregångare i frontlinjen av livslängdsvetenskap",
+      "primaryUse": "Omvandlas direkt till NAD+ — ett koenzym essentiellt för energiemetabolism, DNA-reparation och aktivering av sirtuin-livslängdsvägar",
+      "overview": "NAD+ är ett koenzym som minskar med ungefär 50 % mellan 20 och 60 års ålder, en minskning som nu förstås vara en central mekanism för åldrande — vilket försämrar mitokondriell energiproduktion, DNA-reparation och sirtuinaktivitet. NMN omvandlas direkt till NAD+ i celler, vilket gör det till en av de mest effektiva tillskottsrutterna för att återställa nivåer. Humanstudier visar nu mätbara NAD+-ökningar och förbättringar i muskelins insulinkänslighet och artärflexibilitet.",
+      "typicalDose": "250–500 mg dagligen, morgon",
+      "bestFor": ["Livslängdsfokuserade vuxna över 40", "Metabolisk hälsa och insulinkänslighet", "Parning med resveratrol i livslängdsstackar"],
+      "keyFacts": [
+        "NAD+ minskar ~50 % mellan 20 och 60 år — NMN-tillskott höjer mätbart nivåerna i humanstudier",
+        "Paras synergistiskt med resveratrol — NMN höjer NAD+, som är det nödvändiga kofaktorn för SIRT1 som resveratrol aktiverar",
+        "Sublinguala former kan ge bättre biotillgänglighet än vanliga orala kapslar"
+      ],
+      "commonMistakes": [
+        "Att välja NMN baserat på pris enbart — renhet och stabilitet varierar dramatiskt mellan märken; prioritera produkter med tredjepartsprövning eller sublinguala former med publicerade stabilitetsdata.",
+        "Att förvänta sig dramatiska kortfristiga anti-åldringseffekter — aktuella humandata visar meningsfulla biokemiska förändringar men livslängdsberättelsen överträffar klinisk evidens; det är en lovande del av ett bredare protokoll, inte en fristående lösning."
+      ]
+    },
+    "quercetin": {
+      "tagline": "Flavonoidkraftverk för immunitet, inflammation och allergier",
+      "primaryUse": "Hämmar histaminfrisättning från mastceller, undertrycker NF-kB inflammatorisk signalering och fungerar som bredspektrum antioxidant",
+      "overview": "Quercetin är ett av de mest förekommande kostflavonoiderna — finns i lök, äpplen och kapris — men i koncentrationer långt för låga i mat för att producera kliniska effekter. Som tillskott hämmar det histaminfrisättning (vilket gör det relevant för allergier och rinit), undertrycker NF-kB-inflammationsvägen och har antivirala egenskaper under aktiv undersökning. Dess biotillgänglighet är naturligt låg, men parning med C-vitamin eller användning av fytosomleveransformer förlänger avsevärt dess aktivitet.",
+      "typicalDose": "500–1000 mg dagligen till en måltid med C-vitamin",
+      "bestFor": ["Minskning av allergi- och hösnuvasymtom", "Immunmotståndskraft under perioder med hög stress", "Antiinflammatorisk stack vid sidan av omega-3 och kurkumin"],
+      "keyFacts": [
+        "Biotillgängligheten är låg från standard quercetin — fytosomsformer som Quercefit® eller parning med bromelain förbättrar avsevärt absorptionen",
+        "Synergistiskt med C-vitamin — askorbat regenererar oxiderat quercetin och förlänger dess antioxidantaktivitetslängd i kroppen",
+        "Stark in vitro antiviralevidens inklusive SARS-CoV-2-inträdesinhibering — humanstudiedata utvecklas fortfarande"
+      ],
+      "commonMistakes": [
+        "Att ta standard quercetin utan biotillgänglighetsförbättrare — vanligt quercetin har dålig absorption; sök efter fytosomleverans (Quercefit®) eller para med bromelain för att meningsfullt öka vad som når cirkulationen.",
+        "Att inte para det med C-vitamin — askorbat regenererar quercetin efter att det har oxiderats, vilket dramatiskt förlänger dess aktiva livslängd i kroppen och förstärker antioxidanteffekten."
+      ]
+    },
+    "vitamin-b12": {
+      "tagline": "Essentiellt vitamin för nerver, energi och bildning av röda blodkroppar",
+      "primaryUse": "Krävs för myelinsyntese, mognad av röda blodkroppar och metylgruppdonation i enkolsmetabola cykeln",
+      "overview": "Vitamin B12 är essentiellt för nervsystemet, DNA-syntes och energiemetabolism — ändå är det en av de vanligaste bristerna globalt och drabbar upp till 40 % av vuxna över 60 och nästan alla långsiktiga veganer och vegetarianer. Till skillnad från de flesta vattenlösliga vitaminer lagras B12 i levern, så brist kan ta år att utvecklas men också år att fullständigt lösa. Absorption kräver intrinsic factor från magen, som minskar med åldern och med långtidsanvändning av protonpumpshämmare och Metformin.",
+      "typicalDose": "500–1000 mcg dagligen (sublingualt för snabbast absorption)",
+      "bestFor": ["Veganer och vegetarianer (inga kostmässiga B12-källor)", "Vuxna över 50 med minskande intrinsic factor", "Trötthet, hjärndimma och neurologiska symtom"],
+      "keyFacts": [
+        "Finns uteslutande i animaliska produkter — växtbaserade ätare kommer att utveckla brist utan tillskott; det är inte valfritt",
+        "Metylkobalamin är den neurologiskt aktiva koenzymformen — föredras framför cyanokobalamin för nerv- och hjärnapplikationer",
+        "Mycket höga orala doser (1000 mcg+) kringgår intrinsic factor via passiv diffusion — användbart för dem med absorptionsstörningar"
+      ],
+      "commonMistakes": [
+        "Att använda cyanokobalamin när nerv- eller kognitiva symtom är närvarande — cyanokobalamin kräver leveromvandling till aktivt metylkobalamin, vilket är mindre effektivt; välj metylkobalamin direkt för neurologiska tillämpningar.",
+        "Att anta att jästa eller berikade växtlivsmedel ger tillräckligt B12 — mängderna är opålitliga och mycket varierande; tillskott är essentiellt för alla som inte regelbundet äter animaliska produkter."
+      ]
+    },
+    "resveratrol": {
+      "tagline": "Polyfenol i hjärtat av livslängds- och hjärt-kärlsforskning",
+      "primaryUse": "Aktiverar SIRT1 — ett livslängdsassocierat sirtuinenzym — och efterliknar aspekter av kalorirestriktion på cellnivå",
+      "overview": "Resveratrol är föreningen som startade den moderna livslängdstillskottsrörelsen när forskare fann att det aktiverade SIRT1, en gen förknippad med livsförlängande effekter av kalorirestriktion i djurmodeller. Humanstudier har varit mer nyanserade än djurdata antydde, men konsekventa fynd inkluderar förbättrad endotelfunktion, minskade inflammationsmarkörer och bättre insulinkänslighet. Det paras direkt med NMN: resveratrol aktiverar SIRT1, som kräver NAD+ (höjt av NMN) som sitt essentiella kofaktor.",
+      "typicalDose": "100–500 mg dagligen till en måltid",
+      "bestFor": ["Hjärt-kärlhälsa och endotelfunktion", "Livslängdsstackar parat med NMN", "Blodsocker- och insulinkänslighetsstöd"],
+      "keyFacts": [
+        "Ett glas rödvin innehåller bara ~1–2 mg resveratrol — långt under terapeutiska doser som används i forskning",
+        "Trans-resveratrol är den bioaktiva isomeren — cis-formen är biologiskt inaktiv; bekräfta alltid att etiketten anger trans-",
+        "SIRT1-aktivering av resveratrol kräver NAD+ som kofaktor — det är därför NMN + resveratrol är ett av de mest diskuterade livslängdsparen"
+      ],
+      "commonMistakes": [
+        "Att anta att rödvin ger hälsofördelar genom resveratrol — ett glas levererar ~1–2 mg medan studier använder 100–500 mg. Måttlig vins kardiovaskulära associationer tillskrivs helt andra faktorer.",
+        "Att köpa produkter som inte specificerar trans-resveratrol — cis-isomeren är inaktiv. Denna distinktion bör vara explicit på etiketten, och många budgetprodukter utelämnar det."
+      ]
+    },
+    "selenium": {
+      "tagline": "Essentiellt spårmineral för sköldkörtelomvandling och antioxidantenzymer",
+      "primaryUse": "Aktiv plats för över 25 selenoproteiner inklusive glutationperoxidas och jodtyronindeiodaser som omvandlar T4 till aktivt T3",
+      "overview": "Selen är ett spårmineral med oproportionerlig biologisk betydelse: det är den aktiva platsen för över 25 selenoproteiner, inklusive glutationperoxidasenzymerna som utgör kroppens primära cellulära antioxidantförsvar, och deiodinasenzymerna som omvandlar inaktivt sköldkörtelhormon T4 till aktivt T3. Lågt selen försämrar direkt både antioxidantkapacitet och sköldkörtelfunktion. Skandinaviska jordar är märkbart selenfattiga, vilket gör tillskott särskilt relevant för användare i denna region.",
+      "typicalDose": "100–200 mcg dagligen",
+      "bestFor": ["Sköldkörtelhälsa och T4-till-T3-hormonkonvertering", "Immunfunktion och antioxidantstöd", "Skandinaviska och nordeuropeiska invånare (selenfattiga jordar)"],
+      "keyFacts": [
+        "Selenometionin (organisk form) absorberas avsevärt bättre än oorganiskt selenit eller selenat — den föredragna tillskottsformen",
+        "Skandinaviska jordar är märkbart selenfattiga — regional mat kan inte tillförlitligt ge tillräckligt intag",
+        "Övre tolerabla intag är 400 mcg/dag — toxicitet (selenos) är verklig; överskrid inte rekommenderade doser"
+      ],
+      "commonMistakes": [
+        "Att överstiga 200 mcg dagligen utan att övervaka serumselennivåer — selen har ett av de smalare terapeutiska fönstren bland mineraler; toxicitet orsakar håravfall, nagelskörhet och neurologiska symtom.",
+        "Att använda oorganiska former (selenit eller selenat) — selenometionin har avsevärt högre biotillgänglighet och vävnadsretention och är den form som används i majoriteten av positiva kliniska studier."
+      ]
+    }
+  },
   "healthProfileOptions": {
     "goals": {
       "buildMuscle": "Bygg muskler",
