@@ -120,7 +120,7 @@ export default function SupplementInfoPage({
                 color: '#ffffff', fontFamily: "'Inter', sans-serif",
                 border: '1px solid rgba(255,255,255,0.2)',
               }}>
-                {category}
+                {t(`encyclopedia.categories.${category}`)}
               </span>
             </div>
             <button
@@ -151,7 +151,7 @@ export default function SupplementInfoPage({
             fontFamily: "'Inter', sans-serif", fontSize: '1rem',
             color: 'rgba(255,255,255,0.85)', margin: '0 auto', lineHeight: 1.6, maxWidth: '540px',
           }}>
-            {tagline}
+            {t(tagline)}
           </p>
         </div>
       </div>
@@ -171,7 +171,7 @@ export default function SupplementInfoPage({
               {t('supplementInfo.typicalDose')}
             </div>
             <div style={{ fontFamily: "'Manrope', sans-serif", fontWeight: 800, fontSize: '1rem', color: 'var(--text-primary)', letterSpacing: '-0.2px' }}>
-              {typicalDose}
+              {t(typicalDose)}
             </div>
           </div>
           <div style={{
@@ -191,7 +191,7 @@ export default function SupplementInfoPage({
                 borderRadius: '999px', padding: '0.1875rem 0.625rem',
                 fontSize: '0.75rem', fontWeight: 700, fontFamily: "'Inter', sans-serif", whiteSpace: 'nowrap',
               }}>
-                {evidenceTier}
+                {t(`encyclopedia.evidenceTiers.${evidenceTier}`)}
               </span>
             </div>
             <div style={{ fontFamily: "'Inter', sans-serif", fontSize: '0.75rem', color: 'var(--text-secondary)', marginTop: '0.375rem', lineHeight: 1.4 }}>
@@ -210,7 +210,7 @@ export default function SupplementInfoPage({
             {t('supplementInfo.overview')}
           </div>
           <p style={{ fontFamily: "'Inter', sans-serif", fontSize: '0.9375rem', color: 'var(--text-primary)', lineHeight: 1.75, margin: 0 }}>
-            {overview}
+            {t(overview)}
           </p>
         </div>
 
@@ -225,7 +225,7 @@ export default function SupplementInfoPage({
             {t('supplementInfo.howItWorks')}
           </div>
           <p style={{ fontFamily: "'Inter', sans-serif", fontSize: '0.9375rem', color: 'var(--text-primary)', lineHeight: 1.7, margin: 0 }}>
-            {primaryUse}
+            {t(primaryUse)}
           </p>
         </div>
 
@@ -248,7 +248,7 @@ export default function SupplementInfoPage({
                   <div style={{ width: '6px', height: '6px', borderRadius: '50%', background: cat.bg }} />
                 </div>
                 <p style={{ fontFamily: "'Inter', sans-serif", fontSize: '0.875rem', color: 'var(--text-muted)', lineHeight: 1.6, margin: 0 }}>
-                  {fact}
+                  {t(fact)}
                 </p>
               </div>
             ))}
@@ -273,7 +273,7 @@ export default function SupplementInfoPage({
                 fontSize: '0.8125rem', fontWeight: 600,
                 fontFamily: "'Inter', sans-serif",
               }}>
-                {item}
+                {t(item)}
               </span>
             ))}
           </div>
@@ -303,7 +303,7 @@ export default function SupplementInfoPage({
                   <div style={{ width: '6px', height: '6px', borderRadius: '50%', background: 'var(--card-warning-heading, #92400e)' }} />
                 </div>
                 <p style={{ fontFamily: "'Inter', sans-serif", fontSize: '0.875rem', color: 'var(--text-muted)', lineHeight: 1.6, margin: 0 }}>
-                  {mistake}
+                  {t(mistake)}
                 </p>
               </div>
             ))}
@@ -344,7 +344,7 @@ export default function SupplementInfoPage({
               fontWeight: 700, color: '#ffffff', border: '1px solid rgba(255,255,255,0.25)',
               fontFamily: "'Inter', sans-serif",
             }}>
-              Premium
+              {t('premium.badge')}
             </span>
           </div>
 

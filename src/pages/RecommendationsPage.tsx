@@ -133,7 +133,7 @@ export default function RecommendationsPage(): JSX.Element {
         fontFamily: "'Inter', sans-serif",
         display: 'inline-block',
       }}>
-        PRIORITY {String(index + 1).padStart(2, '0')}
+        {t('recommendations.priorityLabel', { num: String(index + 1).padStart(2, '0') })}
       </span>
     );
   }
@@ -194,7 +194,7 @@ export default function RecommendationsPage(): JSX.Element {
             textTransform: 'uppercase', letterSpacing: '0.06em',
             color: isDark ? 'rgba(226,237,234,0.35)' : 'var(--text-secondary)',
           }}>
-            {supp.typicalDose}
+            {t(supp.typicalDose)}
           </span>
           <ArrowRight
             size={20} color="#00685f"
@@ -302,7 +302,7 @@ export default function RecommendationsPage(): JSX.Element {
                       fontFamily: "'Manrope', sans-serif",
                       textTransform: 'uppercase', letterSpacing: '0.06em',
                     }}>
-                      {p1.evidenceTier} {t('recommendations.evidenceSuffix')}
+                      {t(`encyclopedia.evidenceTiers.${p1.evidenceTier}`)}
                     </span>
                   </div>
 
@@ -332,7 +332,7 @@ export default function RecommendationsPage(): JSX.Element {
                       fontSize: '0.8125rem', textTransform: 'uppercase', letterSpacing: '0.05em',
                     }}>
                       <Clock size={16} weight="fill" />
-                      {p1.typicalDose}
+                      {t(p1.typicalDose)}
                     </div>
                     <div style={{ width: '1px', height: '14px', background: cardBorder }} />
                     <div style={{

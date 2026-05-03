@@ -58,7 +58,7 @@ export default function EncyclopediaPage({ onOpenInfo }: EncyclopediaPageProps) 
   const filtered = encyclopediaSupplements.filter(s => {
     const matchesCategory = activeCategory === 'All' || s.category === activeCategory;
     const q = searchQuery.toLowerCase();
-    const matchesSearch = !q || (s.name + s.tagline + s.primaryUse + s.category).toLowerCase().includes(q);
+    const matchesSearch = !q || (s.name + t(s.tagline) + t(s.primaryUse) + s.category).toLowerCase().includes(q);
     return matchesCategory && matchesSearch;
   });
 
@@ -257,7 +257,7 @@ export default function EncyclopediaPage({ onOpenInfo }: EncyclopediaPageProps) 
                         fontSize: '1.125rem', color: 'var(--text-primary)',
                         margin: 0, letterSpacing: '-0.3px',
                       }}>
-                        {cat}
+                        {t(`encyclopedia.categories.${cat}`)}
                       </h2>
                       <p style={{ fontFamily: "'Inter', sans-serif", fontSize: '0.8125rem', color: 'var(--text-secondary)', margin: 0 }}>
                         {t('encyclopedia.supplementCount', { count: items.length })}
@@ -354,7 +354,7 @@ function CardGrid({ items, hoveredCard, setHoveredCard, onOpenInfo, inStack, onT
                   fontSize: '0.6875rem', fontWeight: 600,
                   fontFamily: "'Inter', sans-serif",
                 }}>
-                  {supp.evidenceTier}
+                  {t(`encyclopedia.evidenceTiers.${supp.evidenceTier}`)}
                 </span>
               </div>
             </div>
@@ -372,7 +372,7 @@ function CardGrid({ items, hoveredCard, setHoveredCard, onOpenInfo, inStack, onT
                 fontFamily: "'Inter', sans-serif", fontSize: '0.8125rem',
                 color: 'var(--text-secondary)', lineHeight: 1.55, marginBottom: '0.875rem',
               }}>
-                {supp.tagline}
+                {t(supp.tagline)}
               </div>
 
               {/* CTA row */}
