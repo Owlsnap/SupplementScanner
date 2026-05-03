@@ -24,55 +24,55 @@ const GOALS: GoalDef[] = [
     key: 'sleep', label: 'Better Sleep', Icon: Moon,
     intro: 'Good sleep is the foundation of every other health goal. Before stacking supplements, address the basics: consistent wake time, a dark cool room, and no screens 30 minutes before bed.',
     supplements: [
-      { slug: 'magnesium-glycinate', why: 'Relaxes muscles and supports GABA — the calm-down neurotransmitter — for deeper, less interrupted sleep. The highest-impact foundational sleep supplement.' },
-      { slug: 'l-theanine',         why: 'Promotes relaxing alpha brain waves without sedation, quieting mental chatter without morning grogginess.' },
-      { slug: 'ashwagandha',        why: 'Chronically lowers cortisol over weeks of use — most useful when a racing mind or daily stress is the primary sleep disruptor.' },
-      { slug: 'glycine',            why: 'Lowers core body temperature and improves sleep architecture — research-backed for improving sleep quality and morning freshness.' },
-      { slug: 'melatonin',          why: 'Resets the circadian rhythm. Most effective for jet lag or shift work; less so for garden-variety insomnia. Start at 0.5mg.' },
+      { slug: 'magnesium-glycinate', why: 'recommendations.why.sleep.magnesium-glycinate' },
+      { slug: 'l-theanine',         why: 'recommendations.why.sleep.l-theanine' },
+      { slug: 'ashwagandha',        why: 'recommendations.why.sleep.ashwagandha' },
+      { slug: 'glycine',            why: 'recommendations.why.sleep.glycine' },
+      { slug: 'melatonin',          why: 'recommendations.why.sleep.melatonin' },
     ],
   },
   {
     key: 'muscle', label: 'Build Muscle', Icon: Barbell,
     intro: 'Supplements accelerate gains — but only on a foundation of adequate protein (1.6–2.2 g/kg), progressive overload, and 7–9 h sleep. Get those right first.',
     supplements: [
-      { slug: 'creatine-monohydrate', why: 'The single best return-on-investment supplement for strength. Refuels ATP during explosive sets and accelerates protein synthesis over time.' },
-      { slug: 'caffeine',             why: 'Reduces perceived effort so you train harder and longer — directly increasing total training volume, the key driver of hypertrophy.' },
-      { slug: 'citrulline-malate',    why: 'Increases blood flow and reduces ammonia buildup, improving endurance in high-rep sets and cutting next-day soreness by up to 40%.' },
-      { slug: 'beta-alanine',         why: 'Builds carnosine over weeks to buffer muscle acid in sustained high-rep efforts — lets you squeeze more reps at the edge of failure.' },
-      { slug: 'hmb',                  why: 'Reduces muscle protein breakdown during a caloric deficit or detraining. Most useful for beginners and those cutting aggressively.' },
+      { slug: 'creatine-monohydrate', why: 'recommendations.why.muscle.creatine-monohydrate' },
+      { slug: 'caffeine',             why: 'recommendations.why.muscle.caffeine' },
+      { slug: 'citrulline-malate',    why: 'recommendations.why.muscle.citrulline-malate' },
+      { slug: 'beta-alanine',         why: 'recommendations.why.muscle.beta-alanine' },
+      { slug: 'hmb',                  why: 'recommendations.why.muscle.hmb' },
     ],
   },
   {
     key: 'health', label: 'General Health', Icon: Leaf,
     intro: 'A short, evidence-led list covers most nutritional gaps from a modern diet. Whole foods come first — but these fill in what diet alone commonly misses, especially at northern latitudes.',
     supplements: [
-      { slug: 'vitamin-d3-k2',   why: 'The most common deficiency in northern climates. D3 supports immunity, mood, and bone density; K2 steers calcium to bones, not arteries.' },
-      { slug: 'omega-3',         why: 'EPA and DHA reduce systemic inflammation and support heart, brain, and joint health. Most people eating a Western diet are chronically deficient.' },
-      { slug: 'magnesium-glycinate', why: 'Involved in 300+ enzymatic reactions. Most adults fall short through diet alone, affecting sleep, energy, and muscle function.' },
-      { slug: 'probiotics',      why: 'Restores gut microbiome diversity, supporting immunity, digestion, and mood via the gut–brain axis.' },
-      { slug: 'zinc-bisglycinate', why: 'Critical for testosterone synthesis, immune response, and wound healing — commonly depleted in athletes who sweat heavily.' },
+      { slug: 'vitamin-d3-k2',      why: 'recommendations.why.health.vitamin-d3-k2' },
+      { slug: 'omega-3',            why: 'recommendations.why.health.omega-3' },
+      { slug: 'magnesium-glycinate', why: 'recommendations.why.health.magnesium-glycinate' },
+      { slug: 'probiotics',         why: 'recommendations.why.health.probiotics' },
+      { slug: 'zinc-bisglycinate',  why: 'recommendations.why.health.zinc-bisglycinate' },
     ],
   },
   {
     key: 'energy', label: 'Energy & Focus', Icon: Lightning,
     intro: 'Low energy is almost always a lifestyle problem first — poor sleep, chronic stress, or nutrient deficiency. Fix those root causes before adding stimulants.',
     supplements: [
-      { slug: 'caffeine',       why: 'Blocks adenosine to reduce fatigue and sharpen focus — the most evidence-backed acute cognitive enhancer available.' },
-      { slug: 'rhodiola-rosea', why: 'An adaptogen that blunts the physiological stress response, reducing burnout-type fatigue without any stimulant effect.' },
-      { slug: 'alpha-gpc',      why: 'Raises acetylcholine — the learning neurotransmitter — improving working memory, focus, and reaction time within hours.' },
-      { slug: 'panax-ginseng',  why: 'Combines mild anti-fatigue effects with cognitive support. Most effective for sustained mental performance under stress.' },
-      { slug: 'coq10',          why: 'Directly fuels mitochondrial ATP production. Most valuable if you are over 40 or on statins, which deplete CoQ10 levels significantly.' },
+      { slug: 'caffeine',       why: 'recommendations.why.energy.caffeine' },
+      { slug: 'rhodiola-rosea', why: 'recommendations.why.energy.rhodiola-rosea' },
+      { slug: 'alpha-gpc',      why: 'recommendations.why.energy.alpha-gpc' },
+      { slug: 'panax-ginseng',  why: 'recommendations.why.energy.panax-ginseng' },
+      { slug: 'coq10',          why: 'recommendations.why.energy.coq10' },
     ],
   },
   {
     key: 'cognition', label: 'Brain & Cognition', Icon: Brain,
     intro: 'Sleep is the number-one nootropic. Aerobic exercise (BDNF) and stress management come next. Supplements then optimize on top of that foundation.',
     supplements: [
-      { slug: 'lions-mane',         why: 'Stimulates Nerve Growth Factor (NGF) synthesis, supporting neuron repair and potentially new synapse formation with consistent use.' },
-      { slug: 'bacopa-monnieri',    why: 'Builds over 8–12 weeks to meaningfully improve memory consolidation and reduce anxiety — one of the best-studied cognitive enhancers.' },
-      { slug: 'alpha-gpc',          why: 'Rapidly raises acetylcholine, improving attention, learning speed, and reaction time in both healthy adults and older populations.' },
-      { slug: 'phosphatidylserine', why: 'Maintains neuron membrane fluidity. Strongest evidence for slowing age-related cognitive decline and supporting memory recall.' },
-      { slug: 'rhodiola-rosea',     why: 'Reduces mental fatigue under sustained cognitive load — helps maintain accuracy and decision quality under pressure.' },
+      { slug: 'lions-mane',         why: 'recommendations.why.cognition.lions-mane' },
+      { slug: 'bacopa-monnieri',    why: 'recommendations.why.cognition.bacopa-monnieri' },
+      { slug: 'alpha-gpc',          why: 'recommendations.why.cognition.alpha-gpc' },
+      { slug: 'phosphatidylserine', why: 'recommendations.why.cognition.phosphatidylserine' },
+      { slug: 'rhodiola-rosea',     why: 'recommendations.why.cognition.rhodiola-rosea' },
     ],
   },
 ];
@@ -180,7 +180,7 @@ export default function RecommendationsPage(): JSX.Element {
             color: 'var(--text-secondary)', lineHeight: 1.65,
             margin: '0 0 1.5rem',
           }}>
-            {supp.why}
+            {t(supp.why)}
           </p>
         </div>
 
@@ -320,7 +320,7 @@ export default function RecommendationsPage(): JSX.Element {
                     color: 'var(--text-secondary)', lineHeight: 1.7,
                     margin: '0 0 2rem', maxWidth: '420px',
                   }}>
-                    {p1.why}
+                    {t(p1.why)}
                   </p>
 
                   {/* Stats row */}

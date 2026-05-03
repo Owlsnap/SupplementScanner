@@ -267,12 +267,52 @@
     "synergyLabel": "Synergi",
     "noInteractions": "Inga dokumenterade interaktioner hittades för detta tillskott."
   },
+  "languageSwitcher": {
+    "label": "Språk"
+  },
   "recommendations": {
     "pageTitle": "Mål &",
     "pageTitleHighlight": "Rekommendationer",
     "viewDeepDive": "Visa djupdykning",
     "browseFullIndex": "Bläddra i hela indexet",
     "footerNote": "Evidensrangordnat · Uppdaterat 2025 · Klicka på ett kort för djupdykning",
+    "why": {
+      "sleep": {
+        "magnesium-glycinate": "Avslappnar muskler och stöder GABA — den lugnande neurotransmittorn — för djupare, ostörd sömn. Det högst prioriterade grundläggande sömnstillskottet.",
+        "l-theanine": "Främjar avslappnade alfavågor utan sedering och dämpar mentalt brus utan morgontrötthet.",
+        "ashwagandha": "Sänker kortisol kroniskt under veckor av användning — mest användbart när ett rastlöst sinne eller daglig stress är det primära sömnproblemet.",
+        "glycine": "Sänker kärnkroppstemperaturen och förbättrar sömnarkitekturen — forskningsbaserat för bättre sömnkvalitet och morgenfräschör.",
+        "melatonin": "Återställer dygnsrytmen. Mest effektivt vid jetlag eller skiftarbete; mindre effektivt vid vanlig sömnlöshet. Börja med 0,5 mg."
+      },
+      "muscle": {
+        "creatine-monohydrate": "Det enskilt bästa tillskottet för styrka räknat på avkastning per krona. Återtankar ATP under explosiva set och accelererar proteinsyntesen över tid.",
+        "caffeine": "Minskar upplevd ansträngning så att du tränar hårdare och längre — ökar direkt den totala träningsvolymen, den viktigaste faktorn för hypertrofi.",
+        "citrulline-malate": "Ökar blodflödet och minskar ammoniakuppbyggnad, förbättrar uthållighet i set med höga repetitioner och minskar träningsvärk dagen efter med upp till 40 %.",
+        "beta-alanine": "Bygger karnosin under veckor för att buffra muskelsyra vid ihållande ansträngningar — låter dig pressa ut fler reps vid gränsen för utmattning.",
+        "hmb": "Minskar muskelnedbrytning under kaloriunderskott eller detraining. Mest användbart för nybörjare och dem som bantar aggressivt."
+      },
+      "health": {
+        "vitamin-d3-k2": "Den vanligaste bristen i nordliga klimat. D3 stöder immunitet, humör och benmassa; K2 styr kalcium till ben, inte artärer.",
+        "omega-3": "EPA och DHA minskar systemisk inflammation och stöder hjärt-, hjärn- och ledhälsa. De flesta med västerländsk kost har kronisk brist.",
+        "magnesium-glycinate": "Deltar i 300+ enzymatiska reaktioner. De flesta vuxna når inte upp till behovet via kosten, vilket påverkar sömn, energi och muskelfunktion.",
+        "probiotics": "Återställer tarmikrobiomets mångfald och stöder immunitet, matsmältning och humör via tarm–hjärn-axeln.",
+        "zinc-bisglycinate": "Kritisk för testosteronsyntes, immunsvar och sårläkning — vanligtvis utarmat hos idrottare som svettas mycket."
+      },
+      "energy": {
+        "caffeine": "Blockerar adenosin för att minska trötthet och skärpa fokus — den mest evidensbaserade akuta kognitiva förstärkaren som finns.",
+        "rhodiola-rosea": "En adaptogen som dämpar den fysiologiska stressresponsen och minskar utbrändhetstypisk trötthet utan stimulanteffekt.",
+        "alpha-gpc": "Höjer acetylkolin — inlärningstransmittorn — och förbättrar arbetsminne, fokus och reaktionstid inom timmar.",
+        "panax-ginseng": "Kombinerar milda anti-utmattningseffekter med kognitiv support. Mest effektivt för ihållande mental prestation under stress.",
+        "coq10": "Driver mitokondriell ATP-produktion direkt. Mest värdefullt om du är över 40 eller tar statiner, som avsevärt utarmar CoQ10-nivåerna."
+      },
+      "cognition": {
+        "lions-mane": "Stimulerar syntes av nervtillväxtfaktor (NGF) och stöder neuronreparation och potentiellt bildandet av nya synapser vid konsekvent användning.",
+        "bacopa-monnieri": "Byggs upp under 8–12 veckor för att meningsfullt förbättra minneskonsolidering och minska ångest — en av de mest studerade kognitiva förstärkarna.",
+        "alpha-gpc": "Höjer snabbt acetylkolin och förbättrar uppmärksamhet, inlärningshastighet och reaktionstid hos både friska vuxna och äldre.",
+        "phosphatidylserine": "Upprätthåller neuronmembranets fluiditet. Starkaste evidensen för att bromsa åldersrelaterad kognitiv försämring och stötta minnesåterkallelse.",
+        "rhodiola-rosea": "Minskar mental trötthet under ihållande kognitiv belastning — hjälper till att bibehålla noggrannhet och beslutskvalitet under press."
+      }
+    },
     "evidenceSuffix": "Evidens",
     "priorityLabel": "PRIORITET {{num}}",
     "goals": {

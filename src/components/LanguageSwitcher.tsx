@@ -7,7 +7,7 @@ interface LanguageSwitcherProps {
 }
 
 export default function LanguageSwitcher({ onLanguageChange }: LanguageSwitcherProps) {
-  const { language, changeLanguage } = useLanguage();
+  const { language, changeLanguage, t } = useLanguage();
 
   const handleLanguageChange = (lng: string) => {
     changeLanguage(lng);
@@ -35,7 +35,7 @@ export default function LanguageSwitcher({ onLanguageChange }: LanguageSwitcherP
     }}>
       <Globe size={18} color="var(--text-secondary)" />
       <div>
-        <div>Språk / Language</div>
+        <div>{t('languageSwitcher.label')}</div>
         <div style={{
           fontSize: '0.75rem',
           color: 'var(--text-secondary)',

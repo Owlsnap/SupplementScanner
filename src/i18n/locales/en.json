@@ -273,6 +273,43 @@
     "viewDeepDive": "View Deep Dive",
     "browseFullIndex": "Browse Full Index",
     "footerNote": "Evidence-ranked · Updated 2025 · Click any card to deep dive",
+    "why": {
+      "sleep": {
+        "magnesium-glycinate": "Relaxes muscles and supports GABA — the calm-down neurotransmitter — for deeper, less interrupted sleep. The highest-impact foundational sleep supplement.",
+        "l-theanine": "Promotes relaxing alpha brain waves without sedation, quieting mental chatter without morning grogginess.",
+        "ashwagandha": "Chronically lowers cortisol over weeks of use — most useful when a racing mind or daily stress is the primary sleep disruptor.",
+        "glycine": "Lowers core body temperature and improves sleep architecture — research-backed for improving sleep quality and morning freshness.",
+        "melatonin": "Resets the circadian rhythm. Most effective for jet lag or shift work; less so for garden-variety insomnia. Start at 0.5mg."
+      },
+      "muscle": {
+        "creatine-monohydrate": "The single best return-on-investment supplement for strength. Refuels ATP during explosive sets and accelerates protein synthesis over time.",
+        "caffeine": "Reduces perceived effort so you train harder and longer — directly increasing total training volume, the key driver of hypertrophy.",
+        "citrulline-malate": "Increases blood flow and reduces ammonia buildup, improving endurance in high-rep sets and cutting next-day soreness by up to 40%.",
+        "beta-alanine": "Builds carnosine over weeks to buffer muscle acid in sustained high-rep efforts — lets you squeeze more reps at the edge of failure.",
+        "hmb": "Reduces muscle protein breakdown during a caloric deficit or detraining. Most useful for beginners and those cutting aggressively."
+      },
+      "health": {
+        "vitamin-d3-k2": "The most common deficiency in northern climates. D3 supports immunity, mood, and bone density; K2 steers calcium to bones, not arteries.",
+        "omega-3": "EPA and DHA reduce systemic inflammation and support heart, brain, and joint health. Most people eating a Western diet are chronically deficient.",
+        "magnesium-glycinate": "Involved in 300+ enzymatic reactions. Most adults fall short through diet alone, affecting sleep, energy, and muscle function.",
+        "probiotics": "Restores gut microbiome diversity, supporting immunity, digestion, and mood via the gut–brain axis.",
+        "zinc-bisglycinate": "Critical for testosterone synthesis, immune response, and wound healing — commonly depleted in athletes who sweat heavily."
+      },
+      "energy": {
+        "caffeine": "Blocks adenosine to reduce fatigue and sharpen focus — the most evidence-backed acute cognitive enhancer available.",
+        "rhodiola-rosea": "An adaptogen that blunts the physiological stress response, reducing burnout-type fatigue without any stimulant effect.",
+        "alpha-gpc": "Raises acetylcholine — the learning neurotransmitter — improving working memory, focus, and reaction time within hours.",
+        "panax-ginseng": "Combines mild anti-fatigue effects with cognitive support. Most effective for sustained mental performance under stress.",
+        "coq10": "Directly fuels mitochondrial ATP production. Most valuable if you are over 40 or on statins, which deplete CoQ10 levels significantly."
+      },
+      "cognition": {
+        "lions-mane": "Stimulates Nerve Growth Factor (NGF) synthesis, supporting neuron repair and potentially new synapse formation with consistent use.",
+        "bacopa-monnieri": "Builds over 8–12 weeks to meaningfully improve memory consolidation and reduce anxiety — one of the best-studied cognitive enhancers.",
+        "alpha-gpc": "Rapidly raises acetylcholine, improving attention, learning speed, and reaction time in both healthy adults and older populations.",
+        "phosphatidylserine": "Maintains neuron membrane fluidity. Strongest evidence for slowing age-related cognitive decline and supporting memory recall.",
+        "rhodiola-rosea": "Reduces mental fatigue under sustained cognitive load — helps maintain accuracy and decision quality under pressure."
+      }
+    },
     "evidenceSuffix": "Evidence",
     "priorityLabel": "PRIORITY {{num}}",
     "goals": {
@@ -576,6 +613,9 @@
       "individualChoice": "Individual Choice"
     },
     "qualitySuffix": "Quality"
+  },
+  "languageSwitcher": {
+    "label": "Language"
   },
   "supplements": {
     "creatine-monohydrate": {
