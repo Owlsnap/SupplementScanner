@@ -855,7 +855,7 @@ export default function SupplementAnalyzer(): JSX.Element {
                   onMouseLeave={e => { if (!encyclopediaActive) (e.currentTarget as HTMLButtonElement).style.background = 'transparent'; }}
                 >
                   <Books size={18} color={encyclopediaActive ? '#00685f' : 'var(--text-secondary)'} />
-                  Index
+                  {t('nav.index')}
                 </button>
                 <button
                   onClick={() => { navigate('/scanner'); setShowMobileMenu(false); }}
@@ -873,7 +873,7 @@ export default function SupplementAnalyzer(): JSX.Element {
                 >
                   <LinkSimple size={18} color={location.pathname === '/scanner' ? '#00685f' : 'var(--text-secondary)'} />
                   <div>
-                    <div>URL Scanner</div>
+                    <div>{t('nav.urlScanner')}</div>
                     <span style={{
                       background: 'rgba(245,158,11,0.15)', color: '#b45309',
                       border: '1px solid rgba(180,83,9,0.25)',
@@ -881,7 +881,7 @@ export default function SupplementAnalyzer(): JSX.Element {
                       padding: '0.125rem 0.375rem', borderRadius: '999px',
                       letterSpacing: '0.5px', lineHeight: 1, marginTop: '0.125rem',
                       fontFamily: "'Inter', sans-serif", display: 'inline-block'
-                    }}>BETA</span>
+                    }}>{t('common.beta')}</span>
                   </div>
                 </button>
                 <button
@@ -899,7 +899,7 @@ export default function SupplementAnalyzer(): JSX.Element {
                   onMouseLeave={e => { if (location.pathname !== '/recommendations') (e.currentTarget as HTMLButtonElement).style.background = 'transparent'; }}
                 >
                   <Target size={18} color={location.pathname === '/recommendations' ? '#00685f' : 'var(--text-secondary)'} />
-                  Goals
+                  {t('nav.goals')}
                 </button>
                 <button
                   onClick={() => { navigate('/premium'); setShowMobileMenu(false); }}
@@ -916,7 +916,7 @@ export default function SupplementAnalyzer(): JSX.Element {
                   onMouseLeave={e => { if (location.pathname !== '/premium') (e.currentTarget as HTMLButtonElement).style.background = 'transparent'; }}
                 >
                   <Sparkle size={18} weight="fill" color={location.pathname === '/premium' ? '#00685f' : 'var(--text-secondary)'} />
-                  Premium
+                  {t('nav.premium')}
                 </button>
                 {stack.length > 0 && (
                   <button
@@ -935,7 +935,7 @@ export default function SupplementAnalyzer(): JSX.Element {
                   >
                     <Stack size={18} color={location.pathname === '/stack-evaluation' ? '#00685f' : 'var(--text-secondary)'} />
                     <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                      My Stack
+                      {t('nav.myStack')}
                       <span style={{
                         background: '#00685f', color: '#ffffff',
                         fontSize: '0.625rem', fontWeight: 800,
@@ -962,7 +962,7 @@ export default function SupplementAnalyzer(): JSX.Element {
                   onMouseLeave={e => { (e.currentTarget as HTMLButtonElement).style.background = 'transparent'; }}
                 >
                   <DeviceMobile size={18} color="var(--text-secondary)" />
-                  Mobile App
+                  {t('nav.mobileApp')}
                 </button>
                 <div style={{ borderTop: '1px solid var(--border)', margin: '0.5rem 0' }} />
                 {user ? (
@@ -1037,6 +1037,8 @@ export default function SupplementAnalyzer(): JSX.Element {
                   {isDark ? <Sun size={18} color="var(--text-secondary)" /> : <Moon size={18} color="var(--text-secondary)" />}
                   {isDark ? t('tooltips.switchToLight') : t('tooltips.switchToDark')}
                 </button>
+                <div style={{ borderTop: '1px solid var(--border)', margin: '0.5rem 0' }} />
+                <LanguageSwitcher onLanguageChange={() => setShowMobileMenu(false)} />
               </div>
             )}
           </div>

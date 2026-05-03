@@ -45,7 +45,7 @@ const CONDITION_SUGGESTIONS = [
 ];
 
 export default function HealthProfilePage({ onBack, onSignIn }: HealthProfilePageProps) {
-  const { t } = useLanguage();
+  const { t, language } = useLanguage();
   const { user, session, isPremium } = useAuth();
 
   const goalDisplayLabels: Record<string, string> = {
@@ -334,7 +334,7 @@ export default function HealthProfilePage({ onBack, onSignIn }: HealthProfilePag
               letterSpacing: '0.5px',
               fontFamily: "'Inter', sans-serif",
             }}>
-              PREMIUM
+              {t('nav.premium').toUpperCase()}
             </span>
           )}
         </button>
@@ -444,7 +444,7 @@ export default function HealthProfilePage({ onBack, onSignIn }: HealthProfilePag
             {planDetails && (
               <div style={card}>
                 <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: planDetails.type === 'free' ? '0.75rem' : '0.375rem' }}>
-                  <div style={sectionLabel}>Your Plan</div>
+                  <div style={sectionLabel}>{t('healthProfile.yourPlan')}</div>
                   <span style={{
                     background: planDetails.type === 'free' ? 'var(--bg-hover)' : '#00685f',
                     color: planDetails.type === 'free' ? 'var(--text-secondary)' : '#ffffff',
@@ -457,19 +457,19 @@ export default function HealthProfilePage({ onBack, onSignIn }: HealthProfilePag
                     textTransform: 'uppercase' as const,
                   }}>
                     {planDetails.type === 'free'
-                      ? 'Free'
+                      ? t('healthProfile.free')
                       : planDetails.type === 'beta'
-                      ? 'Beta Access'
+                      ? t('healthProfile.betaAccess')
                       : planDetails.plan === 'yearly'
-                      ? 'Premium · Yearly'
-                      : 'Premium · Monthly'}
+                      ? t('healthProfile.premiumYearly')
+                      : t('healthProfile.premiumMonthly')}
                   </span>
                 </div>
 
                 {planDetails.type === 'free' && (
                   <>
                     <p style={{ fontFamily: "'Inter', sans-serif", fontSize: '0.875rem', color: 'var(--text-muted)', margin: '0 0 1rem', lineHeight: 1.6 }}>
-                      Upgrade to unlock full evidence deep dives — dosing, sources, bioavailability, and interactions.
+                      {t('healthProfile.upgradeBody')}
                     </p>
                     <button
                       onClick={() => navigate('/premium')}
@@ -482,27 +482,27 @@ export default function HealthProfilePage({ onBack, onSignIn }: HealthProfilePag
                       }}
                     >
                       <Sparkle size={15} weight="fill" />
-                      Upgrade to Premium
+                      {t('healthProfile.upgradeToPremium')}
                     </button>
                   </>
                 )}
 
                 {planDetails.type === 'beta' && (
                   <p style={{ fontFamily: "'Inter', sans-serif", fontSize: '0.875rem', color: 'var(--text-muted)', margin: 0, lineHeight: 1.6 }}>
-                    You have full access as a beta tester. Thank you for helping shape SupplementScanner.
+                    {t('healthProfile.betaBody')}
                   </p>
                 )}
 
                 {planDetails.type === 'paid' && (
                   <>
                     <p style={{ fontFamily: "'Inter', sans-serif", fontSize: '0.875rem', color: 'var(--text-muted)', margin: '0 0 0.5rem', lineHeight: 1.6 }}>
-                      Full access to all deep dives, stack evaluation, and interactions.
+                      {t('healthProfile.paidBody')}
                     </p>
                     {planDetails.periodEnd && (
                       <p style={{ fontFamily: "'Inter', sans-serif", fontSize: '0.8125rem', color: planDetails.cancelAtPeriodEnd ? '#b45309' : 'var(--text-secondary)', margin: '0 0 0.875rem' }}>
                         {planDetails.cancelAtPeriodEnd
-                          ? `Cancelled — access until ${new Date(planDetails.periodEnd).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}`
-                          : `Renews ${new Date(planDetails.periodEnd).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}`
+                          ? t('healthProfile.cancelledUntil', { date: new Date(planDetails.periodEnd).toLocaleDateString(language === 'sv' ? 'sv-SE' : 'en-US', { month: 'long', day: 'numeric', year: 'numeric' }) })
+                          : t('healthProfile.renewsOn', { date: new Date(planDetails.periodEnd).toLocaleDateString(language === 'sv' ? 'sv-SE' : 'en-US', { month: 'long', day: 'numeric', year: 'numeric' }) })
                         }
                       </p>
                     )}
@@ -536,7 +536,7 @@ export default function HealthProfilePage({ onBack, onSignIn }: HealthProfilePag
                         opacity: portalLoading ? 0.6 : 1,
                       }}
                     >
-                      {portalLoading ? 'Loading…' : 'Manage plan'}
+                      {portalLoading ? t('common.loading') : t('healthProfile.managePlan')}
                     </button>
                   </>
                 )}

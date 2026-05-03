@@ -8,7 +8,8 @@
     "signOut": "Logga ut",
     "myProfile": "Min profil",
     "mobileApp": "Mobilapp",
-    "mobileAppSubtitle": "iOS & Android — kommer snart"
+    "mobileAppSubtitle": "iOS & Android — kommer snart",
+    "myStack": "Min stack"
   },
   "common": {
     "beta": "BETA",
@@ -183,6 +184,13 @@
         "a": "Inom 7 dagar från köpet, ja. Maila oss så löser vi det."
       }
     ],
+    "welcomeToPremium": "Välkommen till Premium!",
+    "youHavePremium": "Du har Premium",
+    "active": "Aktiv",
+    "getPremium": "Skaffa Premium",
+    "youreIn": "Du är med — välkommen till Premium!",
+    "allDeepDivesUnlocked": "Alla djupdykningar är nu upplåsta. Gå till lexikonet för att utforska.",
+    "upgradeToPremium": "Uppgradera till Premium",
     "deepDiveFeatures": [
       { "label": "Citerad forskning", "desc": "Direktlänkar till PubMed och primärkällor för varje påstående" },
       { "label": "Verkningsmekanism", "desc": "Molekylära vägar och cellulära receptorinteraktioner" },
@@ -266,6 +274,7 @@
     "browseFullIndex": "Bläddra i hela indexet",
     "footerNote": "Evidensrangordnat · Uppdaterat 2025 · Klicka på ett kort för djupdykning",
     "evidenceSuffix": "Evidens",
+    "priorityLabel": "PRIORITET {{num}}",
     "goals": {
       "sleep": {
         "label": "Bättre sömn",
@@ -314,7 +323,40 @@
     "profileSaved": "Profil sparad",
     "saveProfile": "Spara profil",
     "supplementCount": "{{count}} tillskott",
-    "supplementCountPlural": "{{count}} tillskott"
+    "supplementCountPlural": "{{count}} tillskott",
+    "yourPlan": "Din plan",
+    "free": "Gratis",
+    "betaAccess": "Beta-åtkomst",
+    "premiumYearly": "Premium · Årsvis",
+    "premiumMonthly": "Premium · Månadsvis",
+    "upgradeBody": "Uppgradera för att låsa upp fullständiga evidensdjupdykningar — dosering, källor, biotillgänglighet och interaktioner.",
+    "upgradeToPremium": "Uppgradera till Premium",
+    "betaBody": "Du har full åtkomst som beta-testare. Tack för att du hjälper till att forma SupplementScanner.",
+    "paidBody": "Full åtkomst till alla djupdykningar, stackutvärdering och interaktioner.",
+    "cancelledUntil": "Avbrutit — åtkomst till {{date}}",
+    "renewsOn": "Förnyas {{date}}",
+    "managePlan": "Hantera plan"
+  },
+  "stackEvaluation": {
+    "back": "Tillbaka",
+    "title": "Stack",
+    "titleHighlight": "Utvärdering",
+    "subtitle": "Interaktioner, synergier och varningar för din tillskottsstack",
+    "yourStack": "Din Stack",
+    "noStackYetPart1": "Inga tillskott i din stack ännu. Lägg till från",
+    "noStackYetLink": "lexikonet",
+    "addAtLeast2": "Lägg till minst 2 tillskott",
+    "requiresMore": "Interaktionsanalys kräver 2 eller fler tillskott i din stack.",
+    "signInTitle": "Logga in för att utvärdera din stack",
+    "signInBody": "Skapa ett gratis konto för att kontrollera interaktioner, synergier och varningar mellan tillskotten i din stack.",
+    "signInButton": "Logga in / Skapa konto",
+    "analyzing": "Analyserar interaktioner…",
+    "cleanStack": "Din stack ser ren ut!",
+    "noInteractions": "Inga kända interaktioner hittades mellan tillskotten i din stack.",
+    "dangerTitle": "Fara — Undvik att kombinera",
+    "cautionTitle": "Varning — Använd varsamt",
+    "synergyTitle": "Synergi — Fördelaktiga kombinationer",
+    "networkError": "Nätverksfel — försök igen"
   },
   "mobileApp": {
     "badge": "iOS & ANDROID — KOMMER SNART",

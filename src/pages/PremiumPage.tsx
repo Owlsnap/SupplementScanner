@@ -232,7 +232,7 @@ export default function PremiumPage({ onBack, onOpenAuthModal }: PremiumPageProp
               }}>
                 <Sparkle size={13} weight="fill" color="rgba(255,255,255,0.85)" />
                 <span style={{ fontSize: '0.6875rem', fontWeight: 700, color: 'rgba(255,255,255,0.9)', letterSpacing: '0.8px', textTransform: 'uppercase', fontFamily: "'Inter', sans-serif" }}>
-                  Premium
+                  {t('premium.badge')}
                 </span>
               </div>
             </div>
@@ -261,11 +261,11 @@ export default function PremiumPage({ onBack, onOpenAuthModal }: PremiumPageProp
 
             {justSubscribed ? (
               <div style={{ display: 'inline-flex', alignItems: 'center', gap: '0.5rem', background: 'rgba(255,255,255,0.15)', border: '1px solid rgba(255,255,255,0.3)', borderRadius: '28px', padding: '0.875rem 1.75rem', fontFamily: "'Inter', sans-serif", fontWeight: 700, fontSize: '0.9375rem', color: '#ffffff' }}>
-                <Check size={16} weight="bold" /> Welcome to Premium!
+                <Check size={16} weight="bold" /> {t('premium.welcomeToPremium')}
               </div>
             ) : isPremium ? (
               <div style={{ display: 'inline-flex', alignItems: 'center', gap: '0.5rem', background: 'rgba(255,255,255,0.15)', border: '1px solid rgba(255,255,255,0.3)', borderRadius: '28px', padding: '0.875rem 1.75rem', fontFamily: "'Inter', sans-serif", fontWeight: 700, fontSize: '0.9375rem', color: '#ffffff' }}>
-                <Check size={16} weight="bold" /> You have Premium
+                <Check size={16} weight="bold" /> {t('premium.youHavePremium')}
               </div>
             ) : (
               <button
@@ -276,7 +276,7 @@ export default function PremiumPage({ onBack, onOpenAuthModal }: PremiumPageProp
                 onMouseLeave={e => { (e.currentTarget as HTMLButtonElement).style.opacity = checkoutLoading ? '0.7' : '1'; }}
               >
                 {checkoutLoading === 'yearly' ? <div style={{ width: '16px', height: '16px', border: '2px solid rgba(0,104,95,0.3)', borderTopColor: '#00685f', borderRadius: '50%', animation: 'spin 1s linear infinite' }} /> : <Sparkle size={16} weight="fill" />}
-                Get Premium
+                {t('premium.getPremium')}
               </button>
             )}
           </div>
@@ -431,10 +431,10 @@ export default function PremiumPage({ onBack, onOpenAuthModal }: PremiumPageProp
             <Check size={20} weight="bold" color="#00685f" />
             <div>
               <div style={{ fontFamily: "'Manrope', sans-serif", fontWeight: 800, fontSize: '0.9375rem', color: textPrimary }}>
-                You're in — welcome to Premium!
+                {t('premium.youreIn')}
               </div>
               <div style={{ fontFamily: "'Inter', sans-serif", fontSize: '0.8125rem', color: textMuted, marginTop: '0.125rem' }}>
-                All deep dives are now unlocked. Head to the encyclopedia to explore.
+                {t('premium.allDeepDivesUnlocked')}
               </div>
             </div>
           </div>
@@ -537,7 +537,7 @@ export default function PremiumPage({ onBack, onOpenAuthModal }: PremiumPageProp
                     fontFamily: "'Inter', sans-serif", fontWeight: 600, fontSize: '0.875rem', color: '#00685f',
                   }}>
                     <Check size={15} weight="bold" />
-                    Active
+                    {t('premium.active')}
                   </div>
                 ) : (
                   <button
@@ -710,7 +710,7 @@ export default function PremiumPage({ onBack, onOpenAuthModal }: PremiumPageProp
             <div style={{ ...cardBase, border: `1.5px solid #00685f` }}>
               <div style={{ fontFamily: "'Manrope', sans-serif", fontWeight: 700, fontSize: '0.9375rem', color: '#00685f', marginBottom: '0.5rem', display: 'flex', alignItems: 'center', gap: '0.375rem' }}>
                 <Sparkle size={15} weight="fill" />
-                Premium
+                {t('premium.premiumLabel')}
               </div>
               <div style={{ display: 'flex', flexDirection: 'column', gap: '0.625rem' }}>
                 {premiumFeatures.map(f => (
@@ -784,7 +784,7 @@ export default function PremiumPage({ onBack, onOpenAuthModal }: PremiumPageProp
           {isPremium ? (
             <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', background: 'rgba(255,255,255,0.15)', border: '1px solid rgba(255,255,255,0.3)', borderRadius: '28px', padding: '0.875rem 2rem', fontFamily: "'Inter', sans-serif", fontWeight: 700, fontSize: '1rem', color: '#ffffff' }}>
               <Check size={17} weight="bold" />
-              You have Premium
+              {t('premium.youHavePremium')}
             </div>
           ) : (
             <button
@@ -798,7 +798,7 @@ export default function PremiumPage({ onBack, onOpenAuthModal }: PremiumPageProp
                 ? <div style={{ width: '17px', height: '17px', border: '2px solid rgba(0,104,95,0.3)', borderTopColor: '#00685f', borderRadius: '50%', animation: 'spin 1s linear infinite' }} />
                 : <Sparkle size={17} weight="fill" />
               }
-              Get Premium
+              {t('premium.getPremium')}
             </button>
           )}
         </div>

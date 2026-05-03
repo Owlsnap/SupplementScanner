@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { ArrowLeft, Warning, Lightning, Sparkle, CheckCircle, UserCircle } from '@phosphor-icons/react';
 import { useStack } from '../contexts/StackContext';
 import { useAuth } from '../contexts/AuthContext';
+import { useLanguage } from '../contexts/LanguageContext';
 import { encyclopediaSupplements } from '../data/encyclopediaData';
 import AuthModal from '../components/AuthModal';
 
@@ -95,6 +96,7 @@ export default function StackEvaluationPage() {
   const navigate = useNavigate();
   const { stack } = useStack();
   const { session } = useAuth();
+  const { t } = useLanguage();
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [bySeverity, setBySeverity] = useState<BySeverity | null>(null);
@@ -120,7 +122,7 @@ export default function StackEvaluationPage() {
         if (data.success) setBySeverity(data.data.by_severity);
         else setError(data.error ?? 'Failed to evaluate stack');
       })
-      .catch(() => setError('Network error — please try again'))
+      .catch(() => setError(t('stackEvaluation.networkError')))
       .finally(() => setLoading(false));
   }, []);
 
@@ -141,7 +143,7 @@ export default function StackEvaluationPage() {
             fontFamily: "'Inter', sans-serif", fontWeight: 600, fontSize: '0.875rem',
           }}
         >
-          <ArrowLeft size={16} /> Back
+          <ArrowLeft size={16} /> {t('stackEvaluation.back')}
         </button>
 
         <div style={{ marginBottom: '1.75rem' }}>
@@ -150,10 +152,10 @@ export default function StackEvaluationPage() {
             fontSize: 'clamp(1.375rem, 4vw, 1.75rem)',
             color: 'var(--text-primary)', margin: '0 0 0.375rem', letterSpacing: '-0.5px',
           }}>
-            Stack <span style={{ color: '#00685f' }}>Evaluation</span>
+            {t('stackEvaluation.title')} <span style={{ color: '#00685f' }}>{t('stackEvaluation.titleHighlight')}</span>
           </h1>
           <p style={{ fontFamily: "'Inter', sans-serif", fontSize: '0.9rem', color: 'var(--text-muted)', margin: 0, lineHeight: 1.6 }}>
-            Interactions, synergies, and warnings for your supplement stack
+            {t('stackEvaluation.subtitle')}
           </p>
         </div>
 
@@ -163,16 +165,16 @@ export default function StackEvaluationPage() {
           border: '1.5px solid var(--border)', padding: '1rem 1.25rem', marginBottom: '1.5rem',
         }}>
           <div style={{ fontFamily: "'Manrope', sans-serif", fontWeight: 800, fontSize: '0.875rem', color: 'var(--text-secondary)', marginBottom: '0.625rem', textTransform: 'uppercase', letterSpacing: '0.5px' }}>
-            Your Stack
+            {t('stackEvaluation.yourStack')}
           </div>
           {stackSupplements.length === 0 ? (
             <p style={{ fontFamily: "'Inter', sans-serif", fontSize: '0.875rem', color: 'var(--text-secondary)', margin: 0 }}>
-              No supplements in your stack yet. Add some from the{' '}
+              {t('stackEvaluation.noStackYetPart1')}{' '}
               <button
                 onClick={() => navigate('/')}
                 style={{ color: '#00685f', background: 'none', border: 'none', cursor: 'pointer', fontWeight: 600, fontFamily: "'Inter', sans-serif", fontSize: '0.875rem', padding: 0 }}
               >
-                encyclopedia
+                {t('stackEvaluation.noStackYetLink')}
               </button>.
             </p>
           ) : (
@@ -198,10 +200,10 @@ export default function StackEvaluationPage() {
             border: '1.5px solid var(--border)',
           }}>
             <div style={{ fontFamily: "'Manrope', sans-serif", fontWeight: 800, fontSize: '1rem', color: 'var(--text-primary)', marginBottom: '0.5rem' }}>
-              Add at least 2 supplements
+              {t('stackEvaluation.addAtLeast2')}
             </div>
             <p style={{ fontFamily: "'Inter', sans-serif", fontSize: '0.875rem', color: 'var(--text-muted)', margin: 0 }}>
-              Interaction analysis requires 2 or more supplements in your stack.
+              {t('stackEvaluation.requiresMore')}
             </p>
           </div>
         )}
@@ -220,10 +222,10 @@ export default function StackEvaluationPage() {
               <UserCircle size={28} color="#00685f" />
             </div>
             <div style={{ fontFamily: "'Manrope', sans-serif", fontWeight: 800, fontSize: '1.0625rem', color: 'var(--text-primary)', marginBottom: '0.5rem' }}>
-              Sign in to evaluate your stack
+              {t('stackEvaluation.signInTitle')}
             </div>
             <p style={{ fontFamily: "'Inter', sans-serif", fontSize: '0.875rem', color: 'var(--text-muted)', margin: '0 0 1.5rem', lineHeight: 1.6 }}>
-              Create a free account to check interactions, synergies, and warnings between the supplements in your stack.
+              {t('stackEvaluation.signInBody')}
             </p>
             <button
               onClick={() => setShowAuthModal(true)}
@@ -237,7 +239,7 @@ export default function StackEvaluationPage() {
               }}
             >
               <UserCircle size={16} />
-              Sign in / Create account
+              {t('stackEvaluation.signInButton')}
             </button>
           </div>
         )}
@@ -252,7 +254,7 @@ export default function StackEvaluationPage() {
               borderTopColor: '#00685f', borderRadius: '50%',
               animation: 'spin 0.8s linear infinite', margin: '0 auto 1rem',
             }} />
-            Analyzing interactions…
+            {t('stackEvaluation.analyzing')}
           </div>
         )}
 
@@ -276,28 +278,28 @@ export default function StackEvaluationPage() {
               }}>
                 <CheckCircle size={36} color="#00685f" weight="fill" style={{ marginBottom: '0.75rem' }} />
                 <div style={{ fontFamily: "'Manrope', sans-serif", fontWeight: 800, fontSize: '1rem', color: 'var(--text-primary)', marginBottom: '0.375rem' }}>
-                  Your stack looks clean!
+                  {t('stackEvaluation.cleanStack')}
                 </div>
                 <p style={{ fontFamily: "'Inter', sans-serif", fontSize: '0.875rem', color: 'var(--text-muted)', margin: 0 }}>
-                  No known interactions found between the supplements in your stack.
+                  {t('stackEvaluation.noInteractions')}
                 </p>
               </div>
             ) : (
               <>
                 <SeverityGroup
-                  title="Danger — Avoid combining"
+                  title={t('stackEvaluation.dangerTitle')}
                   color="#ba1a1a"
                   icon={<Warning size={16} weight="fill" color="#ba1a1a" />}
                   items={bySeverity.danger}
                 />
                 <SeverityGroup
-                  title="Caution — Use carefully"
+                  title={t('stackEvaluation.cautionTitle')}
                   color="#d97706"
                   icon={<Lightning size={16} weight="fill" color="#d97706" />}
                   items={bySeverity.caution}
                 />
                 <SeverityGroup
-                  title="Synergy — Beneficial combinations"
+                  title={t('stackEvaluation.synergyTitle')}
                   color="#00685f"
                   icon={<Sparkle size={16} weight="fill" color="#00685f" />}
                   items={bySeverity.synergy}
