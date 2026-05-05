@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import {
   ArrowLeft, Lock, Sparkle, Flask, Gauge, ArrowsHorizontal,
   ShieldWarning, ArrowRight, Barbell, Moon, Brain, Lightning, Leaf, Warning, Article, Export,
@@ -68,10 +68,18 @@ export default function SupplementInfoPage({
   const categoryColors = isDark ? categoryColorsDark : categoryColorsLight;
   const [copied, setCopied] = React.useState(false);
   const [showLimitedWarning, setShowLimitedWarning] = React.useState(false);
+  const [studyCount, setStudyCount] = React.useState<number | null>(null);
 
-  const LIMITED_TIERS: EvidenceTier[] = ['Anecdotal', 'Emerging'];
+  useEffect(() => {
+    const apiUrl = (import.meta as any).env?.VITE_API_URL || 'http://localhost:3001';
+    fetch(`${apiUrl}/api/encyclopedia/study-count/${slug}`)
+      .then(r => r.json())
+      .then(json => { if (json.success && json.studyCount !== null) setStudyCount(json.studyCount); })
+      .catch(() => { /* silently ignore — no warning shown if count unavailable */ });
+  }, [slug]);
+
   const handleBuyDiveClick = () => {
-    if (LIMITED_TIERS.includes(evidenceTier)) {
+    if (studyCount !== null && studyCount <= 3) {
       setShowLimitedWarning(true);
     } else {
       onBuyDive();

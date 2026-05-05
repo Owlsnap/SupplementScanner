@@ -1553,9 +1553,13 @@ const DEEP_DIVE_TOOL = {
       recommendationsLink: {
         type: 'string',
         description: 'If this supplement maps to a health goal — "better sleep", "build muscle", "general health", or "energy boost" — return the exact string. Otherwise return empty string.',
+      },
+      studyCount: {
+        type: 'integer',
+        description: 'Conservative estimate of how many peer-reviewed human clinical trials (RCTs or controlled studies) have directly investigated this supplement. Count only studies you are confident exist — do not include animal studies, in-vitro studies, or observational reports. Return 0 if none exist.',
       }
     },
-    required: ['whatItIs', 'howItWorks', 'dosing', 'forms', 'synergies', 'cautions', 'recommendationsLink']
+    required: ['whatItIs', 'howItWorks', 'dosing', 'forms', 'synergies', 'cautions', 'recommendationsLink', 'studyCount']
   }
 };
 
@@ -1634,6 +1638,28 @@ app.get('/api/encyclopedia/deep-dive/:slug', async (req, res) => {
   } catch (error) {
     console.error(`💥 Deep dive error for ${slug}:`, error);
     return res.status(500).json({ success: false, error: `Deep dive generation failed: ${error.message}` });
+  }
+});
+
+// GET /api/encyclopedia/study-count/:slug
+// Returns the studyCount from the cached deep dive, or null if not yet cached.
+// Never triggers AI generation — read-only.
+app.get('/api/encyclopedia/study-count/:slug', async (req, res) => {
+  const { slug } = req.params;
+  try {
+    const { data: cached, error } = await getSupabaseService()
+      .from('supplement_deep_dives')
+      .select('content')
+      .eq('slug', slug)
+      .maybeSingle();
+
+    if (error) throw error;
+
+    const studyCount = cached?.content?.studyCount ?? null;
+    return res.json({ success: true, studyCount });
+  } catch (error) {
+    console.error(`💥 study-count error for ${slug}:`, error);
+    return res.status(500).json({ success: false, studyCount: null });
   }
 });
 
