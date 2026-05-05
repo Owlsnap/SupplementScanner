@@ -67,6 +67,16 @@ export default function SupplementInfoPage({
   const { isDark } = useDarkMode();
   const categoryColors = isDark ? categoryColorsDark : categoryColorsLight;
   const [copied, setCopied] = React.useState(false);
+  const [showLimitedWarning, setShowLimitedWarning] = React.useState(false);
+
+  const LIMITED_TIERS: EvidenceTier[] = ['Anecdotal', 'Emerging'];
+  const handleBuyDiveClick = () => {
+    if (LIMITED_TIERS.includes(evidenceTier)) {
+      setShowLimitedWarning(true);
+    } else {
+      onBuyDive();
+    }
+  };
 
   const handleShare = async () => {
     const url = window.location.href;
@@ -414,7 +424,7 @@ export default function SupplementInfoPage({
                   <div style={{ flex: 1, height: '1px', background: 'var(--border)' }} />
                 </div>
                 <button
-                  onClick={onBuyDive}
+                  onClick={handleBuyDiveClick}
                   style={{
                     width: '100%', padding: '0.875rem 1rem',
                     background: 'transparent', color: 'var(--text-primary)',
@@ -438,6 +448,91 @@ export default function SupplementInfoPage({
           </div>
         </div>
       </div>
+
+      {/* Limited studies warning modal */}
+      {showLimitedWarning && (
+        <div
+          onClick={() => setShowLimitedWarning(false)}
+          style={{
+            position: 'fixed', inset: 0, zIndex: 1000,
+            background: 'rgba(0,0,0,0.5)',
+            display: 'flex', alignItems: 'center', justifyContent: 'center',
+            padding: '1rem',
+          }}
+        >
+          <div
+            onClick={e => e.stopPropagation()}
+            style={{
+              background: 'var(--bg-surface)',
+              borderRadius: '20px',
+              padding: '1.75rem 1.5rem 1.5rem',
+              maxWidth: '400px',
+              width: '100%',
+              boxShadow: '0 20px 60px rgba(0,0,0,0.25)',
+              border: '1.5px solid var(--card-warning-border)',
+            }}
+          >
+            <div style={{ display: 'flex', alignItems: 'center', gap: '0.625rem', marginBottom: '0.875rem' }}>
+              <div style={{
+                width: '36px', height: '36px', borderRadius: '10px', flexShrink: 0,
+                background: 'var(--card-warning-bg)',
+                border: '1px solid var(--card-warning-border)',
+                display: 'flex', alignItems: 'center', justifyContent: 'center',
+              }}>
+                <Warning size={18} color="var(--card-warning-heading)" weight="fill" />
+              </div>
+              <h3 style={{
+                fontFamily: "'Manrope', sans-serif", fontWeight: 800,
+                fontSize: '1rem', color: 'var(--text-primary)',
+                margin: 0, letterSpacing: '-0.2px',
+              }}>
+                {t('supplementInfo.limitedStudiesWarning.title')}
+              </h3>
+            </div>
+
+            <p style={{
+              fontFamily: "'Inter', sans-serif", fontSize: '0.875rem',
+              color: 'var(--text-muted)', lineHeight: 1.65,
+              margin: '0 0 1.5rem',
+            }}>
+              {t('supplementInfo.limitedStudiesWarning.body')}
+            </p>
+
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.625rem' }}>
+              <button
+                onClick={() => { setShowLimitedWarning(false); onBuyDive(); }}
+                style={{
+                  width: '100%', padding: '0.875rem',
+                  background: '#00685f', color: '#ffffff',
+                  border: 'none', borderRadius: '12px',
+                  fontFamily: "'Inter', sans-serif", fontWeight: 600,
+                  fontSize: '0.9375rem', cursor: 'pointer',
+                  transition: 'background 0.15s ease',
+                }}
+                onMouseEnter={e => { (e.currentTarget as HTMLButtonElement).style.background = '#005049'; }}
+                onMouseLeave={e => { (e.currentTarget as HTMLButtonElement).style.background = '#00685f'; }}
+              >
+                {t('supplementInfo.limitedStudiesWarning.proceed')}
+              </button>
+              <button
+                onClick={() => setShowLimitedWarning(false)}
+                style={{
+                  width: '100%', padding: '0.75rem',
+                  background: 'transparent', color: 'var(--text-secondary)',
+                  border: '1.5px solid var(--border)', borderRadius: '12px',
+                  fontFamily: "'Inter', sans-serif", fontWeight: 600,
+                  fontSize: '0.875rem', cursor: 'pointer',
+                  transition: 'border-color 0.15s ease',
+                }}
+                onMouseEnter={e => { (e.currentTarget as HTMLButtonElement).style.borderColor = 'var(--border-strong)'; }}
+                onMouseLeave={e => { (e.currentTarget as HTMLButtonElement).style.borderColor = 'var(--border)'; }}
+              >
+                {t('supplementInfo.limitedStudiesWarning.cancel')}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

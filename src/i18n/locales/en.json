@@ -468,6 +468,12 @@
     "buyThisDive": "Buy this Deep Dive · $1.99",
     "share": "Share",
     "researchCached": "Research-backed · cached for 30 days after first load",
+    "limitedStudiesWarning": {
+      "title": "Limited research available",
+      "body": "This supplement has limited clinical evidence, so the deep dive may cover fewer studies and be less detailed than well-researched supplements like creatine or caffeine. It still covers mechanisms, dosing, and forms — but cited studies will be fewer.",
+      "proceed": "Proceed to checkout",
+      "cancel": "Cancel"
+    },
     "evidenceTierLabels": {
       "Strong": "Well-established science with multiple RCTs",
       "Moderate": "Several quality studies with consistent results",

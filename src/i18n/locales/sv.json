@@ -471,6 +471,12 @@
     "buyThisDive": "Köp denna djupdykning · 19 kr",
     "share": "Dela",
     "researchCached": "Forskningsbaserat · cachas i 30 dagar efter första laddning",
+    "limitedStudiesWarning": {
+      "title": "Begränsad forskning tillgänglig",
+      "body": "Detta tillskott har begränsad klinisk evidens, vilket innebär att djupdykningen kan täcka färre studier och vara mindre detaljerad än välforskade tillskott som kreatin eller koffein. Den täcker fortfarande mekanismer, dosering och former — men citerade studier blir färre.",
+      "proceed": "Fortsätt till kassan",
+      "cancel": "Avbryt"
+    },
     "evidenceTierLabels": {
       "Strong": "Väletablerad vetenskap med flera RCT:er",
       "Moderate": "Flera kvalitetsstudier med konsekventa resultat",
