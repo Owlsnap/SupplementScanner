@@ -128,6 +128,10 @@ export default function DeepDivePage({
     <div style={{ background: 'var(--bg-page)', minHeight: '100vh', fontFamily: "'Inter', sans-serif", paddingTop: '100px' }}>
       <style>{`
         @keyframes spin { to { transform: rotate(360deg); } }
+        @media (max-width: 480px) {
+          .dosing-grid { grid-template-columns: 1fr !important; }
+          .synergy-row { flex-wrap: wrap !important; }
+        }
       `}</style>
 
       {/* Content */}
@@ -243,7 +247,7 @@ export default function DeepDivePage({
                 <CheckCircle size={18} color="#00685f" />
                 {t('deepDive.dosing')}
               </div>
-              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '0.75rem', marginBottom: '0.75rem' }}>
+              <div className="dosing-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '0.75rem', marginBottom: '0.75rem' }}>
                 {[
                   { label: t('deepDive.dosingLabels.conservative'), value: deepDive.dosing.low, accent: 'var(--bg-hover)', border: 'var(--border-strong)' },
                   { label: t('deepDive.dosingLabels.standard'), value: deepDive.dosing.standard, accent: 'var(--primary-light)', border: '#00685f' },
@@ -331,7 +335,7 @@ export default function DeepDivePage({
                 <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.5rem', marginBottom: '0.75rem' }}>
                   {deepDive.synergies.map((s, i) => (
                     <div key={i} style={{ width: '100%' }}>
-                      <div style={{ display: 'flex', alignItems: 'flex-start', gap: '0.75rem' }}>
+                      <div className="synergy-row" style={{ display: 'flex', alignItems: 'flex-start', gap: '0.75rem' }}>
                         <span style={{
                           background: 'var(--primary-light)',
                           color: '#00685f',

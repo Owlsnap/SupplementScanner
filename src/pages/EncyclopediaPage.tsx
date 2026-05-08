@@ -324,10 +324,11 @@ function CardGrid({ items, hoveredCard, setHoveredCard, onOpenInfo, inStack, onT
               background: cfg.bg, padding: '0.75rem 1.125rem',
               display: 'flex', alignItems: 'center', justifyContent: 'space-between',
             }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', minWidth: 0, flexShrink: 1 }}>
                 <div style={{
                   background: 'rgba(255,255,255,0.2)', borderRadius: '8px',
                   padding: '0.25rem', display: 'flex', alignItems: 'center', justifyContent: 'center',
+                  flexShrink: 0,
                 }}>
                   <cfg.Icon size={16} color="#ffffff" weight="bold" />
                 </div>
@@ -335,11 +336,12 @@ function CardGrid({ items, hoveredCard, setHoveredCard, onOpenInfo, inStack, onT
                   fontFamily: "'Inter', sans-serif", fontWeight: 600,
                   fontSize: '0.75rem', color: 'rgba(255,255,255,0.9)',
                   textTransform: 'uppercase', letterSpacing: '0.6px',
+                  overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap',
                 }}>
                   {t(`encyclopedia.categories.${supp.category}`)}
                 </span>
               </div>
-              <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: '2px' }}>
+              <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: '2px', flexShrink: 0, paddingLeft: '0.5rem' }}>
                 <span style={{
                   fontSize: '0.5625rem', fontWeight: 500,
                   color: 'rgba(255,255,255,0.65)',

@@ -260,7 +260,15 @@ export default function PremiumDeepDivePage({
 
   return (
     <div style={{ background: 'var(--bg-page)', minHeight: '100vh', paddingTop: '100px', fontFamily: "'Inter', sans-serif" }}>
-      <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
+      <style>{`
+        @keyframes spin { to { transform: rotate(360deg); } }
+        @media (max-width: 480px) {
+          .dosing-grid { grid-template-columns: 1fr !important; }
+          .synergy-row { flex-wrap: wrap !important; }
+          .ask-row { flex-direction: column !important; }
+          .ask-row button { width: 100%; justify-content: center; }
+        }
+      `}</style>
 
       <div style={{ maxWidth: '760px', margin: '0 auto', padding: '1.5rem 1rem 3rem' }}>
 
@@ -398,7 +406,7 @@ export default function PremiumDeepDivePage({
                   <CheckCircle size={18} color="#00685f" />
                   {t('deepDive.dosing')}
                 </div>
-                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '0.75rem', marginBottom: '0.75rem' }}>
+                <div className="dosing-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '0.75rem', marginBottom: '0.75rem' }}>
                   {([
                     { label: t('deepDive.dosingLabels.conservative'), value: freeData.dosing.low,      accent: 'var(--bg-hover)',      border: 'var(--border-strong)' },
                     { label: t('deepDive.dosingLabels.standard'),     value: freeData.dosing.standard, accent: 'var(--primary-light)', border: '#00685f' },
@@ -495,7 +503,7 @@ export default function PremiumDeepDivePage({
                 </div>
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
                   {freeData.synergies.map((s, i) => (
-                    <div key={i} style={{ display: 'flex', alignItems: 'flex-start', gap: '0.75rem' }}>
+                    <div key={i} className="synergy-row" style={{ display: 'flex', alignItems: 'flex-start', gap: '0.75rem' }}>
                       <span style={{
                         background: 'var(--primary-light)', color: '#00685f',
                         border: '1px solid #6bd8cb', borderRadius: '999px',
@@ -553,7 +561,7 @@ export default function PremiumDeepDivePage({
               <p style={{ ...bodyText, fontSize: '0.875rem', color: 'var(--text-secondary)', marginBottom: '0.875rem' }}>
                 {t('premiumDeepDive.askEvidenceSubtitle')}
               </p>
-              <div style={{ display: 'flex', gap: '0.625rem' }}>
+              <div className="ask-row" style={{ display: 'flex', gap: '0.625rem' }}>
                 <input
                   type="text"
                   value={question}
