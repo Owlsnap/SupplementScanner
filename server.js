@@ -1567,7 +1567,7 @@ async function generateDeepDive(slug) {
   const name = SLUG_TO_NAME[slug] || slug.split('-').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
 
   const response = await getAnthropicClient().messages.create({
-    model: 'claude-sonnet-4-5-20250929',
+    model: 'claude-sonnet-4-6',
     max_tokens: 2048,
     tools: [DEEP_DIVE_TOOL],
     tool_choice: { type: 'tool', name: 'generate_supplement_deep_dive' },
