@@ -60,7 +60,7 @@ const deepDiveFeatureIcons: React.ElementType[] = [
 ];
 
 export default function SupplementInfoPage({
-  name, category, evidenceTier, tagline, primaryUse, overview,
+  slug, name, category, evidenceTier, tagline, primaryUse, overview,
   typicalDose, bestFor, keyFacts, commonMistakes, onBack, onDeepDive, onBuyDive, hasPaidDive,
 }: SupplementInfoPageProps) {
   const { t } = useLanguage();
