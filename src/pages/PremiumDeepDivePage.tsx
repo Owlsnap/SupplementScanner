@@ -296,7 +296,7 @@ export default function PremiumDeepDivePage({
               {t('premiumDeepDive.badge')}
             </span>
           </div>
-          <p style={{ ...bodyText, color: 'var(--text-secondary)', fontSize: '0.9375rem' }}>{tagline}</p>
+          <p style={{ ...bodyText, color: 'var(--text-secondary)', fontSize: '0.9375rem' }}>{t(tagline)}</p>
         </div>
 
         {/* ── Loading ── */}

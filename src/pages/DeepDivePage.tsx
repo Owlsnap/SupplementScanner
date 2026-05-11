@@ -152,7 +152,7 @@ export default function DeepDivePage({
 
         {/* Hero tagline */}
         <p style={{ ...bodyTextStyle, color: 'var(--text-secondary)', marginBottom: '1.5rem', fontSize: '0.9375rem' }}>
-          {tagline}
+          {t(tagline)}
         </p>
 
         {/* Loading */}
