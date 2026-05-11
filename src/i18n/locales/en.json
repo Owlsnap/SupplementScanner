@@ -1327,6 +1327,422 @@
         "Exceeding 200mcg daily without monitoring serum selenium — selenium has one of the narrower therapeutic windows among minerals; toxicity causes hair loss, nail brittleness, and neurological symptoms.",
         "Using inorganic forms (selenite or selenate) — selenomethionine has significantly higher bioavailability and tissue retention and is the form used in the majority of positive clinical trials."
       ]
+    },
+    "bcaas": {
+      "tagline": "The world's best-selling amino acid supplement for muscle and recovery",
+      "primaryUse": "Stimulates muscle protein synthesis via leucine signalling and reduces exercise-induced muscle breakdown",
+      "overview": "BCAAs — leucine, isoleucine, and valine — are three of the nine essential amino acids that must come from diet. Leucine in particular acts as a direct anabolic signal, activating the mTOR pathway that initiates muscle protein synthesis. BCAAs are most valuable when training fasted, on low-protein diets, or during prolonged sessions where muscle protein breakdown otherwise rises. If total daily protein intake is already adequate (1.6–2.2g/kg), incremental BCAA supplementation adds limited benefit beyond what full-spectrum EAAs provide.",
+      "typicalDose": "5–10g intra-workout or post-workout",
+      "bestFor": ["Fasted training sessions", "Low-calorie / cutting phases", "Athletes training multiple times per day"],
+      "keyFacts": [
+        "The 2:1:1 ratio (leucine:isoleucine:valine) is the most researched — leucine drives the anabolic signal while isoleucine and valine support energy use",
+        "BCAAs cannot build complete muscle protein alone — they lack the other six essential amino acids; EAAs or whole-protein sources are more complete",
+        "Most useful when dietary protein is insufficient; redundant for those already hitting 1.6–2g/kg from food"
+      ],
+      "commonMistakes": [
+        "Using BCAAs as a substitute for adequate total protein — they contain only 3 of 9 essential amino acids and cannot trigger complete muscle protein synthesis the way whey or EAAs can.",
+        "Taking BCAAs post-workout when you already had a protein-rich meal — if leucine needs are met by food, additional BCAA supplementation adds negligible extra stimulus."
+      ]
+    },
+    "eaas": {
+      "tagline": "Complete amino acid spectrum for muscle synthesis without whole food",
+      "primaryUse": "Provides all nine essential amino acids required for complete muscle protein synthesis, including all three BCAAs",
+      "overview": "EAAs supply all nine amino acids the body cannot synthesise: histidine, isoleucine, leucine, lysine, methionine, phenylalanine, threonine, tryptophan, and valine. Unlike BCAAs, which provide only three, EAAs can support a complete round of muscle protein synthesis. They are the superior choice for fasted training, between-meal recovery windows, or for anyone who struggles to eat adequate protein. The leucine content remains the key anabolic trigger, but the full spectrum ensures no amino acid becomes a limiting factor.",
+      "typicalDose": "10–15g intra- or post-workout",
+      "bestFor": ["Fasted morning training", "Between-meal muscle maintenance", "Plant-based athletes with amino acid gaps"],
+      "keyFacts": [
+        "Contains all BCAAs — choosing EAAs over BCAAs always provides equal or greater benefit at similar cost",
+        "Particularly valuable for vegan and plant-based athletes whose individual plant proteins are often low in specific aminos like lysine or methionine",
+        "Absorbed and acted upon rapidly — peak plasma amino acid levels within 30–60 minutes of ingestion"
+      ],
+      "commonMistakes": [
+        "Choosing BCAAs over EAAs when both are similarly priced — EAAs provide the same BCAA signal plus all remaining essential amino acids, making them objectively more complete.",
+        "Treating EAAs as a replacement for whole protein sources — EAAs lack non-essential amino acids, creatine, and the micronutrient density of whole-food protein; they supplement, not replace."
+      ]
+    },
+    "electrolytes": {
+      "tagline": "Hydration minerals that prevent cramps and sustain performance",
+      "primaryUse": "Replenishes sodium, potassium, magnesium, and chloride lost through sweat to maintain fluid balance and neuromuscular function",
+      "overview": "Electrolytes — primarily sodium, potassium, magnesium, and chloride — govern fluid distribution between cells and the bloodstream. During exercise, sweat losses deplete these minerals, reducing plasma volume, impairing muscle contraction, and triggering cramping. Sodium is the dominant electrolyte in sweat and the primary driver of thirst; replacing it with fluids during long sessions maintains plasma volume far more effectively than plain water alone. The modern electrolyte supplement market has exploded because many people are chronically mildly dehydrated and perform better with deliberate replenishment.",
+      "typicalDose": "500–1000mg sodium + 200–400mg potassium per hour of exercise",
+      "bestFor": ["Endurance athletes (sessions over 60 minutes)", "Hot-weather training and competition", "Anyone prone to exercise-induced cramps"],
+      "keyFacts": [
+        "Sodium is the electrolyte lost in greatest quantity through sweat — it is the primary driver of effective rehydration, not potassium or magnesium alone",
+        "Plain water during prolonged exercise can dilute remaining electrolytes, causing hyponatraemia — a dangerous condition; electrolytes prevent this",
+        "Individual sweat rates and sodium losses vary dramatically — heavy, salty sweaters need significantly more sodium than light sweaters"
+      ],
+      "commonMistakes": [
+        "Using electrolytes with insufficient sodium — many consumer products prioritise taste and undersupply sodium, the key electrolyte. Look for at least 500–1000mg of sodium per serving for genuine rehydration during exercise.",
+        "Drinking plain water to rehydrate after heavy sweating — water alone without electrolytes can dilute plasma sodium, worsen cramping, and paradoxically prolong dehydration."
+      ]
+    },
+    "beetroot-extract": {
+      "tagline": "Natural nitrate source that expands blood vessels and boosts endurance",
+      "primaryUse": "Provides dietary nitrate which converts to nitric oxide in the body, reducing the oxygen cost of exercise and improving endurance capacity",
+      "overview": "Beetroot is the richest dietary source of inorganic nitrate. Once ingested, bacteria on the tongue convert nitrate to nitrite, which is then reduced to nitric oxide in the bloodstream. Nitric oxide dilates blood vessels, reducing the oxygen cost of submaximal exercise — meaning the same effort requires less oxygen. This translates to improved time to exhaustion, faster time-trial performance, and lower perceived effort at given intensities. It is particularly effective for endurance athletes and those doing sustained moderate-intensity work.",
+      "typicalDose": "400–600mg nitrate (≈ 500ml beetroot juice) 2–3 hours pre-exercise",
+      "bestFor": ["Endurance athletes (cycling, running, rowing)", "Moderate-intensity sustained efforts (30–70% VO2max)", "Athletes who cannot tolerate caffeine"],
+      "keyFacts": [
+        "Effect is most pronounced at moderate intensities — high-intensity work above 85% VO2max shows less consistent benefit",
+        "Concentrated shots (70ml) are more practical than 500ml beetroot juice; both deliver ~400–600mg nitrate",
+        "The oral microbiome is essential — antibacterial mouthwash used before ingestion eliminates the nitrate-to-nitrite conversion and destroys the effect"
+      ],
+      "commonMistakes": [
+        "Using antibacterial mouthwash on the same day — it kills the oral bacteria that convert nitrate to nitrite, completely eliminating the ergogenic effect. Avoid mouthwash before training when using beetroot.",
+        "Timing it too close to exercise — peak plasma nitrite levels occur 2–3 hours post-ingestion; taking it 30 minutes before provides minimal benefit."
+      ]
+    },
+    "l-carnitine": {
+      "tagline": "Fat transport molecule for energy metabolism and exercise recovery",
+      "primaryUse": "Transports long-chain fatty acids into mitochondria for beta-oxidation, supporting fat metabolism and reducing post-exercise muscle damage markers",
+      "overview": "L-Carnitine is synthesised in the liver from lysine and methionine and plays an essential role in energy metabolism — it acts as the molecular shuttle that carries long-chain fatty acids through the inner mitochondrial membrane for oxidation. L-Carnitine L-Tartrate (LCLT) is the form with the strongest exercise recovery data, reducing muscle soreness markers, improving insulin sensitivity, and increasing androgenic receptor density in muscle tissue. Unlike ALCAR (which prioritises brain effects), LCLT targets peripheral muscle and metabolic outcomes.",
+      "typicalDose": "1–3g daily, ideally with a carbohydrate-containing meal",
+      "bestFor": ["Fat loss support during caloric restriction", "Reducing post-exercise muscle soreness", "Older adults with naturally declining carnitine synthesis"],
+      "keyFacts": [
+        "Muscle uptake of supplemental carnitine requires insulin — taking it with a carb-containing meal dramatically improves tissue retention",
+        "Vegetarians and vegans have naturally lower carnitine levels as dietary sources are almost exclusively animal products",
+        "L-Carnitine L-Tartrate (LCLT) has the most robust exercise recovery data among all carnitine forms"
+      ],
+      "commonMistakes": [
+        "Taking it without carbohydrates — muscle carnitine uptake is insulin-dependent; taking it without food or on an empty stomach drastically reduces how much the muscle actually absorbs.",
+        "Expecting rapid fat loss results — carnitine improves the machinery for fat oxidation but does not force fat burning; it works best alongside a caloric deficit, not as a standalone fat burner."
+      ]
+    },
+    "gaba": {
+      "tagline": "The brain's primary inhibitory neurotransmitter in supplement form",
+      "primaryUse": "Promotes relaxation and sleep onset by reducing neuronal excitability via GABA-A receptor activity",
+      "overview": "GABA (gamma-aminobutyric acid) is the central nervous system's chief inhibitory neurotransmitter — it reduces neuronal excitability and creates the calm, relaxed state needed for sleep onset. Low GABA activity is associated with anxiety, insomnia, and stress sensitivity. Oral GABA supplementation has a nuanced pharmacology: conventional wisdom held that GABA cannot cross the blood-brain barrier, but more recent data using Pharma GABA (a fermented form) and higher doses shows measurable central effects. It is best viewed as an anxiolytic and relaxation aid rather than a direct sedative.",
+      "typicalDose": "100–500mg, 30–60 minutes before bed",
+      "bestFor": ["Anxiety-related sleep difficulty", "Stress-driven insomnia", "Reducing mental chatter before bed"],
+      "keyFacts": [
+        "PharmaGABA (naturally fermented form) appears to have superior central effects compared to synthetic GABA due to different absorption kinetics",
+        "Stacks well with L-Theanine, which also enhances GABAergic tone — the combination produces additive relaxation effects",
+        "Unlike benzodiazepines (which act on GABA-A receptors), supplemental GABA does not cause dependency or rebound insomnia"
+      ],
+      "commonMistakes": [
+        "Using synthetic GABA and expecting the same effects as pharmaceutical GABA-A agonists — supplemental GABA works via a different, gentler mechanism and is not equivalent to prescription anxiolytics.",
+        "Expecting it to work immediately for severe anxiety — GABA supplements provide mild anxiolytic effects; significant anxiety disorders require professional treatment, not just supplementation."
+      ]
+    },
+    "myo-inositol": {
+      "tagline": "Sugar alcohol with remarkable effects on sleep, anxiety, and hormonal balance",
+      "primaryUse": "Acts as a secondary messenger in serotonin and insulin signalling pathways; reduces anxiety, improves sleep quality, and supports hormonal regulation",
+      "overview": "Myo-inositol is a naturally occurring sugar alcohol found in high concentrations in the brain, where it acts as a precursor to the phosphoinositide signalling system — a key pathway for serotonin, dopamine, and insulin receptor function. Clinical research has established it as an effective treatment for anxiety disorders, PCOS, and metabolic insulin resistance. Its sleep effects appear to work through serotonin pathway modulation, reducing the mental hyperactivity that prevents sleep onset. It has become one of the fastest-growing supplements among women for its PCOS and cycle-regulating effects.",
+      "typicalDose": "2–4g before bed; 2–4g twice daily for PCOS/hormonal goals",
+      "bestFor": ["Anxiety and OCD spectrum conditions", "PCOS and hormonal cycle regulation", "Sleep onset difficulties driven by mental restlessness"],
+      "keyFacts": [
+        "One of the few supplements with multiple randomised controlled trials demonstrating efficacy for anxiety — comparable to some pharmaceutical interventions at higher doses",
+        "For PCOS, the 40:1 myo-inositol to D-chiro-inositol ratio mirrors physiological concentrations and shows superior results to either alone",
+        "Extremely safe with no significant drug interactions — unlike most anxiolytics, it is safe in pregnancy and widely recommended in fertility protocols"
+      ],
+      "commonMistakes": [
+        "Using D-chiro-inositol alone for PCOS — research consistently shows the 40:1 myo:D-chiro ratio outperforms D-chiro alone; many cheaper products contain only D-chiro-inositol.",
+        "Expecting fast results for hormonal regulation — myo-inositol's hormonal effects on menstrual regularity and PCOS markers typically take 3–6 months of consistent use to become clinically apparent."
+      ]
+    },
+    "magnesium-l-threonate": {
+      "tagline": "The only magnesium form proven to cross the blood-brain barrier",
+      "primaryUse": "Raises brain magnesium levels to support synaptic plasticity, memory consolidation, and cognitive function",
+      "overview": "Magnesium L-Threonate (MgT) was developed specifically to address a key limitation of magnesium supplementation: most forms of magnesium poorly cross the blood-brain barrier and minimally affect brain magnesium concentrations. MgT was engineered to bypass this limitation — animal studies showed it increased cerebrospinal fluid magnesium by ~15% and significantly improved memory and learning. Human data is still emerging but shows improvements in short-term memory, processing speed, and attention in older adults. It occupies a niche distinct from sleep and muscle-focused magnesium forms.",
+      "typicalDose": "1.5–2g elemental magnesium (≈ 144mg elemental) daily, split morning and evening",
+      "bestFor": ["Age-related cognitive decline prevention", "Memory and learning optimisation", "Brain-focused magnesium supplementation"],
+      "keyFacts": [
+        "The L-threonate chelate was specifically designed for blood-brain barrier penetration — not a property shared by glycinate, malate, or citrate forms",
+        "Magtein® is the patented and most studied form — generic MgT products may not replicate the same brain uptake kinetics",
+        "Works synergistically with sleep: improves sleep quality (shared with glycinate) while additionally supporting memory consolidation during slow-wave sleep"
+      ],
+      "commonMistakes": [
+        "Choosing MgT when the primary goal is sleep or muscle relaxation — glycinate or malate are better studied and more cost-effective for those goals; MgT's premium price is justified only for cognitive applications.",
+        "Judging it by acute effects — brain magnesium normalisation takes weeks of consistent supplementation before cognitive changes become noticeable; do not discontinue after a few days."
+      ]
+    },
+    "mucuna-pruriens": {
+      "tagline": "Natural L-DOPA source for dopamine, motivation, and hormonal support",
+      "primaryUse": "Provides L-DOPA, the direct precursor to dopamine, supporting motivation, mood, and testosterone via prolactin reduction",
+      "overview": "Mucuna pruriens (velvet bean) contains naturally high concentrations of L-DOPA — the direct amino acid precursor to dopamine. Unlike dopamine itself, L-DOPA crosses the blood-brain barrier, where it is converted to dopamine in dopaminergic neurons. This makes Mucuna a genuinely nootropic compound: it can raise dopamine tone, improving motivation, drive, focus, and mood. It also suppresses prolactin, which indirectly supports testosterone. In Ayurvedic medicine it has been used for thousands of years for neurological and reproductive health.",
+      "typicalDose": "300–500mg of standardised extract (15–40% L-DOPA) daily",
+      "bestFor": ["Motivation and drive deficits", "Post-exercise dopamine recovery", "Testosterone support through prolactin reduction"],
+      "keyFacts": [
+        "Standardisation matters critically — a 15% L-DOPA extract is very different from a 40% extract; always check the standardisation on the label",
+        "Synergistic with carbidopa (found in pharmaceutical formulations) — some practitioners combine it with green tea catechins that mildly inhibit dopamine breakdown",
+        "Not recommended for daily long-term use without breaks — chronic L-DOPA exposure can downregulate dopamine receptors; cycling is advisable"
+      ],
+      "commonMistakes": [
+        "Using non-standardised whole-seed powder — L-DOPA content varies enormously between batches; standardised extracts are essential for consistent and predictable dosing.",
+        "Taking it continuously without cycling — sustained L-DOPA exposure risks receptor downregulation and dependency; cycle with 5 days on, 2 days off or use a monthly break."
+      ]
+    },
+    "glucosamine": {
+      "tagline": "The world's most used joint supplement for cartilage maintenance",
+      "primaryUse": "Provides a precursor for glycosaminoglycan synthesis in cartilage, supporting joint structure and reducing osteoarthritis pain",
+      "overview": "Glucosamine is a naturally occurring amino sugar that is a primary building block of cartilage — specifically glycosaminoglycans, the structural proteins that give cartilage its shock-absorbing properties. As cartilage has no blood supply, it depends on diffusion from synovial fluid for nutrients; glucosamine supplementation boosts the available substrate for cartilage maintenance and repair. The largest clinical trials (GAIT, LEGS) show moderate pain reduction in knee osteoarthritis, particularly with glucosamine sulfate over the HCl form. Benefits accumulate over months, not days.",
+      "typicalDose": "1500mg glucosamine sulfate daily",
+      "bestFor": ["Knee osteoarthritis and joint pain", "Athletes with high joint load (running, weightlifting)", "Joint maintenance over 40"],
+      "keyFacts": [
+        "Glucosamine sulfate shows stronger clinical evidence than glucosamine HCl — the sulfate form appears superior; many cheaper products use HCl",
+        "The GAIT trial showed glucosamine alone was superior to placebo in the moderate-to-severe osteoarthritis subgroup — the most clinically relevant finding",
+        "Often paired with chondroitin — the combination has additive effects on cartilage hydration and may slow structural joint progression"
+      ],
+      "commonMistakes": [
+        "Using glucosamine HCl instead of glucosamine sulfate — the sulfate form has materially better clinical trial outcomes; verify the form before purchasing.",
+        "Stopping after 2–4 weeks due to no effect — cartilage turnover is slow; benefits of glucosamine typically require 8–12 weeks of consistent use to become apparent."
+      ]
+    },
+    "chondroitin": {
+      "tagline": "Structural cartilage molecule that retains water and resists compression",
+      "primaryUse": "Maintains cartilage hydration and structural integrity by providing sulfated glycosaminoglycans and inhibiting degradative enzymes",
+      "overview": "Chondroitin sulfate is a major structural component of cartilage, responsible for its ability to attract and retain water — giving cartilage its gel-like shock-absorbing properties. As a supplement, it provides raw material for cartilage repair and may inhibit the matrix metalloproteinases (MMPs) that degrade cartilage in osteoarthritis. Clinical data shows moderate but real benefits for knee pain and joint function, with the strongest evidence emerging from the MOVES trial and several European studies. It is most consistently effective when combined with glucosamine.",
+      "typicalDose": "800–1200mg daily",
+      "bestFor": ["Knee and hip osteoarthritis", "Athletes maintaining high joint load", "Long-term joint health stacking with glucosamine"],
+      "keyFacts": [
+        "Molecular weight matters — high molecular weight chondroitin (>15,000 Da) shows better outcomes in trials; ultra-low MW forms may be less effective",
+        "The MOVES trial showed chondroitin plus glucosamine was non-inferior to celecoxib (a prescription NSAID) for knee osteoarthritis pain over 6 months",
+        "Takes 3–6 months for meaningful effects — cartilage remodelling is a slow process; patience is essential"
+      ],
+      "commonMistakes": [
+        "Expecting rapid pain relief like NSAIDs — chondroitin works structurally over months; it is not an analgesic and should not be used as a substitute for acute pain management.",
+        "Buying from unverified manufacturers — chondroitin is one of the most adulterated supplements; independent third-party testing is critical as label claims frequently do not match actual content."
+      ]
+    },
+    "hyaluronic-acid": {
+      "tagline": "Joint and skin hydration from the inside out",
+      "primaryUse": "Provides hyaluronate to synovial fluid and skin dermis, improving joint lubrication, cushioning, and skin moisture retention",
+      "overview": "Hyaluronic acid (HA) is a high-molecular-weight polysaccharide naturally abundant in synovial joint fluid, skin, and connective tissue. In joints, it acts as a lubricant and shock absorber; in skin, it is the primary molecule responsible for moisture retention and structural volume. Oral HA supplementation — once thought ineffective due to molecular size — is now supported by evidence showing that intestinal bacteria and digestive enzymes cleave HA into absorbable fragments that are then distributed to target tissues. Clinical trials show reductions in knee pain and measurable improvements in skin hydration.",
+      "typicalDose": "80–200mg daily",
+      "bestFor": ["Joint pain and stiffness, particularly knee discomfort", "Skin hydration and anti-ageing", "Stacking with glucosamine and collagen"],
+      "keyFacts": [
+        "Low-molecular-weight HA (< 300 kDa) is better absorbed orally than high-MW forms — check product specifications",
+        "Native type II collagen combined with HA shows additive joint effects in clinical data — a promising combination stack",
+        "In skin, clinical trials show measurable increases in skin moisture and reductions in fine lines after 4–8 weeks of oral supplementation"
+      ],
+      "commonMistakes": [
+        "Expecting the same effect from topical HA as from oral HA — topical HA primarily sits on the skin surface and provides surface hydration; oral HA reaches deeper dermal layers and synovial fluid.",
+        "Using high-molecular-weight HA products for oral use — large HA molecules are poorly absorbed; low-MW or enzymatically degraded forms are needed for effective oral bioavailability."
+      ]
+    },
+    "iron": {
+      "tagline": "Essential mineral for oxygen transport, energy, and immune defence",
+      "primaryUse": "Core component of haemoglobin and myoglobin; required for oxygen transport and mitochondrial energy production",
+      "overview": "Iron deficiency is the single most common nutritional deficiency worldwide, affecting roughly 25% of the global population. Iron is the functional centre of haemoglobin — without adequate iron, red blood cells cannot carry sufficient oxygen, producing the fatigue, shortness of breath, and cognitive impairment characteristic of anaemia. Iron bisglycinate (also called iron glycinate or Ferrochel) is the best-tolerated and most bioavailable supplemental form, causing far less constipation and GI irritation than cheaper ferrous sulfate. Women of reproductive age, athletes, and plant-based eaters are at highest risk.",
+      "typicalDose": "18–45mg elemental iron daily (therapeutic: 100–200mg under medical supervision)",
+      "bestFor": ["Women of reproductive age (menstrual losses)", "Endurance athletes (foot-strike haemolysis and sweat losses)", "Vegans and vegetarians (non-haem iron is less bioavailable)"],
+      "keyFacts": [
+        "Iron bisglycinate has 2–4× greater absorption than ferrous sulfate and causes significantly fewer GI side effects — worth the higher cost",
+        "Vitamin C dramatically enhances non-haem iron absorption — always take with citrus juice or a Vitamin C supplement",
+        "Never supplement iron without confirming deficiency via blood test — iron overload (haemochromatosis) is dangerous and symptoms can resemble deficiency"
+      ],
+      "commonMistakes": [
+        "Self-supplementing without a blood test — iron overload is as dangerous as deficiency. Always confirm serum ferritin and transferrin saturation before starting iron supplementation.",
+        "Taking iron with calcium, coffee, or tea — calcium competes with iron for absorption; tannins in tea and coffee inhibit non-haem iron uptake by up to 60%. Take iron away from these."
+      ]
+    },
+    "folate": {
+      "tagline": "Essential B vitamin for DNA synthesis, cell division, and neural development",
+      "primaryUse": "Acts as a methyl group carrier in one-carbon metabolism, essential for DNA synthesis, red blood cell formation, and homocysteine regulation",
+      "overview": "Folate (Vitamin B9) is one of the most critical nutrients in human biology — it is essential for DNA synthesis, cell division, and the methylation reactions that regulate gene expression. Its importance during early pregnancy for preventing neural tube defects (spina bifida) is so well established that fortification of flour is mandated in over 80 countries. As a supplement, the active form L-methylfolate (5-MTHF) bypasses the MTHFR enzyme step that up to 40% of people have reduced activity in — making it far superior to folic acid for those with this common genetic variant.",
+      "typicalDose": "400–800mcg daily (800mcg–1mg for pregnancy or MTHFR variants)",
+      "bestFor": ["Pregnancy and pre-conception (neural tube defect prevention)", "Individuals with MTHFR gene variants", "Elevated homocysteine management"],
+      "keyFacts": [
+        "Up to 40% of people have MTHFR variants that reduce conversion of folic acid to the active form — L-methylfolate (5-MTHF) bypasses this step entirely",
+        "The neural tube closes within 28 days of conception — supplementation must begin before pregnancy is confirmed, not after",
+        "Works synergistically with B12 — both are required for the homocysteine-to-methionine conversion; deficiency in either raises cardiovascular risk"
+      ],
+      "commonMistakes": [
+        "Using folic acid instead of methylfolate if you have an MTHFR variant — folic acid requires enzymatic conversion that MTHFR-variant individuals do poorly; unmetabolised folic acid can accumulate and may have adverse effects.",
+        "Starting folate only after a positive pregnancy test — the neural tube closes in the first 28 days, often before pregnancy is known; women planning pregnancy should begin supplementing at least 1–3 months before conception."
+      ]
+    },
+    "biotin": {
+      "tagline": "The B vitamin behind healthy hair, skin, nails, and metabolism",
+      "primaryUse": "Essential cofactor for five carboxylase enzymes involved in fatty acid synthesis, amino acid catabolism, and gluconeogenesis",
+      "overview": "Biotin (Vitamin B7) is a water-soluble B vitamin that serves as the essential cofactor for five carboxylase enzymes critical to macronutrient metabolism. Clinical biotin deficiency is rare but produces unmistakable symptoms: hair thinning, brittle nails, and scaly skin rash. The supplement market around biotin — often at megadoses of 1000–10,000mcg — was built on its established role in hair and nail keratin synthesis. While megadose biotin is unlikely to benefit people without deficiency, those with subtly low biotin (frequent raw egg consumption, alcoholism, certain medications) show real improvements in hair and nail quality.",
+      "typicalDose": "30–100mcg daily (adequate intake); 1000–5000mcg for hair/nail goals",
+      "bestFor": ["Hair thinning associated with biotin deficiency", "Brittle nails", "Individuals consuming raw eggs regularly (avidin blocks biotin absorption)"],
+      "keyFacts": [
+        "Raw egg whites contain avidin — a protein that binds biotin and prevents its absorption; regular raw egg consumption is a genuine cause of biotin deficiency",
+        "High-dose biotin (≥ 5mg) interferes with thyroid and troponin lab tests — stop supplementation 3–7 days before blood tests to avoid false readings",
+        "True biotin deficiency is rare in healthy adults eating cooked food; megadose supplementation likely only benefits those with genuine deficiency"
+      ],
+      "commonMistakes": [
+        "Not disclosing biotin supplementation before blood tests — high-dose biotin causes false thyroid (TSH, T4) and cardiac (troponin) results, which can lead to serious diagnostic errors. Stop 3–7 days before testing.",
+        "Expecting megadose biotin to grow hair significantly beyond baseline in non-deficient individuals — the popular belief that 5000–10,000mcg promotes hair growth in everyone is not supported by evidence; the benefit is specific to deficiency correction."
+      ]
+    },
+    "milk-thistle": {
+      "tagline": "The world's most studied herb for liver protection and detoxification",
+      "primaryUse": "Silymarin flavonoids stabilise hepatocyte membranes and act as powerful antioxidants, protecting liver cells from toxin-induced damage",
+      "overview": "Milk thistle (Silybum marianum) contains a group of flavonoid compounds collectively called silymarin, with silybin being the most biologically active. Silymarin exerts hepatoprotective effects through multiple mechanisms: stabilising liver cell membranes against toxin permeation, acting as a potent antioxidant that scavenges free radicals in hepatocytes, stimulating RNA polymerase I to accelerate liver cell regeneration, and reducing fibrotic activity in chronic liver disease. It has the longest evidence base of any hepatoprotective herb and is recommended by liver specialists in several European countries for alcoholic liver disease and non-alcoholic fatty liver disease.",
+      "typicalDose": "140mg silymarin (standardised to 70–80%) two to three times daily",
+      "bestFor": ["Liver support during alcohol consumption or medication use", "Non-alcoholic fatty liver disease (NAFLD)", "Post-cycle therapy stacks for performance-drug users"],
+      "keyFacts": [
+        "Standardisation is critical — products should state silymarin content (70–80% standardised extract), not just milk thistle seed powder which has variable and low silymarin content",
+        "Phytosome forms (Siliphos®) have 4–10× greater bioavailability than standard silymarin due to enhanced absorption",
+        "Protective effect has been shown against Amanita phalloides (death cap mushroom) toxicity — the pharmacological basis is well established, not anecdotal"
+      ],
+      "commonMistakes": [
+        "Buying non-standardised milk thistle seed powder — silymarin content in raw powder varies enormously and is typically very low; always choose products standardised to 70–80% silymarin.",
+        "Expecting it to undo liver damage from alcohol consumed immediately before — milk thistle works prophylactically and through chronic supplementation, not as a same-day recovery agent."
+      ]
+    },
+    "elderberry": {
+      "tagline": "Clinically validated berry extract for faster cold and flu recovery",
+      "primaryUse": "Flavonoid compounds in elderberry inhibit viral entry and replication while modulating immune cytokine production",
+      "overview": "Black elderberry (Sambucus nigra) is one of the few herbal remedies with genuine randomised controlled trial data for its primary indication — reducing the severity and duration of upper respiratory infections. Elderberry's anthocyanins have been shown in vitro and in clinical trials to inhibit viral haemagglutinin proteins, blocking viral attachment to host cells, and to stimulate cytokine production that coordinates immune response. Meta-analyses consistently show reductions in cold duration of 1–2 days when supplementation begins at symptom onset.",
+      "typicalDose": "600–900mg elderberry extract daily at symptom onset; 150–300mg for prevention",
+      "bestFor": ["Reducing cold and flu duration when taken at first symptoms", "Winter immune support", "Frequent travellers and those in high-exposure environments"],
+      "keyFacts": [
+        "Most effective when started at the first sign of symptoms — prophylactic use shows smaller benefits than early therapeutic use",
+        "Raw elderberries are toxic (contain cyanogenic glycosides) — only use processed extracts, syrups, or supplements, never raw berries",
+        "Quality standardisation matters — look for products standardised to anthocyanin content; many elderberry gummies contain negligible active compounds"
+      ],
+      "commonMistakes": [
+        "Consuming raw elderberries or unprocessed elderberry products — raw elderberries and leaves contain sambunigrin (a cyanogenic glycoside) that causes nausea and vomiting; only use heat-processed extracts.",
+        "Taking elderberry syrup products with high sugar content — many commercial syrups contain more sugar than elderberry; this may blunt immune benefit and is counterproductive for those managing blood sugar."
+      ]
+    },
+    "tongkat-ali": {
+      "tagline": "Southeast Asian adaptogen for testosterone, energy, and stress resilience",
+      "primaryUse": "Reduces cortisol and supports the hypothalamic-pituitary-gonadal (HPG) axis, leading to improved testosterone levels in stressed or sub-optimal conditions",
+      "overview": "Tongkat Ali (Eurycoma longifolia) has been used for centuries in Malaysian and Indonesian traditional medicine as a tonic for male vitality and energy. Modern research has focused on its ability to reduce sex hormone binding globulin (SHBG) and lower cortisol — both of which increase free testosterone. The standardised extract LJ100® (200:1 root extract) has the strongest clinical backing, with multiple trials showing significant testosterone increases in men with late-onset hypogonadism, chronic stress, and physically demanding training. Its effects are most pronounced in those with below-optimal testosterone, rather than those already at the high end of normal.",
+      "typicalDose": "200–400mg standardised extract (LJ100® or equivalent) daily",
+      "bestFor": ["Men with stress-related testosterone suppression", "Male athletes in heavy training blocks (overtraining)", "Age-related testosterone decline (40+)"],
+      "keyFacts": [
+        "LJ100® is the most clinically validated extract — it is a 200:1 water extract standardised to glycosaponins, eurypeptides, and polysaccharides; generic tongkat ali root powder is not equivalent",
+        "Effects are cortisol-dependent — it works best in stressed individuals; already low-cortisol individuals see smaller testosterone shifts",
+        "Also used in female protocols for libido and energy — not exclusive to men, though most data is in male populations"
+      ],
+      "commonMistakes": [
+        "Using unverified bulk powder instead of standardised extract — the ratio of tongkat ali root extract (100:1, 200:1) dramatically affects active compound concentration; cheap powders may contain negligible eurypeptides.",
+        "Expecting rapid testosterone shifts within days — meaningful hormonal changes from tongkat ali require 4–8 weeks of consistent supplementation to become statistically and physiologically significant."
+      ]
+    },
+    "maca-root": {
+      "tagline": "Andean adaptogen for energy, libido, and hormonal balance",
+      "primaryUse": "Non-hormonal adaptogen that modulates hypothalamic function to support libido, fertility, energy, and endocrine balance",
+      "overview": "Maca (Lepidium meyenii) is a cruciferous root vegetable grown at high altitudes in the Peruvian Andes that has been used as food and medicine for over 2000 years. Unlike many libido supplements, maca does not directly alter sex hormone levels — it appears to work through the hypothalamus, modulating the endocrine system upstream. Clinical trials show consistent improvements in sexual desire in men and women, improved sperm quality in men, and reductions in menopausal symptoms (hot flushes, mood changes) in women. Black maca has the strongest evidence for fertility and cognition, while red maca is better studied for prostate health.",
+      "typicalDose": "1.5–3g of gelatinised maca powder daily",
+      "bestFor": ["Libido and sexual function (men and women)", "Menopausal symptom relief (hot flushes, mood)", "Sustained energy without stimulants"],
+      "keyFacts": [
+        "Gelatinised (cooked/pre-gelatinised) maca has improved digestibility and starch removal — raw maca can cause GI discomfort and has less bioavailable macamides",
+        "Colour matters clinically — black maca: best for cognition and male fertility; red maca: best for prostate health and female hormonal balance; yellow: general purpose",
+        "Does not raise oestrogen or testosterone directly — safe for oestrogen-sensitive conditions unlike many libido supplements"
+      ],
+      "commonMistakes": [
+        "Using raw maca powder instead of gelatinised — raw maca contains high starch content that can cause GI distress, and its macamide content is less bioavailable; gelatinised (heat-processed) maca is the preferred supplemental form.",
+        "Expecting immediate libido effects — maca's adaptogenic action builds over weeks; studies showing libido improvements typically run for 6–12 weeks before meaningful effects emerge."
+      ]
+    },
+    "vitamin-a": {
+      "tagline": "Essential fat-soluble vitamin for vision, immunity, and cellular growth",
+      "primaryUse": "Required for rhodopsin synthesis in photoreceptors, immune cell differentiation, and regulation of gene expression via retinoic acid receptors",
+      "overview": "Vitamin A encompasses two distinct forms: preformed retinol (from animal foods) and provitamin A carotenoids like beta-carotene (from plant foods). Retinol is biologically active immediately; beta-carotene must be converted to retinol in the intestinal wall — a process that is genetically variable and inefficient in some individuals. Vitamin A is essential for low-light vision (rhodopsin), immune T-cell development, skin and mucosal barrier integrity, and reproductive function. Deficiency causes night blindness and severe immune impairment. Supplemental vitamin A requires care as it is one of the fat-soluble vitamins that accumulates and can reach toxic levels.",
+      "typicalDose": "700–900mcg RAE (2300–3000 IU) daily; do not exceed 3000mcg RAE (10,000 IU) from retinol",
+      "bestFor": ["Deficiency correction (common in developing regions)", "Immune support, particularly mucosal immunity", "Night vision and eye health maintenance"],
+      "keyFacts": [
+        "Beta-carotene (plant-sourced) is not toxic at high doses — only preformed retinol (animal-sourced/supplements) accumulates and can cause toxicity",
+        "Up to 45% of people are poor converters of beta-carotene to retinol due to BCMO1 gene variants — these individuals must get preformed retinol from diet or supplements",
+        "Vitamin A and Vitamin D work synergistically — Vitamin D receptors require retinoic acid for optimal expression; they compete at high doses and should be balanced"
+      ],
+      "commonMistakes": [
+        "Taking high-dose preformed retinol supplements when dietary intake is already adequate — preformed vitamin A accumulates in the liver and is the most common cause of fat-soluble vitamin toxicity; beta-carotene is far safer for supplementation.",
+        "Assuming plant-based diets provide adequate vitamin A via beta-carotene — poor converters (a common genetic variant) can have very low retinol status despite high beta-carotene intake; checking retinol blood levels is advisable for vegans."
+      ]
+    },
+    "vitamin-e": {
+      "tagline": "Fat-soluble antioxidant that protects cell membranes and supports immune function",
+      "primaryUse": "Acts as a chain-breaking antioxidant in lipid membranes, preventing oxidative cascade damage to polyunsaturated fatty acids",
+      "overview": "Vitamin E is a family of eight related compounds — four tocopherols and four tocotrienols — with alpha-tocopherol being the most biologically active and the form that the human body preferentially maintains. Its primary function is to protect cell membranes and circulating lipoproteins from oxidative damage by intercepting free radical chain reactions in lipid bilayers. It also plays roles in immune signalling and platelet aggregation inhibition. The caveat: high-dose supplemental vitamin E (above 400 IU/day) has shown adverse effects in some large trials, including increased mortality risk — reinforcing that whole-food tocopherols and modest supplementation are preferable to megadoses.",
+      "typicalDose": "15mg (22 IU natural, 33 IU synthetic) daily; do not exceed 1000mg (1500 IU)",
+      "bestFor": ["Antioxidant support for high-oxidative-stress lifestyles", "Cardiovascular protection in combination with other antioxidants", "Skin and mucosal membrane health"],
+      "keyFacts": [
+        "Natural d-alpha-tocopherol is significantly more bioavailable than synthetic dl-alpha-tocopherol — look for the 'd-' prefix, not 'dl-'",
+        "Full-spectrum tocopherol (mixed tocopherols including gamma-tocopherol) is more physiologically relevant than isolated alpha-tocopherol alone; high-dose alpha-T displaces gamma-T",
+        "Vitamin E and K2 interact — high vitamin E can antagonise vitamin K-dependent clotting factors; those on anticoagulants should seek medical guidance"
+      ],
+      "commonMistakes": [
+        "Using high-dose isolated alpha-tocopherol (400+ IU) — large RCTs including HOPE-TOO show increased adverse outcomes at high doses. Whole-food or mixed tocopherol sources at physiological doses are safer.",
+        "Buying synthetic dl-alpha-tocopherol products — synthetic vitamin E has roughly 50% the biological activity of natural d-alpha-tocopherol for the same stated IU dose; natural forms are materially superior."
+      ]
+    },
+    "astaxanthin": {
+      "tagline": "The most potent antioxidant carotenoid in nature",
+      "primaryUse": "Crosses cell membranes to quench singlet oxygen and neutralise free radicals throughout the entire lipid bilayer — inside and outside simultaneously",
+      "overview": "Astaxanthin is a xanthophyll carotenoid that gives salmon, flamingos, and shrimp their pink-red colour. What makes it remarkable is its molecular structure: it spans the entire width of cell membranes and can quench free radicals on both the interior and exterior simultaneously — a property no other antioxidant carotenoid possesses. Animal studies consistently demonstrate extraordinary antioxidant potency. Human trials show benefits for exercise recovery (reduced oxidative stress and inflammation), skin photoprotection and elasticity, eye health, and cardiovascular markers. Bioavailability is poor without fat — always take with a meal containing fat.",
+      "typicalDose": "6–12mg daily with a fat-containing meal",
+      "bestFor": ["Exercise recovery and reduced muscle damage from oxidative stress", "Skin health and UV protection from within", "Eye strain and retinal protection"],
+      "keyFacts": [
+        "Natural astaxanthin from Haematococcus pluvialis algae is considered superior to synthetic astaxanthin, which consists of different isomers with lower biological activity",
+        "Fat-soluble and requires dietary fat for absorption — take with a meal; taking it fasted dramatically reduces blood levels",
+        "Among carotenoids, it cannot be converted to vitamin A — this means no risk of vitamin A toxicity, even at higher doses"
+      ],
+      "commonMistakes": [
+        "Taking it on an empty stomach — astaxanthin is highly fat-soluble and poorly absorbed without dietary fat; always take it with a meal containing fat to achieve meaningful plasma levels.",
+        "Buying synthetic astaxanthin to save cost — synthetic astaxanthin contains racemic isomers not found in natural sources, which have lower antioxidant activity; natural algae-derived astaxanthin is the research-validated form."
+      ]
+    },
+    "iodine": {
+      "tagline": "Essential trace mineral that is the backbone of thyroid hormone production",
+      "primaryUse": "Required for biosynthesis of the thyroid hormones T3 and T4, which regulate metabolism, energy production, and development",
+      "overview": "Iodine is incorporated directly into thyroid hormones — thyroxine (T4) and triiodothyronine (T3) — making it the only mineral with a structural rather than cofactor role in hormone synthesis. Iodine deficiency is the leading preventable cause of intellectual disability globally and produces goitre, hypothyroidism, and severe developmental impairment in foetuses when deficient in pregnant women. Despite iodised salt programmes, deficiency has re-emerged in many populations following dietary shifts away from iodised salt and dairy, increased use of non-iodised sea salt, and vegan diets (limited seafood and dairy). Supplemental iodine must be dosed carefully — excess can also disrupt thyroid function.",
+      "typicalDose": "150mcg daily (RDA); 220mcg during pregnancy; do not routinely exceed 1100mcg",
+      "bestFor": ["Vegan and plant-based eaters avoiding seaweed and dairy", "Pregnant and breastfeeding women", "Those using non-iodised salt exclusively"],
+      "keyFacts": [
+        "Seaweed is rich in iodine but concentration varies dramatically by species and harvest region — kelp supplements can deliver unpredictably high doses and are not reliable for precise dosing",
+        "Selenium and iodine work together — selenium deficiency impairs iodine utilisation; ensure selenium is adequate alongside iodine supplementation",
+        "Excess iodine (Wolff-Chaikoff effect) can paradoxically suppress thyroid function — stay within established safe upper limits"
+      ],
+      "commonMistakes": [
+        "Using kelp as an iodine supplement — kelp iodine content varies from trace amounts to dangerously high concentrations between batches; potassium iodide tablets provide precise and predictable dosing.",
+        "Supplementing iodine without adequate selenium — selenium is required for iodine metabolism (as selenodeiodinase enzymes); iodine without selenium in deficiency states can worsen thyroid dysfunction."
+      ]
+    },
+    "chromium": {
+      "tagline": "Trace mineral that enhances insulin sensitivity and glucose metabolism",
+      "primaryUse": "Potentiates insulin receptor signalling, improving glucose uptake and reducing blood sugar fluctuations after meals",
+      "overview": "Chromium is an essential trace mineral that enhances the activity of insulin — the key hormone that shuttles glucose into cells. Its proposed mechanism involves chromodulin, a chromium-binding oligopeptide that amplifies insulin receptor tyrosine kinase activity. Clinical evidence for chromium picolinate (the best-absorbed supplemental form) shows modest but real reductions in fasting blood glucose and HbA1c in people with type 2 diabetes and insulin resistance. Effects in healthy, insulin-sensitive individuals are much smaller and inconsistent. It is most relevant for those with blood sugar regulation challenges.",
+      "typicalDose": "200–1000mcg chromium picolinate daily with meals",
+      "bestFor": ["Insulin resistance and pre-diabetes management", "Reducing post-meal blood sugar spikes", "Carbohydrate cravings and blood sugar control on hypocaloric diets"],
+      "keyFacts": [
+        "Chromium picolinate is substantially better absorbed than chromium chloride or chromium polynicotinate — always check the form",
+        "The evidence base is strongest for type 2 diabetics and those with impaired glucose tolerance; healthy individuals with normal insulin sensitivity see minimal benefit",
+        "Processed foods deplete dietary chromium — refined sugar consumption increases urinary chromium losses, creating a vicious cycle for blood sugar regulation"
+      ],
+      "commonMistakes": [
+        "Using chromium chloride instead of chromium picolinate — chloride is very poorly absorbed; picolinate is the form used in the vast majority of positive clinical trials.",
+        "Expecting chromium to substitute for dietary change — chromium improves insulin signal quality but cannot compensate for chronically high sugar or refined carbohydrate intake; it works best as an adjunct to a lower-glycaemic diet."
+      ]
+    },
+    "saw-palmetto": {
+      "tagline": "Plant extract for prostate health and DHT management",
+      "primaryUse": "Inhibits 5-alpha reductase, reducing conversion of testosterone to DHT, to support prostate health and manage androgenic hair loss",
+      "overview": "Saw palmetto (Serenoa repens) is derived from the berries of a native North American palm. Its primary biological mechanism is inhibition of 5-alpha reductase — the enzyme that converts testosterone to the more potent androgen dihydrotestosterone (DHT). DHT is the primary driver of both benign prostatic hyperplasia (BPH) and androgenic alopecia. Clinical trials for BPH symptoms show saw palmetto reduces urinary frequency and improves urinary flow comparably to tamsulosin (an alpha-blocker drug) in mild-to-moderate BPH. Evidence for hair loss is more modest but emerging.",
+      "typicalDose": "320mg of standardised liposterolic extract daily",
+      "bestFor": ["Benign prostatic hyperplasia (BPH) symptom relief", "DHT-related hair loss prevention", "Prostate health maintenance in men over 45"],
+      "keyFacts": [
+        "The liposterolic extract (fat-soluble, typically hexane-extracted) is the form with clinical evidence; water extracts and powders lack the active fatty acid and phytosterol content",
+        "Takes 4–8 weeks minimum for BPH symptom improvements — do not assess effectiveness before 2–3 months of consistent use",
+        "Does not lower PSA (prostate-specific antigen) the way finasteride does — important for prostate cancer screening, as PSA levels remain informative under saw palmetto"
+      ],
+      "commonMistakes": [
+        "Using non-standardised saw palmetto berry powder — the whole berry powder lacks the concentrated fatty acid content of liposterolic extract; look specifically for products standardised to 85–95% fatty acids.",
+        "Expecting it to fully reverse established hair loss — saw palmetto may slow DHT-mediated hair loss and is most effective as a preventive measure; established alopecia requires more aggressive intervention alongside it."
+      ]
+    },
+    "lutein-zeaxanthin": {
+      "tagline": "Macular pigments that protect eyes from blue light and age-related degeneration",
+      "primaryUse": "Concentrated in the macula and lens, these carotenoids filter high-energy blue light and quench singlet oxygen to protect photoreceptors",
+      "overview": "Lutein and zeaxanthin are the only dietary carotenoids selectively concentrated in the macula — the central region of the retina responsible for high-acuity vision. They form the macular pigment, which functions as a natural blue-light filter and antioxidant shield for photoreceptors. The landmark AREDS2 trial established lutein + zeaxanthin supplementation as a standard of care for reducing progression of intermediate age-related macular degeneration (AMD) to advanced AMD by ~25%. Emerging evidence also supports benefits for visual performance in high screen-time environments, reducing glare sensitivity and improving contrast sensitivity.",
+      "typicalDose": "10mg lutein + 2mg zeaxanthin daily",
+      "bestFor": ["Age-related macular degeneration (AMD) prevention and progression reduction", "High screen-time users and digital eye strain", "Those with a family history of AMD or macular disease"],
+      "keyFacts": [
+        "The AREDS2 trial — the largest and most rigorous eye supplement trial ever conducted — replaced beta-carotene with lutein/zeaxanthin in the formula due to superior safety and efficacy",
+        "The 5:1 lutein-to-zeaxanthin ratio mirrors the natural macular pigment composition — products deviating significantly from this ratio are less physiologically optimised",
+        "Dark green vegetables (kale, spinach, collards) are the richest food sources, but dietary amounts rarely reach the 10mg lutein threshold used in the AREDS2 trial"
+      ],
+      "commonMistakes": [
+        "Taking beta-carotene supplements simultaneously — high-dose beta-carotene competes with lutein and zeaxanthin for intestinal absorption and was removed from the updated AREDS2 formula for this reason; avoid combining them.",
+        "Using products with very low zeaxanthin content — many cheap lutein supplements contain only trace zeaxanthin despite its distinct and important role in the central macula; look for at least 2mg zeaxanthin alongside 10mg lutein."
+      ]
     }
   },
   "healthProfileOptions": {

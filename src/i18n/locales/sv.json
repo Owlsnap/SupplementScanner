@@ -1327,6 +1327,422 @@
         "Att överstiga 200 mcg dagligen utan att övervaka serumselennivåer — selen har ett av de smalare terapeutiska fönstren bland mineraler; toxicitet orsakar håravfall, nagelskörhet och neurologiska symtom.",
         "Att använda oorganiska former (selenit eller selenat) — selenometionin har avsevärt högre biotillgänglighet och vävnadsretention och är den form som används i majoriteten av positiva kliniska studier."
       ]
+    },
+    "bcaas": {
+      "tagline": "Världens mest sålda aminosyratillskott för muskler och återhämtning",
+      "primaryUse": "Stimulerar muskelproteinsyntesen via leucinsignalering och minskar träningsorsakad muskelnedbrytning",
+      "overview": "BCAA — leucin, isoleucin och valin — är tre av de nio essentiella aminosyrorna som måste komma från kosten. Leucin fungerar som en direkt anabol signal och aktiverar mTOR-signalvägen som initierar muskelproteinsyntesen. BCAA är mest värdefulla vid fasted träning, vid lågt proteinintag eller under längre pass då muskelnedbrytningen annars ökar. Om det totala dagliga proteinintaget redan är tillräckligt (1,6–2,2 g/kg) ger BCAA-tillskott begränsad nytta utöver vad fullspektrum-EAA ger.",
+      "typicalDose": "5–10 g intra- eller post-workout",
+      "bestFor": ["Fasted träningspass", "Kaloribegränsade nedskärningsfaser", "Idrottare som tränar flera gånger per dag"],
+      "keyFacts": [
+        "2:1:1-förhållandet (leucin:isoleucin:valin) är det mest beforskade — leucin driver den anabola signalen medan isoleucin och valin stöder energiförbrukningen",
+        "BCAA kan inte bygga komplett muskelprotein ensamt — de saknar de andra sex essentiella aminosyrorna; EAA eller hela proteinkällor är mer kompletta",
+        "Mest användbara när proteinintaget är otillräckligt; redundanta för dem som redan uppnår 1,6–2 g/kg från mat"
+      ],
+      "commonMistakes": [
+        "Att använda BCAA som ersättning för tillräckligt totalprotein — de innehåller bara 3 av 9 essentiella aminosyror och kan inte utlösa komplett muskelproteinsyntes på samma sätt som vassle eller EAA.",
+        "Att ta BCAA post-workout när du redan ätit en proteinrik måltid — om leucinbehovet är uppfyllt av mat ger ytterligare BCAA-tillskott försumbar extra stimulus."
+      ]
+    },
+    "eaas": {
+      "tagline": "Komplett aminosyraspektrum för muskelsyntes utan hel mat",
+      "primaryUse": "Ger alla nio essentiella aminosyror som krävs för komplett muskelproteinsyntes, inklusive alla tre BCAA",
+      "overview": "EAA levererar alla nio aminosyror som kroppen inte kan syntetisera: histidin, isoleucin, leucin, lysin, metionin, fenylalanin, treonin, tryptofan och valin. Till skillnad från BCAA, som bara ger tre, kan EAA stödja en komplett omgång av muskelproteinsyntes. De är det överlägsna valet vid fasted träning, återhämtningsfönster mellan måltider eller för den som har svårt att äta tillräckligt protein. Leucininnehållet förblir den viktigaste anabola triggern, men det fullständiga spektrumet säkerställer att ingen aminosyra blir en begränsande faktor.",
+      "typicalDose": "10–15 g intra- eller post-workout",
+      "bestFor": ["Fasted morgonträning", "Muskelunderhåll mellan måltider", "Växtbaserade idrottare med aminosyragap"],
+      "keyFacts": [
+        "Innehåller alla BCAA — att välja EAA framför BCAA ger alltid lika stor eller större nytta till liknande kostnad",
+        "Särskilt värdefullt för veganer och växtbaserade idrottare vars enskilda växtproteiner ofta är låga på specifika aminor som lysin eller metionin",
+        "Absorberas och verkar snabbt — topp i plasma-aminosyranivåer inom 30–60 minuter efter intag"
+      ],
+      "commonMistakes": [
+        "Att välja BCAA framför EAA när båda är liknande prissatta — EAA ger samma BCAA-signal plus alla återstående essentiella aminosyror, vilket gör dem objektivt mer kompletta.",
+        "Att behandla EAA som ersättning för hela proteinkällor — EAA saknar icke-essentiella aminosyror, kreatin och mikronäringstätheten i hel-mat-protein; de kompletterar, ersätter inte."
+      ]
+    },
+    "electrolytes": {
+      "tagline": "Hydrerade mineraler som förebygger kramper och upprätthåller prestanda",
+      "primaryUse": "Återfyller natrium, kalium, magnesium och klorid som förlorats genom svett för att bibehålla vätskebalans och neuromuskulär funktion",
+      "overview": "Elektrolyter — främst natrium, kalium, magnesium och klorid — styr vätskefördelningen mellan celler och blodomloppet. Under träning töms dessa mineraler via svett, vilket minskar plasmavolymen, försämrar muskelkontraktion och utlöser kramper. Natrium är den dominerande elektrolyten i svett och den primära drivkraften för törst; att ersätta det med vätska under långa pass bibehåller plasmavolymen mycket mer effektivt än enbart vatten. Den moderna elektrolytmarknaden har exploderat eftersom många är kroniskt milt dehydrerade och presterar bättre med avsiktlig påfyllning.",
+      "typicalDose": "500–1000 mg natrium + 200–400 mg kalium per träningstimme",
+      "bestFor": ["Uthållighetsidrottare (pass längre än 60 minuter)", "Träning och tävling i värme", "Alla som är benägna att få träningskramper"],
+      "keyFacts": [
+        "Natrium är den elektrolyt som förloras i störst mängd genom svett — det är den primära drivkraften för effektiv rehydrering, inte kalium eller magnesium ensamt",
+        "Enbart vatten under längre träning kan späda ut kvarvarande elektrolyter och orsaka hyponatremi — ett farligt tillstånd; elektrolyter förebygger detta",
+        "Individuella svetthastigheter och natriumförluster varierar dramatiskt — kraftiga, salta svettare behöver avsevärt mer natrium än lättsvetterare"
+      ],
+      "commonMistakes": [
+        "Att använda elektrolyter med otillräckligt natrium — många konsumentprodukter prioriterar smak och levererar för lite natrium, den viktigaste elektrolyten. Sök efter minst 500–1000 mg natrium per portion för genuin rehydrering under träning.",
+        "Att dricka enbart vatten för att rehydrera efter kraftig svettning — vatten utan elektrolyter kan späda ut plasma-natrium, förvärra kramper och paradoxalt förlänga dehydreringen."
+      ]
+    },
+    "beetroot-extract": {
+      "tagline": "Naturlig nitratkälla som vidgar blodkärl och ökar uthålligheten",
+      "primaryUse": "Ger dietärt nitrat som omvandlas till kväveoxid i kroppen, minskar syrebehovet vid träning och förbättrar uthållighetskapaciteten",
+      "overview": "Rödbeta är den rikaste dietkällan för oorganiskt nitrat. När det intas omvandlar bakterier på tungan nitrat till nitrit, som sedan reduceras till kväveoxid i blodomloppet. Kväveoxid vidgar blodkärlen och minskar syrebehovet vid submaximal träning — det vill säga samma ansträngning kräver mindre syre. Detta leder till förbättrad tid till utmattning, snabbare tidsprova-prestanda och lägre upplevd ansträngning vid givna intensiteter. Det är särskilt effektivt för uthållighetsidrottare och dem som utför ihållande arbete med måttlig intensitet.",
+      "typicalDose": "400–600 mg nitrat (≈ 500 ml rödbetor juice) 2–3 timmar före träning",
+      "bestFor": ["Uthållighetsidrottare (cykling, löpning, rodd)", "Ihållande ansträngningar med måttlig intensitet (30–70 % VO2max)", "Idrottare som inte tål koffein"],
+      "keyFacts": [
+        "Effekten är mest uttalad vid måttliga intensiteter — högintensivt arbete över 85 % VO2max visar mindre konsekvent nytta",
+        "Koncentrerade shots (70 ml) är mer praktiska än 500 ml rödbetisjuice; båda levererar ~400–600 mg nitrat",
+        "Oralt mikrobiom är avgörande — antibakteriell munskölj som används före intag eliminerar nitrat-till-nitrit-omvandlingen och förstör effekten"
+      ],
+      "commonMistakes": [
+        "Att använda antibakteriell munskölj samma dag — det dödar de orala bakterier som omvandlar nitrat till nitrit och eliminerar helt den ergogena effekten. Undvik munskölj före träning när du använder rödbetsextrakt.",
+        "Att tajma det för nära träningen — topp i plasma-nitritnivåer sker 2–3 timmar efter intag; att ta det 30 minuter före ger minimal nytta."
+      ]
+    },
+    "l-carnitine": {
+      "tagline": "Fetttransportmolekyl för energimetabolism och träningsåterhämtning",
+      "primaryUse": "Transporterar långkedjiga fettsyror in i mitokondrier för beta-oxidation, stöder fettmetabolism och minskar markörer för träningsorsakad muskelskada",
+      "overview": "L-Karnitin syntetiseras i levern från lysin och metionin och spelar en viktig roll i energimetabolismen — det fungerar som den molekylära shuttle som transporterar långkedjiga fettsyror genom det inre mitokondriemembranet för oxidation. L-Karnitin L-Tartrat (LCLT) är formen med de starkaste träningsåterhämtningsdata, minskar markörer för muskelsmärta, förbättrar insulinkänsligheten och ökar androgen receptortäthet i muskelvävnad. Till skillnad från ALCAR (som prioriterar hjärneffekter) riktar sig LCLT mot perifera muskel- och metaboliska resultat.",
+      "typicalDose": "1–3 g dagligen, helst med en kolhydratinnehållande måltid",
+      "bestFor": ["Fettförlusststöd vid kaloribegränsning", "Minskning av träningsorsakad muskelsmärta", "Äldre vuxna med naturligt minskande karnitinsyntes"],
+      "keyFacts": [
+        "Muskelupptag av tillskottskarnitin kräver insulin — att ta det med en kolhydratinnehållande måltid förbättrar dramatiskt vävnadsretentionen",
+        "Vegetarianer och veganer har naturligt lägre karnitinnivåer eftersom kostkällorna nästan uteslutande är animaliska produkter",
+        "L-Karnitin L-Tartrat (LCLT) har de mest robusta träningsåterhämtningsdata bland alla karnitinformer"
+      ],
+      "commonMistakes": [
+        "Att ta det utan kolhydrater — muskelkarnitinupptag är insulinberoende; att ta det utan mat eller på fastande mage minskar drastiskt hur mycket muskeln faktiskt absorberar.",
+        "Att förvänta sig snabba fettförlustsresultat — karnitin förbättrar maskinerna för fettoxidation men tvingar inte fram fettförbränning; det fungerar bäst vid sidan av ett kaloriunderskott, inte som ett fristående fettförbränningsmedel."
+      ]
+    },
+    "gaba": {
+      "tagline": "Hjärnans primära hämmande neurotransmittor i tillskottsform",
+      "primaryUse": "Främjar avslappning och sömninsättning genom att minska neuronal excitatabilitet via GABA-A-receptoraktivitet",
+      "overview": "GABA (gamma-aminosmörsyra) är det centrala nervsystemets viktigaste hämmande neurotransmittor — det minskar neuronal excitatabilitet och skapar det lugna, avslappnade tillstånd som behövs för sömninsättning. Låg GABA-aktivitet förknippas med ångest, sömnlöshet och stresskänslighet. Oral GABA-supplementering har en nyanserad farmakologi: konventionellt tänkande ansåg att GABA inte kunde passera blod-hjärnbarriären, men nyare data med Pharma GABA (en fermenterad form) och högre doser visar mätbara centrala effekter. Det ses bäst som ett ångestdämpande medel snarare än ett direkt lugnmedel.",
+      "typicalDose": "100–500 mg, 30–60 minuter före sänggående",
+      "bestFor": ["Ångestrelaterade sömnsvårigheter", "Stressdriven sömnlöshet", "Minskning av tankekörning före sänggående"],
+      "keyFacts": [
+        "PharmaGABA (naturligt fermenterad form) verkar ha överlägsna centrala effekter jämfört med syntetiskt GABA tack vare olika absorptionskinetik",
+        "Fungerar bra ihop med L-teanin, som också förstärker GABAergt ton — kombinationen ger additiva avslappningseffekter",
+        "Till skillnad från bensodiazepiner (som verkar på GABA-A-receptorer) orsakar tillskotts-GABA inte beroende eller rebound-sömnlöshet"
+      ],
+      "commonMistakes": [
+        "Att använda syntetiskt GABA och förvänta sig samma effekter som farmaceutiska GABA-A-agonister — tillskotts-GABA verkar via en annan, mildare mekanism och är inte likvärdigt med receptbelagda anxiolytika.",
+        "Att förvänta sig att det ska fungera omedelbart vid svår ångest — GABA-tillskott ger milda ångestdämpande effekter; signifikanta ångeststörningar kräver professionell behandling, inte enbart tillskott."
+      ]
+    },
+    "myo-inositol": {
+      "tagline": "Sockeralkohol med anmärkningsvärda effekter på sömn, ångest och hormonell balans",
+      "primaryUse": "Fungerar som en sekundär budbärare i serotonin- och insulinsignalvägar; minskar ångest, förbättrar sömnkvalitet och stöder hormonell reglering",
+      "overview": "Myo-inositol är en naturligt förekommande sockeralkohol som finns i höga koncentrationer i hjärnan, där den fungerar som en föregångare till fosfoinositidsignaleringssystemet — en nyckelväg för serotonin, dopamin och insulinreceptorfunktion. Klinisk forskning har etablerat det som en effektiv behandling för ångeststörningar, PCOS och metaboliskt insulinresistens. Dess sömneffekter verkar fungera via serotoninvägmodulering, vilket minskar den mentala hyperaktivitet som förhindrar sömninsättning. Det har blivit ett av de snabbast växande tillskotten bland kvinnor för PCOS och cykelreglerande effekter.",
+      "typicalDose": "2–4 g före sänggående; 2–4 g två gånger dagligen för PCOS/hormonella mål",
+      "bestFor": ["Ångest och OCD-spektrumtillstånd", "PCOS och hormonell cykelreglering", "Sömninsättningssvårigheter drivna av mental rastlöshet"],
+      "keyFacts": [
+        "Ett av de få tillskott med flera randomiserade kontrollerade studier som visar effekt vid ångest — jämförbart med vissa farmaceutiska interventioner vid högre doser",
+        "För PCOS speglar 40:1-förhållandet myo-inositol till D-chiro-inositol fysiologiska koncentrationer och visar överlägsna resultat jämfört med endera ensamt",
+        "Extremt säkert utan signifikanta läkemedelsinteraktioner — till skillnad från de flesta anxiolytika är det säkert under graviditet och rekommenderas i fertilitetsprotokoll"
+      ],
+      "commonMistakes": [
+        "Att använda D-chiro-inositol ensamt för PCOS — forskning visar konsekvent att 40:1 myo:D-chiro-förhållandet överträffar D-chiro ensamt; många billigare produkter innehåller bara D-chiro-inositol.",
+        "Att förvänta sig snabba resultat för hormonell reglering — myo-inositols hormonella effekter på menstruationsregelbundenhet och PCOS-markörer kräver typiskt 3–6 månaders konsekvent användning för att bli kliniskt uppenbara."
+      ]
+    },
+    "magnesium-l-threonate": {
+      "tagline": "Den enda magnesiumformen bevisad att passera blod-hjärnbarriären",
+      "primaryUse": "Höjer hjärnans magnesiumnivåer för att stödja synaptisk plasticitet, minneskonsolidering och kognitiv funktion",
+      "overview": "Magnesium L-Treonat (MgT) utvecklades specifikt för att lösa en central begränsning i magnesiumtillskott: de flesta former av magnesium passerar dåligt blod-hjärnbarriären och påverkar hjärnans magnesiumnivåer minimalt. MgT konstruerades för att kringgå denna begränsning — djurstudier visade att det ökade cerebrospinalvätskans magnesium med ~15 % och avsevärt förbättrade minne och inlärning. Humandata är fortfarande under utveckling men visar förbättringar i korttidsminne, bearbetningshastighet och uppmärksamhet hos äldre vuxna. Det occuperar en nisch distinkt från sömn- och muskelfokuserade magnesiumformer.",
+      "typicalDose": "1,5–2 g elementärt magnesium (≈ 144 mg elementärt) dagligen, delat morgon och kväll",
+      "bestFor": ["Förebyggande av åldersrelaterad kognitiv nedgång", "Minnes- och inlärningsoptimering", "Hjärnfokuserad magnesiumtillskott"],
+      "keyFacts": [
+        "L-treonatkhelaten designades specifikt för blod-hjärnbarriärpassage — en egenskap som inte delas av glycinat, malat eller citraformer",
+        "Magtein® är den patenterade och mest studerade formen — generiska MgT-produkter kanske inte replikerar samma hjärnupptakskinetik",
+        "Fungerar synergistiskt med sömn: förbättrar sömnkvalitet (delas med glycinat) medan det dessutom stöder minneskonsolidering under djupsömn"
+      ],
+      "commonMistakes": [
+        "Att välja MgT när det primära målet är sömn eller muskelavslappning — glycinat eller malat är bättre studerade och mer kostnadseffektiva för dessa mål; MgT:s premiumpris är motiverat enbart för kognitiva tillämpningar.",
+        "Att bedöma det efter akuta effekter — normalisering av hjärnmagnesium tar veckor av konsekvent tillskott innan kognitiva förändringar märks; avbryt inte efter några dagar."
+      ]
+    },
+    "mucuna-pruriens": {
+      "tagline": "Naturlig L-DOPA-källa för dopamin, motivation och hormonellt stöd",
+      "primaryUse": "Ger L-DOPA, den direkta föregångaren till dopamin, som stöder motivation, humör och testosteron via prolaktinreduktion",
+      "overview": "Mucuna pruriens (sammetsbönor) innehåller naturligt höga koncentrationer av L-DOPA — den direkta aminosyraföregångaren till dopamin. Till skillnad från dopamin självt passerar L-DOPA blod-hjärnbarriären, där det omvandlas till dopamin i dopaminerga neuroner. Detta gör Mucuna till en verkligt nootropisk förening: det kan höja dopamintonen och förbättra motivation, drivkraft, fokus och humör. Det undertrycker också prolaktin, vilket indirekt stöder testosteron. Inom ayurvedisk medicin har det använts i tusentals år för neurologisk och reproduktiv hälsa.",
+      "typicalDose": "300–500 mg standardiserat extrakt (15–40 % L-DOPA) dagligen",
+      "bestFor": ["Motivations- och drivkraftsbrist", "Post-träning dopaminåterhämtning", "Testosteronstöd via prolaktinreduktion"],
+      "keyFacts": [
+        "Standardisering är avgörande — ett 15 %-L-DOPA-extrakt är mycket annorlunda från ett 40 %-extrakt; kontrollera alltid standardiseringen på etiketten",
+        "Synergistiskt med karbidopa (finns i farmaceutiska formuleringar) — vissa utövare kombinerar det med gröntets katekin som milt hämmar dopaminnedbrytning",
+        "Rekommenderas inte för daglig långtidsanvändning utan pauser — kronisk L-DOPA-exponering kan nedreglera dopaminreceptorer; cykling rekommenderas"
+      ],
+      "commonMistakes": [
+        "Att använda icke-standardiserat helfröpulver — L-DOPA-innehållet varierar enormt mellan satser; standardiserade extrakt är väsentliga för konsekvent och förutsägbar dosering.",
+        "Att ta det kontinuerligt utan cykling — ihållande L-DOPA-exponering riskerar receptornedreglering och beroende; cykla med 5 dagar på, 2 dagar av eller använd ett månadsuppehåll."
+      ]
+    },
+    "glucosamine": {
+      "tagline": "Världens mest använda ledtillskott för brosk underhåll",
+      "primaryUse": "Ger en föregångare för glykosaminoglykansyntes i brosk, stöder ledstruktur och minskar artrossmärta",
+      "overview": "Glukosamin är ett naturligt förekommande aminosocker som är ett primärt byggsten av brosk — specifikt glykosaminoglykaner, de strukturella proteiner som ger brosk dess stötdämpande egenskaper. Eftersom brosk inte har blodförsörjning beror det på diffusion från ledvätska för näring; glukosamintillskott ökar tillgängligt substrat för brosk underhåll och reparation. De största kliniska studierna (GAIT, LEGS) visar måttlig smärtreduktion vid knäartros, särskilt med glukosaminsuflat över HCl-formen. Fördelar ackumuleras under månader, inte dagar.",
+      "typicalDose": "1500 mg glukosaminsulfat dagligen",
+      "bestFor": ["Knäartros och ledsmärta", "Idrottare med hög ledbelastning (löpning, tyngdlyftning)", "Ledunderhåll över 40 år"],
+      "keyFacts": [
+        "Glukosaminsulfat visar starkare klinisk evidens än glukosamin HCl — sulfatformen verkar överlägsen; många billigare produkter använder HCl",
+        "GAIT-studien visade att glukosamin ensamt var överlägset placebo i subgruppen med måttlig-till-svår artros — det mest kliniskt relevanta fyndet",
+        "Paras ofta med kondroitin — kombinationen har additiva effekter på brosk hydrering och kan bromsa strukturell ledprogression"
+      ],
+      "commonMistakes": [
+        "Att använda glukosamin HCl istället för glukosaminsulfat — sulfatformen har materiellt bättre kliniska studieresultat; verifiera formen innan köp.",
+        "Att sluta efter 2–4 veckor på grund av ingen effekt — brosk omsättning är långsam; fördelar med glukosamin kräver vanligtvis 8–12 veckors konsekvent användning för att bli uppenbara."
+      ]
+    },
+    "chondroitin": {
+      "tagline": "Strukturell broskmolekyl som håller kvar vatten och motstår kompression",
+      "primaryUse": "Bibehåller broskets hydrering och strukturella integritet genom att ge sulfaterade glykosaminoglykaner och hämma nedbrytande enzymer",
+      "overview": "Kondroitinsulfat är en viktig strukturell komponent av brosk, ansvarig för dess förmåga att attrahera och behålla vatten — vilket ger brosk dess gelliknande stötdämpande egenskaper. Som tillskott ger det råmaterial för broskreparatur och kan hämma matrismetalloproteinaser (MMP) som bryter ned brosk vid artros. Kliniska data visar måttliga men verkliga fördelar för knäsmärta och ledfunktion, med starkast evidens från MOVES-studien och flera europeiska studier. Det är mest konsekvent effektivt i kombination med glukosamin.",
+      "typicalDose": "800–1200 mg dagligen",
+      "bestFor": ["Knä- och höftartros", "Idrottare som bibehåller hög ledbelastning", "Långsiktig ledhälsa stackad med glukosamin"],
+      "keyFacts": [
+        "Molekylvikt spelar roll — kondroitin med hög molekylvikt (> 15 000 Da) visar bättre resultat i studier; ultra-låg MW-former kan vara mindre effektiva",
+        "MOVES-studien visade att kondroitin plus glukosamin var icke-sämre än celecoxib (ett receptbelagt NSAID) för knäartrossmärta under 6 månader",
+        "Tar 3–6 månader för meningsfulla effekter — brosk remodellering är en långsam process; tålamod är avgörande"
+      ],
+      "commonMistakes": [
+        "Att förvänta sig snabb smärtlindring som NSAID — kondroitin fungerar strukturellt under månader; det är inte ett smärtstillande medel och bör inte användas som ersättning för akut smärthantering.",
+        "Att köpa från overifierade tillverkare — kondroitin är ett av de mest förfalskade tillskotten; oberoende tredjepartstestning är kritisk eftersom etikettkrav ofta inte stämmer med faktiskt innehåll."
+      ]
+    },
+    "hyaluronic-acid": {
+      "tagline": "Led- och hudhydrering inifrån och ut",
+      "primaryUse": "Ger hyaluronat till synovialvätska och hudhudlager, förbättrar ledsmörjning, stötdämpning och hudens fuktretention",
+      "overview": "Hyaluronsyra (HA) är en polysackarid med hög molekylvikt som naturligt är riklig i synovial ledvätska, hud och bindväv. I leder fungerar den som smörjmedel och stötdämpare; i huden är den den primära molekylen ansvarig för fuktretention och strukturell volym. Oral HA-tillskott — tidigare ansett ineffektivt på grund av molekylstorleken — stöds nu av evidens som visar att tarmbakterier och matsmältningsenzymer klyver HA till absorberabara fragment som sedan fördelas till målvävnader. Kliniska studier visar reduktioner i knäsmärta och mätbara förbättringar i hudhydrering.",
+      "typicalDose": "80–200 mg dagligen",
+      "bestFor": ["Ledsmärta och stelhet, särskilt knäobehag", "Hudhydrering och anti-åldrande", "Stackning med glukosamin och kollagen"],
+      "keyFacts": [
+        "HA med låg molekylvikt (< 300 kDa) absorberas bättre oralt än former med hög MW — kontrollera produktspecifikationer",
+        "Nativt typ II-kollagen kombinerat med HA visar additiva ledeffekter i kliniska data — en lovande kombinationsstack",
+        "I huden visar kliniska studier mätbara ökningar av hudfukt och minskningar av fina linjer efter 4–8 veckors oral tillskott"
+      ],
+      "commonMistakes": [
+        "Att förvänta sig samma effekt av topikalt HA som av oralt HA — topikalt HA sitter primärt på hudytan och ger ythydrering; oralt HA når djupare dermallager och synovialvätska.",
+        "Att använda HA-produkter med hög molekylvikt för oralt bruk — stora HA-molekyler absorberas dåligt; låg-MW eller enzymatiskt nedbrytna former behövs för effektiv oral biotillgänglighet."
+      ]
+    },
+    "iron": {
+      "tagline": "Essentiellt mineral för syretransport, energi och immunförsvar",
+      "primaryUse": "Kärnkomponent av hemoglobin och myoglobin; krävs för syretransport och mitokondriell energiproduktion",
+      "overview": "Järnbrist är den enskilt vanligaste nutritionella bristen globalt och drabbar ungefär 25 % av världens befolkning. Järn är det funktionella centrumet för hemoglobin — utan tillräckligt järn kan röda blodkroppar inte bära tillräckligt syre, vilket producerar den trötthet, andfåddhet och kognitiv nedsättning som är karakteristisk för anemi. Järnbisglycinat (även kallat järnglycinat eller Ferrochel) är den bäst tolererade och mest biotillgängliga tillskottsformen och orsakar mycket mindre förstoppning och gastrointestinal irritation än billigare järnsulfat. Fertila kvinnor, idrottare och växtbaserade ätare löper störst risk.",
+      "typicalDose": "18–45 mg elementärt järn dagligen (terapeutiskt: 100–200 mg under medicinsk tillsyn)",
+      "bestFor": ["Fertila kvinnor (menstruationsförluster)", "Uthållighetsidrottare (fotstötshemorys och svettförluster)", "Veganer och vegetarianer (icke-hem-järn är mindre biotillgängligt)"],
+      "keyFacts": [
+        "Järnbisglycinat har 2–4× bättre absorption än järnsulfat och orsakar avsevärt färre GI-biverkningar — värt det högre priset",
+        "C-vitamin förbättrar avsevärt absorption av icke-hem-järn — ta alltid med citrussaft eller ett C-vitamintillskott",
+        "Tillskott med järn utan att bekräfta brist via blodprov är aldrig en bra idé — järnöverbelastning (hemokromatos) är farlig och symtom kan likna brist"
+      ],
+      "commonMistakes": [
+        "Att ta järntillskott utan blodprov — järnöverbelastning är lika farlig som brist. Bekräfta alltid serum-ferritin och transferrinmättnad innan järntillskott påbörjas.",
+        "Att ta järn med kalcium, kaffe eller te — kalcium konkurrerar med järn om absorption; tanniner i te och kaffe hämmar icke-hem-järnupptag med upp till 60 %. Ta järn avskilt från dessa."
+      ]
+    },
+    "folate": {
+      "tagline": "Essentiellt B-vitamin för DNA-syntes, celldelning och neural utveckling",
+      "primaryUse": "Fungerar som metylgruppsbärare i enkolsmetabolismen, essentiellt för DNA-syntes, bildning av röda blodkroppar och homocysteinreglering",
+      "overview": "Folat (Vitamin B9) är ett av de mest kritiska ämnena i human biologi — det är essentiellt för DNA-syntes, celldelning och de metyleringssreaktioner som reglerar genuttryck. Dess betydelse under tidig graviditet för att förebygga neuralrörsdefekter (spina bifida) är så väletablerad att berikande av mjöl är lagstadgat i över 80 länder. Som tillskott kringgår den aktiva formen L-metyfolat (5-MTHF) MTHFR-enzymsteget som upp till 40 % av människor har reducerad aktivitet i — vilket gör den mycket överlägsen folsyra för dem med denna vanliga genetiska variant.",
+      "typicalDose": "400–800 mcg dagligen (800 mcg–1 mg för graviditet eller MTHFR-varianter)",
+      "bestFor": ["Graviditet och prekonception (förebyggande av neuralrörsdefekter)", "Individer med MTHFR-genvarianter", "Förhöjd homocysteinhantering"],
+      "keyFacts": [
+        "Upp till 40 % av människor har MTHFR-varianter som minskar omvandlingen av folsyra till aktiv form — L-metyfolat (5-MTHF) kringgår detta steg helt",
+        "Neuralröret stängs inom 28 dagar efter befruktningen — tillskott måste påbörjas innan graviditeten bekräftats, inte efteråt",
+        "Fungerar synergistiskt med B12 — båda krävs för homocystein-till-metionin-omvandlingen; brist på endera höjer kardiovaskulär risk"
+      ],
+      "commonMistakes": [
+        "Att använda folsyra istället för metyfolat vid MTHFR-variant — folsyra kräver enzymatisk omvandling som MTHFR-variantindivider gör dåligt; ometaboliserad folsyra kan ackumuleras och ha negativa effekter.",
+        "Att börja folat först efter ett positivt graviditetstest — neuralröret stängs de första 28 dagarna, ofta innan graviditet är känd; kvinnor som planerar graviditet bör börja tillskott minst 1–3 månader före befruktning."
+      ]
+    },
+    "biotin": {
+      "tagline": "B-vitaminet bakom friskt hår, hud, naglar och ämnesomsättning",
+      "primaryUse": "Essentiell kofaktor för fem karboxylaser inblandade i fettsyresyntes, aminosyrakatabolism och glukoneogenes",
+      "overview": "Biotin (Vitamin B7) är ett vattenlösligt B-vitamin som fungerar som essentiell kofaktor för fem karboxylaser kritiska för makronäringsmetabolism. Klinisk biotinbrist är sällsynt men ger tydliga symtom: håravfall, sköra naglar och skällig hudutslag. Tillskottsmarknaden kring biotin — ofta i megadoser på 1000–10 000 mcg — byggdes på dess etablerade roll i hår- och nagelkeratinsyntes. Även om megadosbiotin sannolikt inte gynnar personer utan brist, visar de med subtilt lågt biotin (frekvent rå äggkonsumtion, alkoholism, vissa mediciner) verkliga förbättringar i hår- och nagelkvalitet.",
+      "typicalDose": "30–100 mcg dagligen (tillräckligt intag); 1000–5000 mcg för hår/nagelmål",
+      "bestFor": ["Håravfall förknippat med biotinbrist", "Sköra naglar", "Individer som regelbundet konsumerar råa ägg (avidin blockerar biotinabsorption)"],
+      "keyFacts": [
+        "Råa äggvitar innehåller avidin — ett protein som binder biotin och förhindrar absorption; regelbunden rå äggkonsumtion är en verklig orsak till biotinbrist",
+        "Höga doser biotin (≥ 5 mg) stör sköldkörtel- och troponinlaboratorietester — avbryt tillskott 3–7 dagar före blodprov för att undvika falskt utfall",
+        "Verklig biotinbrist är sällsynt hos friska vuxna som äter kokt mat; megadostillskott gynnar sannolikt bara dem med genuin brist"
+      ],
+      "commonMistakes": [
+        "Att inte avslöja biotintillskott före blodprov — höga doser biotin orsakar falska sköldkörtel- (TSH, T4) och hjärt- (troponin) resultat, vilket kan leda till allvarliga diagnostiska fel. Avbryt 3–7 dagar före testning.",
+        "Att förvänta sig att megadosbiotin ska växa hår avsevärt utöver baslinjen hos icke-bristfälliga individer — den populära föreställningen att 5000–10 000 mcg främjar hårtillväxt hos alla stöds inte av evidens; nyttan är specifik för bristkorrektion."
+      ]
+    },
+    "milk-thistle": {
+      "tagline": "Världens mest studerade ört för leverskydd och avgiftning",
+      "primaryUse": "Silymarin-flavonoider stabiliserar hepatocytmembran och fungerar som kraftfulla antioxidanter och skyddar leverceller från toxinorsakad skada",
+      "overview": "Mjölktistel (Silybum marianum) innehåller en grupp flavonoidföreningar som kollektivt kallas silymarin, med silybin som den mest biologiskt aktiva. Silymarin utövar hepatoprotektiva effekter genom flera mekanismer: stabiliserar levercellsmembran mot toxinpermeation, fungerar som en potent antioxidant som rensar fria radikaler i hepatocyter, stimulerar RNA-polymeras I för att accelerera levercellsregenerering och minskar fibrotisk aktivitet vid kronisk leversjukdom. Det har den längsta evidensbasen av alla hepatoprotektiva örter och rekommenderas av leverspecialister i flera europeiska länder för alkoholisk leversjukdom och icke-alkoholisk fettlever.",
+      "typicalDose": "140 mg silymarin (standardiserat till 70–80 %) två till tre gånger dagligen",
+      "bestFor": ["Leverstöd vid alkoholkonsumtion eller medicinering", "Icke-alkoholisk fettleversjukdom (NAFLD)", "Post-cykel-terapistackar för prestationsmedelanvändare"],
+      "keyFacts": [
+        "Standardisering är kritisk — produkter bör ange silymarinnehåll (70–80 % standardiserat extrakt), inte bara mjölktistelfrönpulver som har variabelt och lågt silymarinnehåll",
+        "Fytosomsformer (Siliphos®) har 4–10× bättre biotillgänglighet än standard silymarin tack vare förbättrad absorption",
+        "Skyddande effekt har visats mot Amanita phalloides (dödsmusseron) toxicitet — den farmakologiska grunden är välgrundad, inte anekdotisk"
+      ],
+      "commonMistakes": [
+        "Att köpa icke-standardiserat mjölktistelfrönpulver — silymarinnehållet i råpulver varierar enormt och är typiskt mycket lågt; välj alltid produkter standardiserade till 70–80 % silymarin.",
+        "Att förvänta sig att det ska ångra leverskada från alkohol som konsumeras omedelbart innan — mjölktistel fungerar profylaktiskt och genom kronisk tillskott, inte som ett återhämtningsmedel samma dag."
+      ]
+    },
+    "elderberry": {
+      "tagline": "Kliniskt validerat bärextrakt för snabbare förkylnings- och influensaåterhämtning",
+      "primaryUse": "Flavonoidföreningar i fläder hämmar viral infart och replikation medan de modulerar immuncytoproduktion",
+      "overview": "Svart fläder (Sambucus nigra) är ett av de få örtläkemedel med verkliga randomiserade kontrollerade studiedata för sin primära indikation — att minska svårighetsgraden och varaktigheten av övre luftvägsinfektioner. Fläders antocyaniner har i in vitro och i kliniska studier visats hämma virala hemagglutininproteiner, blockera viral fästning till värdceller och stimulera cytokinsproduktion som samordnar immunsvar. Metaanalyser visar konsekvent förkortning av förkylningsvaraktigheten med 1–2 dagar när tillskott påbörjas vid symptomdebut.",
+      "typicalDose": "600–900 mg fläderextrakt dagligen vid symptomdebut; 150–300 mg för förebyggande",
+      "bestFor": ["Minskning av förkylnings- och influensavaraktighet när det tas vid första symtom", "Vinterimmunstöd", "Frekventa resenärer och de i miljöer med hög exponering"],
+      "keyFacts": [
+        "Mest effektivt när det påbörjas vid de första tecknen på symtom — profylaktisk användning visar mindre fördelar än tidig terapeutisk användning",
+        "Råa fläder är giftiga (innehåller cyanogena glykosider) — använd bara bearbetade extrakt, siraper eller tillskott, aldrig råa bär",
+        "Kvalitetsstandardisering spelar roll — leta efter produkter standardiserade till antocyaninnehåll; många flädergumin innehåller försumbara aktiva föreningar"
+      ],
+      "commonMistakes": [
+        "Att konsumera råa fläder eller obearbetade fläderprodukter — råa fläder och blad innehåller sambunigrin (ett cyanogent glykosid) som orsakar illamående och kräkningar; använd bara värmbearbetade extrakt.",
+        "Att ta flädersirapsprodukter med högt sockerinnehåll — många kommersiella siraper innehåller mer socker än fläder; detta kan dämpa immunfördelen och är kontraproduktivt för blodsockerhantering."
+      ]
+    },
+    "tongkat-ali": {
+      "tagline": "Sydostasiatisk adaptogen för testosteron, energi och stressresiliens",
+      "primaryUse": "Minskar kortisol och stöder hypotalamus-hypofys-gonad (HPG)-axeln, vilket leder till förbättrade testosteronnivåer under stressade eller suboptimala förhållanden",
+      "overview": "Tongkat Ali (Eurycoma longifolia) har använts i århundraden i malaysisk och indonesisk traditionell medicin som tonicum för manlig vitalitet och energi. Modern forskning har fokuserat på dess förmåga att minska könshormonbindande globulin (SHBG) och sänka kortisol — båda av vilka ökar fritt testosteron. Det standardiserade extraktet LJ100® (200:1 rotextrakt) har det starkaste kliniska stödet, med flera studier som visar signifikanta testosteronökningar hos män med sen hypogonadism, kronisk stress och fysiskt krävande träning. Dess effekter är mest uttalade hos dem med under-optimalt testosteron, snarare än de som redan är i den höga änden av normalt.",
+      "typicalDose": "200–400 mg standardiserat extrakt (LJ100® eller motsvarande) dagligen",
+      "bestFor": ["Män med stressrelaterat testosteronundertryckning", "Manliga idrottare i tunga träningsblock (överträning)", "Åldersrelaterad testosteronnedgång (40+)"],
+      "keyFacts": [
+        "LJ100® är det mest kliniskt validerade extraktet — det är ett 200:1 vattenextrakt standardiserat till glykosaponiner, eurypeptider och polysackarider; generiskt tongkat ali-rotpulver är inte likvärdigt",
+        "Effekterna är kortisolberoende — det fungerar bäst hos stressade individer; individer med redan lågt kortisol ser mindre testosteronförändringar",
+        "Används också i kvinnliga protokoll för libido och energi — inte exklusivt för män, även om de flesta data är i manliga populationer"
+      ],
+      "commonMistakes": [
+        "Att använda overifierat bulkpulver istället för standardiserat extrakt — förhållandet av tongkat ali-rotextrakt (100:1, 200:1) påverkar dramatiskt aktiv förening koncentration; billiga pulver kan innehålla försumbara eurypeptider.",
+        "Att förvänta sig snabba testosteronförändringar inom dagar — meningsfulla hormonella förändringar från tongkat ali kräver 4–8 veckors konsekvent tillskott för att bli statistiskt och fysiologiskt signifikanta."
+      ]
+    },
+    "maca-root": {
+      "tagline": "Andinska adaptogen för energi, libido och hormonell balans",
+      "primaryUse": "Icke-hormonal adaptogen som modulerar hypotalamisk funktion för att stödja libido, fertilitet, energi och endokrin balans",
+      "overview": "Maca (Lepidium meyenii) är en korsblommig rotgrönsak odlad på hög höjd i peruanska Anderna som har använts som mat och medicin i över 2000 år. Till skillnad från många libidotillskott ändrar maca inte direkt könshormonnivåer — det verkar fungera via hypotalamus och modulerar endokrinet uppströms. Kliniska studier visar konsekventa förbättringar i sexuell lust hos män och kvinnor, förbättrad spermiekvalitet hos män och minskningar av menopaussymtom (värmevallningar, humörförändringar) hos kvinnor. Svart maca har den starkaste evidensen för fertilitet och kognition, medan röd maca är bättre studerad för prostatahälsa.",
+      "typicalDose": "1,5–3 g gelatiniserat makapulver dagligen",
+      "bestFor": ["Libido och sexuell funktion (män och kvinnor)", "Menopaussymtomslindring (värmevallningar, humör)", "Ihållande energi utan stimulantia"],
+      "keyFacts": [
+        "Gelatiniserad (kokt/förgelatiniserad) maca har förbättrad smältbarhet och stärkelseborttagning — rå maca kan orsaka GI-obehag och har mindre biotillgängliga makamider",
+        "Färg spelar roll kliniskt — svart maca: bäst för kognition och manlig fertilitet; röd maca: bäst för prostatahälsa och kvinnlig hormonell balans; gul: allmänt syfte",
+        "Höjer inte östrogen eller testosteron direkt — säkert vid östrogenk känsliga tillstånd till skillnad från många libidotillskott"
+      ],
+      "commonMistakes": [
+        "Att använda råt makapulver istället för gelatiniserat — råt maca innehåller högt stärkelseinnehåll som kan orsaka GI-obehag, och dess makamidinnehåll är mindre biotillgängligt; gelatiniserad (värmebearbetad) maca är den föredragna tillskottsformen.",
+        "Att förvänta sig omedelbara libidoeffekter — macas adaptogena verkan byggs upp under veckor; studier som visar libidoförbättringar pågår typiskt i 6–12 veckor innan meningsfulla effekter uppstår."
+      ]
+    },
+    "vitamin-a": {
+      "tagline": "Essentiellt fettlösligt vitamin för syn, immunitet och celltillväxt",
+      "primaryUse": "Krävs för rhodopsinsyntes i fotoreceptorer, differentiering av immunceller och reglering av genuttryck via retinsyrareceptorer",
+      "overview": "Vitamin A omfattar två distinkta former: förformat retinol (från animaliska livsmedel) och provitamin A-karotenoider som betakaroten (från växtlivsmedel). Retinol är biologiskt aktivt omedelbart; betakaroten måste omvandlas till retinol i tarmväggen — en process som är genetiskt variabel och ineffektiv hos vissa individer. Vitamin A är essentiellt för svagljusseende (rhodopsin), immun T-cellutveckling, hud- och slemhinnebarriärintegritet och reproduktiv funktion. Brist orsakar nattblindhet och svår immunnedsättning. Tillskotts-A-vitamin kräver försiktighet eftersom det är ett av de fettlösliga vitaminer som ackumuleras och kan nå toxiska nivåer.",
+      "typicalDose": "700–900 mcg RAE (2300–3000 IU) dagligen; överskrid inte 3000 mcg RAE (10 000 IU) från retinol",
+      "bestFor": ["Bristkorrektion (vanlig i utvecklingsregioner)", "Immunstöd, särskilt slemhinneimmunitet", "Nattseende och ögonhälsovederhåll"],
+      "keyFacts": [
+        "Betakaroten (växtbaserat) är inte giftigt vid höga doser — bara förformat retinol (djurbaserat/tillskott) ackumuleras och kan orsaka toxicitet",
+        "Upp till 45 % av människor är dåliga omvandlare av betakaroten till retinol på grund av BCMO1-genvarianter — dessa individer måste få förformat retinol från kost eller tillskott",
+        "Vitamin A och Vitamin D fungerar synergistiskt — D-vitaminreceptorer kräver retinsyra för optimal uttryck; de konkurrerar vid höga doser och bör balanseras"
+      ],
+      "commonMistakes": [
+        "Att ta höga doser förformat retinoltillskott när kostintaget redan är tillräckligt — förformat A-vitamin ackumuleras i levern och är den vanligaste orsaken till fettlöslig vitamintoxicitet; betakaroten är mycket säkrare för tillskott.",
+        "Att anta att växtbaserade dieter ger tillräckligt A-vitamin via betakaroten — dåliga omvandlare (en vanlig genetisk variant) kan ha mycket låg retinolstatus trots högt betakarotenintag; att kontrollera retinolblodnivåer är lämpligt för veganer."
+      ]
+    },
+    "vitamin-e": {
+      "tagline": "Fettlöslig antioxidant som skyddar cellmembran och stöder immunfunktion",
+      "primaryUse": "Fungerar som kedjebryande antioxidant i lipidmembran och förhindrar oxidativ kaskadskada på fleromättade fettsyror",
+      "overview": "Vitamin E är en familj av åtta relaterade föreningar — fyra tokoferoller och fyra tokotrienoler — med alfa-tokoferol som den mest biologiskt aktiva och den form som människokroppen föredrar att bibehålla. Dess primära funktion är att skydda cellmembran och cirkulerande lipoproteiner från oxidativ skada genom att avfånga fria radikalkjedereaktioner i lipidbilagor. Det spelar också roller i immunsignalering och trombocytaggregationshämning. Undantaget: höga doser tillskotts-E-vitamin (över 400 IU/dag) har visat negativa effekter i vissa stora studier, inklusive ökad mortalitetsrisk — vilket förstärker att hela-mat-tokoferoller och blygsamt tillskott är att föredra framför megadoser.",
+      "typicalDose": "15 mg (22 IU naturligt, 33 IU syntetiskt) dagligen; överskrid inte 1000 mg (1500 IU)",
+      "bestFor": ["Antioxidantstöd för livsstilar med högt oxidativt stress", "Kardiovaskulärt skydd i kombination med andra antioxidanter", "Hud- och slemhinnehälsa"],
+      "keyFacts": [
+        "Naturligt d-alfa-tokoferol är avsevärt mer biotillgängligt än syntetiskt dl-alfa-tokoferol — leta efter 'd-'-prefixet, inte 'dl-'",
+        "Fullspektrum-tokoferol (blandade tokoferoller inklusive gamma-tokoferol) är mer fysiologiskt relevant än isolerat alfa-tokoferol ensamt; höga doser alfa-T fördriver gamma-T",
+        "Vitamin E och K2 interagerar — högt vitamin E kan antagonisera vitamin K-beroende koagulationsfaktorer; de som tar antikoagulantia bör söka medicinsk vägledning"
+      ],
+      "commonMistakes": [
+        "Att använda höga doser isolerat alfa-tokoferol (400+ IU) — stora RCT inklusive HOPE-TOO visar ökade negativa resultat vid höga doser. Hela-mat eller blandade tokoferolkällor vid fysiologiska doser är säkrare.",
+        "Att köpa syntetiska dl-alfa-tokoferolprodukter — syntetiskt E-vitamin har ungefär 50 % av biologisk aktivitet av naturligt d-alfa-tokoferol för samma angivna IU-dos; naturliga former är materiellt överlägsna."
+      ]
+    },
+    "astaxanthin": {
+      "tagline": "Den mest potenta antioxidantkarotenoiden i naturen",
+      "primaryUse": "Passerar cellmembran för att utsläcka singlettsyre och neutralisera fria radikaler genom hela lipidbilagern — inuti och utanför samtidigt",
+      "overview": "Astaxantin är en xantofyllkarotenoid som ger lax, flamingos och räkor deras rosa-röda färg. Det som gör det anmärkningsvärt är dess molekylstruktur: den spänner över hela bredden av cellmembran och kan utsläcka fria radikaler på både inre och yttre sidan simultaneously — en egenskap som ingen annan antioxidantkarotenoid besitter. Djurstudier visar konsekvent enastående antioxidantpotens. Humanstudier visar fördelar för träningsåterhämtning (minskat oxidativt stress och inflammation), hudfotoskydd och elasticitet, ögonhälsa och kardiovaskulära markörer. Biotillgängligheten är dålig utan fett — ta alltid med en fettinnehållande måltid.",
+      "typicalDose": "6–12 mg dagligen med en fettinnehållande måltid",
+      "bestFor": ["Träningsåterhämtning och minskat muskelskada från oxidativt stress", "Hudhälsa och UV-skydd inifrån", "Ögonstress och retinalt skydd"],
+      "keyFacts": [
+        "Naturligt astaxantin från Haematococcus pluvialis-alger anses överlägset syntetiskt astaxantin, som består av olika isomerer med lägre biologisk aktivitet",
+        "Fettlösligt och kräver kostfett för absorption — ta med en måltid; att ta det fastande minskar dramatiskt blodnivåerna",
+        "Bland karotenoider kan det inte omvandlas till vitamin A — det innebär ingen risk för vitamin A-toxicitet, ens vid högre doser"
+      ],
+      "commonMistakes": [
+        "Att ta det på fastande mage — astaxantin är mycket fettlösligt och absorberas dåligt utan kostfett; ta alltid med en fettinnehållande måltid för att uppnå meningsfulla plasmanivåer.",
+        "Att köpa syntetiskt astaxantin för att spara kostnad — syntetiskt astaxantin innehåller racemiska isomerer som inte finns i naturliga källor och som har lägre antioxidantaktivitet; naturligt algbaserat astaxantin är den forskningstestade formen."
+      ]
+    },
+    "iodine": {
+      "tagline": "Essentiellt spårmineral som är ryggraden i sköldkörtelhormonproduktionen",
+      "primaryUse": "Krävs för biosyntesen av sköldkörtelhormonerna T3 och T4, som reglerar ämnesomsättning, energiproduktion och utveckling",
+      "overview": "Jod är direkt inkorporerat i sköldkörtelhormonerna — tyroxin (T4) och trijodtyronin (T3) — vilket gör det till det enda mineral med en strukturell snarare än kofaktorsroll i hormonsyntesen. Jodbrist är den ledande förebyggbara orsaken till intellektuell funktionsnedsättning globalt och ger upphov till struma, hypotyreos och allvarlig utvecklingsnedsättning hos foster vid brist hos gravida kvinnor. Trots joderade saltprogram har brist återuppstått i många befolkningar efter kostförändringar bort från joderat salt och mejeriprodukter, ökad användning av icke-joderat havssalt och veganska dieter (begränsad sjömat och mejeri). Tillskotts-jod måste doseras noggrant — överskott kan också störa sköldkörtelfunktion.",
+      "typicalDose": "150 mcg dagligen (RDA); 220 mcg under graviditet; överskrid inte rutinmässigt 1100 mcg",
+      "bestFor": ["Veganer och växtbaserade ätare som undviker sjömat och mejeri", "Gravida och ammande kvinnor", "De som uteslutande använder icke-joderat salt"],
+      "keyFacts": [
+        "Sjögräs är rikt på jod men koncentrationen varierar dramatiskt efter art och skörderegion — kelptillskott kan leverera oförutsägbart höga doser och är inte tillförlitliga för exakt dosering",
+        "Selen och jod fungerar tillsammans — selenbrist försämrar jodutnyttjandet; säkerställ att selen är tillräckligt vid sidan av jodtillskott",
+        "Överskott av jod (Wolff-Chaikoff-effekten) kan paradoxalt undertrycka sköldkörtelfunktion — håll dig inom etablerade säkra övre gränser"
+      ],
+      "commonMistakes": [
+        "Att använda kelp som jodtillskott — kelpens jodinnehåll varierar från spårmängder till farligt höga koncentrationer mellan satser; kaliumjodidtabletter ger exakt och förutsägbar dosering.",
+        "Att tillskotta jod utan tillräckligt selen — selen krävs för jodmetabolism (som selenodeiodinasenzymer); jod utan selen i bristtillstånd kan förvärra sköldkörteldysfunktion."
+      ]
+    },
+    "chromium": {
+      "tagline": "Spårmineral som förbättrar insulinkänslighet och glukosmetabolism",
+      "primaryUse": "Potentierar insulinreceptorsignalering, förbättrar glukosupptag och minskar blodsockerfluktuationer efter måltider",
+      "overview": "Krom är ett essentiellt spårmineral som förstärker aktiviteten av insulin — det nyckelhormon som transporterar glukos in i celler. Dess föreslagna mekanism involverar kromodulin, en krombindande oligopeptid som förstärker insulinreceptortyrosinkinasaktivitet. Klinisk evidens för krompicolinat (den bäst absorberade tillskottsformen) visar blygsamma men verkliga minskningar av fasteblodsocker och HbA1c hos personer med typ 2-diabetes och insulinresistens. Effekter hos friska, insulinkänsliga individer är mycket mindre och inkonsekvent. Det är mest relevant för dem med blodsockerregleringsproblem.",
+      "typicalDose": "200–1000 mcg krompicolinat dagligen med måltider",
+      "bestFor": ["Insulinresistens och prediabeteshantering", "Minskning av blodsockerpikar efter måltider", "Kolhydratsug och blodsockerkontroll vid hypokaloriska dieter"],
+      "keyFacts": [
+        "Krompicolinat absorberas avsevärt bättre än kromklorid eller krompolynikotinat — kontrollera alltid formen",
+        "Evidensbasen är starkast för typ 2-diabetiker och de med nedsatt glukostolerans; friska individer med normal insulinkänslighet ser minimal nytta",
+        "Bearbetade livsmedel tömmer kostmässigt krom — raffinerat sockerintag ökar urinärt kromförluster och skapar en ond cirkel för blodsockerreglering"
+      ],
+      "commonMistakes": [
+        "Att använda kromklorid istället för krompicolinat — klorid absorberas mycket dåligt; picolinat är formen som används i den stora majoriteten av positiva kliniska studier.",
+        "Att förvänta sig att krom ska ersätta kostförändringar — krom förbättrar insulinsignalkvaliteten men kan inte kompensera för kroniskt högt socker- eller raffinerat kolhydratintag; det fungerar bäst som ett komplement till en lägre-glykemisk kost."
+      ]
+    },
+    "saw-palmetto": {
+      "tagline": "Växtextrakt för prostatahälsa och DHT-hantering",
+      "primaryUse": "Hämmar 5-alfa-reduktas och minskar omvandlingen av testosteron till DHT för att stödja prostatahälsa och hantera androgen håravfall",
+      "overview": "Sågpalm (Serenoa repens) härstammar från bären på en inhemsk nordamerikansk palm. Dess primära biologiska mekanism är hämning av 5-alfa-reduktas — enzymet som omvandlar testosteron till det mer potenta androgenet dihydrotestosteron (DHT). DHT är den primära drivkraften för både benign prostatahyperplasi (BPH) och androgen alopeci. Kliniska studier för BPH-symtom visar att sågpalm minskar urinfrekvens och förbättrar urinflöde jämförbart med tamsulosin (ett alfa-blockerande läkemedel) vid mild-till-måttlig BPH. Evidens för håravfall är mer blygsam men under tillkomst.",
+      "typicalDose": "320 mg av standardiserat liposterolextrakt dagligen",
+      "bestFor": ["Benign prostatahyperplasi (BPH) symtomlindring", "DHT-relaterat håravfallsförebyggande", "Prostatahälsovederhåll hos män över 45"],
+      "keyFacts": [
+        "Liposterolextraktet (fettlösligt, typiskt hexanextraherat) är formen med klinisk evidens; vattenextrakt och pulver saknar det aktiva fettsyra- och fytosteolinnehållet",
+        "Tar 4–8 veckor minimum för BPH-symtomförbättringar — bedöm inte effektivitet före 2–3 månaders konsekvent användning",
+        "Sänker inte PSA (prostataspecifikt antigen) på samma sätt som finasterid — viktigt för prostatacancerscreening, eftersom PSA-nivåer förblir informativa under sågpalm"
+      ],
+      "commonMistakes": [
+        "Att använda icke-standardiserat sågpalmsbärpulver — hela bärpulvret saknar det koncentrerade fettsyrainnehållet i liposterolextrakt; leta specifikt efter produkter standardiserade till 85–95 % fettsyror.",
+        "Att förvänta sig att det helt återställer etablerat håravfall — sågpalm kan bromsa DHT-medierat håravfall och är mest effektivt som ett förebyggande åtgärd; etablerad alopeci kräver mer aggressiv intervention vid sidan av det."
+      ]
+    },
+    "lutein-zeaxanthin": {
+      "tagline": "Makulapigment som skyddar ögon mot blått ljus och åldersrelaterad degeneration",
+      "primaryUse": "Koncentrerade i makula och linsen filtrerar dessa karotenoider högenergigt blått ljus och utsläcker singlettsyre för att skydda fotoreceptorer",
+      "overview": "Lutein och zeaxantin är de enda kostkarotenoider som selektivt koncentreras i makula — den centrala regionen av näthinnan ansvarig för högt upplösningsseende. De bildar makulapigmentet, som fungerar som ett naturligt blåljusfilter och antioxidantskydd för fotoreceptorer. Den banbrytande AREDS2-studien etablerade lutein + zeaxantintillskott som standardvård för att minska progression av intermediär åldersrelaterad makuladegeneration (AMD) till avancerad AMD med ~25 %. Ny evidens stöder också fördelar för visuell prestanda i miljöer med hög skärmtid, minskar bländningskänslighet och förbättrar kontrastkänslighet.",
+      "typicalDose": "10 mg lutein + 2 mg zeaxantin dagligen",
+      "bestFor": ["Åldersrelaterad makuladegeneration (AMD) förebyggande och progressionsminskning", "Användare med hög skärmtid och digitalt ögonproblem", "De med familjärt AMD eller makulasjukdom"],
+      "keyFacts": [
+        "AREDS2-studien — den största och mest rigorösa ögontillskottsstudie som någonsin genomförts — ersatte betakaroten med lutein/zeaxantin i formeln på grund av överlägsen säkerhet och effekt",
+        "5:1-förhållandet lutein-till-zeaxantin speglar den naturliga makulapigment kompositionen — produkter som avviker avsevärt från detta förhållande är mindre fysiologiskt optimerade",
+        "Mörkgröna grönsaker (grönkål, spenat, collard) är de rikaste matkällorna, men kostnivåer når sällan 10 mg lutein-tröskeln som användes i AREDS2-studien"
+      ],
+      "commonMistakes": [
+        "Att ta betakarotentillskott simultaneously — höga doser betakaroten konkurrerar med lutein och zeaxantin om tarmabsorption och togs bort från den uppdaterade AREDS2-formeln av denna anledning; undvik att kombinera dem.",
+        "Att använda produkter med mycket lågt zeaxantininnehåll — många billiga lutentillskott innehåller bara spårzeaxantin trots dess distinkta och viktiga roll i den centrala makula; leta efter minst 2 mg zeaxantin vid sidan av 10 mg lutein."
+      ]
     }
   },
   "healthProfileOptions": {
