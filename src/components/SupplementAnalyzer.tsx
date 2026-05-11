@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { Routes, Route, useNavigate, useLocation, useParams, Navigate } from 'react-router-dom';
 
 // ── Paid single-dive helpers ──────────────────────────────────────────────────
@@ -328,7 +328,30 @@ export default function SupplementAnalyzer(): JSX.Element {
   const [hoveredNav, setHoveredNav] = useState<string | null>(null);
   const [showMobileMenu, setShowMobileMenu] = useState<boolean>(false);
 
-  useEffect(() => { window.scrollTo(0, 0); }, [location.pathname]);
+  const encyclopediaScrollY = useRef<number>(0);
+  const prevPathname = useRef<string>(location.pathname);
+
+  // Save scroll position while on the encyclopedia index
+  useEffect(() => {
+    if (location.pathname !== '/') return;
+    const onScroll = () => { encyclopediaScrollY.current = window.scrollY; };
+    window.addEventListener('scroll', onScroll, { passive: true });
+    return () => window.removeEventListener('scroll', onScroll);
+  }, [location.pathname]);
+
+  useEffect(() => {
+    const prev = prevPathname.current;
+    const curr = location.pathname;
+    prevPathname.current = curr;
+
+    if (curr === '/' && prev.startsWith('/encyclopedia/')) {
+      // Returning to index — restore saved position after render
+      const y = encyclopediaScrollY.current;
+      requestAnimationFrame(() => requestAnimationFrame(() => window.scrollTo(0, y)));
+    } else {
+      window.scrollTo(0, 0);
+    }
+  }, [location.pathname]);
 
   // Close menu when clicking outside
   useEffect(() => {
