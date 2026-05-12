@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ArrowLeft, Warning, Lightning, Sparkle, CheckCircle, UserCircle, Sun, Barbell, ForkKnife, Moon, Star, CopySimple, PlusCircle } from '@phosphor-icons/react';
+import { ArrowLeft, ArrowRight, Warning, Lightning, Sparkle, CheckCircle, UserCircle, Sun, Barbell, ForkKnife, Moon, Star, CopySimple, PlusCircle } from '@phosphor-icons/react';
 import { useStack } from '../contexts/StackContext';
 import { useAuth } from '../contexts/AuthContext';
 import { useLanguage } from '../contexts/LanguageContext';
@@ -37,6 +37,7 @@ interface Redundancy {
 
 interface MissingComplement {
   name: string;
+  slug: string | null;
   reason: string;
 }
 
@@ -244,23 +245,44 @@ function RedundancySection({ redundancies }: { redundancies: Redundancy[] }) {
   );
 }
 
-function ComplementsSection({ complements }: { complements: MissingComplement[] }) {
+function ComplementsSection({ complements, onNavigate }: { complements: MissingComplement[]; onNavigate: (slug: string) => void }) {
   if (complements.length === 0) return null;
   return (
     <InsightCard title="Consider Adding" color="#00685f" icon={<PlusCircle size={16} weight="fill" color="#00685f" />}>
-      {complements.map((c, i) => (
-        <div key={i} style={{ padding: '0.875rem 1.25rem', borderBottom: '1px solid var(--border)' }}>
-          <div style={{
-            fontFamily: "'Inter', sans-serif", fontWeight: 700, fontSize: '0.875rem',
-            color: 'var(--text-primary)', marginBottom: '0.3rem',
-          }}>
-            {c.name}
+      {complements.map((c, i) => {
+        const clickable = !!c.slug;
+        return (
+          <div
+            key={i}
+            onClick={() => clickable && onNavigate(c.slug!)}
+            style={{
+              padding: '0.875rem 1.25rem',
+              borderBottom: '1px solid var(--border)',
+              cursor: clickable ? 'pointer' : 'default',
+              transition: 'background 0.15s',
+            }}
+            onMouseEnter={e => { if (clickable) (e.currentTarget as HTMLDivElement).style.background = 'var(--bg-hover)'; }}
+            onMouseLeave={e => { (e.currentTarget as HTMLDivElement).style.background = 'transparent'; }}
+          >
+            <div style={{
+              display: 'flex', alignItems: 'center', gap: '0.375rem', marginBottom: '0.3rem',
+            }}>
+              <span style={{
+                fontFamily: "'Inter', sans-serif", fontWeight: 700, fontSize: '0.875rem',
+                color: clickable ? '#00685f' : 'var(--text-primary)',
+              }}>
+                {c.name}
+              </span>
+              {clickable && (
+                <ArrowRight size={14} color="#00685f" weight="bold" />
+              )}
+            </div>
+            <p style={{ fontFamily: "'Inter', sans-serif", fontSize: '0.8125rem', color: 'var(--text-secondary)', margin: 0, lineHeight: 1.55 }}>
+              {c.reason}
+            </p>
           </div>
-          <p style={{ fontFamily: "'Inter', sans-serif", fontSize: '0.8125rem', color: 'var(--text-secondary)', margin: 0, lineHeight: 1.55 }}>
-            {c.reason}
-          </p>
-        </div>
-      ))}
+        );
+      })}
     </InsightCard>
   );
 }
@@ -493,7 +515,7 @@ export default function StackEvaluationPage() {
               <>
                 <ScheduleSection schedule={insights.schedule} />
                 <RedundancySection redundancies={insights.redundancies} />
-                <ComplementsSection complements={insights.missing_complements} />
+                <ComplementsSection complements={insights.missing_complements} onNavigate={slug => navigate(`/encyclopedia/${slug}`)} />
               </>
             )}
           </>

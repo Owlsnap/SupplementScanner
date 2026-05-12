@@ -1944,9 +1944,10 @@ const STACK_INSIGHTS_TOOL = {
           type: 'object',
           properties: {
             name: { type: 'string', description: 'Supplement name' },
+            slug: { type: 'string', description: 'URL slug for this supplement using kebab-case (e.g. vitamin-d3-k2, omega-3, magnesium-glycinate). Use null if unsure.' },
             reason: { type: 'string', description: 'Why it complements this stack (1-2 sentences)' },
           },
-          required: ['name', 'reason'],
+          required: ['name', 'slug', 'reason'],
         },
       },
     },
@@ -1954,9 +1955,12 @@ const STACK_INSIGHTS_TOOL = {
   },
 };
 
+const KNOWN_SLUGS = Object.keys(SLUG_TO_NAME);
+
 async function generateStackInsights(slugs) {
   const names = slugs.map(s => SLUG_TO_NAME[s] || s.split('-').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' '));
   const stackList = names.join(', ');
+  const knownSlugList = KNOWN_SLUGS.join(', ');
 
   const response = await getAnthropicClient().messages.create({
     model: 'claude-haiku-4-5-20251001',
@@ -1965,13 +1969,22 @@ async function generateStackInsights(slugs) {
     tool_choice: { type: 'tool', name: 'analyze_supplement_stack' },
     messages: [{
       role: 'user',
-      content: `Analyze this supplement stack: ${stackList}.\n\nProvide:\n1. Schedule — assign every supplement to exactly one time slot (morning, pre-workout, with-meal, afternoon, evening, before-bed). Base assignments on absorption science, half-life, and known best practices. Add a brief note per slot explaining why. Only include slots that have supplements.\n2. Redundancies — flag any meaningful overlaps (same nutrient from multiple sources, duplicate mechanisms, over-supplementation risk). Only flag real overlaps.\n3. Missing complements — up to 3 supplements not already in the stack that would meaningfully improve it based on what's already there.\n\nKeep all text concise and evidence-grounded.`,
+      content: `Analyze this supplement stack: ${stackList}.\n\nProvide:\n1. Schedule — assign every supplement to exactly one time slot (morning, pre-workout, with-meal, afternoon, evening, before-bed). Base assignments on absorption science, half-life, and known best practices. Add a brief note per slot explaining why. Only include slots that have supplements.\n2. Redundancies — flag any meaningful overlaps (same nutrient from multiple sources, duplicate mechanisms, over-supplementation risk). Only flag real overlaps.\n3. Missing complements — up to 3 supplements not already in the stack that would meaningfully improve it. For each, provide a slug from this list if it appears there (otherwise use null): ${knownSlugList}\n\nKeep all text concise and evidence-grounded.`,
     }],
   });
 
   const toolUse = response.content.find(b => b.type === 'tool_use');
   if (!toolUse) return { schedule: [], redundancies: [], missing_complements: [] };
-  return toolUse.input;
+
+  const result = toolUse.input;
+  // Validate complement slugs — null out any slug Claude invented that isn't in our encyclopedia
+  if (Array.isArray(result.missing_complements)) {
+    result.missing_complements = result.missing_complements.map(c => ({
+      ...c,
+      slug: KNOWN_SLUGS.includes(c.slug) ? c.slug : null,
+    }));
+  }
+  return result;
 }
 
 // POST /api/premium/evaluate-stack
