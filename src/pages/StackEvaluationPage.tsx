@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ArrowLeft, Warning, Lightning, Sparkle, CheckCircle, UserCircle } from '@phosphor-icons/react';
+import { ArrowLeft, Warning, Lightning, Sparkle, CheckCircle, UserCircle, Clock, CopySimple, PlusCircle } from '@phosphor-icons/react';
 import { useStack } from '../contexts/StackContext';
 import { useAuth } from '../contexts/AuthContext';
 import { useLanguage } from '../contexts/LanguageContext';
@@ -20,6 +20,27 @@ interface BySeverity {
   danger: Interaction[];
   caution: Interaction[];
   synergy: Interaction[];
+}
+
+interface TimingTip {
+  supplements: string[];
+  tip: string;
+}
+
+interface Redundancy {
+  supplements: string[];
+  note: string;
+}
+
+interface MissingComplement {
+  name: string;
+  reason: string;
+}
+
+interface StackInsights {
+  timing_tips: TimingTip[];
+  redundancies: Redundancy[];
+  missing_complements: MissingComplement[];
 }
 
 function supplementName(slug: string): string {
@@ -92,6 +113,106 @@ function SeverityGroup({ title, color, icon, items }: {
   );
 }
 
+function InsightCard({ title, color, icon, children }: {
+  title: string;
+  color: string;
+  icon: React.ReactNode;
+  children: React.ReactNode;
+}) {
+  return (
+    <div style={{
+      background: 'var(--bg-surface)', borderRadius: '16px',
+      border: `1.5px solid ${color}33`, marginBottom: '1rem', overflow: 'hidden',
+    }}>
+      <div style={{
+        padding: '0.875rem 1.25rem',
+        background: `${color}12`,
+        borderBottom: `1px solid ${color}22`,
+        display: 'flex', alignItems: 'center', gap: '0.5rem',
+      }}>
+        {icon}
+        <span style={{ fontFamily: "'Manrope', sans-serif", fontWeight: 800, fontSize: '0.9375rem', color }}>
+          {title}
+        </span>
+      </div>
+      {children}
+    </div>
+  );
+}
+
+function TimingSection({ tips }: { tips: TimingTip[] }) {
+  if (tips.length === 0) return null;
+  return (
+    <InsightCard title="Timing Tips" color="#6366f1" icon={<Clock size={16} weight="fill" color="#6366f1" />}>
+      {tips.map((tip, i) => (
+        <div key={i} style={{ padding: '0.875rem 1.25rem', borderBottom: '1px solid var(--border)' }}>
+          <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.25rem', marginBottom: '0.375rem' }}>
+            {tip.supplements.map(name => (
+              <span key={name} style={{
+                padding: '0.125rem 0.5rem', borderRadius: '999px',
+                background: '#eef2ff', border: '1px solid #c7d2fe',
+                color: '#4338ca', fontFamily: "'Inter', sans-serif", fontWeight: 600, fontSize: '0.75rem',
+              }}>
+                {name}
+              </span>
+            ))}
+          </div>
+          <p style={{ fontFamily: "'Inter', sans-serif", fontSize: '0.8125rem', color: 'var(--text-secondary)', margin: 0, lineHeight: 1.55 }}>
+            {tip.tip}
+          </p>
+        </div>
+      ))}
+    </InsightCard>
+  );
+}
+
+function RedundancySection({ redundancies }: { redundancies: Redundancy[] }) {
+  if (redundancies.length === 0) return null;
+  return (
+    <InsightCard title="Overlap / Redundancy" color="#d97706" icon={<CopySimple size={16} weight="fill" color="#d97706" />}>
+      {redundancies.map((r, i) => (
+        <div key={i} style={{ padding: '0.875rem 1.25rem', borderBottom: '1px solid var(--border)' }}>
+          <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.25rem', marginBottom: '0.375rem' }}>
+            {r.supplements.map(name => (
+              <span key={name} style={{
+                padding: '0.125rem 0.5rem', borderRadius: '999px',
+                background: '#fffbeb', border: '1px solid #fde68a',
+                color: '#92400e', fontFamily: "'Inter', sans-serif", fontWeight: 600, fontSize: '0.75rem',
+              }}>
+                {name}
+              </span>
+            ))}
+          </div>
+          <p style={{ fontFamily: "'Inter', sans-serif", fontSize: '0.8125rem', color: 'var(--text-secondary)', margin: 0, lineHeight: 1.55 }}>
+            {r.note}
+          </p>
+        </div>
+      ))}
+    </InsightCard>
+  );
+}
+
+function ComplementsSection({ complements }: { complements: MissingComplement[] }) {
+  if (complements.length === 0) return null;
+  return (
+    <InsightCard title="Consider Adding" color="#00685f" icon={<PlusCircle size={16} weight="fill" color="#00685f" />}>
+      {complements.map((c, i) => (
+        <div key={i} style={{ padding: '0.875rem 1.25rem', borderBottom: '1px solid var(--border)' }}>
+          <div style={{
+            fontFamily: "'Inter', sans-serif", fontWeight: 700, fontSize: '0.875rem',
+            color: 'var(--text-primary)', marginBottom: '0.3rem',
+          }}>
+            {c.name}
+          </div>
+          <p style={{ fontFamily: "'Inter', sans-serif", fontSize: '0.8125rem', color: 'var(--text-secondary)', margin: 0, lineHeight: 1.55 }}>
+            {c.reason}
+          </p>
+        </div>
+      ))}
+    </InsightCard>
+  );
+}
+
 export default function StackEvaluationPage() {
   const navigate = useNavigate();
   const { stack } = useStack();
@@ -100,6 +221,7 @@ export default function StackEvaluationPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [bySeverity, setBySeverity] = useState<BySeverity | null>(null);
+  const [insights, setInsights] = useState<StackInsights | null>(null);
   const [showAuthModal, setShowAuthModal] = useState(false);
 
   const stackSupplements = encyclopediaSupplements.filter(s => stack.includes(s.slug));
@@ -119,8 +241,16 @@ export default function StackEvaluationPage() {
     })
       .then(r => r.json())
       .then(data => {
-        if (data.success) setBySeverity(data.data.by_severity);
-        else setError(data.error ?? 'Failed to evaluate stack');
+        if (data.success) {
+          setBySeverity(data.data.by_severity);
+          setInsights({
+            timing_tips: data.data.timing_tips ?? [],
+            redundancies: data.data.redundancies ?? [],
+            missing_complements: data.data.missing_complements ?? [],
+          });
+        } else {
+          setError(data.error ?? 'Failed to evaluate stack');
+        }
       })
       .catch(() => setError(t('stackEvaluation.networkError')))
       .finally(() => setLoading(false));
@@ -270,11 +400,11 @@ export default function StackEvaluationPage() {
 
         {!loading && !error && bySeverity && session && (
           <>
-            {total === 0 ? (
+            {total === 0 && (
               <div style={{
                 textAlign: 'center', padding: '2.5rem 1rem',
                 background: 'var(--bg-surface)', borderRadius: '16px',
-                border: '1.5px solid #b3ddd8',
+                border: '1.5px solid #b3ddd8', marginBottom: '1rem',
               }}>
                 <CheckCircle size={36} color="#00685f" weight="fill" style={{ marginBottom: '0.75rem' }} />
                 <div style={{ fontFamily: "'Manrope', sans-serif", fontWeight: 800, fontSize: '1rem', color: 'var(--text-primary)', marginBottom: '0.375rem' }}>
@@ -284,7 +414,8 @@ export default function StackEvaluationPage() {
                   {t('stackEvaluation.noInteractions')}
                 </p>
               </div>
-            ) : (
+            )}
+            {total > 0 && (
               <>
                 <SeverityGroup
                   title={t('stackEvaluation.dangerTitle')}
@@ -304,6 +435,13 @@ export default function StackEvaluationPage() {
                   icon={<Sparkle size={16} weight="fill" color="#00685f" />}
                   items={bySeverity.synergy}
                 />
+              </>
+            )}
+            {insights && (
+              <>
+                <TimingSection tips={insights.timing_tips} />
+                <RedundancySection redundancies={insights.redundancies} />
+                <ComplementsSection complements={insights.missing_complements} />
               </>
             )}
           </>

@@ -1895,34 +1895,109 @@ app.get('/api/premium/interactions/:slug', requirePremiumAccess, async (req, res
   }
 });
 
+const STACK_INSIGHTS_TOOL = {
+  name: 'analyze_supplement_stack',
+  description: 'Analyze a supplement stack and return timing tips, redundancy warnings, and missing complements.',
+  input_schema: {
+    type: 'object',
+    properties: {
+      timing_tips: {
+        type: 'array',
+        description: 'Practical tips on when/how to take these supplements together or apart.',
+        items: {
+          type: 'object',
+          properties: {
+            supplements: { type: 'array', items: { type: 'string' }, description: 'Supplement names involved in this tip' },
+            tip: { type: 'string', description: 'Concise, actionable timing or pairing advice (1-2 sentences)' },
+          },
+          required: ['supplements', 'tip'],
+        },
+      },
+      redundancies: {
+        type: 'array',
+        description: 'Supplements in the stack that overlap meaningfully (same nutrient, duplicate mechanism, or risk of over-supplementation).',
+        items: {
+          type: 'object',
+          properties: {
+            supplements: { type: 'array', items: { type: 'string' }, description: 'Names of the overlapping supplements' },
+            note: { type: 'string', description: 'Why this is redundant and what to watch for (1-2 sentences)' },
+          },
+          required: ['supplements', 'note'],
+        },
+      },
+      missing_complements: {
+        type: 'array',
+        description: 'Up to 3 supplements not in the stack that would meaningfully improve it.',
+        items: {
+          type: 'object',
+          properties: {
+            name: { type: 'string', description: 'Supplement name' },
+            reason: { type: 'string', description: 'Why it complements this stack (1-2 sentences)' },
+          },
+          required: ['name', 'reason'],
+        },
+      },
+    },
+    required: ['timing_tips', 'redundancies', 'missing_complements'],
+  },
+};
+
+async function generateStackInsights(slugs) {
+  const names = slugs.map(s => SLUG_TO_NAME[s] || s.split('-').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' '));
+  const stackList = names.join(', ');
+
+  const response = await getAnthropicClient().messages.create({
+    model: 'claude-haiku-4-5-20251001',
+    max_tokens: 1024,
+    tools: [STACK_INSIGHTS_TOOL],
+    tool_choice: { type: 'tool', name: 'analyze_supplement_stack' },
+    messages: [{
+      role: 'user',
+      content: `Analyze this supplement stack: ${stackList}.\n\nProvide:\n1. Timing tips — practical advice on when to take each supplement (together or apart, with food, time of day). Only include tips where timing actually matters.\n2. Redundancies — flag any meaningful overlaps (same nutrient from multiple sources, duplicate mechanisms, over-supplementation risk). Only flag real overlaps.\n3. Missing complements — up to 3 supplements not already in the stack that would meaningfully improve it based on what's already there. Be specific about why.\n\nKeep all text concise and evidence-grounded. If there are no redundancies or timing concerns, return empty arrays for those fields.`,
+    }],
+  });
+
+  const toolUse = response.content.find(b => b.type === 'tool_use');
+  if (!toolUse) return { timing_tips: [], redundancies: [], missing_complements: [] };
+  return toolUse.input;
+}
+
 // POST /api/premium/evaluate-stack
 // Returns all interactions between supplements in the provided slug list
 app.post('/api/premium/evaluate-stack', requirePremiumAccess, async (req, res) => {
   const { slugs } = req.body;
   console.log(`💎 POST /api/premium/evaluate-stack user=${req.user.id} slugs=[${(slugs || []).join(',')}]`);
 
+  const emptyInsights = { timing_tips: [], redundancies: [], missing_complements: [] };
+
   if (!Array.isArray(slugs) || slugs.length < 2) {
-    return res.json({ success: true, data: { interactions: [], by_severity: { danger: [], caution: [], synergy: [] } } });
+    return res.json({ success: true, data: { interactions: [], by_severity: { danger: [], caution: [], synergy: [] }, ...emptyInsights } });
   }
 
   try {
-    const { data, error } = await getSupabaseService()
-      .from('interactions')
-      .select('*')
-      .in('substance_a', slugs)
-      .in('substance_b', slugs)
-      .order('severity');
+    const [interactionsResult, insights] = await Promise.all([
+      getSupabaseService()
+        .from('interactions')
+        .select('*')
+        .in('substance_a', slugs)
+        .in('substance_b', slugs)
+        .order('severity'),
+      generateStackInsights(slugs).catch(err => {
+        console.error('💥 Stack insights generation error:', err);
+        return emptyInsights;
+      }),
+    ]);
 
-    if (error) throw error;
+    if (interactionsResult.error) throw interactionsResult.error;
 
-    const interactions = data || [];
+    const interactions = interactionsResult.data || [];
     const by_severity = {
       danger: interactions.filter(i => i.severity === 'danger'),
       caution: interactions.filter(i => i.severity === 'caution'),
       synergy: interactions.filter(i => i.severity === 'synergy'),
     };
 
-    return res.json({ success: true, data: { interactions, by_severity } });
+    return res.json({ success: true, data: { interactions, by_severity, ...insights } });
   } catch (error) {
     console.error('💥 Evaluate stack error:', error);
     return res.status(500).json({ success: false, error: error.message });
