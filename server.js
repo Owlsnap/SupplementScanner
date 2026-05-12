@@ -1897,20 +1897,32 @@ app.get('/api/premium/interactions/:slug', requirePremiumAccess, async (req, res
 
 const STACK_INSIGHTS_TOOL = {
   name: 'analyze_supplement_stack',
-  description: 'Analyze a supplement stack and return timing tips, redundancy warnings, and missing complements.',
+  description: 'Analyze a supplement stack and return a daily schedule, redundancy warnings, and missing complements.',
   input_schema: {
     type: 'object',
     properties: {
-      timing_tips: {
+      schedule: {
         type: 'array',
-        description: 'Practical tips on when/how to take these supplements together or apart.',
+        description: 'Daily timing schedule — group each supplement into the most appropriate time slot. Every supplement in the stack must appear in exactly one slot. Only include slots that have at least one supplement.',
         items: {
           type: 'object',
           properties: {
-            supplements: { type: 'array', items: { type: 'string' }, description: 'Supplement names involved in this tip' },
-            tip: { type: 'string', description: 'Concise, actionable timing or pairing advice (1-2 sentences)' },
+            time_of_day: {
+              type: 'string',
+              enum: ['morning', 'pre-workout', 'with-meal', 'afternoon', 'evening', 'before-bed'],
+              description: 'The time slot for this group of supplements',
+            },
+            supplements: {
+              type: 'array',
+              items: { type: 'string' },
+              description: 'Supplement names assigned to this time slot',
+            },
+            note: {
+              type: 'string',
+              description: 'Optional one-sentence reason why this timing is optimal (e.g. absorption, half-life, sleep support)',
+            },
           },
-          required: ['supplements', 'tip'],
+          required: ['time_of_day', 'supplements'],
         },
       },
       redundancies: {
@@ -1938,7 +1950,7 @@ const STACK_INSIGHTS_TOOL = {
         },
       },
     },
-    required: ['timing_tips', 'redundancies', 'missing_complements'],
+    required: ['schedule', 'redundancies', 'missing_complements'],
   },
 };
 
@@ -1953,12 +1965,12 @@ async function generateStackInsights(slugs) {
     tool_choice: { type: 'tool', name: 'analyze_supplement_stack' },
     messages: [{
       role: 'user',
-      content: `Analyze this supplement stack: ${stackList}.\n\nProvide:\n1. Timing tips — practical advice on when to take each supplement (together or apart, with food, time of day). Only include tips where timing actually matters.\n2. Redundancies — flag any meaningful overlaps (same nutrient from multiple sources, duplicate mechanisms, over-supplementation risk). Only flag real overlaps.\n3. Missing complements — up to 3 supplements not already in the stack that would meaningfully improve it based on what's already there. Be specific about why.\n\nKeep all text concise and evidence-grounded. If there are no redundancies or timing concerns, return empty arrays for those fields.`,
+      content: `Analyze this supplement stack: ${stackList}.\n\nProvide:\n1. Schedule — assign every supplement to exactly one time slot (morning, pre-workout, with-meal, afternoon, evening, before-bed). Base assignments on absorption science, half-life, and known best practices. Add a brief note per slot explaining why. Only include slots that have supplements.\n2. Redundancies — flag any meaningful overlaps (same nutrient from multiple sources, duplicate mechanisms, over-supplementation risk). Only flag real overlaps.\n3. Missing complements — up to 3 supplements not already in the stack that would meaningfully improve it based on what's already there.\n\nKeep all text concise and evidence-grounded.`,
     }],
   });
 
   const toolUse = response.content.find(b => b.type === 'tool_use');
-  if (!toolUse) return { timing_tips: [], redundancies: [], missing_complements: [] };
+  if (!toolUse) return { schedule: [], redundancies: [], missing_complements: [] };
   return toolUse.input;
 }
 
@@ -1968,7 +1980,7 @@ app.post('/api/premium/evaluate-stack', requirePremiumAccess, async (req, res) =
   const { slugs } = req.body;
   console.log(`💎 POST /api/premium/evaluate-stack user=${req.user.id} slugs=[${(slugs || []).join(',')}]`);
 
-  const emptyInsights = { timing_tips: [], redundancies: [], missing_complements: [] };
+  const emptyInsights = { schedule: [], redundancies: [], missing_complements: [] };
 
   if (!Array.isArray(slugs) || slugs.length < 2) {
     return res.json({ success: true, data: { interactions: [], by_severity: { danger: [], caution: [], synergy: [] }, ...emptyInsights } });

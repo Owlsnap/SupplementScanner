@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ArrowLeft, Warning, Lightning, Sparkle, CheckCircle, UserCircle, Clock, CopySimple, PlusCircle } from '@phosphor-icons/react';
+import { ArrowLeft, Warning, Lightning, Sparkle, CheckCircle, UserCircle, Sun, Barbell, ForkKnife, Moon, Star, CopySimple, PlusCircle } from '@phosphor-icons/react';
 import { useStack } from '../contexts/StackContext';
 import { useAuth } from '../contexts/AuthContext';
 import { useLanguage } from '../contexts/LanguageContext';
@@ -22,9 +22,12 @@ interface BySeverity {
   synergy: Interaction[];
 }
 
-interface TimingTip {
+type TimeOfDay = 'morning' | 'pre-workout' | 'with-meal' | 'afternoon' | 'evening' | 'before-bed';
+
+interface ScheduleSlot {
+  time_of_day: TimeOfDay;
   supplements: string[];
-  tip: string;
+  note?: string;
 }
 
 interface Redundancy {
@@ -38,7 +41,7 @@ interface MissingComplement {
 }
 
 interface StackInsights {
-  timing_tips: TimingTip[];
+  schedule: ScheduleSlot[];
   redundancies: Redundancy[];
   missing_complements: MissingComplement[];
 }
@@ -140,29 +143,78 @@ function InsightCard({ title, color, icon, children }: {
   );
 }
 
-function TimingSection({ tips }: { tips: TimingTip[] }) {
-  if (tips.length === 0) return null;
+const TIME_SLOT_CONFIG: Record<TimeOfDay, { label: string; color: string; bg: string; border: string; icon: React.ReactNode }> = {
+  'morning':     { label: 'Morning',     color: '#b45309', bg: '#fffbeb', border: '#fde68a', icon: <Sun    size={15} weight="fill" color="#f59e0b" /> },
+  'pre-workout': { label: 'Pre-Workout', color: '#b91c1c', bg: '#fff1f2', border: '#fecaca', icon: <Barbell size={15} weight="fill" color="#ef4444" /> },
+  'with-meal':   { label: 'With Meal',   color: '#166534', bg: '#f0fdf4', border: '#bbf7d0', icon: <ForkKnife size={15} weight="fill" color="#22c55e" /> },
+  'afternoon':   { label: 'Afternoon',   color: '#9a3412', bg: '#fff7ed', border: '#fed7aa', icon: <Sun    size={15} weight="fill" color="#f97316" /> },
+  'evening':     { label: 'Evening',     color: '#4338ca', bg: '#eef2ff', border: '#c7d2fe', icon: <Star   size={15} weight="fill" color="#6366f1" /> },
+  'before-bed':  { label: 'Before Bed',  color: '#5b21b6', bg: '#f5f3ff', border: '#ddd6fe', icon: <Moon   size={15} weight="fill" color="#8b5cf6" /> },
+};
+
+function ScheduleSection({ schedule }: { schedule: ScheduleSlot[] }) {
+  if (schedule.length === 0) return null;
+
   return (
-    <InsightCard title="Timing Tips" color="#6366f1" icon={<Clock size={16} weight="fill" color="#6366f1" />}>
-      {tips.map((tip, i) => (
-        <div key={i} style={{ padding: '0.875rem 1.25rem', borderBottom: '1px solid var(--border)' }}>
-          <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.25rem', marginBottom: '0.375rem' }}>
-            {tip.supplements.map(name => (
-              <span key={name} style={{
-                padding: '0.125rem 0.5rem', borderRadius: '999px',
-                background: '#eef2ff', border: '1px solid #c7d2fe',
-                color: '#4338ca', fontFamily: "'Inter', sans-serif", fontWeight: 600, fontSize: '0.75rem',
+    <div style={{ marginBottom: '1rem' }}>
+      <div style={{
+        fontFamily: "'Manrope', sans-serif", fontWeight: 800,
+        fontSize: '0.8125rem', color: 'var(--text-secondary)',
+        textTransform: 'uppercase', letterSpacing: '0.5px',
+        marginBottom: '0.75rem',
+      }}>
+        Daily Schedule
+      </div>
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(160px, 1fr))', gap: '0.625rem' }}>
+        {schedule.map((slot, i) => {
+          const cfg = TIME_SLOT_CONFIG[slot.time_of_day] ?? {
+            label: slot.time_of_day, color: '#374151', bg: '#f9fafb', border: '#e5e7eb',
+            icon: null,
+          };
+          return (
+            <div key={i} style={{
+              borderRadius: '14px',
+              border: `1.5px solid ${cfg.border}`,
+              background: cfg.bg,
+              overflow: 'hidden',
+            }}>
+              <div style={{
+                padding: '0.625rem 0.875rem 0.5rem',
+                display: 'flex', alignItems: 'center', gap: '0.375rem',
+                borderBottom: `1px solid ${cfg.border}`,
               }}>
-                {name}
-              </span>
-            ))}
-          </div>
-          <p style={{ fontFamily: "'Inter', sans-serif", fontSize: '0.8125rem', color: 'var(--text-secondary)', margin: 0, lineHeight: 1.55 }}>
-            {tip.tip}
-          </p>
-        </div>
-      ))}
-    </InsightCard>
+                {cfg.icon}
+                <span style={{
+                  fontFamily: "'Manrope', sans-serif", fontWeight: 800,
+                  fontSize: '0.8125rem', color: cfg.color,
+                }}>
+                  {cfg.label}
+                </span>
+              </div>
+              <div style={{ padding: '0.625rem 0.875rem' }}>
+                {slot.supplements.map(name => (
+                  <div key={name} style={{
+                    fontFamily: "'Inter', sans-serif", fontWeight: 600,
+                    fontSize: '0.8125rem', color: 'var(--text-primary)',
+                    lineHeight: 1.6,
+                  }}>
+                    {name}
+                  </div>
+                ))}
+                {slot.note && (
+                  <p style={{
+                    fontFamily: "'Inter', sans-serif", fontSize: '0.75rem',
+                    color: 'var(--text-muted)', margin: '0.375rem 0 0', lineHeight: 1.5,
+                  }}>
+                    {slot.note}
+                  </p>
+                )}
+              </div>
+            </div>
+          );
+        })}
+      </div>
+    </div>
   );
 }
 
@@ -244,7 +296,7 @@ export default function StackEvaluationPage() {
         if (data.success) {
           setBySeverity(data.data.by_severity);
           setInsights({
-            timing_tips: data.data.timing_tips ?? [],
+            schedule: data.data.schedule ?? [],
             redundancies: data.data.redundancies ?? [],
             missing_complements: data.data.missing_complements ?? [],
           });
@@ -439,7 +491,7 @@ export default function StackEvaluationPage() {
             )}
             {insights && (
               <>
-                <TimingSection tips={insights.timing_tips} />
+                <ScheduleSection schedule={insights.schedule} />
                 <RedundancySection redundancies={insights.redundancies} />
                 <ComplementsSection complements={insights.missing_complements} />
               </>
