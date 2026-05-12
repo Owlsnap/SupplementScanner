@@ -143,13 +143,13 @@ function InsightCard({ title, color, icon, children }: {
   );
 }
 
-const TIME_SLOT_CONFIG: Record<TimeOfDay, { label: string; color: string; bg: string; border: string; icon: React.ReactNode }> = {
-  'morning':     { label: 'Morning',     color: '#b45309', bg: '#fffbeb', border: '#fde68a', icon: <Sun    size={15} weight="fill" color="#f59e0b" /> },
-  'pre-workout': { label: 'Pre-Workout', color: '#b91c1c', bg: '#fff1f2', border: '#fecaca', icon: <Barbell size={15} weight="fill" color="#ef4444" /> },
-  'with-meal':   { label: 'With Meal',   color: '#166534', bg: '#f0fdf4', border: '#bbf7d0', icon: <ForkKnife size={15} weight="fill" color="#22c55e" /> },
-  'afternoon':   { label: 'Afternoon',   color: '#9a3412', bg: '#fff7ed', border: '#fed7aa', icon: <Sun    size={15} weight="fill" color="#f97316" /> },
-  'evening':     { label: 'Evening',     color: '#4338ca', bg: '#eef2ff', border: '#c7d2fe', icon: <Star   size={15} weight="fill" color="#6366f1" /> },
-  'before-bed':  { label: 'Before Bed',  color: '#5b21b6', bg: '#f5f3ff', border: '#ddd6fe', icon: <Moon   size={15} weight="fill" color="#8b5cf6" /> },
+const TIME_SLOT_CONFIG: Record<TimeOfDay, { label: string; headerBg: string; headerColor: string; iconColor: string; border: string; icon: React.ReactNode }> = {
+  'morning':     { label: 'Morning',     headerBg: '#f59e0b', headerColor: '#fff', iconColor: '#fff', border: '#fcd34d', icon: <Sun      size={15} weight="fill" color="#fff" /> },
+  'pre-workout': { label: 'Pre-Workout', headerBg: '#ef4444', headerColor: '#fff', iconColor: '#fff', border: '#fca5a5', icon: <Barbell  size={15} weight="fill" color="#fff" /> },
+  'with-meal':   { label: 'With Meal',   headerBg: '#22c55e', headerColor: '#fff', iconColor: '#fff', border: '#86efac', icon: <ForkKnife size={15} weight="fill" color="#fff" /> },
+  'afternoon':   { label: 'Afternoon',   headerBg: '#f97316', headerColor: '#fff', iconColor: '#fff', border: '#fdba74', icon: <Sun      size={15} weight="fill" color="#fff" /> },
+  'evening':     { label: 'Evening',     headerBg: '#6366f1', headerColor: '#fff', iconColor: '#fff', border: '#a5b4fc', icon: <Star     size={15} weight="fill" color="#fff" /> },
+  'before-bed':  { label: 'Before Bed',  headerBg: '#8b5cf6', headerColor: '#fff', iconColor: '#fff', border: '#c4b5fd', icon: <Moon    size={15} weight="fill" color="#fff" /> },
 };
 
 function ScheduleSection({ schedule }: { schedule: ScheduleSlot[] }) {
@@ -168,25 +168,25 @@ function ScheduleSection({ schedule }: { schedule: ScheduleSlot[] }) {
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(160px, 1fr))', gap: '0.625rem' }}>
         {schedule.map((slot, i) => {
           const cfg = TIME_SLOT_CONFIG[slot.time_of_day] ?? {
-            label: slot.time_of_day, color: '#374151', bg: '#f9fafb', border: '#e5e7eb',
+            label: slot.time_of_day, headerBg: '#64748b', headerColor: '#fff', iconColor: '#fff', border: '#e2e8f0',
             icon: null,
           };
           return (
             <div key={i} style={{
               borderRadius: '14px',
               border: `1.5px solid ${cfg.border}`,
-              background: cfg.bg,
+              background: 'var(--bg-surface)',
               overflow: 'hidden',
             }}>
               <div style={{
                 padding: '0.625rem 0.875rem 0.5rem',
                 display: 'flex', alignItems: 'center', gap: '0.375rem',
-                borderBottom: `1px solid ${cfg.border}`,
+                background: cfg.headerBg,
               }}>
                 {cfg.icon}
                 <span style={{
                   fontFamily: "'Manrope', sans-serif", fontWeight: 800,
-                  fontSize: '0.8125rem', color: cfg.color,
+                  fontSize: '0.8125rem', color: cfg.headerColor,
                 }}>
                   {cfg.label}
                 </span>
