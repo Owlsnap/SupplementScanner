@@ -587,36 +587,6 @@ export default function SupplementAnalyzer(): JSX.Element {
             </button>
 
             <button
-              onClick={() => { navigate('/scanner'); setShowMenu(false); }}
-              onMouseEnter={() => setHoveredNav('scanner')}
-              onMouseLeave={() => setHoveredNav(null)}
-              style={{
-                display: 'flex', alignItems: 'center', gap: '0.375rem',
-                padding: '0.5rem 0.875rem', borderRadius: '28px',
-                border: location.pathname === '/scanner' ? 'none' : '1.5px solid var(--border-strong)',
-                background: location.pathname === '/scanner' ? '#00685f' : hoveredNav === 'scanner' ? 'var(--bg-hover)' : 'transparent',
-                color: location.pathname === '/scanner' ? '#ffffff' : hoveredNav === 'scanner' ? 'var(--text-primary)' : 'var(--text-secondary)',
-                fontFamily: "'Inter', sans-serif", fontWeight: 600,
-                fontSize: '0.875rem', cursor: 'pointer',
-                transition: 'all 0.15s ease', whiteSpace: 'nowrap',
-              }}
-            >
-              <LinkSimple size={15} />
-              <span>{t('nav.urlScanner')}</span>
-              <span style={{
-                background: location.pathname === '/scanner' ? 'rgba(255,255,255,0.2)' : 'rgba(245,158,11,0.15)',
-                color: location.pathname === '/scanner' ? '#ffffff' : '#b45309',
-                border: `1px solid ${location.pathname === '/scanner' ? 'rgba(255,255,255,0.3)' : 'rgba(180,83,9,0.25)'}`,
-                fontSize: '0.5625rem', fontWeight: 800,
-                padding: '0.125rem 0.375rem', borderRadius: '999px',
-                letterSpacing: '0.5px', lineHeight: 1,
-                fontFamily: "'Inter', sans-serif",
-              }}>
-                {t('common.beta')}
-              </span>
-            </button>
-
-            <button
               onClick={() => { navigate('/recommendations'); setShowMenu(false); }}
               onMouseEnter={() => setHoveredNav('recommendations')}
               onMouseLeave={() => setHoveredNav(null)}
@@ -881,33 +851,6 @@ export default function SupplementAnalyzer(): JSX.Element {
                   {t('nav.index')}
                 </button>
                 <button
-                  onClick={() => { navigate('/scanner'); setShowMobileMenu(false); }}
-                  style={{
-                    width: '100%', padding: '1rem 1.25rem',
-                    background: location.pathname === '/scanner' ? 'var(--primary-light)' : 'transparent',
-                    border: 'none', color: location.pathname === '/scanner' ? '#00685f' : 'var(--text-primary)',
-                    fontSize: '0.9375rem', fontFamily: "'Inter', sans-serif",
-                    fontWeight: 600, cursor: 'pointer',
-                    display: 'flex', alignItems: 'center', gap: '0.75rem',
-                    textAlign: 'left', transition: 'background 0.15s ease',
-                  }}
-                  onMouseEnter={e => { if (location.pathname !== '/scanner') (e.currentTarget as HTMLButtonElement).style.background = 'var(--bg-hover)'; }}
-                  onMouseLeave={e => { if (location.pathname !== '/scanner') (e.currentTarget as HTMLButtonElement).style.background = 'transparent'; }}
-                >
-                  <LinkSimple size={18} color={location.pathname === '/scanner' ? '#00685f' : 'var(--text-secondary)'} />
-                  <div>
-                    <div>{t('nav.urlScanner')}</div>
-                    <span style={{
-                      background: 'rgba(245,158,11,0.15)', color: '#b45309',
-                      border: '1px solid rgba(180,83,9,0.25)',
-                      fontSize: '0.5rem', fontWeight: 800,
-                      padding: '0.125rem 0.375rem', borderRadius: '999px',
-                      letterSpacing: '0.5px', lineHeight: 1, marginTop: '0.125rem',
-                      fontFamily: "'Inter', sans-serif", display: 'inline-block'
-                    }}>{t('common.beta')}</span>
-                  </div>
-                </button>
-                <button
                   onClick={() => { navigate('/recommendations'); setShowMobileMenu(false); }}
                   style={{
                     width: '100%', padding: '1rem 1.25rem',
@@ -1079,7 +1022,8 @@ export default function SupplementAnalyzer(): JSX.Element {
         <Route path="/premium" element={<PremiumPage onBack={() => navigate(-1 as any)} onOpenAuthModal={() => setShowAuthModal(true)} />} />
         <Route path="/profile" element={<HealthProfilePage onBack={() => navigate(-1 as any)} onSignIn={() => setShowAuthModal(true)} />} />
         <Route path="/stack-evaluation" element={<StackEvaluationPage />} />
-        <Route path="/scanner" element={(() => {
+        <Route path="/scanner" element={<Navigate to="/" replace />} />
+        <Route path="/scanner-disabled" element={(() => {
           const product = products[0];
           const isExtracting = extractingProducts.has(product.id);
           return (
