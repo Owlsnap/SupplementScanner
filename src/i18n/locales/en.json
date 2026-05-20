@@ -160,11 +160,11 @@
       "Confidence score weighted by study type",
       "Dosage gap: studied dose vs. retail dose",
       "Supplement interaction engine (danger / caution / synergy)",
-      "Web + mobile access with one account",
+      "My Stack: full interaction check, schedule & gap analysis",
       "New supplements added regularly"
     ],
     "comingSoonFeatures": [
-      "Personalized stack optimizer (requires account)"
+      "Health goal-based personalized recommendations"
     ],
     "faq": [
       {
