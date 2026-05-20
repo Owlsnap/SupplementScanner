@@ -92,7 +92,7 @@ export default function CookieBanner(): JSX.Element | null {
           </div>
 
           {/* Content */}
-          <div style={{ flex: 1, minWidth: '280px' }}>
+          <div style={{ flex: 1, minWidth: '200px' }}>
             <h3 style={{
               margin: '0 0 0.25rem', color: 'var(--text-primary)', fontSize: '1rem', fontWeight: 700,
               display: 'flex', alignItems: 'center', gap: '0.375rem',

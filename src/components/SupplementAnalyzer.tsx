@@ -562,7 +562,7 @@ export default function SupplementAnalyzer(): JSX.Element {
             onClick={() => navigate('/')}
             style={{ background: 'none', border: 'none', cursor: 'pointer', padding: 0, display: 'flex', alignItems: 'center', gap: '0.625rem', flexShrink: 0 }}
           >
-            <img src={logoSvg} alt="SupplementScanner" style={{ height: 'clamp(60px, 8vw, 80px)', width: 'auto' }} />
+            <img src={logoSvg} alt="SupplementScanner" style={{ height: 'clamp(44px, 8vw, 80px)', width: 'auto' }} />
           </button>
 
           {/* Desktop Tab buttons */}
