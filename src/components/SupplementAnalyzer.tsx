@@ -33,6 +33,8 @@ import PremiumDeepDivePage from '../pages/PremiumDeepDivePage';
 import PremiumPage from '../pages/PremiumPage';
 import HealthProfilePage from '../pages/HealthProfilePage';
 import StackEvaluationPage from '../pages/StackEvaluationPage';
+import PrivacyPage from '../pages/PrivacyPage';
+import TermsPage from '../pages/TermsPage';
 import { encyclopediaSupplements } from '../data/encyclopediaData';
 
 // Dev bypass: set VITE_DEV_PREMIUM_BYPASS=true in .env.local to skip the paywall
@@ -1022,6 +1024,8 @@ export default function SupplementAnalyzer(): JSX.Element {
         <Route path="/premium" element={<PremiumPage onBack={() => navigate(-1 as any)} onOpenAuthModal={() => setShowAuthModal(true)} />} />
         <Route path="/profile" element={<HealthProfilePage onBack={() => navigate(-1 as any)} onSignIn={() => setShowAuthModal(true)} />} />
         <Route path="/stack-evaluation" element={<StackEvaluationPage />} />
+        <Route path="/privacy" element={<PrivacyPage />} />
+        <Route path="/terms" element={<TermsPage />} />
         <Route path="/scanner" element={<Navigate to="/" replace />} />
         <Route path="/scanner-disabled" element={(() => {
           const product = products[0];

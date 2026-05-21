@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
 import { MagnifyingGlass, ArrowRight, Barbell, Moon, Brain, Lightning, Leaf, Robot, X, Plus, Check } from '@phosphor-icons/react';
 import {
   encyclopediaSupplements,
@@ -273,6 +274,40 @@ export default function EncyclopediaPage({ onOpenInfo }: EncyclopediaPageProps) 
           </>
         )}
       </div>
+
+      {/* Footer */}
+      <footer style={{
+        borderTop: '1px solid var(--border)',
+        padding: '1.5rem 1.5rem',
+        marginTop: '2rem',
+      }}>
+        <div style={{
+          maxWidth: '860px', margin: '0 auto',
+          display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+          flexWrap: 'wrap', gap: '0.75rem',
+        }}>
+          <p style={{
+            fontFamily: "'Inter', sans-serif", fontSize: '0.8125rem',
+            color: 'var(--text-muted)', margin: 0,
+          }}>
+            © {new Date().getFullYear()} SupplementScanner. Educational use only — not medical advice.
+          </p>
+          <div style={{ display: 'flex', gap: '1.25rem' }}>
+            <Link
+              to="/privacy"
+              style={{ fontFamily: "'Inter', sans-serif", fontSize: '0.8125rem', color: 'var(--text-secondary)', textDecoration: 'none', fontWeight: 500 }}
+            >
+              Privacy & Cookies
+            </Link>
+            <Link
+              to="/terms"
+              style={{ fontFamily: "'Inter', sans-serif", fontSize: '0.8125rem', color: 'var(--text-secondary)', textDecoration: 'none', fontWeight: 500 }}
+            >
+              Terms of Service
+            </Link>
+          </div>
+        </div>
+      </footer>
     </div>
   );
 }

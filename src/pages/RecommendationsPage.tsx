@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
   Moon, Barbell, Leaf, Lightning, Brain,
-  ArrowRight, Clock, Books, Flask, Medal, Atom,
+  ArrowRight, ArrowLeft, Clock, Books, Flask, Medal, Atom,
 } from '@phosphor-icons/react';
 import { encyclopediaSupplements } from '../data/encyclopediaData';
 import type { EvidenceTier, EncyclopediaCategory } from '../data/encyclopediaData';
@@ -212,6 +212,21 @@ export default function RecommendationsPage(): JSX.Element {
         padding: 'calc(80px + 3.5rem) 1.5rem 5rem',
         boxSizing: 'border-box',
       }}>
+
+        {/* ── Back button ─────────────────────────────────────────────────── */}
+        <div style={{ marginBottom: '2rem' }}>
+          <button
+            onClick={() => navigate(-1)}
+            style={{
+              display: 'inline-flex', alignItems: 'center', gap: '0.375rem',
+              background: 'transparent', border: 'none', cursor: 'pointer',
+              color: 'var(--text-secondary)', fontSize: '0.875rem', fontWeight: 600,
+              fontFamily: "'Inter', sans-serif", padding: 0,
+            }}
+          >
+            <ArrowLeft size={16} /> Back
+          </button>
+        </div>
 
         {/* ── Page header ─────────────────────────────────────────────────── */}
         <div style={{ marginBottom: '3.5rem' }}>
