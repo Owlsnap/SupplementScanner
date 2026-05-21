@@ -44,10 +44,11 @@ const PLANS = {
 } as const;
 
 const FREE_FEATURES = [
-  'Index of 30 supplements',
+  'Index of 70 supplements',
   'Evidence tier badges',
-  'URL & barcode scanner',
   'Basic ingredient breakdown',
+  'Goal-based supplement recommendations',
+  'Build & save your supplement stack',
 ];
 
 const PREMIUM_FEATURES = [
@@ -71,6 +72,10 @@ const COMING_SOON = [
 
 const FAQ = [
   {
+    q: 'Why not just ask ChatGPT?',
+    a: 'You can — but general AI makes things up. It has no way to tell you when it is guessing versus when it is drawing from a real study, and with supplements that gap matters. SupplementScanner uses a RAG system: the model only answers from a curated set of indexed PubMed studies, so hallucinations are structurally prevented rather than just hoped away. Every claim links to a source you can open. On top of that, you get the full deep dive frame instantly — dosing, bioavailability, interactions, synergies — without spending 20 minutes prompting for each piece. You can also query the cited studies directly with your own questions. 70+ supplements, all structured the same way, no follow-up required.',
+  },
+  {
     q: 'Do I need an account?',
     a: 'Not for a single deep dive. For subscriptions you will need a free account so your access follows you across devices.',
   },
@@ -81,6 +86,18 @@ const FAQ = [
   {
     q: 'What happens when my subscription expires?',
     a: 'You drop back to the free tier instantly. Your account and history are preserved — you can resubscribe any time.',
+  },
+  {
+    q: 'Is the deep dive content AI-generated?',
+    a: 'It is AI-assisted, not AI-invented. The model synthesises from a curated set of PubMed studies and primary sources — every claim is anchored to a citation you can open and read. We do not let the model fill in gaps from general training data, which is where most supplement misinformation comes from.',
+  },
+  {
+    q: 'How often are new supplements added?',
+    a: 'We add supplements on an ongoing basis, prioritising by user requests and evidence availability. Premium subscribers get access to every new addition automatically.',
+  },
+  {
+    q: 'What is the difference between Pay per Dive and a subscription?',
+    a: 'Pay per Dive ($1.99) unlocks one deep dive permanently — good if you only need to research one or two supplements. Monthly ($7.99) and Yearly ($59.99) give you unlimited deep dives plus the full interaction engine and stack evaluation for as long as you are subscribed.',
   },
   {
     q: 'Can I get a refund?',
