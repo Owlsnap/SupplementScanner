@@ -206,6 +206,8 @@ export default function PremiumPage({ onBack, onOpenAuthModal }: PremiumPageProp
         @media (max-width: 640px) {
           .premium-feature-grid { grid-template-columns: 1fr !important; }
           .premium-hero-grid { padding: 0 1rem !important; }
+          .premium-research-card { padding: 1.25rem !important; }
+          .premium-trust-divider { display: none !important; }
         }
       `}</style>
 
@@ -602,7 +604,7 @@ export default function PremiumPage({ onBack, onOpenAuthModal }: PremiumPageProp
             <span style={{ fontFamily: "'Inter', sans-serif", fontSize: '0.8125rem', fontWeight: 600, color: textPrimary }}>{t('premium.moneyBack')}</span>
           </div>
 
-          <div style={{ width: '1px', height: '20px', background: border }} />
+          <div className="premium-trust-divider" style={{ width: '1px', height: '20px', background: border }} />
 
           {/* Cancel anytime */}
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
@@ -612,7 +614,7 @@ export default function PremiumPage({ onBack, onOpenAuthModal }: PremiumPageProp
             <span style={{ fontFamily: "'Inter', sans-serif", fontSize: '0.8125rem', fontWeight: 600, color: textPrimary }}>{t('premium.cancelAnytime')}</span>
           </div>
 
-          <div style={{ width: '1px', height: '20px', background: border }} />
+          <div className="premium-trust-divider" style={{ width: '1px', height: '20px', background: border }} />
 
           {/* Secure + payment logos */}
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.625rem' }}>
@@ -624,7 +626,7 @@ export default function PremiumPage({ onBack, onOpenAuthModal }: PremiumPageProp
         </div>
 
         {/* ── Research Standard section ── */}
-        <div style={{
+        <div className="premium-research-card" style={{
           background: surface, borderRadius: '24px',
           border: `1.5px solid ${border}`,
           padding: '2.5rem',

@@ -77,6 +77,15 @@ export default function MobileAppPage({ onBack }: MobileAppPageProps) {
 
   return (
     <div style={{ background: C.bg, minHeight: '100vh', fontFamily: "'Inter', sans-serif", color: C.text }}>
+      <style>{`
+        @media (max-width: 640px) {
+          .mob-nav-links { display: none !important; }
+          .mob-lead-form { flex-direction: column !important; }
+          .mob-lead-form input { width: 100% !important; }
+          .mob-lead-form button { width: 100% !important; justify-content: center; }
+          .mob-sync-card { padding: 1.5rem !important; }
+        }
+      `}</style>
 
       {/* Nav */}
       <nav style={{
@@ -88,7 +97,7 @@ export default function MobileAppPage({ onBack }: MobileAppPageProps) {
           <button onClick={onBack} style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: '1.125rem', fontWeight: 700, color: C.primary, fontFamily: "'Manrope', sans-serif", letterSpacing: '-0.5px', padding: 0 }}>
             SupplementScanner
           </button>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '2rem' }}>
+          <div className="mob-nav-links" style={{ display: 'flex', alignItems: 'center', gap: '2rem' }}>
             <button onClick={() => scrollTo('features')} style={{ background: 'none', border: 'none', cursor: 'pointer', color: `${C.text}99`, fontWeight: 500, fontSize: '0.9375rem', padding: 0, transition: 'color 0.15s' }} onMouseEnter={e => (e.currentTarget.style.color = C.text)} onMouseLeave={e => (e.currentTarget.style.color = `${C.text}99`)}>{t('mobileApp.navFeatures')}</button>
             <button onClick={() => scrollTo('how-it-works')} style={{ background: 'none', border: 'none', cursor: 'pointer', color: `${C.text}99`, fontWeight: 500, fontSize: '0.9375rem', padding: 0, transition: 'color 0.15s' }} onMouseEnter={e => (e.currentTarget.style.color = C.text)} onMouseLeave={e => (e.currentTarget.style.color = `${C.text}99`)}>{t('mobileApp.navMethodology')}</button>
             <button onClick={onBack} style={{ background: 'none', border: 'none', cursor: 'pointer', color: `${C.text}99`, fontWeight: 500, fontSize: '0.9375rem', padding: 0, transition: 'color 0.15s' }} onMouseEnter={e => (e.currentTarget.style.color = C.text)} onMouseLeave={e => (e.currentTarget.style.color = `${C.text}99`)}>{t('mobileApp.navIndex')}</button>
@@ -210,7 +219,7 @@ export default function MobileAppPage({ onBack }: MobileAppPageProps) {
       {/* Sync Section */}
       <section style={{ padding: '6rem 1.5rem' }}>
         <div style={{ maxWidth: '1280px', margin: '0 auto' }}>
-          <div style={{ position: 'relative', background: C.surface, borderRadius: '16px', padding: '3rem', overflow: 'hidden' }}>
+          <div className="mob-sync-card" style={{ position: 'relative', background: C.surface, borderRadius: '16px', padding: '3rem', overflow: 'hidden' }}>
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '3rem', alignItems: 'center', position: 'relative', zIndex: 1 }}>
               <div>
                 <h2 style={{ fontFamily: "'Manrope', sans-serif", fontWeight: 800, fontSize: 'clamp(1.5rem, 3vw, 2.25rem)', margin: '0 0 1.5rem', letterSpacing: '-0.5px' }}>
@@ -249,7 +258,7 @@ export default function MobileAppPage({ onBack }: MobileAppPageProps) {
               <Check size={20} weight="bold" /> {t('mobileApp.onTheList')}
             </div>
           ) : (
-            <div style={{ display: 'flex', gap: '0.5rem', padding: '0.5rem', background: C.surface, borderRadius: '8px', border: `1px solid ${C.outlineVariant}33` }}>
+            <div className="mob-lead-form" style={{ display: 'flex', gap: '0.5rem', padding: '0.5rem', background: C.surface, borderRadius: '8px', border: `1px solid ${C.outlineVariant}33` }}>
               <input
                 type="email"
                 value={email}

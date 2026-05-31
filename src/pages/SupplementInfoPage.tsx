@@ -106,6 +106,12 @@ export default function SupplementInfoPage({
 
   return (
     <div style={{ background: 'var(--bg-page)', minHeight: '100vh', fontFamily: "'Inter', sans-serif", paddingTop: '100px' }}>
+      <style>{`
+        @media (max-width: 480px) {
+          .info-col-grid { grid-template-columns: 1fr !important; }
+          .deep-dive-header { flex-direction: column !important; align-items: flex-start !important; gap: 0.625rem !important; }
+        }
+      `}</style>
       {/* Hero banner */}
       <div style={{
         background: `linear-gradient(135deg, ${cat.bg} 0%, ${cat.bg}cc 100%)`,
@@ -178,7 +184,7 @@ export default function SupplementInfoPage({
       <div style={{ maxWidth: '720px', margin: '0 auto', padding: '1.75rem 1.5rem 5rem' }}>
 
         {/* Typical dose + evidence row */}
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.75rem', marginBottom: '1rem' }}>
+        <div className="info-col-grid" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.75rem', marginBottom: '1rem' }}>
           <div style={{
             background: 'var(--bg-surface)', borderRadius: '14px',
             boxShadow: '0 1px 4px rgba(0,0,0,0.06)',
@@ -338,7 +344,7 @@ export default function SupplementInfoPage({
           boxShadow: '0 4px 20px rgba(0,104,95,0.1)',
           overflow: 'hidden',
         }}>
-          <div style={{
+          <div className="deep-dive-header" style={{
             background: 'linear-gradient(135deg, #00685f 0%, #3f6560 100%)',
             padding: '1.25rem 1.5rem',
             display: 'flex', alignItems: 'center', justifyContent: 'space-between',
@@ -367,7 +373,7 @@ export default function SupplementInfoPage({
           </div>
 
           <div style={{ padding: '1.25rem 1.5rem' }}>
-            <div style={{
+            <div className="info-col-grid" style={{
               display: 'grid', gridTemplateColumns: '1fr 1fr',
               gap: '0.75rem', marginBottom: '1.5rem',
             }}>
