@@ -10,6 +10,72 @@ import {
 import { useDarkMode } from '../contexts/DarkModeContext';
 import { useStack } from '../contexts/StackContext';
 import { useLanguage } from '../contexts/LanguageContext';
+import PageSEO from '../components/PageSEO';
+
+const HOME_SCHEMA = [
+  {
+    '@context': 'https://schema.org',
+    '@graph': [
+      {
+        '@type': 'Organization',
+        '@id': 'https://www.supplementscanner.io/#org',
+        name: 'SupplementScanner',
+        url: 'https://www.supplementscanner.io/',
+        logo: 'https://www.supplementscanner.io/supplement-scanner-logo.svg',
+        description: 'Svenskt lexikon och streckkodsskanner för kosttillskott, baserat på vetenskaplig evidens.',
+        areaServed: 'SE',
+        knowsLanguage: 'sv-SE',
+      },
+      {
+        '@type': 'WebSite',
+        '@id': 'https://www.supplementscanner.io/#website',
+        url: 'https://www.supplementscanner.io/',
+        name: 'SupplementScanner',
+        inLanguage: 'sv-SE',
+        publisher: { '@id': 'https://www.supplementscanner.io/#org' },
+        potentialAction: {
+          '@type': 'SearchAction',
+          target: {
+            '@type': 'EntryPoint',
+            urlTemplate: 'https://www.supplementscanner.io/?q={search_term_string}',
+          },
+          'query-input': 'required name=search_term_string',
+        },
+      },
+    ],
+  },
+  {
+    '@context': 'https://schema.org',
+    '@type': 'FAQPage',
+    inLanguage: 'sv-SE',
+    mainEntity: [
+      {
+        '@type': 'Question',
+        name: 'Vad är SupplementScanner?',
+        acceptedAnswer: {
+          '@type': 'Answer',
+          text: 'SupplementScanner är en svensk tjänst där du skannar streckkoden på ett kosttillskott och får evidensbaserad information om innehåll, dosering, verkningssätt och säkerhet för över 70 tillskott.',
+        },
+      },
+      {
+        '@type': 'Question',
+        name: 'Hur skannar jag ett kosttillskott?',
+        acceptedAnswer: {
+          '@type': 'Answer',
+          text: 'Ladda ned SupplementScanner-appen, rikta kameran mot produktens streckkod så identifieras tillskottet och du får en sammanfattning av innehåll, dosering och forskningsläge.',
+        },
+      },
+      {
+        '@type': 'Question',
+        name: 'Är informationen evidensbaserad?',
+        acceptedAnswer: {
+          '@type': 'Answer',
+          text: 'Ja. Varje tillskott analyseras utifrån vetenskaplig forskning med fokus på verkningssätt, dosering och dokumenterade effekter.',
+        },
+      },
+    ],
+  },
+];
 
 interface EncyclopediaPageProps {
   onOpenInfo: (slug: string) => void;
@@ -70,6 +136,13 @@ export default function EncyclopediaPage({ onOpenInfo }: EncyclopediaPageProps) 
     .filter(s => s.items.length > 0);
 
   return (
+    <>
+      <PageSEO
+        title="Kosttillskott Lexikon & Streckkodsskanner | SupplementScanner"
+        description="Skanna streckkoden på dina kosttillskott och få evidensbaserad info om 70+ tillskott — verkningssätt, dosering och synergier. Gratis att börja."
+        canonical="https://www.supplementscanner.io/"
+        schema={HOME_SCHEMA}
+      />
     <div style={{ background: 'var(--bg-page)', minHeight: '100vh', fontFamily: "'Inter', sans-serif" }}>
       {/* Hero section — top padding accounts for fixed navbar */}
       <div style={{
@@ -309,6 +382,7 @@ export default function EncyclopediaPage({ onOpenInfo }: EncyclopediaPageProps) 
         </div>
       </footer>
     </div>
+    </>
   );
 }
 

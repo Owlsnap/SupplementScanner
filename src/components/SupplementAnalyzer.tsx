@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import { Routes, Route, useNavigate, useLocation, useParams, Navigate } from 'react-router-dom';
+import PageSEO from './PageSEO';
 
 // ── Paid single-dive helpers ──────────────────────────────────────────────────
 type PaidDive = { slug: string; sessionId: string };
@@ -184,27 +185,53 @@ function SupplementInfoRoute({ onShowPaywall, onBuyError }: { onShowPaywall: () 
     }
   };
 
+  const suppSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'MedicalWebPage',
+    inLanguage: 'sv-SE',
+    name: `${supp.name} – dosering, effekt & forskning`,
+    url: `https://www.supplementscanner.io/encyclopedia/${supp.slug}`,
+    about: {
+      '@type': 'DietarySupplement',
+      name: supp.name,
+      category: supp.category,
+    },
+    publisher: {
+      '@type': 'Organization',
+      '@id': 'https://www.supplementscanner.io/#org',
+      name: 'SupplementScanner',
+    },
+  };
+
   return (
-    <SupplementInfoPage
-      slug={supp.slug}
-      name={supp.name}
-      category={supp.category}
-      evidenceTier={supp.evidenceTier}
-      tagline={supp.tagline}
-      primaryUse={supp.primaryUse}
-      overview={supp.overview}
-      typicalDose={supp.typicalDose}
-      bestFor={supp.bestFor}
-      keyFacts={supp.keyFacts}
-      commonMistakes={supp.commonMistakes}
-      onBack={() => navigate(-1 as any)}
-      hasPaidDive={canAccess}
-      onBuyDive={handleBuyDive}
-      onDeepDive={() => {
-        if (canAccess) navigate(`/encyclopedia/${slug}/premium-deep-dive`);
-        else onShowPaywall();
-      }}
-    />
+    <>
+      <PageSEO
+        title={`${supp.name} – dosering, effekt & forskning | SupplementScanner`}
+        description={`Evidensbaserad guide om ${supp.name}: verkningssätt, rekommenderad dosering och säkerhet. Del av SupplementScanner – kosttillskottslexikon för svenska konsumenter.`}
+        canonical={`https://www.supplementscanner.io/encyclopedia/${supp.slug}`}
+        schema={suppSchema}
+      />
+      <SupplementInfoPage
+        slug={supp.slug}
+        name={supp.name}
+        category={supp.category}
+        evidenceTier={supp.evidenceTier}
+        tagline={supp.tagline}
+        primaryUse={supp.primaryUse}
+        overview={supp.overview}
+        typicalDose={supp.typicalDose}
+        bestFor={supp.bestFor}
+        keyFacts={supp.keyFacts}
+        commonMistakes={supp.commonMistakes}
+        onBack={() => navigate(-1 as any)}
+        hasPaidDive={canAccess}
+        onBuyDive={handleBuyDive}
+        onDeepDive={() => {
+          if (canAccess) navigate(`/encyclopedia/${slug}/premium-deep-dive`);
+          else onShowPaywall();
+        }}
+      />
+    </>
   );
 }
 
@@ -215,15 +242,22 @@ function DeepDiveRoute() {
   const supp = encyclopediaSupplements.find(s => s.slug === slug);
   if (!supp) return <Navigate to="/" replace />;
   return (
-    <DeepDivePage
-      slug={supp.slug}
-      supplementName={supp.name}
-      supplementCategory={supp.category}
-      evidenceTier={supp.evidenceTier}
-      tagline={supp.tagline}
-      onBack={() => navigate(-1 as any)}
-      onGoToRecommendations={() => navigate('/recommendations')}
-    />
+    <>
+      <PageSEO
+        title={`${supp.name} – djupdykning i forskning & dosering | SupplementScanner`}
+        description={`AI-genererad djupdykning om ${supp.name}: verkningssätt, optimala doseringsprotokoll, synergier och säkerhet baserat på aktuell forskning.`}
+        canonical={`https://www.supplementscanner.io/encyclopedia/${supp.slug}/deep-dive`}
+      />
+      <DeepDivePage
+        slug={supp.slug}
+        supplementName={supp.name}
+        supplementCategory={supp.category}
+        evidenceTier={supp.evidenceTier}
+        tagline={supp.tagline}
+        onBack={() => navigate(-1 as any)}
+        onGoToRecommendations={() => navigate('/recommendations')}
+      />
+    </>
   );
 }
 
