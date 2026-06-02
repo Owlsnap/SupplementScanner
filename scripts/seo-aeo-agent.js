@@ -133,7 +133,6 @@ AEO = making content extractable and citeable by AI answer engines (Perplexity, 
 async function runAgent(userMessage) {
   const messages = [{ role: 'user', content: userMessage }];
 
-  // eslint-disable-next-line no-constant-condition
   while (true) {
     const stream = client.messages.stream({
       model: 'claude-opus-4-8',
