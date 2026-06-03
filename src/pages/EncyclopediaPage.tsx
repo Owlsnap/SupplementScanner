@@ -22,7 +22,7 @@ const HOME_SCHEMA = [
         name: 'SupplementScanner',
         url: 'https://www.supplementscanner.io/',
         logo: 'https://www.supplementscanner.io/supplement-scanner-logo.svg',
-        description: 'Svenskt lexikon och streckkodsskanner för kosttillskott, baserat på vetenskaplig evidens.',
+        description: 'Svenskt lexikon för kosttillskott, baserat på vetenskaplig evidens.',
         areaServed: 'SE',
         knowsLanguage: 'sv-SE',
       },
@@ -138,8 +138,8 @@ export default function EncyclopediaPage({ onOpenInfo }: EncyclopediaPageProps) 
   return (
     <>
       <PageSEO
-        title="Kosttillskott Lexikon & Streckkodsskanner | SupplementScanner"
-        description="Skanna streckkoden på dina kosttillskott och få evidensbaserad info om 70+ tillskott — verkningssätt, dosering och synergier. Gratis att börja."
+        title="Kosttillskott Lexikon | SupplementScanner"
+        description="Evidensbaserad info om 70+ kosttillskott — verkningssätt, dosering och synergier. Gratis att börja."
         canonical="https://www.supplementscanner.io/"
         schema={HOME_SCHEMA}
       />
