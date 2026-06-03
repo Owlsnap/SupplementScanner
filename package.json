@@ -23,7 +23,7 @@
     "seo:keywords": "node scripts/seo-aeo-agent.js --mode keywords",
     "seo:audit": "node scripts/seo-aeo-agent.js --mode audit",
     "build:railway": "vite build",
-    "vercel-build": "npx puppeteer browsers install chrome && vite build && node scripts/prerender.js"
+    "vercel-build": "vite build && node scripts/prerender.js"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.73.0",
@@ -49,6 +49,7 @@
     "zod": "^4.1.13"
   },
   "devDependencies": {
+    "@sparticuz/chromium": "^147.0.0",
     "@types/node": "^24.10.1",
     "@types/react": "^18.3.27",
     "@types/react-dom": "^18.3.7",
@@ -62,6 +63,7 @@
     "eslint-plugin-react-refresh": "^0.4.22",
     "postcss": "^8.5.6",
     "prettier": "^3.8.2",
+    "puppeteer-core": "^25.1.0",
     "tailwindcss": "^4.1.13",
     "typescript": "^5.9.3",
     "vite": "^4.4.5"
