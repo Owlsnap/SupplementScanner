@@ -21,7 +21,8 @@
     "seo:analyze": "node scripts/seo-aeo-agent.js --mode analyze",
     "seo:generate": "node scripts/seo-aeo-agent.js --mode generate",
     "seo:keywords": "node scripts/seo-aeo-agent.js --mode keywords",
-    "seo:audit": "node scripts/seo-aeo-agent.js --mode audit"
+    "seo:audit": "node scripts/seo-aeo-agent.js --mode audit",
+    "build:railway": "vite build"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.73.0",
