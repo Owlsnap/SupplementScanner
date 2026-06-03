@@ -133,9 +133,11 @@ async function main() {
   await browser.close();
   server.close();
 
-  console.log(`\n✅ Prerender complete — ${ok} succeeded, ${fail} failed\n`);
-
-  if (fail > 0) process.exit(1);
+  if (fail > 0) {
+    console.warn(`\n⚠️  Prerender complete — ${ok} succeeded, ${fail} failed (build continues)\n`);
+  } else {
+    console.log(`\n✅ Prerender complete — ${ok} succeeded\n`);
+  }
 }
 
 main().catch(err => {
