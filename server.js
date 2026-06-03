@@ -1557,9 +1557,24 @@ const DEEP_DIVE_TOOL = {
       studyCount: {
         type: 'integer',
         description: 'Conservative estimate of how many peer-reviewed human clinical trials (RCTs or controlled studies) have directly investigated this supplement. Count only studies you are confident exist — do not include animal studies, in-vitro studies, or observational reports. Return 0 if none exist.',
+      },
+      studies: {
+        type: 'array',
+        description: '3–5 key peer-reviewed human studies. Only include studies you are highly confident exist with accurate PubMed IDs. Do not fabricate PMIDs.',
+        items: {
+          type: 'object',
+          properties: {
+            pubmed_id: { type: 'string', description: 'Real PubMed PMID as a string, e.g., "28919842". Must be a real, verifiable ID.' },
+            title: { type: 'string', description: 'Shortened study title, max 90 characters.' },
+            year: { type: 'integer', description: 'Year the study was published.' },
+            participant_count: { type: 'integer', description: 'Number of human participants in the study. Use 0 if unknown.' },
+            finding: { type: 'string', description: 'One plain-English sentence describing the key finding.' }
+          },
+          required: ['pubmed_id', 'title', 'year', 'participant_count', 'finding']
+        }
       }
     },
-    required: ['whatItIs', 'howItWorks', 'dosing', 'forms', 'synergies', 'cautions', 'recommendationsLink', 'studyCount']
+    required: ['whatItIs', 'howItWorks', 'dosing', 'forms', 'synergies', 'cautions', 'recommendationsLink', 'studyCount', 'studies']
   }
 };
 
@@ -1568,7 +1583,7 @@ async function generateDeepDive(slug) {
 
   const response = await getAnthropicClient().messages.create({
     model: 'claude-sonnet-4-6',
-    max_tokens: 2048,
+    max_tokens: 3072,
     tools: [DEEP_DIVE_TOOL],
     tool_choice: { type: 'tool', name: 'generate_supplement_deep_dive' },
     messages: [{
@@ -1583,15 +1598,52 @@ Requirements:
 - Tone: knowledgeable but accessible — like a trusted sports dietitian explaining to a motivated amateur
 - Do NOT use marketing language or exaggerate effects beyond the evidence
 
-For recommendationsLink: return one of exactly these strings if applicable — "better sleep", "build muscle", "general health", "energy boost" — or an empty string if none fit well.`
+For recommendationsLink: return one of exactly these strings if applicable — "better sleep", "build muscle", "general health", "energy boost" — or an empty string if none fit well.
+
+For studies: include 3–5 real human clinical trials with accurate PubMed IDs (PMIDs). Only include studies you are highly confident exist — verify the PMID maps to a real paper before including it. Do not fabricate PMIDs. If fewer than 3 confident citations exist, return only those you are sure of.`
     }]
   });
 
   const toolUse = response.content.find(b => b.type === 'tool_use');
   if (!toolUse) throw new Error('Claude did not return structured tool_use data');
 
+  const result = toolUse.input;
+
+  // Overwrite Claude's titles with authoritative ones from PubMed to prevent title hallucination
+  if (result.studies && result.studies.length > 0) {
+    result.studies = await verifyPubMedTitles(result.studies);
+  }
+
   console.log(`✅ Deep dive generated for: ${slug}`);
-  return toolUse.input;
+  return result;
+}
+
+async function verifyPubMedTitles(studies) {
+  const pmids = studies.map(s => s.pubmed_id).filter(Boolean).join(',');
+  if (!pmids) return studies;
+
+  try {
+    const url = `https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esummary.fcgi?db=pubmed&id=${pmids}&retmode=json`;
+    const resp = await fetch(url, { signal: AbortSignal.timeout(8000) });
+    if (!resp.ok) return studies;
+    const data = await resp.json();
+    const resultMap = data.result || {};
+
+    return studies.map(study => {
+      const item = resultMap[study.pubmed_id];
+      if (!item || item.error) {
+        // PMID didn't resolve — remove it so broken links don't ship
+        return null;
+      }
+      return {
+        ...study,
+        title: item.title ? item.title.replace(/<[^>]+>/g, '').replace(/\.$/, '') : study.title,
+      };
+    }).filter(Boolean);
+  } catch (err) {
+    console.warn('⚠️ PubMed title verification failed, using Claude titles:', err.message);
+    return studies;
+  }
 }
 
 // GET /api/encyclopedia/deep-dive/:slug

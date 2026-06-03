@@ -36,6 +36,7 @@ import HealthProfilePage from '../pages/HealthProfilePage';
 import StackEvaluationPage from '../pages/StackEvaluationPage';
 import PrivacyPage from '../pages/PrivacyPage';
 import TermsPage from '../pages/TermsPage';
+import MethodologyPage from '../pages/MethodologyPage';
 import { encyclopediaSupplements } from '../data/encyclopediaData';
 
 // Dev bypass: set VITE_DEV_PREMIUM_BYPASS=true in .env.local to skip the paywall
@@ -1060,6 +1061,7 @@ export default function SupplementAnalyzer(): JSX.Element {
         <Route path="/stack-evaluation" element={<StackEvaluationPage />} />
         <Route path="/privacy" element={<PrivacyPage />} />
         <Route path="/terms" element={<TermsPage />} />
+        <Route path="/methodology" element={<MethodologyPage />} />
         <Route path="/scanner" element={<Navigate to="/" replace />} />
         <Route path="/scanner-disabled" element={(() => {
           const product = products[0];

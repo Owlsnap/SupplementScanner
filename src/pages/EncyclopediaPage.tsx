@@ -367,6 +367,12 @@ export default function EncyclopediaPage({ onOpenInfo }: EncyclopediaPageProps) 
           </p>
           <div style={{ display: 'flex', gap: '1.25rem' }}>
             <Link
+              to="/methodology"
+              style={{ fontFamily: "'Inter', sans-serif", fontSize: '0.8125rem', color: 'var(--text-secondary)', textDecoration: 'none', fontWeight: 500 }}
+            >
+              How We Grade Evidence
+            </Link>
+            <Link
               to="/privacy"
               style={{ fontFamily: "'Inter', sans-serif", fontSize: '0.8125rem', color: 'var(--text-secondary)', textDecoration: 'none', fontWeight: 500 }}
             >

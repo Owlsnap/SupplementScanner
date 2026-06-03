@@ -21,6 +21,14 @@ interface SynergyInfo {
   reason: string;
 }
 
+interface StudyInfo {
+  pubmed_id: string;
+  title: string;
+  year: number;
+  participant_count: number;
+  finding: string;
+}
+
 interface DeepDiveContent {
   whatItIs: string;
   howItWorks: string;
@@ -29,6 +37,7 @@ interface DeepDiveContent {
   synergies: SynergyInfo[];
   cautions: string[];
   recommendationsLink: string;
+  studies?: StudyInfo[];
 }
 
 interface DeepDivePageProps {
@@ -355,6 +364,60 @@ export default function DeepDivePage({
                     </div>
                   ))}
                 </div>
+              </div>
+            )}
+
+            {/* Key Studies */}
+            {deepDive.studies && deepDive.studies.length > 0 && (
+              <div style={cardStyle}>
+                <div style={sectionTitleStyle}>
+                  Key Studies
+                </div>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '0.625rem' }}>
+                  {deepDive.studies.map((study, i) => (
+                    <a
+                      key={i}
+                      href={`https://pubmed.ncbi.nlm.nih.gov/${study.pubmed_id}/`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      style={{ textDecoration: 'none' }}
+                    >
+                      <div style={{
+                        padding: '0.875rem 1rem',
+                        background: 'var(--bg-hover)',
+                        borderRadius: '10px',
+                        border: '1px solid var(--border)',
+                        transition: 'border-color 0.15s ease',
+                      }}
+                        onMouseEnter={e => { (e.currentTarget as HTMLDivElement).style.borderColor = '#00685f'; }}
+                        onMouseLeave={e => { (e.currentTarget as HTMLDivElement).style.borderColor = 'var(--border)'; }}
+                      >
+                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: '0.75rem', marginBottom: '0.375rem' }}>
+                          <span style={{ fontFamily: "'Manrope', sans-serif", fontWeight: 700, fontSize: '0.875rem', color: 'var(--text-primary)', lineHeight: 1.4 }}>
+                            {study.title}
+                          </span>
+                          <span style={{ fontFamily: "'Inter', sans-serif", fontSize: '0.75rem', fontWeight: 600, color: '#00685f', whiteSpace: 'nowrap', flexShrink: 0 }}>
+                            PMID {study.pubmed_id}
+                          </span>
+                        </div>
+                        <p style={{ ...bodyTextStyle, fontSize: '0.8125rem', margin: '0 0 0.375rem' }}>{study.finding}</p>
+                        <div style={{ display: 'flex', gap: '0.75rem' }}>
+                          <span style={{ fontFamily: "'Inter', sans-serif", fontSize: '0.75rem', color: 'var(--text-secondary)', fontWeight: 500 }}>
+                            {study.year}
+                          </span>
+                          {study.participant_count > 0 && (
+                            <span style={{ fontFamily: "'Inter', sans-serif", fontSize: '0.75rem', color: 'var(--text-secondary)', fontWeight: 500 }}>
+                              n={study.participant_count}
+                            </span>
+                          )}
+                        </div>
+                      </div>
+                    </a>
+                  ))}
+                </div>
+                <p style={{ fontFamily: "'Inter', sans-serif", fontSize: '0.75rem', color: 'var(--text-secondary)', margin: '0.75rem 0 0', lineHeight: 1.5 }}>
+                  Citations link to PubMed, the US National Library of Medicine's public research database.
+                </p>
               </div>
             )}
 
