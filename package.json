@@ -22,7 +22,8 @@
     "seo:generate": "node scripts/seo-aeo-agent.js --mode generate",
     "seo:keywords": "node scripts/seo-aeo-agent.js --mode keywords",
     "seo:audit": "node scripts/seo-aeo-agent.js --mode audit",
-    "build:railway": "vite build"
+    "build:railway": "vite build",
+    "vercel-build": "npx puppeteer browsers install chrome && vite build && node scripts/prerender.js"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.73.0",
