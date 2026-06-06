@@ -132,23 +132,33 @@ export default function ProfileSetupWizard({ initial, onComplete, onClose }: Pro
     }, 180);
   };
 
-  const advance = () => {
-    if (isLast) {
-      handleFinish();
-    } else {
-      transition(() => setStep(s => s + 1));
-    }
-  };
-
   const goBack = () => {
     if (step === 0) { onClose(); return; }
     transition(() => setStep(s => s - 1));
   };
 
+  const handleFinish = async (finalData: WizardData) => {
+    setSaving(true);
+    setError(null);
+    try {
+      await onComplete(finalData);
+    } catch (e: any) {
+      setError(e?.message ?? 'Something went wrong');
+      setSaving(false);
+    }
+  };
+
   const handleSingleSelect = (value: string) => {
     setPendingValue(value);
-    setData(d => ({ ...d, [currentStep.field]: value }));
-    setTimeout(advance, 320);
+    const updated: WizardData = { ...data, [currentStep.field]: value };
+    setData(updated);
+    setTimeout(() => {
+      if (isLast) {
+        handleFinish(updated);
+      } else {
+        transition(() => setStep(s => s + 1));
+      }
+    }, 320);
   };
 
   const handleMultiToggle = (value: string) => {
@@ -156,17 +166,6 @@ export default function ProfileSetupWizard({ initial, onComplete, onClose }: Pro
       const arr = d.diet as string[];
       return { ...d, diet: arr.includes(value) ? arr.filter(v => v !== value) : [...arr, value] };
     });
-  };
-
-  const handleFinish = async () => {
-    setSaving(true);
-    setError(null);
-    try {
-      await onComplete(data);
-    } catch (e: any) {
-      setError(e?.message ?? 'Something went wrong');
-      setSaving(false);
-    }
   };
 
   const getValue = (): string | string[] => data[currentStep.field];
@@ -391,7 +390,7 @@ export default function ProfileSetupWizard({ initial, onComplete, onClose }: Pro
             borderTop: '1px solid var(--border)',
           }}>
             <button
-              onClick={advance}
+              onClick={() => isLast ? handleFinish(data) : transition(() => setStep(s => s + 1))}
               disabled={saving || !canContinue}
               style={{
                 width: '100%', padding: '0.875rem',
