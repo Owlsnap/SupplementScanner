@@ -1,10 +1,11 @@
 import React, { useState, useEffect, KeyboardEvent } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ArrowLeft, CheckCircle, User, Tag, X as XIcon, Sparkle } from '@phosphor-icons/react';
+import { ArrowLeft, CheckCircle, User, Tag, X as XIcon, Sparkle, PencilSimple } from '@phosphor-icons/react';
 import { useAuth, supabase } from '../contexts/AuthContext';
 import { useStack } from '../contexts/StackContext';
 import { encyclopediaSupplements } from '../data/encyclopediaData';
 import { useLanguage } from '../contexts/LanguageContext';
+import ProfileSetupWizard, { WizardData } from './ProfileSetupWizard';
 
 interface HealthProfilePageProps {
   onBack: () => void;
@@ -16,6 +17,9 @@ interface Profile {
   diet: string[];
   conditions: string[];
   current_stack: string[];
+  age_range: string;
+  training_level: string;
+  supplement_knowledge: string;
 }
 
 const GOALS = [
@@ -76,7 +80,11 @@ export default function HealthProfilePage({ onBack, onSignIn }: HealthProfilePag
     diet: [],
     conditions: [],
     current_stack: [],
+    age_range: '',
+    training_level: '',
+    supplement_knowledge: '',
   });
+  const [wizardOpen, setWizardOpen] = useState(false);
   const [conditionInput, setConditionInput] = useState('');
   const [stackInput, setStackInput] = useState('');
   const [loading, setLoading] = useState(true);
@@ -96,7 +104,7 @@ export default function HealthProfilePage({ onBack, onSignIn }: HealthProfilePag
 
     supabase
       .from('user_health_profiles')
-      .select('goal, diet, conditions, current_stack')
+      .select('goal, diet, conditions, current_stack, age_range, training_level, supplement_knowledge')
       .eq('user_id', user.id)
       .maybeSingle()
       .then(({ data, error }) => {
@@ -107,6 +115,9 @@ export default function HealthProfilePage({ onBack, onSignIn }: HealthProfilePag
             diet: data.diet ?? [],
             conditions: data.conditions ?? [],
             current_stack: data.current_stack ?? [],
+            age_range: data.age_range ?? '',
+            training_level: data.training_level ?? '',
+            supplement_knowledge: data.supplement_knowledge ?? '',
           });
         }
         setLoading(false);
@@ -177,6 +188,9 @@ export default function HealthProfilePage({ onBack, onSignIn }: HealthProfilePag
           diet: profile.diet,
           conditions: profile.conditions,
           current_stack: profile.current_stack,
+          age_range: profile.age_range || null,
+          training_level: profile.training_level || null,
+          supplement_knowledge: profile.supplement_knowledge || null,
           updated_at: new Date().toISOString(),
         },
         { onConflict: 'user_id' },
@@ -187,6 +201,60 @@ export default function HealthProfilePage({ onBack, onSignIn }: HealthProfilePag
     setSaved(true);
     setTimeout(() => setSaved(false), 3000);
   };
+
+  const saveWizardData = async (wizardData: WizardData) => {
+    if (!user || !session) return;
+    const { error } = await supabase
+      .from('user_health_profiles')
+      .upsert(
+        {
+          user_id: user.id,
+          goal: wizardData.goal || profile.goal || null,
+          diet: wizardData.diet.length ? wizardData.diet : profile.diet,
+          conditions: profile.conditions,
+          current_stack: profile.current_stack,
+          age_range: wizardData.age_range || null,
+          training_level: wizardData.training_level || null,
+          supplement_knowledge: wizardData.supplement_knowledge || null,
+          updated_at: new Date().toISOString(),
+        },
+        { onConflict: 'user_id' },
+      );
+    if (error) throw new Error(error.message);
+    setProfile(p => ({
+      ...p,
+      goal: wizardData.goal || p.goal,
+      diet: wizardData.diet.length ? wizardData.diet : p.diet,
+      age_range: wizardData.age_range,
+      training_level: wizardData.training_level,
+      supplement_knowledge: wizardData.supplement_knowledge,
+    }));
+    setWizardOpen(false);
+  };
+
+  const AGE_RANGE_LABELS: Record<string, string> = {
+    under_25: t('profileSetup.ageUnder25'),
+    '25_34': t('profileSetup.age2534'),
+    '35_44': t('profileSetup.age3544'),
+    '45_54': t('profileSetup.age4554'),
+    '55_plus': t('profileSetup.age55plus'),
+  };
+
+  const TRAINING_LABELS: Record<string, string> = {
+    sedentary: t('profileSetup.trainingSedentary'),
+    lightly_active: t('profileSetup.trainingLightly'),
+    moderately_active: t('profileSetup.trainingModerately'),
+    very_active: t('profileSetup.trainingVery'),
+    athlete: t('profileSetup.trainingAthlete'),
+  };
+
+  const KNOWLEDGE_LABELS: Record<string, string> = {
+    beginner: t('profileSetup.knowledgeBeginner'),
+    intermediate: t('profileSetup.knowledgeIntermediate'),
+    advanced: t('profileSetup.knowledgeAdvanced'),
+  };
+
+  const profileIsSetUp = !!(profile.age_range || profile.training_level || profile.supplement_knowledge);
 
   const sectionLabel: React.CSSProperties = {
     fontFamily: "'Manrope', sans-serif",
@@ -543,6 +611,74 @@ export default function HealthProfilePage({ onBack, onSignIn }: HealthProfilePag
               </div>
             )}
 
+            {/* Profile setup CTA or summary */}
+            {!profileIsSetUp ? (
+              <div style={{
+                ...card,
+                background: 'linear-gradient(135deg, #e6f4f1 0%, #f0faf8 100%)',
+                border: '1.5px solid #b3ddd8',
+                display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '1rem',
+              }}>
+                <div>
+                  <div style={{ fontFamily: "'Manrope', sans-serif", fontWeight: 800, fontSize: '0.9375rem', color: '#00685f', marginBottom: '0.25rem' }}>
+                    {t('profileSetup.ctaTitle')}
+                  </div>
+                  <div style={{ fontFamily: "'Inter', sans-serif", fontSize: '0.8125rem', color: '#3f8c7a', lineHeight: 1.5 }}>
+                    {t('profileSetup.ctaSubtitle')}
+                  </div>
+                </div>
+                <button
+                  onClick={() => setWizardOpen(true)}
+                  style={{
+                    flexShrink: 0, padding: '0.625rem 1.125rem',
+                    background: '#00685f', color: '#fff', border: 'none',
+                    borderRadius: '28px', fontFamily: "'Inter', sans-serif",
+                    fontWeight: 700, fontSize: '0.875rem', cursor: 'pointer',
+                    whiteSpace: 'nowrap' as const,
+                  }}
+                >
+                  {t('profileSetup.buttonSetup')}
+                </button>
+              </div>
+            ) : (
+              <div style={{ ...card, marginBottom: '1rem' }}>
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '0.875rem' }}>
+                  <div style={sectionLabel}>{t('profileSetup.summaryTitle')}</div>
+                  <button
+                    onClick={() => setWizardOpen(true)}
+                    style={{
+                      display: 'flex', alignItems: 'center', gap: '0.3rem',
+                      background: 'none', border: '1.5px solid var(--border-strong)',
+                      borderRadius: '28px', padding: '0.3125rem 0.75rem',
+                      fontFamily: "'Inter', sans-serif", fontWeight: 600,
+                      fontSize: '0.8125rem', color: 'var(--text-secondary)', cursor: 'pointer',
+                    }}
+                  >
+                    <PencilSimple size={13} />
+                    {t('profileSetup.buttonEdit')}
+                  </button>
+                </div>
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.625rem' }}>
+                  {[
+                    { labelKey: 'profileSetup.summaryAge', value: profile.age_range ? AGE_RANGE_LABELS[profile.age_range] : null },
+                    { labelKey: 'profileSetup.summaryGoal', value: profile.goal ? (goalDisplayLabels[profile.goal] || profile.goal) : null },
+                    { labelKey: 'profileSetup.summaryDiet', value: profile.diet.length ? profile.diet.map(d => dietDisplayLabels[d] || d).join(' · ') : null },
+                    { labelKey: 'profileSetup.summaryActivity', value: profile.training_level ? TRAINING_LABELS[profile.training_level] : null },
+                    { labelKey: 'profileSetup.summaryKnowledge', value: profile.supplement_knowledge ? KNOWLEDGE_LABELS[profile.supplement_knowledge] : null },
+                  ].map(({ labelKey, value }) => (
+                    <div key={labelKey}>
+                      <div style={{ fontFamily: "'Inter', sans-serif", fontSize: '0.75rem', color: 'var(--text-muted)', fontWeight: 500, marginBottom: '0.125rem' }}>
+                        {t(labelKey)}
+                      </div>
+                      <div style={{ fontFamily: "'Inter', sans-serif", fontSize: '0.875rem', color: value ? 'var(--text-primary)' : 'var(--text-muted)', fontWeight: value ? 600 : 400 }}>
+                        {value ?? t('profileSetup.noDataYet')}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
             {/* My Stack */}
             {myStackSection}
 
@@ -689,6 +825,19 @@ export default function HealthProfilePage({ onBack, onSignIn }: HealthProfilePag
         )}
       </div>
       <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
+      {wizardOpen && user && (
+        <ProfileSetupWizard
+          initial={{
+            age_range: profile.age_range,
+            goal: profile.goal,
+            diet: profile.diet,
+            training_level: profile.training_level,
+            supplement_knowledge: profile.supplement_knowledge,
+          }}
+          onComplete={saveWizardData}
+          onClose={() => setWizardOpen(false)}
+        />
+      )}
     </div>
   );
 }
