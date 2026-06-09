@@ -236,6 +236,70 @@ function SupplementInfoRoute({ onShowPaywall, onBuyError }: { onShowPaywall: () 
   );
 }
 
+/** Route wrapper: /deep-dive/access?token=&slug=&session= */
+function DeepDiveAccessRoute() {
+  const navigate = useNavigate();
+  const params = new URLSearchParams(window.location.search);
+  const token = params.get('token');
+  const slug = params.get('slug');
+  const sessionId = params.get('session');
+  const [status, setStatus] = React.useState<'verifying' | 'error'>('verifying');
+  const [errorMsg, setErrorMsg] = React.useState('');
+
+  React.useEffect(() => {
+    if (!token || !slug || !sessionId) {
+      setErrorMsg('Invalid link — token, slug, or session is missing.');
+      setStatus('error');
+      return;
+    }
+    const apiUrl = (import.meta as any).env?.VITE_API_URL || 'http://localhost:3001';
+    fetch(`${apiUrl}/api/payment/verify-access-token?token=${encodeURIComponent(token)}&slug=${encodeURIComponent(slug)}&session=${encodeURIComponent(sessionId)}`)
+      .then(r => r.json())
+      .then(data => {
+        if (data.valid) {
+          savePaidDive(slug, sessionId);
+          navigate(`/encyclopedia/${slug}/premium-deep-dive`, { replace: true });
+        } else {
+          setErrorMsg('This link is invalid or has been tampered with. Please check your email for the correct link.');
+          setStatus('error');
+        }
+      })
+      .catch(() => {
+        setErrorMsg('Network error — please try again or contact support.');
+        setStatus('error');
+      });
+  }, []);
+
+  const bodyText: React.CSSProperties = { fontFamily: "'Inter', sans-serif", fontSize: '0.9375rem', color: 'var(--text-muted)', lineHeight: 1.65, margin: 0 };
+
+  if (status === 'verifying') return (
+    <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'var(--bg-page)' }}>
+      <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
+      <div style={{ textAlign: 'center' }}>
+        <div style={{ width: '40px', height: '40px', borderRadius: '50%', border: '3px solid var(--border)', borderTopColor: '#00685f', animation: 'spin 1s linear infinite', margin: '0 auto 1rem' }} />
+        <p style={{ ...bodyText, color: 'var(--text-secondary)' }}>Verifying your access link…</p>
+      </div>
+    </div>
+  );
+
+  return (
+    <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'var(--bg-page)', padding: '2rem 1rem' }}>
+      <div style={{ maxWidth: '420px', width: '100%', background: 'var(--bg-surface)', borderRadius: '20px', padding: '2rem', boxShadow: '0 4px 24px rgba(0,0,0,0.08)', borderLeft: '4px solid #ba1a1a' }}>
+        <p style={{ fontFamily: "'Manrope', sans-serif", fontWeight: 800, fontSize: '1.125rem', color: 'var(--text-primary)', margin: '0 0 0.75rem' }}>
+          Link not valid
+        </p>
+        <p style={{ ...bodyText, marginBottom: '1.25rem' }}>{errorMsg}</p>
+        <p style={{ ...bodyText, fontSize: '0.875rem', color: 'var(--text-secondary)' }}>
+          Need help?{' '}
+          <a href="mailto:supplementscanner.io@gmail.com" style={{ color: '#00685f', fontWeight: 600 }}>
+            supplementscanner.io@gmail.com
+          </a>
+        </p>
+      </div>
+    </div>
+  );
+}
+
 /** Route wrapper: /encyclopedia/:slug/deep-dive */
 function DeepDiveRoute() {
   const { slug } = useParams<{ slug: string }>();
@@ -1054,6 +1118,7 @@ export default function SupplementAnalyzer(): JSX.Element {
         <Route path="/encyclopedia/:slug" element={<SupplementInfoRoute onShowPaywall={() => setShowPaywallModal(true)} onBuyError={(msg) => showToast(msg, 'error')} />} />
         <Route path="/encyclopedia/:slug/deep-dive" element={<DeepDiveRoute />} />
         <Route path="/encyclopedia/:slug/premium-deep-dive" element={<PremiumDeepDiveRoute />} />
+        <Route path="/deep-dive/access" element={<DeepDiveAccessRoute />} />
         <Route path="/recommendations" element={<RecommendationsPage />} />
         <Route path="/app" element={<MobileAppPage onBack={() => navigate(-1 as any)} />} />
         <Route path="/premium" element={<PremiumPage onBack={() => navigate(-1 as any)} onOpenAuthModal={() => setShowAuthModal(true)} />} />

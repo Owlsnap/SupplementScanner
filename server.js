@@ -6,6 +6,8 @@ import OpenAI from 'openai';
 import Anthropic from '@anthropic-ai/sdk';
 import puppeteer from 'puppeteer';
 import dotenv from 'dotenv';
+import { createHmac, timingSafeEqual } from 'crypto';
+import { Resend } from 'resend';
 
 // Use system Chromium on Railway (set PUPPETEER_EXECUTABLE_PATH env var), fall back to bundled
 const PUPPETEER_LAUNCH_OPTS = {
@@ -90,6 +92,14 @@ app.post('/api/payment/webhook', express.raw({ type: 'application/json' }), asyn
             updated_at: new Date().toISOString(),
           }, { onConflict: 'stripe_subscription_id' });
           console.log(`✅ Subscription created for user ${session.metadata.userId}`);
+        } else if (session.mode === 'payment' && session.metadata?.supplementSlug) {
+          const slug = session.metadata.supplementSlug;
+          const sessionId = session.id;
+          const email = session.customer_details?.email;
+          if (email && process.env.RESEND_SECRET && process.env.RESEND_API_KEY) {
+            await sendDeepDiveAccessEmail({ email, slug, sessionId });
+          }
+          console.log(`✅ Single dive purchased — slug: ${slug}, email: ${email || '(none)'}`);
         }
         break;
       }
@@ -2149,6 +2159,76 @@ app.get('/api/payment/verify-session', async (req, res) => {
     console.error('💥 Stripe verify error:', err.message);
     return res.status(500).json({ success: false, error: err.message });
   }
+});
+
+// ── Resend helpers ────────────────────────────────────────────────────────────
+
+const resend = process.env.RESEND_API_KEY ? new Resend(process.env.RESEND_API_KEY) : null;
+
+function generateAccessToken(sessionId, slug) {
+  return createHmac('sha256', process.env.RESEND_SECRET || '')
+    .update(sessionId + slug)
+    .digest('hex');
+}
+
+async function sendDeepDiveAccessEmail({ email, slug, sessionId }) {
+  if (!resend) return;
+  const token = generateAccessToken(sessionId, slug);
+  const supplementName = slug.split('-').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
+  const accessUrl = `${SITE_URL}/deep-dive/access?token=${token}&slug=${slug}&session=${sessionId}`;
+
+  await resend.emails.send({
+    from: 'SupplementScanner <noreply@supplementscanner.io>',
+    to: email,
+    subject: `Your ${supplementName} deep dive — bookmark this link`,
+    html: `
+      <div style="font-family:Inter,sans-serif;max-width:520px;margin:0 auto;padding:2rem 1.5rem;color:#171d1c">
+        <h1 style="font-family:Manrope,sans-serif;font-size:1.375rem;font-weight:800;color:#00685f;margin:0 0 0.5rem">
+          Your ${supplementName} Research Deep Dive
+        </h1>
+        <p style="color:#3d4947;line-height:1.65;margin:0 0 1.5rem">
+          Thanks for your purchase. Bookmark the link below to re-access your deep dive from any device at any time — no account needed.
+        </p>
+        <a href="${accessUrl}"
+           style="display:inline-block;background:#00685f;color:#fff;text-decoration:none;
+                  padding:0.75rem 1.5rem;border-radius:28px;font-weight:600;font-size:0.9375rem">
+          Open My Deep Dive →
+        </a>
+        <p style="color:#6d7a77;font-size:0.8125rem;line-height:1.6;margin:1.5rem 0 0">
+          If the button doesn't work, copy and paste this URL:<br>
+          <span style="color:#00685f;word-break:break-all">${accessUrl}</span>
+        </p>
+        <hr style="border:none;border-top:1px solid #e4e9e7;margin:1.5rem 0">
+        <p style="color:#6d7a77;font-size:0.75rem;margin:0">
+          Questions? Email us at <a href="mailto:supplementscanner.io@gmail.com" style="color:#00685f">supplementscanner.io@gmail.com</a>
+        </p>
+      </div>
+    `,
+  });
+  console.log(`📧 Access email sent to ${email} for slug: ${slug}`);
+}
+
+// GET /api/payment/verify-access-token?token=<token>&slug=<slug>&session=<sessionId>
+// Validates a permanent re-access token generated at purchase time.
+app.get('/api/payment/verify-access-token', (req, res) => {
+  const { token, slug, session: sessionId } = req.query;
+  if (!token || !slug || !sessionId) {
+    return res.status(400).json({ success: false, error: 'Missing token, slug, or session' });
+  }
+  if (!process.env.RESEND_SECRET) {
+    return res.status(503).json({ success: false, error: 'Not configured' });
+  }
+
+  const expected = generateAccessToken(sessionId, slug);
+  let valid = false;
+  try {
+    valid = timingSafeEqual(Buffer.from(token), Buffer.from(expected));
+  } catch {
+    valid = false;
+  }
+
+  if (!valid) return res.json({ success: true, valid: false });
+  return res.json({ success: true, valid: true, sessionId, slug });
 });
 
 // POST /api/payment/create-subscription-checkout

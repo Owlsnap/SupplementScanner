@@ -52,18 +52,16 @@ export default function ScannerScreen() {
         
         // Check if manual input needed
         if (result.requiredFields && result.requiredFields.length > 0) {
-          console.log('Manual input needed for fields:', result.requiredFields);
-          router.replace(`/manual-add?barcode=${encodeURIComponent(barcode)}&requiredFields=${encodeURIComponent(JSON.stringify(result.requiredFields))}` as any);
+          router.push(`/manual-add?barcode=${encodeURIComponent(barcode)}&requiredFields=${encodeURIComponent(JSON.stringify(result.requiredFields))}` as any);
         } else {
-          router.replace(`/product/${encodeURIComponent(barcode)}` as any);
+          router.push(`/product/${encodeURIComponent(barcode)}` as any);
         }
       } else {
-        console.log('Supplement not found, navigating to product page');
-        router.replace(`/product/${encodeURIComponent(barcode)}` as any);
+        router.push(`/product/${encodeURIComponent(barcode)}` as any);
       }
     } catch (error) {
       console.error('Scan error:', error);
-      router.replace(`/product/${encodeURIComponent(barcode)}` as any);
+      router.push(`/product/${encodeURIComponent(barcode)}` as any);
     } finally {
       setLoading(false);
     }
