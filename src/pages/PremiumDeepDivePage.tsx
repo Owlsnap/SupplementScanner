@@ -258,10 +258,34 @@ export default function PremiumDeepDivePage({
   const cautionInteractions = interactions.filter(i => i.severity === 'caution');
   const synergyInteractions = interactions.filter(i => i.severity === 'synergy');
 
+  const skeletonBlockStyle: React.CSSProperties = {
+    background: 'var(--bg-hover)',
+    borderRadius: '6px',
+    animation: 'shimmer 1.4s ease-in-out infinite',
+  };
+
+  const SkeletonCard = ({ lines = 3 }: { lines?: number }) => (
+    <div style={cardStyle}>
+      <div style={{ ...skeletonBlockStyle, width: '40%', height: '1rem', marginBottom: '0.9rem' }} />
+      {Array.from({ length: lines }).map((_, i) => (
+        <div
+          key={i}
+          style={{
+            ...skeletonBlockStyle,
+            width: i === lines - 1 ? '60%' : '100%',
+            height: '0.8rem',
+            marginBottom: i < lines - 1 ? '0.55rem' : 0,
+          }}
+        />
+      ))}
+    </div>
+  );
+
   return (
     <div style={{ background: 'var(--bg-page)', minHeight: '100vh', paddingTop: '100px', fontFamily: "'Inter', sans-serif" }}>
       <style>{`
         @keyframes spin { to { transform: rotate(360deg); } }
+        @keyframes shimmer { 0%, 100% { opacity: 0.5; } 50% { opacity: 1; } }
         @media (max-width: 480px) {
           .dosing-grid { grid-template-columns: 1fr !important; }
           .synergy-row { flex-wrap: wrap !important; }
@@ -287,7 +311,7 @@ export default function PremiumDeepDivePage({
 
         {/* Header */}
         <div style={{ marginBottom: '1.5rem' }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.25rem' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.375rem' }}>
             <Sparkle size={16} color="#00685f" weight="fill" />
             <span style={{
               fontFamily: "'Inter', sans-serif", fontSize: '0.75rem', fontWeight: 600,
@@ -296,24 +320,33 @@ export default function PremiumDeepDivePage({
               {t('premiumDeepDive.badge')}
             </span>
           </div>
+          <h1 style={{
+            fontFamily: "'Manrope', sans-serif", fontWeight: 800, fontSize: '1.75rem',
+            color: 'var(--text-primary)', letterSpacing: '-0.5px', margin: '0 0 0.375rem',
+          }}>
+            {supplementName}
+          </h1>
           <p style={{ ...bodyText, color: 'var(--text-secondary)', fontSize: '0.9375rem' }}>{t(tagline)}</p>
         </div>
 
         {/* ── Loading ── */}
         {loading && (
-          <div style={{ textAlign: 'center', padding: '4rem 2rem' }}>
-            <div style={{
-              width: '48px', height: '48px', borderRadius: '50%',
-              border: '3px solid var(--border)', borderTopColor: '#00685f',
-              animation: 'spin 1s linear infinite', margin: '0 auto 1.25rem',
-            }} />
-            <p style={{ ...bodyText, color: 'var(--text-muted)', margin: '0 0 0.375rem' }}>
-              {t('premiumDeepDive.retrievingEvidence')}
-            </p>
-            <p style={{ fontFamily: "'Inter', sans-serif", fontSize: '0.8125rem', color: 'var(--text-secondary)', margin: 0 }}>
-              {t('premiumDeepDive.searchingPubMed')}
-            </p>
-          </div>
+          <>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '0.625rem', marginBottom: '1rem' }}>
+              <div style={{
+                width: '18px', height: '18px', borderRadius: '50%',
+                border: '2.5px solid var(--border)', borderTopColor: '#00685f',
+                animation: 'spin 1s linear infinite', flexShrink: 0,
+              }} />
+              <p style={{ ...bodyText, color: 'var(--text-muted)', margin: 0, fontSize: '0.875rem' }}>
+                {t('premiumDeepDive.retrievingEvidence')}
+              </p>
+            </div>
+            <SkeletonCard lines={3} />
+            <SkeletonCard lines={2} />
+            <SkeletonCard lines={4} />
+            <SkeletonCard lines={2} />
+          </>
         )}
 
         {/* ── Error ── */}
