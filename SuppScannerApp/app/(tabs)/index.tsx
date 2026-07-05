@@ -1,631 +1,526 @@
-import { MaterialIcons } from "@expo/vector-icons";
-import { CameraView, useCameraPermissions } from "expo-camera";
-import { Image } from "expo-image";
-import { useRouter } from "expo-router";
-import { useRef, useState } from "react";
+import { MaterialIcons } from '@expo/vector-icons';
+import { useRouter } from 'expo-router';
+import { useState, useCallback, useMemo, useRef } from 'react';
 import {
-  ActivityIndicator,
+  FlatList,
+  PanResponder,
   ScrollView,
   StyleSheet,
   Text,
   TextInput,
   TouchableOpacity,
   View,
-} from "react-native";
-import { SafeAreaView, useSafeAreaInsets } from "react-native-safe-area-context";
-import { API_BASE_URL } from "../../src/config/api";
-import { LOGO_URI, LOGO_ICON_URI } from "@/constants/logos";
+} from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import {
+  encyclopediaSupplements,
+  encyclopediaCategories,
+  type EncyclopediaCategory,
+  type EvidenceTier,
+  type EncyclopedialSupplement,
+} from '../../src/data/encyclopediaData';
+import { t } from '../../src/i18n';
+import { useStack } from '../../src/contexts/StackContext';
+import { useAuth } from '../../src/contexts/AuthContext';
+import { useTheme } from '../../src/contexts/ThemeContext';
 
-const COLORS = {
-  primary: "#00685f",
-  primaryContainer: "#008378",
-  primaryFixed: "#89f5e7",
-  primaryFixedDim: "#6bd8cb",
-  onPrimary: "#ffffff",
-  onPrimaryFixedVariant: "#005049",
-  surface: "#f5faf8",
-  surfaceContainerLow: "#f0f5f2",
-  surfaceContainerLowest: "#ffffff",
-  onSurface: "#171d1c",
-  onSurfaceVariant: "#3d4947",
-  outline: "#6d7a77",
-  tertiaryFixed: "#ffdbce",
-  onTertiaryFixedVariant: "#773215",
+const categoryColors: Record<EncyclopediaCategory, string> = {
+  Performance: '#00685f',
+  Sleep: '#6366f1',
+  Nootropics: '#0891b2',
+  Recovery: '#ea580c',
+  Health: '#16a34a',
 };
 
-export default function HomeScreen() {
-  const [permission, requestPermission] = useCameraPermissions();
-  const [cameraOpen, setCameraOpen] = useState(false);
-  const [loading, setLoading] = useState(false);
-  const scannedRef = useRef(false);
-  const [flashOn, setFlashOn] = useState(false);
-  const [facing, setFacing] = useState<"front" | "back">("back");
-  const [searchQuery, setSearchQuery] = useState("");
-  const router = useRouter();
-  const insets = useSafeAreaInsets();
+const categoryIcons: Record<EncyclopediaCategory, keyof typeof MaterialIcons.glyphMap> = {
+  Performance: 'fitness-center',
+  Sleep: 'bedtime',
+  Nootropics: 'psychology',
+  Recovery: 'bolt',
+  Health: 'eco',
+};
 
-  const handleBarcodeScanned = async ({ data: barcode }: { data: string }) => {
-    if (scannedRef.current) return;
-    scannedRef.current = true;
-    setCameraOpen(false);
-    setLoading(true);
-    try {
-      const response = await fetch(
-        `${API_BASE_URL}/api/ingest/barcode/${barcode}`,
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-        }
-      );
-      const result = await response.json();
-      if (result.success && result.requiredFields?.length > 0) {
-        router.replace(
-          `/manual-add?barcode=${encodeURIComponent(
-            barcode
-          )}&requiredFields=${encodeURIComponent(
-            JSON.stringify(result.requiredFields)
-          )}` as any
-        );
-      } else {
-        router.replace(`/product/${encodeURIComponent(barcode)}` as any);
-      }
-    } catch {
-      router.replace(`/product/${encodeURIComponent(barcode)}` as any);
-    } finally {
-      setLoading(false);
-      scannedRef.current = false;
-    }
-  };
+const evidenceBadgeColors: Record<EvidenceTier, { bg: string; text: string }> = {
+  Strong:    { bg: '#00685f', text: '#ffffff' },
+  Moderate:  { bg: '#dbeafe', text: '#1e40af' },
+  Emerging:  { bg: '#fef3c7', text: '#92400e' },
+  Anecdotal: { bg: '#e4e9e7', text: '#3d4947' },
+};
 
-  const handleManualSearch = () => {
-    if (searchQuery.trim()) {
-      router.push(
-        `/(tabs)/search?q=${encodeURIComponent(searchQuery.trim())}` as any
-      );
-    } else {
-      router.push("/(tabs)/search" as any);
-    }
-  };
+const CATEGORY_ORDER: EncyclopediaCategory[] = ['Performance', 'Recovery', 'Sleep', 'Nootropics', 'Health'];
+type Category = typeof encyclopediaCategories[number];
 
-  // Permission not yet loaded
-  if (!permission) {
-    return (
-      <View style={styles.permissionContainer}>
-        <ActivityIndicator size="large" color={COLORS.primary} />
-      </View>
-    );
-  }
+type Section = { cat: Category; items: EncyclopedialSupplement[] };
 
-  // Permission denied
-  if (!permission.granted) {
-    return (
-      <View style={styles.permissionContainer}>
-        <MaterialIcons
-          name="camera-alt"
-          size={56}
-          color={COLORS.primaryFixedDim}
-          style={{ marginBottom: 20 }}
-        />
-        <Text style={styles.permissionTitle}>Camera Access Required</Text>
-        <Text style={styles.permissionBody}>
-          Allow camera access to scan supplement barcodes instantly.
-        </Text>
-        <TouchableOpacity
-          style={styles.permissionButton}
-          onPress={requestPermission}
-          activeOpacity={0.85}
-        >
-          <Text style={styles.permissionButtonText}>Grant Camera Access</Text>
-        </TouchableOpacity>
-      </View>
-    );
-  }
+function SupplementCard({
+  supp, onPress, inStack, onToggle, colors,
+}: {
+  supp: EncyclopedialSupplement;
+  onPress: () => void;
+  inStack: boolean;
+  onToggle: () => void;
+  colors: ReturnType<typeof useTheme>['colors'];
+}) {
+  const catColor = categoryColors[supp.category];
+  const badge = evidenceBadgeColors[supp.evidenceTier];
+  const catIcon = categoryIcons[supp.category];
 
   return (
-    <View style={styles.root}>
-      {/* Top bar — inside SafeAreaView for status bar padding */}
-      <SafeAreaView edges={["top"]} style={styles.topBarSafe}>
-        <View style={styles.topBar}>
-          <View style={styles.topBarLogo}>
-            <Image source={{ uri: LOGO_URI }} style={styles.headerLogo} contentFit="contain" />
+    <TouchableOpacity
+      style={[styles.card, { backgroundColor: colors.surfaceContainerLowest, borderColor: colors.borderCard }]}
+      onPress={onPress}
+      activeOpacity={0.82}
+    >
+      <View style={[styles.cardHeader, { backgroundColor: catColor }]}>
+        <View style={styles.cardHeaderLeft}>
+          <View style={styles.catIconWrap}>
+            <MaterialIcons name={catIcon} size={14} color="#ffffff" />
           </View>
-          <TouchableOpacity style={styles.topBarAction} activeOpacity={0.7}>
-            <MaterialIcons name="settings" size={24} color={COLORS.onSurfaceVariant} />
+          <Text style={styles.cardCategoryLabel}>{supp.category.toUpperCase()}</Text>
+        </View>
+        <View style={[styles.evidenceBadge, { backgroundColor: badge.bg }]}>
+          <Text style={[styles.evidenceBadgeText, { color: badge.text }]}>{supp.evidenceTier}</Text>
+        </View>
+      </View>
+
+      <View style={styles.cardBody}>
+        <Text style={[styles.cardName, { color: colors.onSurface }]}>{supp.name}</Text>
+        <Text style={[styles.cardTagline, { color: colors.onSurfaceVariant }]} numberOfLines={2}>{t(supp.tagline)}</Text>
+        <View style={[styles.cardFooter, { borderTopColor: colors.borderCard }]}>
+          <Text style={[styles.cardViewDetails, { color: catColor }]}>View details</Text>
+          <TouchableOpacity
+            onPress={onToggle}
+            style={[
+              styles.stackBtn,
+              inStack
+                ? { backgroundColor: catColor, borderWidth: 0 }
+                : { backgroundColor: 'transparent', borderColor: catColor, borderWidth: 1.5, borderStyle: 'dashed' },
+            ]}
+            activeOpacity={0.8}
+            hitSlop={{ top: 6, bottom: 6, left: 6, right: 6 }}
+          >
+            <MaterialIcons name={inStack ? 'check' : 'add'} size={12} color={inStack ? '#ffffff' : catColor} />
+            <Text style={[styles.stackBtnText, { color: inStack ? '#ffffff' : catColor }]}>
+              {inStack ? 'Added' : 'Stack'}
+            </Text>
           </TouchableOpacity>
+        </View>
+      </View>
+    </TouchableOpacity>
+  );
+}
+
+function SectionView({
+  section, onPress, inStack, onToggle, colors,
+}: {
+  section: Section;
+  onPress: (slug: string) => void;
+  inStack: (slug: string) => boolean;
+  onToggle: (slug: string) => void;
+  colors: ReturnType<typeof useTheme>['colors'];
+}) {
+  const catColor = section.cat !== 'All' ? categoryColors[section.cat as EncyclopediaCategory] : colors.primary;
+  const catIcon = section.cat !== 'All' ? categoryIcons[section.cat as EncyclopediaCategory] : 'apps';
+
+  return (
+    <View style={styles.section}>
+      {section.cat !== 'All' && (
+        <>
+          <View style={styles.sectionHeader}>
+            <View style={[styles.sectionIconWrap, { backgroundColor: catColor }]}>
+              <MaterialIcons name={catIcon} size={18} color="#ffffff" />
+            </View>
+            <View>
+              <Text style={[styles.sectionTitle, { color: colors.onSurface }]}>{section.cat}</Text>
+              <Text style={[styles.sectionCount, { color: colors.onSurfaceVariant }]}>{section.items.length} supplements</Text>
+            </View>
+          </View>
+          <View style={[styles.sectionDivider, { backgroundColor: catColor + '40' }]} />
+        </>
+      )}
+      {section.items.map(supp => (
+        <SupplementCard
+          key={supp.slug}
+          supp={supp}
+          onPress={() => onPress(supp.slug)}
+          inStack={inStack(supp.slug)}
+          onToggle={() => onToggle(supp.slug)}
+          colors={colors}
+        />
+      ))}
+    </View>
+  );
+}
+
+export default function ExploreScreen() {
+  const router = useRouter();
+  const { inStack, toggleStack } = useStack();
+  const { user } = useAuth();
+  const { colors } = useTheme();
+  const [searchQuery, setSearchQuery] = useState('');
+  const [activeCategory, setActiveCategory] = useState<Category>('All');
+
+  const panResponder = useRef(
+    PanResponder.create({
+      onMoveShouldSetPanResponderCapture: (_, gs) =>
+        Math.abs(gs.dx) > Math.abs(gs.dy) * 2 && Math.abs(gs.dx) > 40,
+      onPanResponderRelease: (_, gs) => {
+        if (gs.dx < -60) router.navigate('/(tabs)/stack' as any);
+      },
+    })
+  ).current;
+
+  const filtered = useMemo(() => {
+    const q = searchQuery.toLowerCase().trim();
+    return encyclopediaSupplements.filter(s => {
+      const matchesCat = activeCategory === 'All' || s.category === activeCategory;
+      const matchesSearch = !q || s.name.toLowerCase().includes(q) || s.category.toLowerCase().includes(q);
+      return matchesCat && matchesSearch;
+    });
+  }, [searchQuery, activeCategory]);
+
+  const isFiltered = activeCategory !== 'All' || searchQuery.trim() !== '';
+
+  const sections: Section[] = useMemo(() => {
+    if (isFiltered) {
+      return [{ cat: 'All', items: filtered }];
+    }
+    return CATEGORY_ORDER
+      .map(cat => ({ cat, items: filtered.filter(s => s.category === cat) }))
+      .filter(s => s.items.length > 0);
+  }, [filtered, isFiltered]);
+
+  const handlePress = useCallback((slug: string) => {
+    router.push(`/supplement/${slug}` as any);
+  }, [router]);
+
+  const handleToggleStack = useCallback((slug: string) => {
+    if (!user) { router.push('/sign-in' as any); return; }
+    toggleStack(slug);
+  }, [user, toggleStack, router]);
+
+  return (
+    <View style={[styles.root, { backgroundColor: colors.surface }]} {...panResponder.panHandlers}>
+      <SafeAreaView edges={['top']} style={[styles.topBarSafe, { backgroundColor: colors.surface }]}>
+        <View style={[styles.topBar, { borderBottomColor: colors.border }]}>
+          <Text style={[styles.topBarTitle, { color: colors.onSurface }]}>Supplement Index</Text>
+          <View style={[styles.topBarBadge, { backgroundColor: colors.primary }]}>
+            <Text style={styles.topBarBadgeText}>{encyclopediaSupplements.length}</Text>
+          </View>
         </View>
       </SafeAreaView>
 
-      <ScrollView
-        style={styles.scrollView}
-        contentContainerStyle={styles.scrollContent}
+      <FlatList<Section>
+        data={sections}
+        keyExtractor={item => item.cat}
+        renderItem={({ item }) => (
+          <SectionView
+            section={item}
+            onPress={handlePress}
+            inStack={inStack}
+            onToggle={handleToggleStack}
+            colors={colors}
+          />
+        )}
+        ListHeaderComponent={
+          <View>
+            <View style={[styles.searchBarContainer, { backgroundColor: colors.surfaceContainerLowest, borderColor: colors.border }]}>
+              <MaterialIcons name="search" size={20} color={colors.outline} style={styles.searchIcon} />
+              <TextInput
+                style={[styles.searchInput, { color: colors.onSurface }]}
+                placeholder="Search supplements…"
+                placeholderTextColor={colors.outline}
+                value={searchQuery}
+                onChangeText={setSearchQuery}
+                returnKeyType="search"
+                selectionColor={colors.primary}
+                autoCorrect={false}
+                autoCapitalize="none"
+              />
+              {searchQuery.length > 0 && (
+                <TouchableOpacity onPress={() => setSearchQuery('')} hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}>
+                  <MaterialIcons name="close" size={18} color={colors.outline} />
+                </TouchableOpacity>
+              )}
+            </View>
+
+            <ScrollView
+              horizontal
+              showsHorizontalScrollIndicator={false}
+              contentContainerStyle={styles.pillsContent}
+              style={styles.pillsScroll}
+            >
+              {encyclopediaCategories.map(cat => {
+                const isActive = activeCategory === cat;
+                const color = cat !== 'All' ? categoryColors[cat as EncyclopediaCategory] : colors.primary;
+                return (
+                  <TouchableOpacity
+                    key={cat}
+                    onPress={() => setActiveCategory(cat)}
+                    style={[
+                      styles.pill,
+                      isActive
+                        ? { backgroundColor: color, borderColor: color }
+                        : { backgroundColor: 'transparent', borderColor: colors.border },
+                    ]}
+                    activeOpacity={0.75}
+                  >
+                    {cat !== 'All' && (
+                      <MaterialIcons
+                        name={categoryIcons[cat as EncyclopediaCategory]}
+                        size={13}
+                        color={isActive ? '#ffffff' : colors.onSurfaceVariant}
+                        style={{ marginRight: 4 }}
+                      />
+                    )}
+                    <Text style={[styles.pillText, { color: isActive ? '#ffffff' : colors.onSurfaceVariant }]}>
+                      {cat}
+                    </Text>
+                  </TouchableOpacity>
+                );
+              })}
+            </ScrollView>
+
+            {isFiltered && (
+              <Text style={[styles.resultCount, { color: colors.onSurfaceVariant }]}>
+                {filtered.length} result{filtered.length !== 1 ? 's' : ''}
+                {activeCategory !== 'All' ? ` in ${activeCategory}` : ''}
+                {searchQuery.trim() ? ` for "${searchQuery.trim()}"` : ''}
+              </Text>
+            )}
+          </View>
+        }
+        ListEmptyComponent={
+          <View style={styles.emptyContainer}>
+            <MaterialIcons name="search-off" size={48} color={colors.surfaceContainerHigh} />
+            <Text style={[styles.emptyTitle, { color: colors.onSurface }]}>No supplements found</Text>
+            <Text style={[styles.emptySubtitle, { color: colors.onSurfaceVariant }]}>Try adjusting your search or category filter</Text>
+          </View>
+        }
+        contentContainerStyle={styles.listContent}
         showsVerticalScrollIndicator={false}
         keyboardShouldPersistTaps="handled"
-      >
-        {/* Camera Section */}
-        <View style={styles.cameraWrapper}>
-          {cameraOpen ? (
-            <View style={styles.cameraContainer}>
-              <CameraView
-                style={StyleSheet.absoluteFillObject}
-                facing={facing}
-                enableTorch={flashOn}
-                onBarcodeScanned={handleBarcodeScanned}
-              />
-
-              {/* Processing overlay */}
-              {loading && (
-                <View style={styles.processingOverlay}>
-                  <ActivityIndicator size="large" color={COLORS.primaryFixed} />
-                  <Text style={styles.processingText}>Processing...</Text>
-                </View>
-              )}
-
-              {/* Corner brackets */}
-              <View style={[styles.corner, styles.cornerTopLeft]} />
-              <View style={[styles.corner, styles.cornerTopRight]} />
-              <View style={[styles.corner, styles.cornerBottomLeft]} />
-              <View style={[styles.corner, styles.cornerBottomRight]} />
-
-              {/* Scanning line */}
-              <View style={styles.scanLine} />
-
-              {/* Pill instruction overlay */}
-              <View style={styles.pillContainer}>
-                <Text style={styles.pillText}>Align barcode within frame</Text>
-              </View>
-
-              {/* Camera controls row */}
-              <View style={styles.cameraControls}>
-                <TouchableOpacity
-                  style={styles.cameraControlBtn}
-                  onPress={() => setFlashOn((v) => !v)}
-                  activeOpacity={0.8}
-                >
-                  <MaterialIcons
-                    name={flashOn ? "flash-on" : "flash-off"}
-                    size={22}
-                    color="#ffffff"
-                  />
-                </TouchableOpacity>
-                <TouchableOpacity
-                  style={styles.cameraControlBtn}
-                  onPress={() => setFacing((f) => (f === "back" ? "front" : "back"))}
-                  activeOpacity={0.8}
-                >
-                  <MaterialIcons name="flip-camera-ios" size={22} color="#ffffff" />
-                </TouchableOpacity>
-                <TouchableOpacity
-                  style={[styles.cameraControlBtn, styles.closeBtn]}
-                  onPress={() => setCameraOpen(false)}
-                  activeOpacity={0.8}
-                >
-                  <MaterialIcons name="close" size={22} color="#ffffff" />
-                </TouchableOpacity>
-              </View>
-            </View>
-          ) : (
-            <View style={styles.cameraContainer}>
-              <View style={styles.logoButtonInner}>
-                <TouchableOpacity onPress={() => setCameraOpen(true)} activeOpacity={0.75}>
-                  <Image source={{ uri: LOGO_ICON_URI }} style={styles.logoButtonImage} contentFit="contain" />
-                </TouchableOpacity>
-                <Text style={styles.tapToScanHint}>tap to scan</Text>
-              </View>
-            </View>
-          )}
-        </View>
-
-        {/* Heading + subtitle */}
-        <View style={styles.headingSection}>
-          <Text style={styles.headingText}>
-            Instantly Analyze Any Supplement
-          </Text>
-          <Text style={styles.subtitleText}>
-            Point your camera at a barcode or search by name to check purity,
-            dosage, and ingredient quality.
-          </Text>
-        </View>
-
-        {/* Manual search bar */}
-        <View style={styles.searchBarContainer}>
-          <MaterialIcons
-            name="search"
-            size={20}
-            color={COLORS.outline}
-            style={styles.searchIcon}
-          />
-          <TextInput
-            style={styles.searchInput}
-            placeholder="Or type supplement name manually..."
-            placeholderTextColor={COLORS.outline}
-            value={searchQuery}
-            onChangeText={setSearchQuery}
-            onSubmitEditing={handleManualSearch}
-            returnKeyType="search"
-            selectionColor={COLORS.primary}
-          />
-          {searchQuery.length > 0 && (
-            <TouchableOpacity
-              onPress={handleManualSearch}
-              style={styles.searchGoBtn}
-              activeOpacity={0.8}
-            >
-              <Text style={styles.searchGoText}>Go</Text>
-            </TouchableOpacity>
-          )}
-        </View>
-
-        {/* Bento grid */}
-        <View style={styles.bentoGrid}>
-          {/* Purity Check card */}
-          <View style={[styles.bentoCard, styles.bentoCardPrimary]}>
-            <View style={styles.bentoIconCircle}>
-              <MaterialIcons
-                name="verified"
-                size={26}
-                color={COLORS.onPrimaryFixedVariant}
-              />
-            </View>
-            <Text style={styles.bentoCardTitle}>Purity Check</Text>
-            <Text style={styles.bentoCardBody}>
-              Lab-verified ingredient purity and contaminant screening.
-            </Text>
-          </View>
-
-          {/* Additives card */}
-          <View style={[styles.bentoCard, styles.bentoCardSecondary]}>
-            <View style={styles.bentoIconCircleWarn}>
-              <MaterialIcons
-                name="warning-amber"
-                size={26}
-                color={COLORS.onTertiaryFixedVariant}
-              />
-            </View>
-            <Text style={styles.bentoCardTitle}>Additives</Text>
-            <Text style={styles.bentoCardBody}>
-              Flags fillers, artificial dyes, and questionable excipients.
-            </Text>
-          </View>
-        </View>
-
-        {/* Bottom spacing for tab bar */}
-        <View style={{ height: 120 }} />
-      </ScrollView>
+        keyboardDismissMode="on-drag"
+      />
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-  root: {
-    flex: 1,
-    backgroundColor: COLORS.surface,
-  },
+  root: { flex: 1 },
 
-  // Permission screen
-  permissionContainer: {
-    flex: 1,
-    backgroundColor: COLORS.surface,
-    alignItems: "center",
-    justifyContent: "center",
-    paddingHorizontal: 36,
-  },
-  permissionTitle: {
-    fontFamily: "Manrope_800ExtraBold",
-    fontWeight: "800",
-    fontSize: 22,
-    color: COLORS.onSurface,
-    textAlign: "center",
-    marginBottom: 10,
-  },
-  permissionBody: {
-    fontFamily: "Inter_400Regular",
-    fontWeight: "400",
-    fontSize: 15,
-    color: COLORS.onSurfaceVariant,
-    textAlign: "center",
-    marginBottom: 32,
-    lineHeight: 22,
-  },
-  permissionButton: {
-    backgroundColor: COLORS.primary,
-    paddingVertical: 15,
-    paddingHorizontal: 32,
-    borderRadius: 28,
-  },
-  permissionButtonText: {
-    fontFamily: "Inter_600SemiBold",
-    fontWeight: "600",
-    fontSize: 16,
-    color: COLORS.onPrimary,
-  },
-
-  // Top bar
-  topBarSafe: {
-    backgroundColor: COLORS.surface,
-  },
+  topBarSafe: {},
   topBar: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
+    flexDirection: 'row',
+    alignItems: 'center',
     paddingHorizontal: 20,
-    paddingVertical: 12,
-    backgroundColor: COLORS.surface,
+    paddingVertical: 14,
     borderBottomWidth: StyleSheet.hairlineWidth,
-    borderBottomColor: "rgba(109,122,119,0.18)",
   },
-  topBarLogo: {
-    flexDirection: "row",
-    alignItems: "center",
-  },
-  headerLogo: {
-    width: 180,
-    height: 36,
-  },
-  topBarAction: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
-    backgroundColor: COLORS.surfaceContainerLow,
-    alignItems: "center",
-    justifyContent: "center",
-  },
-
-  // Scroll
-  scrollView: {
-    flex: 1,
-  },
-  scrollContent: {
-    paddingTop: 16,
-    paddingHorizontal: 20,
-  },
-
-  // Camera
-  cameraWrapper: {
-    width: "100%",
-    aspectRatio: 3 / 4,
-    marginBottom: 20,
-  },
-  cameraContainer: {
-    flex: 1,
-    borderRadius: 40,
-    overflow: "hidden",
-    backgroundColor: "#111",
-  },
-
-  // Processing overlay
-  processingOverlay: {
-    ...StyleSheet.absoluteFillObject,
-    backgroundColor: "rgba(0,0,0,0.55)",
-    alignItems: "center",
-    justifyContent: "center",
-    zIndex: 20,
-    gap: 12,
-  },
-  processingText: {
-    fontFamily: "Inter_600SemiBold",
-    fontWeight: "600",
-    fontSize: 16,
-    color: "#ffffff",
-  },
-
-  // Corner brackets
-  corner: {
-    position: "absolute",
-    width: 48,
-    height: 48,
-    borderColor: COLORS.primary,
-    borderWidth: 4,
-    borderRadius: 12,
-    zIndex: 10,
-  },
-  cornerTopLeft: {
-    top: 24,
-    left: 24,
-    borderRightWidth: 0,
-    borderBottomWidth: 0,
-  },
-  cornerTopRight: {
-    top: 24,
-    right: 24,
-    borderLeftWidth: 0,
-    borderBottomWidth: 0,
-  },
-  cornerBottomLeft: {
-    bottom: 24,
-    left: 24,
-    borderRightWidth: 0,
-    borderTopWidth: 0,
-  },
-  cornerBottomRight: {
-    bottom: 24,
-    right: 24,
-    borderLeftWidth: 0,
-    borderTopWidth: 0,
-  },
-
-  // Scanning line
-  scanLine: {
-    position: "absolute",
-    top: "50%",
-    left: 0,
-    right: 0,
-    height: 2,
-    backgroundColor: "rgba(0,104,95,0.6)",
-    zIndex: 10,
-  },
-
-  // Pill overlay
-  pillContainer: {
-    position: "absolute",
-    bottom: 72,
-    left: 0,
-    right: 0,
-    alignItems: "center",
-    zIndex: 10,
-  },
-  pillText: {
-    fontFamily: "Inter_600SemiBold",
-    fontWeight: "600",
-    fontSize: 13,
-    color: "#ffffff",
-    backgroundColor: "rgba(0,0,0,0.42)",
-    paddingVertical: 6,
-    paddingHorizontal: 16,
-    borderRadius: 20,
-    overflow: "hidden",
-  },
-
-  // Camera controls
-  cameraControls: {
-    position: "absolute",
-    bottom: 20,
-    left: 0,
-    right: 0,
-    flexDirection: "row",
-    justifyContent: "center",
-    gap: 16,
-    zIndex: 10,
-  },
-  cameraControlBtn: {
-    width: 48,
-    height: 48,
-    borderRadius: 24,
-    backgroundColor: "rgba(255,255,255,0.2)",
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  closeBtn: {
-    backgroundColor: "rgba(220,50,50,0.7)",
-  },
-  logoButtonInner: {
-    flex: 1,
-    alignItems: "center",
-    justifyContent: "center",
-    backgroundColor: COLORS.surfaceContainerLow,
-  },
-  logoButtonImage: {
-    width: 180,
-    height: 180,
-  },
-  tapToScanHint: {
-    marginTop: 14,
-    fontSize: 13,
-    color: COLORS.outline,
-    fontFamily: "Inter_400Regular",
-    fontWeight: "400",
-    letterSpacing: 0.5,
-  },
-
-  // Heading section
-  headingSection: {
-    marginBottom: 16,
-  },
-  headingText: {
-    fontFamily: "Manrope_800ExtraBold",
-    fontWeight: "800",
-    fontSize: 24,
-    color: COLORS.onSurface,
+  topBarTitle: {
+    fontFamily: 'Manrope_800ExtraBold',
+    fontWeight: '800',
+    fontSize: 22,
     letterSpacing: -0.4,
-    marginBottom: 8,
-    lineHeight: 32,
+    flex: 1,
   },
-  subtitleText: {
-    fontFamily: "Inter_400Regular",
-    fontWeight: "400",
-    fontSize: 14,
-    color: COLORS.onSurfaceVariant,
-    lineHeight: 21,
+  topBarBadge: {
+    borderRadius: 12,
+    paddingHorizontal: 10,
+    paddingVertical: 3,
+  },
+  topBarBadgeText: {
+    fontFamily: 'Inter_600SemiBold',
+    fontWeight: '600',
+    fontSize: 12,
+    color: '#ffffff',
   },
 
-  // Search bar
+  listContent: { paddingHorizontal: 16, paddingBottom: 120 },
+
   searchBarContainer: {
-    flexDirection: "row",
-    alignItems: "center",
-    backgroundColor: COLORS.surfaceContainerLowest,
+    flexDirection: 'row',
+    alignItems: 'center',
     borderRadius: 28,
     borderWidth: 1.5,
-    borderColor: "rgba(109,122,119,0.25)",
     paddingHorizontal: 16,
     paddingVertical: 4,
-    marginBottom: 20,
-    shadowColor: "#000",
+    marginTop: 16,
+    marginBottom: 12,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.05,
+    shadowRadius: 4,
+    elevation: 2,
+  },
+  searchIcon: { marginRight: 10 },
+  searchInput: {
+    flex: 1,
+    fontFamily: 'Inter_400Regular',
+    fontWeight: '400',
+    fontSize: 14,
+    paddingVertical: 12,
+  },
+
+  pillsScroll: { marginBottom: 4 },
+  pillsContent: { gap: 8, paddingRight: 4 },
+  pill: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingHorizontal: 14,
+    paddingVertical: 7,
+    borderRadius: 999,
+    borderWidth: 1.5,
+  },
+  pillText: {
+    fontFamily: 'Inter_600SemiBold',
+    fontWeight: '600',
+    fontSize: 13,
+  },
+
+  resultCount: {
+    fontFamily: 'Inter_400Regular',
+    fontWeight: '400',
+    fontSize: 13,
+    marginTop: 10,
+    marginBottom: 4,
+  },
+
+  section: { marginTop: 20 },
+  sectionHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 10,
+    marginBottom: 10,
+  },
+  sectionIconWrap: {
+    width: 36,
+    height: 36,
+    borderRadius: 10,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  sectionTitle: {
+    fontFamily: 'Manrope_800ExtraBold',
+    fontWeight: '800',
+    fontSize: 17,
+    letterSpacing: -0.3,
+  },
+  sectionCount: {
+    fontFamily: 'Inter_400Regular',
+    fontWeight: '400',
+    fontSize: 12,
+  },
+  sectionDivider: {
+    height: 1,
+    marginBottom: 12,
+  },
+
+  card: {
+    borderRadius: 16,
+    marginBottom: 10,
+    overflow: 'hidden',
+    borderWidth: StyleSheet.hairlineWidth,
+    shadowColor: '#000',
     shadowOffset: { width: 0, height: 1 },
     shadowOpacity: 0.06,
     shadowRadius: 4,
     elevation: 2,
   },
-  searchIcon: {
-    marginRight: 10,
-  },
-  searchInput: {
-    flex: 1,
-    fontFamily: "Inter_400Regular",
-    fontWeight: "400",
-    fontSize: 14,
-    color: COLORS.onSurface,
+  cardHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingHorizontal: 14,
     paddingVertical: 10,
   },
-  searchGoBtn: {
-    backgroundColor: COLORS.primary,
-    borderRadius: 16,
-    paddingVertical: 6,
-    paddingHorizontal: 14,
-    marginLeft: 8,
+  cardHeaderLeft: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 6,
+    flex: 1,
   },
-  searchGoText: {
-    fontFamily: "Inter_600SemiBold",
-    fontWeight: "600",
-    fontSize: 13,
-    color: COLORS.onPrimary,
+  catIconWrap: {
+    width: 24,
+    height: 24,
+    borderRadius: 6,
+    backgroundColor: 'rgba(255,255,255,0.2)',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  cardCategoryLabel: {
+    fontFamily: 'Inter_600SemiBold',
+    fontWeight: '600',
+    fontSize: 10,
+    color: 'rgba(255,255,255,0.9)',
+    letterSpacing: 0.6,
+  },
+  evidenceBadge: {
+    borderRadius: 999,
+    paddingHorizontal: 8,
+    paddingVertical: 3,
+  },
+  evidenceBadgeText: {
+    fontFamily: 'Inter_600SemiBold',
+    fontWeight: '600',
+    fontSize: 10,
   },
 
-  // Bento grid
-  bentoGrid: {
-    flexDirection: "row",
+  cardBody: { padding: 14 },
+  cardName: {
+    fontFamily: 'Manrope_800ExtraBold',
+    fontWeight: '800',
+    fontSize: 15,
+    letterSpacing: -0.3,
+    marginBottom: 4,
+  },
+  cardTagline: {
+    fontFamily: 'Inter_400Regular',
+    fontWeight: '400',
+    fontSize: 13,
+    lineHeight: 19,
+    marginBottom: 12,
+  },
+  cardFooter: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    borderTopWidth: 1,
+    paddingTop: 10,
+  },
+  cardViewDetails: {
+    fontFamily: 'Inter_600SemiBold',
+    fontWeight: '600',
+    fontSize: 13,
+  },
+  stackBtn: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 4,
+    paddingHorizontal: 10,
+    paddingVertical: 5,
+    borderRadius: 999,
+  },
+  stackBtnText: {
+    fontFamily: 'Inter_600SemiBold',
+    fontWeight: '600',
+    fontSize: 11,
+  },
+
+  emptyContainer: {
+    alignItems: 'center',
+    paddingVertical: 60,
     gap: 12,
   },
-  bentoCard: {
-    flex: 1,
-    borderRadius: 20,
-    padding: 18,
-    minHeight: 150,
+  emptyTitle: {
+    fontFamily: 'Manrope_800ExtraBold',
+    fontWeight: '800',
+    fontSize: 18,
   },
-  bentoCardPrimary: {
-    backgroundColor: COLORS.primaryFixed,
-  },
-  bentoCardSecondary: {
-    backgroundColor: COLORS.tertiaryFixed,
-  },
-  bentoIconCircle: {
-    width: 44,
-    height: 44,
-    borderRadius: 22,
-    backgroundColor: "rgba(0,80,73,0.12)",
-    alignItems: "center",
-    justifyContent: "center",
-    marginBottom: 12,
-  },
-  bentoIconCircleWarn: {
-    width: 44,
-    height: 44,
-    borderRadius: 22,
-    backgroundColor: "rgba(119,50,21,0.12)",
-    alignItems: "center",
-    justifyContent: "center",
-    marginBottom: 12,
-  },
-  bentoCardTitle: {
-    fontFamily: "Manrope_800ExtraBold",
-    fontWeight: "800",
-    fontSize: 15,
-    color: COLORS.onSurface,
-    marginBottom: 6,
-  },
-  bentoCardBody: {
-    fontFamily: "Inter_400Regular",
-    fontWeight: "400",
-    fontSize: 12,
-    color: COLORS.onSurfaceVariant,
-    lineHeight: 17,
+  emptySubtitle: {
+    fontFamily: 'Inter_400Regular',
+    fontWeight: '400',
+    fontSize: 14,
+    textAlign: 'center',
   },
 });

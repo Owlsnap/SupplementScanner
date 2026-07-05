@@ -281,6 +281,11 @@ create policy "Users can delete own health profile"
   on public.user_health_profiles for delete
   using (auth.uid() = user_id);
 
+-- Mobile app profile fields (age range, activity level) not covered above
+alter table public.user_health_profiles
+  add column if not exists age_range text,
+  add column if not exists training_level text;
+
 -- ============================================================
 -- 9. Premium RAG: Vector similarity search function
 -- ============================================================

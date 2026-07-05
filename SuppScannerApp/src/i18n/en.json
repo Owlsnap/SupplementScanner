@@ -1,0 +1,1835 @@
+{
+  "nav": {
+    "index": "Index",
+    "urlScanner": "URL Scanner",
+    "goals": "Goals",
+    "premium": "Premium",
+    "signIn": "Sign in",
+    "signOut": "Sign out",
+    "myProfile": "My profile",
+    "mobileApp": "Mobile App",
+    "mobileAppSubtitle": "iOS & Android — coming soon",
+    "myStack": "My Stack"
+  },
+  "common": {
+    "beta": "BETA",
+    "loading": "Loading...",
+    "extract": "Extract",
+    "extracting": "Extracting…",
+    "viewPage": "View page",
+    "signedInAs": "Signed in as",
+    "mayBeLater": "Maybe later",
+    "close": "Close",
+    "back": "Back",
+    "save": "Save",
+    "cancel": "Cancel",
+    "tryAgain": "Try again",
+    "or": "or",
+    "copied": "Copied!",
+    "evidenceBased": "Evidence-based",
+    "researchBacked": "Research-backed · Not medical advice",
+    "aiDisclaimer": "Content is grounded in peer-reviewed research and cited sources. It is not medical advice and does not replace guidance from a qualified healthcare professional. Consult a doctor before changing your supplement regimen."
+  },
+  "encyclopedia": {
+    "title": "Supplement Encyclopedia",
+    "subtitle": "Science-backed insights on 30+ supplements",
+    "searchPlaceholder": "Search supplements...",
+    "allCategories": "All",
+    "noResults": "No supplements found",
+    "noResultsHint": "Try adjusting your search or category filter",
+    "supplementCount": "{{count}} supplements",
+    "evidenceLevel": "Evidence level",
+    "viewDetails": "View details",
+    "addToStack": "Stack",
+    "removeFromStack": "Added",
+    "addToStackTitle": "Add to stack",
+    "removeFromStackTitle": "Remove from stack",
+    "indexTitle": "Supplement",
+    "indexTitleHighlight": "Index",
+    "indexSubtitle": "Mechanisms, dosing & AI deep dives — all in one place",
+    "indexBadge": "{{count}} supplements · Evidence-based",
+    "searchSupplements": "Search supplements…",
+    "categories": {
+      "Performance": "Performance",
+      "Recovery": "Recovery",
+      "Sleep": "Sleep",
+      "Nootropics": "Nootropics",
+      "Health": "Health"
+    },
+    "evidenceTiers": {
+      "Strong": "Strong Evidence",
+      "Moderate": "Moderate Evidence",
+      "Emerging": "Emerging Evidence",
+      "Anecdotal": "Anecdotal Evidence"
+    },
+    "results": "{{count}} result",
+    "resultsPlural": "{{count}} results",
+    "resultsInCategory": " in {{category}}",
+    "resultsForQuery": " for \"{{query}}\""
+  },
+  "urlScanner": {
+    "title": "Analyze any supplement from a product page",
+    "subtitle": "Paste a product URL — AI extracts ingredients, dosages and quality data automatically",
+    "placeholder": "https://www.tillskottsbolaget.se/produkt/...",
+    "hint": "Works with Proteinbolaget, Gymgrossisten, Tillskottsbolaget, and more",
+    "aiReading": "AI is reading the page…",
+    "aiReadingSubtitle": "Extracting ingredients, dosages, and product info",
+    "noProductYet": "No product scanned yet",
+    "noProductHint": "Paste a supplement product URL above and click Extract",
+    "servings": "Servings",
+    "servingSize": "Serving size",
+    "keyIngredient": "Key ingredient",
+    "detecting": "Detecting…",
+    "extractedVia": "Extracted via"
+  },
+  "premium": {
+    "deepDivesArePremium": "Deep Dives are Premium",
+    "premiumDescription": "Get the full breakdown — dosing, forms, bioavailability, synergies, and interactions. Starting at $1.99 per dive.",
+    "signInToUnlock": "Sign in to unlock",
+    "back": "Back",
+    "badge": "Premium",
+    "heroTitle": "Precision intelligence for",
+    "heroTitleHighlight": "human performance.",
+    "heroSubtitle": "Evidence-grounded deep dives on every supplement — dosing protocols, bioavailability, interactions, and synergies. Every claim backed by cited sources.",
+    "notifyMe": "Notify me when live",
+    "onTheList": "You're on the list",
+    "browseSupplement": "Browse supplements",
+    "bestValue": "BEST VALUE",
+    "moneyBack": "7-day money-back guarantee",
+    "cancelAnytime": "Cancel anytime",
+    "secureCheckout": "Secure checkout",
+    "researchStandardTitle": "The Research",
+    "researchStandardHighlight": "Standard.",
+    "researchStandardBody": "Every deep dive synthesises peer-reviewed literature into actionable protocols. We don't just aggregate — we trace every claim back to its source.",
+    "testimonial": "\"Finally a supplement tool that cites actual studies instead of just repeating label claims.\"",
+    "testimonialAuthor": "Beta user feedback",
+    "whatYouGet": "What you get",
+    "free": "Free",
+    "premiumLabel": "Premium",
+    "comingSoon": "Coming soon",
+    "faqTitle": "Frequently asked",
+    "readyToDeeper": "Ready to go deeper?",
+    "readyToDeeperBody": "Payments launching soon — drop your interest below and we'll let you know first.",
+    "moreSectionsLocked": "+ {{count}} more sections unlocked with Premium",
+    "previewSubtitle": "Research Deep Dive",
+    "previewBadge": "Strong evidence",
+    "previewMechanism": "Mechanism of Action",
+    "previewDosing": "Dosing Protocol",
+    "dosingLabels": {
+      "conservative": "Conservative",
+      "standard": "Standard",
+      "high": "High"
+    },
+    "plans": {
+      "dive": {
+        "label": "Pay per Dive",
+        "price": "$1.99",
+        "per": "per deep dive",
+        "description": "Perfect if you only need occasional lookups.",
+        "cta": "Buy a Deep Dive"
+      },
+      "monthly": {
+        "label": "Monthly",
+        "price": "$7.99",
+        "per": "per month",
+        "description": "Unlimited deep dives. Cancel anytime.",
+        "cta": "Start Monthly"
+      },
+      "yearly": {
+        "label": "Yearly",
+        "price": "$59.99",
+        "per": "per year  ·  ~$5/mo",
+        "description": "Best value. Save 37% vs monthly.",
+        "cta": "Start Yearly"
+      }
+    },
+    "freeFeatures": [
+      "Index of 70 supplements",
+      "Evidence tier badges",
+      "Basic ingredient breakdown",
+      "Goal-based supplement recommendations",
+      "Build & save your supplement stack"
+    ],
+    "premiumFeatures": [
+      "Everything in Free",
+      "Full Research Deep Dives",
+      "Dosing guide — conservative / standard / high",
+      "Forms & bioavailability rankings",
+      "Synergy pairings (e.g. Mg + Zn)",
+      "Cautions & drug interactions",
+      "Evidence citations linked to PubMed studies",
+      "Confidence score weighted by study type",
+      "Dosage gap: studied dose vs. retail dose",
+      "Supplement interaction engine (danger / caution / synergy)",
+      "My Stack: full interaction check, schedule & gap analysis",
+      "New supplements added regularly"
+    ],
+    "comingSoonFeatures": [
+      "Health goal-based personalized recommendations"
+    ],
+    "faq": [
+      {
+        "q": "Why not just ask ChatGPT?",
+        "a": "You can — but general AI makes things up. It has no way to tell you when it is guessing versus when it is drawing from a real study, and with supplements that gap matters. SupplementScanner uses a RAG system: the model only answers from a curated set of indexed PubMed studies, so hallucinations are structurally prevented rather than just hoped away. Every claim links to a source you can open. On top of that, you get the full deep dive frame instantly — dosing, bioavailability, interactions, synergies — without spending 20 minutes prompting for each piece. You can also query the cited studies directly with your own questions. 70+ supplements, all structured the same way, no follow-up required."
+      },
+      {
+        "q": "Do I need an account?",
+        "a": "Not for a single deep dive. For subscriptions you will need a free account so your access follows you across devices."
+      },
+      {
+        "q": "Does it work on the mobile app too?",
+        "a": "Yes. One subscription unlocks both the web dashboard and the iOS/Android app. Mobile-specific perks (scan-to-deep-dive, push notifications) are rolling out shortly."
+      },
+      {
+        "q": "What happens when my subscription expires?",
+        "a": "You drop back to the free tier instantly. Your account and history are preserved — you can resubscribe any time."
+      },
+      {
+        "q": "Is the deep dive content AI-generated?",
+        "a": "It is AI-assisted, not AI-invented. The model synthesises from a curated set of PubMed studies and primary sources — every claim is anchored to a citation you can open and read. We do not let the model fill in gaps from general training data, which is where most supplement misinformation comes from."
+      },
+      {
+        "q": "How often are new supplements added?",
+        "a": "We add supplements on an ongoing basis, prioritising by user requests and evidence availability. Premium subscribers get access to every new addition automatically."
+      },
+      {
+        "q": "What is the difference between Pay per Dive and a subscription?",
+        "a": "Pay per Dive ($1.99) unlocks one deep dive permanently — good if you only need to research one or two supplements. Monthly ($7.99) and Yearly ($59.99) give you unlimited deep dives plus the full interaction engine and stack evaluation for as long as you are subscribed."
+      },
+      {
+        "q": "Can I get a refund?",
+        "a": "Within 7 days of purchase, yes. Email us and we will sort it."
+      }
+    ],
+    "welcomeToPremium": "Welcome to Premium!",
+    "youHavePremium": "You have Premium",
+    "active": "Active",
+    "getPremium": "Get Premium",
+    "youreIn": "You're in — welcome to Premium!",
+    "allDeepDivesUnlocked": "All deep dives are now unlocked. Head to the encyclopedia to explore.",
+    "upgradeToPremium": "Upgrade to Premium",
+    "deepDiveFeatures": [
+      { "label": "Cited Research", "desc": "Direct links to PubMed and primary sources for every claim" },
+      { "label": "Mechanism of Action", "desc": "Molecular pathways and cellular receptor interactions" },
+      { "label": "Optimal Dosing", "desc": "Conservative, standard, and loading ranges from clinical trials" },
+      { "label": "Forms & Bioavailability", "desc": "Which specific form absorbs best and why" },
+      { "label": "Synergies & Stacks", "desc": "Strategic combinations to optimise pathways and co-factors" },
+      { "label": "Cautions & Interactions", "desc": "Safety profiles and contraindications with pharmaceuticals" }
+    ]
+  },
+  "tooltips": {
+    "switchToLight": "Switch to light mode",
+    "switchToDark": "Switch to dark mode"
+  },
+  "notifications": {
+    "extractSuccess": "Product info extracted successfully! Found {{productName}}",
+    "extractError": "Could not extract product info: {{error}}",
+    "networkError": "Error: Make sure the backend server is running! Run: node server.js"
+  },
+  "deepDive": {
+    "back": "Back",
+    "generatingAi": "Generating deep dive with AI…",
+    "generatingSubtitle": "~5–10 seconds. Cached for 30 days after first load.",
+    "failedToLoad": "Failed to load content",
+    "tryAgain": "Try again",
+    "whatItIs": "What it is",
+    "howItWorks": "How it works",
+    "dosing": "Dosing",
+    "timing": "Timing",
+    "formsAndBioavailability": "Forms & Bioavailability",
+    "synergies": "Synergies",
+    "cautionsAndInteractions": "Cautions & Interactions",
+    "dosingLabels": {
+      "conservative": "Conservative",
+      "standard": "Standard",
+      "highLoading": "High / Loading"
+    },
+    "recommendedFor": "This supplement is recommended for:",
+    "seeGoalRecommendations": "See Goal Recommendations →",
+    "freshlyGenerated": "✦ Freshly generated by AI — cached for 30 days"
+  },
+  "premiumDeepDive": {
+    "back": "Back",
+    "badge": "Premium · Evidence-grounded",
+    "retrievingEvidence": "Retrieving clinical evidence…",
+    "searchingPubMed": "Searching PubMed database · Grounding answer in studies",
+    "failedToLoad": "Failed to load",
+    "tryAgain": "Try again",
+    "evidenceConfidence": "Evidence confidence",
+    "confidenceLabels": {
+      "high": "High confidence",
+      "moderate": "Moderate confidence",
+      "low": "Low confidence"
+    },
+    "confidenceWeighting": "Weighted by study type: meta-analysis (100%) → RCT — Randomized Controlled Trial (80%) → observational (40%) → animal (10%)",
+    "evidenceSummary": "Evidence Summary",
+    "theCatch": "The Catch",
+    "catchIntro": "Limitations identified in the available evidence:",
+    "dosageGap": "Dosage Gap",
+    "askEvidence": "Ask the evidence",
+    "askEvidenceSubtitle": "Ask a specific question — answered using only the retrieved PubMed studies.",
+    "askPlaceholder": "e.g. \"What dose was most effective?\"",
+    "searching": "Searching",
+    "ask": "Ask",
+    "searchingStudies": "Searching studies for an answer…",
+    "answer": "Answer",
+    "sources": "Sources ({{count}})",
+    "disclaimer": "Answers are grounded in retrieved PubMed abstracts and do not constitute medical advice. Always consult a healthcare professional before changing your supplement regimen.",
+    "interestingFindings": "Interesting Findings",
+    "interestingFindingsIntro": "Notable results from the retrieved studies not covered in the summary above.",
+    "interactionsTitle": "Interactions with Other Supplements & Medications",
+    "interactionsSubtitle": "Known drug and supplement interactions from published literature.",
+    "dangerLabel": "Danger",
+    "cautionLabel": "Caution",
+    "synergyLabel": "Synergy",
+    "noInteractions": "No documented interactions found for this supplement."
+  },
+  "recommendations": {
+    "pageTitle": "Goals &",
+    "pageTitleHighlight": "Recommendations",
+    "viewDeepDive": "View Deep Dive",
+    "browseFullIndex": "Browse Full Index",
+    "footerNote": "Evidence-ranked · Updated 2025 · Click any card to deep dive",
+    "why": {
+      "sleep": {
+        "magnesium-glycinate": "Relaxes muscles and supports GABA — the calm-down neurotransmitter — for deeper, less interrupted sleep. The highest-impact foundational sleep supplement.",
+        "l-theanine": "Promotes relaxing alpha brain waves without sedation, quieting mental chatter without morning grogginess.",
+        "ashwagandha": "Chronically lowers cortisol over weeks of use — most useful when a racing mind or daily stress is the primary sleep disruptor.",
+        "glycine": "Lowers core body temperature and improves sleep architecture — research-backed for improving sleep quality and morning freshness.",
+        "melatonin": "Resets the circadian rhythm. Most effective for jet lag or shift work; less so for garden-variety insomnia. Start at 0.5mg."
+      },
+      "muscle": {
+        "creatine-monohydrate": "The single best return-on-investment supplement for strength. Refuels ATP during explosive sets and accelerates protein synthesis over time.",
+        "caffeine": "Reduces perceived effort so you train harder and longer — directly increasing total training volume, the key driver of hypertrophy.",
+        "citrulline-malate": "Increases blood flow and reduces ammonia buildup, improving endurance in high-rep sets and cutting next-day soreness by up to 40%.",
+        "beta-alanine": "Builds carnosine over weeks to buffer muscle acid in sustained high-rep efforts — lets you squeeze more reps at the edge of failure.",
+        "hmb": "Reduces muscle protein breakdown during a caloric deficit or detraining. Most useful for beginners and those cutting aggressively."
+      },
+      "health": {
+        "vitamin-d3-k2": "The most common deficiency in northern climates. D3 supports immunity, mood, and bone density; K2 steers calcium to bones, not arteries.",
+        "omega-3": "EPA and DHA reduce systemic inflammation and support heart, brain, and joint health. Most people eating a Western diet are chronically deficient.",
+        "magnesium-glycinate": "Involved in 300+ enzymatic reactions. Most adults fall short through diet alone, affecting sleep, energy, and muscle function.",
+        "probiotics": "Restores gut microbiome diversity, supporting immunity, digestion, and mood via the gut–brain axis.",
+        "zinc-bisglycinate": "Critical for testosterone synthesis, immune response, and wound healing — commonly depleted in athletes who sweat heavily."
+      },
+      "energy": {
+        "caffeine": "Blocks adenosine to reduce fatigue and sharpen focus — the most evidence-backed acute cognitive enhancer available.",
+        "rhodiola-rosea": "An adaptogen that blunts the physiological stress response, reducing burnout-type fatigue without any stimulant effect.",
+        "alpha-gpc": "Raises acetylcholine — the learning neurotransmitter — improving working memory, focus, and reaction time within hours.",
+        "panax-ginseng": "Combines mild anti-fatigue effects with cognitive support. Most effective for sustained mental performance under stress.",
+        "coq10": "Directly fuels mitochondrial ATP production. Most valuable if you are over 40 or on statins, which deplete CoQ10 levels significantly."
+      },
+      "cognition": {
+        "lions-mane": "Stimulates Nerve Growth Factor (NGF) synthesis, supporting neuron repair and potentially new synapse formation with consistent use.",
+        "bacopa-monnieri": "Builds over 8–12 weeks to meaningfully improve memory consolidation and reduce anxiety — one of the best-studied cognitive enhancers.",
+        "alpha-gpc": "Rapidly raises acetylcholine, improving attention, learning speed, and reaction time in both healthy adults and older populations.",
+        "phosphatidylserine": "Maintains neuron membrane fluidity. Strongest evidence for slowing age-related cognitive decline and supporting memory recall.",
+        "rhodiola-rosea": "Reduces mental fatigue under sustained cognitive load — helps maintain accuracy and decision quality under pressure."
+      }
+    },
+    "evidenceSuffix": "Evidence",
+    "priorityLabel": "PRIORITY {{num}}",
+    "goals": {
+      "sleep": {
+        "label": "Better Sleep",
+        "intro": "Good sleep is the foundation of every other health goal. Before stacking supplements, address the basics: consistent wake time, a dark cool room, and no screens 30 minutes before bed."
+      },
+      "muscle": {
+        "label": "Build Muscle",
+        "intro": "Supplements accelerate gains — but only on a foundation of adequate protein (1.6–2.2 g/kg), progressive overload, and 7–9 h sleep. Get those right first."
+      },
+      "health": {
+        "label": "General Health",
+        "intro": "A short, evidence-led list covers most nutritional gaps from a modern diet. Whole foods come first — but these fill in what diet alone commonly misses, especially at northern latitudes."
+      },
+      "energy": {
+        "label": "Energy & Focus",
+        "intro": "Low energy is almost always a lifestyle problem first — poor sleep, chronic stress, or nutrient deficiency. Fix those root causes before adding stimulants."
+      },
+      "cognition": {
+        "label": "Brain & Cognition",
+        "intro": "Sleep is the number-one nootropic. Aerobic exercise (BDNF) and stress management come next. Supplements then optimize on top of that foundation."
+      }
+    }
+  },
+  "healthProfile": {
+    "title": "My",
+    "titleHighlight": "Profile",
+    "subtitle": "Personalise your supplement recommendations and stack optimiser.",
+    "loadingProfile": "Loading profile…",
+    "myStack": "My Stack",
+    "noStackYet": "No supplements added yet.",
+    "browseIndex": "Browse the Index",
+    "noStackBuildText": "to build your stack.",
+    "evaluateStack": "Evaluate Stack",
+    "signInForProfile": "Sign in for your full profile",
+    "signInForProfileSubtitle": "Save goals, dietary preferences, and health conditions to personalise your experience.",
+    "signIn": "Sign in",
+    "primaryGoal": "Primary goal",
+    "dietaryPreference": "Dietary preference",
+    "healthConditions": "Health conditions",
+    "healthConditionsOptional": "(optional)",
+    "conditionPlaceholder": "Type a condition and press Enter…",
+    "otherSupplements": "Other supplements",
+    "otherSupplementsOptional": "(optional)",
+    "supplementsPlaceholder": "e.g. Ashwagandha, Omega-3… press Enter to add",
+    "saving": "Saving…",
+    "profileSaved": "Profile saved",
+    "saveProfile": "Save profile",
+    "supplementCount": "{{count}} supplement",
+    "supplementCountPlural": "{{count}} supplements",
+    "yourPlan": "Your Plan",
+    "free": "Free",
+    "betaAccess": "Beta Access",
+    "premiumYearly": "Premium · Yearly",
+    "premiumMonthly": "Premium · Monthly",
+    "upgradeBody": "Upgrade to unlock full evidence deep dives — dosing, sources, bioavailability, and interactions.",
+    "upgradeToPremium": "Upgrade to Premium",
+    "betaBody": "You have full access as a beta tester. Thank you for helping shape SupplementScanner.",
+    "paidBody": "Full access to all deep dives, stack evaluation, and interactions.",
+    "cancelledUntil": "Cancelled — access until {{date}}",
+    "renewsOn": "Renews {{date}}",
+    "managePlan": "Manage plan"
+  },
+  "stackEvaluation": {
+    "back": "Back",
+    "title": "Stack",
+    "titleHighlight": "Evaluation",
+    "subtitle": "Interactions, synergies, and warnings for your supplement stack",
+    "yourStack": "Your Stack",
+    "noStackYetPart1": "No supplements in your stack yet. Add some from the",
+    "noStackYetLink": "encyclopedia",
+    "addAtLeast2": "Add at least 2 supplements",
+    "requiresMore": "Interaction analysis requires 2 or more supplements in your stack.",
+    "signInTitle": "Sign in to evaluate your stack",
+    "signInBody": "Create a free account to check interactions, synergies, and warnings between the supplements in your stack.",
+    "signInButton": "Sign in / Create account",
+    "analyzing": "Analyzing interactions…",
+    "cleanStack": "Your stack looks clean!",
+    "noInteractions": "No known interactions found between the supplements in your stack.",
+    "dangerTitle": "Danger — Avoid combining",
+    "cautionTitle": "Caution — Use carefully",
+    "synergyTitle": "Synergy — Beneficial combinations",
+    "networkError": "Network error — please try again"
+  },
+  "mobileApp": {
+    "badge": "iOS & ANDROID — COMING SOON",
+    "heroTitle": "The supplement scanner in",
+    "heroTitleHighlight": "your pocket",
+    "heroSubtitle": "Scan any supplement barcode and get an instant AI quality report — purity, additives, dosage accuracy, and more. No guessing.",
+    "notifyOnLaunch": "Notify me on launch",
+    "tryWebApp": "Try the web app",
+    "onTheList": "You're on the list",
+    "featuresTitle": "Everything you need to shop smarter",
+    "featuresSubtitle": "All the power of the web dashboard, optimized for the shelf.",
+    "howItWorksTitle": "How It",
+    "howItWorksHighlight": "Works",
+    "syncTitle": "One account, web and mobile.",
+    "syncBody": "Premium unlocks the full encyclopedia deep dives on both the web dashboard and the mobile app. Your history, saved scans, and research sync seamlessly across all devices.",
+    "cloudSync": "Cloud Sync Enabled",
+    "learnMoreTitle": "Be first to know when it launches",
+    "emailPlaceholder": "Enter your email address",
+    "notifyButton": "Notify Me",
+    "noSpam": "No spam. Only mission-critical clinical updates.",
+    "navFeatures": "Features",
+    "navMethodology": "Methodology",
+    "navIndex": "Index",
+    "navGetNotified": "Get Notified",
+    "copyright": "© {{year}} SupplementScanner. All rights reserved.",
+    "features": [
+      {
+        "title": "Instant Barcode Scan",
+        "body": "Point your camera at any supplement barcode and get a full ingredient breakdown in seconds."
+      },
+      {
+        "title": "Purity Check",
+        "body": "AI screens for contaminants, underdosed ingredients, and label accuracy issues."
+      },
+      {
+        "title": "Additives Flagging",
+        "body": "Automatically flags fillers, artificial dyes, and questionable excipients."
+      },
+      {
+        "title": "Index On the Go",
+        "body": "The full supplement index — evidence tiers, dosing, deep dives — in your pocket."
+      }
+    ],
+    "steps": [
+      {
+        "title": "Scan the barcode",
+        "body": "Open the app and point your camera at any supplement barcode. No typing required."
+      },
+      {
+        "title": "AI analyzes instantly",
+        "body": "Our AI cross-references ingredients against evidence databases and flags quality issues in real time."
+      },
+      {
+        "title": "Know what you're taking",
+        "body": "Get a plain-English quality report — purity score, additive warnings, and dosage accuracy."
+      }
+    ]
+  },
+  "supplementInfo": {
+    "back": "Back",
+    "typicalDose": "Typical Dose",
+    "evidenceLevel": "Evidence Level",
+    "overview": "Overview",
+    "howItWorks": "How It Works",
+    "keyFacts": "Key Facts",
+    "bestFor": "Best For",
+    "commonMistakes": "Common Mistakes",
+    "researchDeepDive": "Research Deep Dive",
+    "researchDeepDiveSubtitle": "Peer-reviewed sources · Generated on demand",
+    "unlockWithPremium": "Unlock with Premium",
+    "openResearchDeepDive": "Open Research Deep Dive",
+    "buyThisDive": "Buy this Deep Dive · $1.99",
+    "share": "Share",
+    "researchCached": "Research-backed · cached for 30 days after first load",
+    "limitedStudiesWarning": {
+      "title": "Limited research available",
+      "body": "This supplement has limited clinical evidence, so the deep dive may cover fewer studies and be less detailed than well-researched supplements like creatine or caffeine. It still covers mechanisms, dosing, and forms — but cited studies will be fewer.",
+      "proceed": "Proceed to checkout",
+      "cancel": "Cancel"
+    },
+    "evidenceTierLabels": {
+      "Strong": "Well-established science with multiple RCTs",
+      "Moderate": "Several quality studies with consistent results",
+      "Emerging": "Promising early research, more trials needed",
+      "Anecdotal": "Primarily user reports, limited clinical data"
+    },
+    "deepDiveFeatures": [
+      { "label": "Cited research", "desc": "Key studies with sources linked" },
+      { "label": "Mechanism of action", "desc": "How it works at the cellular level" },
+      { "label": "Optimal dosing protocols", "desc": "Conservative, standard, and loading ranges" },
+      { "label": "Best forms & bioavailability", "desc": "Which form absorbs best and why" },
+      { "label": "Synergies & stacks", "desc": "What to combine it with for best results" },
+      { "label": "Cautions & interactions", "desc": "What to watch out for" }
+    ]
+  },
+  "auth": {
+    "titles": {
+      "signin": "Welcome back",
+      "signup": "Create account",
+      "magic": "Magic link sign-in"
+    },
+    "subtitles": {
+      "signin": "Sign in to access Premium Deep Dives",
+      "signup": "Get started — it's free to create an account",
+      "magic": "We'll send a one-click sign-in link to your inbox"
+    },
+    "continueWithGoogle": "Continue with Google",
+    "emailPlaceholder": "you@example.com",
+    "passwordPlaceholder": "Password",
+    "signIn": "Sign in",
+    "createAccount": "Create account",
+    "sendMagicLink": "Send magic link",
+    "loading": "Loading…",
+    "noAccount": "No account?",
+    "signUp": "Sign up",
+    "magicLinkInstead": "Sign in with magic link instead",
+    "alreadyHaveAccount": "Already have an account?",
+    "backToPassword": "Back to password sign-in",
+    "magicLinkSent": "Magic link sent — check your inbox.",
+    "accountCreated": "Account created! Check your email to confirm, then sign in."
+  },
+  "cookieBanner": {
+    "title": "Cookie Consent",
+    "body": "We use cookies to enhance your experience and analyze usage. Essential cookies are required for basic functionality.",
+    "noDataSold": "We don't sell or share personal data.",
+    "settings": "Settings",
+    "rejectAll": "Reject All",
+    "acceptAll": "Accept All",
+    "preferencesTitle": "Cookie Preferences",
+    "preferencesBody": "We use different types of cookies to optimize your experience:",
+    "essentialCookies": "Essential Cookies (Required)",
+    "essentialCookiesDesc": "Required for basic site functionality and security.",
+    "analyticsCookies": "Analytics Cookies",
+    "analyticsCookiesDesc": "Help us understand how you use our site to improve performance.",
+    "essentialOnly": "Essential Only"
+  },
+  "supplementRecommendations": {
+    "title": "Supplement Recommendations",
+    "subtitle": "Select your primary health goal to get personalized supplement suggestions",
+    "inYourList": "In Your List",
+    "whyItWorks": "Why It Works",
+    "qualityComparison": "Quality Comparison",
+    "premiumForms": "Premium Forms",
+    "avoidThese": "Avoid These",
+    "budgetFriendly": "Budget-Friendly Option",
+    "foundInProducts": "Found in Your Products",
+    "product": "Product",
+    "qualityScore": "Quality Score",
+    "priorityLabel": "Priority {{number}}",
+    "recommendedSupplements": "Recommended Supplements (in order of priority)",
+    "proTips": "Pro Tips",
+    "proTipsList": [
+      "Start with Priority 1 supplements first, add others gradually",
+      "Take supplements consistently for at least 4–6 weeks to see benefits",
+      "Buy from reputable brands with third-party testing",
+      "Consider getting blood tests to check for deficiencies",
+      "Quality matters more than quantity — invest in better forms when possible"
+    ],
+    "goals": {
+      "betterSleep": {
+        "label": "Better Sleep",
+        "description": "Natural sleep quality improvement"
+      },
+      "buildMuscle": {
+        "label": "Build Muscle",
+        "description": "Muscle growth and recovery"
+      },
+      "generalHealth": {
+        "label": "General Health",
+        "description": "Overall wellness and vitality"
+      },
+      "energyFocus": {
+        "label": "Energy & Focus",
+        "description": "Natural energy and mental clarity"
+      }
+    }
+  },
+  "ingredientQuality": {
+    "title": "Ingredient Quality Analysis",
+    "subtitle": "Compare supplement forms to make informed purchasing decisions",
+    "categoriesLabel": "Supplement categories available for analysis:",
+    "productsFound": "{{count}} products found",
+    "noDataTitle": "No Supplement Data Available",
+    "noDataBody": "Add supplement products with URLs to see ingredient quality analysis",
+    "detailedAnalysis": "Detailed Analysis",
+    "noIngredientsFound": "No ingredients found",
+    "noIngredientsFoundBody": "Products in this category don't have extractable ingredient data. Check console logs for debugging information.",
+    "qualityComparisonTitle": "Quality Comparison:",
+    "bestQuality": "BEST QUALITY",
+    "avoidIfPossible": "AVOID IF POSSIBLE",
+    "equallyGood": "EQUALLY GOOD",
+    "goodOption": "GOOD OPTION",
+    "qualityGap": "Quality Gap: {{gap}} points",
+    "qualityGapSameScore": "Both options have identical quality scores — choose based on preference",
+    "qualityGapClose": "Both options are high quality with minimal difference in effectiveness",
+    "qualityGapSignificant": "This represents a significant difference in bioavailability and effectiveness",
+    "multiIngredientFormula": "Multi-ingredient formula · Select an ingredient to analyze",
+    "foundIn": "Found in:",
+    "dosageAnalysis": "Dosage Analysis:",
+    "aiRecommended": "AI RECOMMENDED",
+    "evidenceBasedRecommendation": "Evidence-Based Recommendation:",
+    "recommendation": "Recommendation:",
+    "generalUsage": "General Supplement Usage",
+    "dosageRecommendations": "Dosage Recommendations",
+    "importantWarnings": "Important Warnings",
+    "avoidInferiorForms": "AVOID these inferior forms:",
+    "individualConsiderations": "Individual Considerations",
+    "benefits": "Benefits",
+    "drawbacks": "Drawbacks",
+    "yourProductsUsingIngredient": "Your Products Using This Ingredient",
+    "proteinQualityTitle": "Protein Quality Analysis",
+    "proteinSources": "Protein Sources",
+    "sketchyIngredients": "Sketchy Ingredients ({{count}})",
+    "goodIngredients": "Good Ingredients ({{count}})",
+    "ingredientBreakdown": "Ingredient Breakdown",
+    "qualityScore": "Quality Score",
+    "qualityLabels": {
+      "excellent": "Excellent",
+      "veryGood": "Very Good",
+      "good": "Good",
+      "fair": "Fair",
+      "poor": "Poor",
+      "individualChoice": "Individual Choice"
+    },
+    "qualitySuffix": "Quality"
+  },
+  "languageSwitcher": {
+    "label": "Language"
+  },
+  "supplements": {
+    "creatine-monohydrate": {
+      "tagline": "The most researched strength & power supplement on earth",
+      "primaryUse": "Increases ATP regeneration for sustained power output and muscle mass gains",
+      "overview": "Creatine is the best return-on-investment supplement for strength and muscle — bar none. Your muscles store it as phosphocreatine, which rapidly refuels ATP during explosive efforts like heavy sets and sprints. It also draws water into muscle cells, contributing to a fuller look and accelerating protein synthesis over time.",
+      "typicalDose": "3–5g daily",
+      "bestFor": ["Strength & power athletes", "Muscle mass goals", "High-intensity interval training"],
+      "keyFacts": [
+        "Backed by 500+ human clinical trials — the most studied supplement in sports science",
+        "Loading phase (20g/day for 5 days) is optional — daily 3g gives the same result in ~4 weeks",
+        "Safe for long-term use; no evidence of kidney harm in healthy individuals"
+      ],
+      "commonMistakes": [
+        "Doing a loading phase — it's optional, not required. Daily 3–5g reaches saturation in ~4 weeks without the GI issues a loading phase causes.",
+        "Stopping during a cut — creatine is equally valuable in a caloric deficit where it helps preserve strength and muscle mass."
+      ]
+    },
+    "caffeine": {
+      "tagline": "Proven ergogenic aid for endurance, strength, and focus",
+      "primaryUse": "Stimulates the CNS via adenosine receptor antagonism, reducing perceived exertion",
+      "overview": "Caffeine blocks adenosine — the chemical that accumulates in your brain and makes you feel tired. The result is reduced perceived effort: hard workouts feel easier. It reliably improves both endurance and strength performance, making it one of the most validated ergogenic aids in sports science.",
+      "typicalDose": "150–400mg pre-workout",
+      "bestFor": ["Endurance athletes", "Strength training sessions", "Early-morning training"],
+      "keyFacts": [
+        "Tolerance builds within 1–2 weeks; cycling off restores sensitivity",
+        "Anhydrous caffeine absorbs faster than coffee for more predictable timing",
+        "Half-life is ~5 hours — avoid doses within 6 hours of sleep"
+      ],
+      "commonMistakes": [
+        "Taking it too late — with a ~5-hour half-life, a 3pm dose can still be active at 11pm and significantly wreck sleep quality even if you fall asleep fine.",
+        "Staying on it continuously — tolerance builds fast. Cycling off 1–2 days per week (or one week per month) keeps sensitivity high and the effect potent."
+      ]
+    },
+    "beta-alanine": {
+      "tagline": "Buffer muscle acid to train harder for longer",
+      "primaryUse": "Raises muscle carnosine levels, delaying fatigue in 60–240 second efforts",
+      "overview": "Beta-alanine doesn't work in real time — it builds up carnosine in your muscles over weeks. Carnosine acts as a pH buffer, soaking up the acid that accumulates during intense efforts and delaying the burning sensation that forces you to stop. It's most effective for sustained efforts in the 1–4 minute range like rowing, cycling intervals, or combat sports rounds.",
+      "typicalDose": "3.2–6.4g daily",
+      "bestFor": ["Rowing, swimming & cycling", "Combat sports", "Any effort lasting 1–4 minutes"],
+      "keyFacts": [
+        "The \"tingling\" (paresthesia) is harmless and fades with regular use",
+        "Takes 4–6 weeks to meaningfully raise muscle carnosine levels",
+        "Split into 2×1.6g doses to reduce tingling intensity"
+      ],
+      "commonMistakes": [
+        "Expecting an acute pre-workout effect — beta-alanine requires 4–6 weeks of daily use to build meaningful carnosine levels; single doses do nothing.",
+        "Skipping it on non-training days — consistent daily use is what builds carnosine stores, not just pre-workout doses."
+      ]
+    },
+    "citrulline-malate": {
+      "tagline": "Nitric oxide precursor for pumps and endurance",
+      "primaryUse": "Increases arginine bioavailability, enhancing NO production and reducing fatigue",
+      "overview": "Citrulline converts to arginine in the kidneys, bypassing the liver degradation that makes arginine supplements ineffective. More arginine means more nitric oxide, which dilates blood vessels for better oxygen and nutrient delivery — the pump you feel in training. It also helps recycle ammonia, a fatigue byproduct, reducing next-day soreness.",
+      "typicalDose": "6–8g 60 min pre-workout",
+      "bestFor": ["Hypertrophy / \"pump\" training", "Endurance & high-rep work", "Stacking with creatine"],
+      "keyFacts": [
+        "More effective than L-Arginine directly — bypasses first-pass liver metabolism",
+        "2:1 malate ratio is the best-studied form; pure L-citrulline is also effective",
+        "Reduces muscle soreness ratings by ~40% in multiple studies"
+      ],
+      "commonMistakes": [
+        "Using L-Arginine instead — it's broken down by the liver before reaching circulation, making citrulline 2–3× more effective at raising nitric oxide levels.",
+        "Underdosing — most studies showing benefits used 6–8g, but many pre-workout blends contain only 2–3g of citrulline."
+      ]
+    },
+    "betaine-anhydrous": {
+      "tagline": "Osmolyte that supports power output and body composition",
+      "primaryUse": "Acts as a methyl donor and osmolyte; supports creatine synthesis and hydration",
+      "overview": "Betaine is found naturally in beets, spinach, and quinoa. Your body uses it as a methyl donor for dozens of metabolic processes, and in training it acts as an osmolyte — helping cells maintain hydration under stress. Results are subtle but compound over weeks, with body composition improvements most evident after 6+ weeks of consistent use.",
+      "typicalDose": "2.5g twice daily",
+      "bestFor": ["Strength sports", "Body composition goals", "High-volume training blocks"],
+      "keyFacts": [
+        "Found naturally in beets and spinach — used in food processing for centuries",
+        "Methyl-donor function supports homocysteine metabolism and liver health",
+        "Consistent use over 6+ weeks shows body composition improvements"
+      ],
+      "commonMistakes": [
+        "Expecting immediate effects like caffeine — betaine works through slow metabolic processes; body composition shifts take 6+ weeks to appear.",
+        "Taking it all at once — splitting doses (morning + pre-workout) improves cell saturation and tolerability over a single large dose."
+      ]
+    },
+    "hmb": {
+      "tagline": "Leucine metabolite for muscle preservation",
+      "primaryUse": "Reduces muscle protein breakdown, especially useful during caloric restriction",
+      "overview": "HMB is what your body naturally makes from leucine — the key muscle-building amino acid. It acts as a brake on muscle breakdown, which is especially valuable when calories are restricted or when returning from a training break. Its benefits are most clearly seen in older athletes and during high-stress periods where muscle loss is the primary concern.",
+      "typicalDose": "3g daily (split doses)",
+      "bestFor": ["Cutting / caloric deficit phases", "Older athletes (35+)", "Training after long breaks"],
+      "keyFacts": [
+        "A metabolite of leucine — body produces ~0.2–0.4g naturally from dietary protein",
+        "Most benefit seen in untrained individuals or during periods of high muscle stress",
+        "Free-acid form (HMB-FA) absorbs faster than calcium HMB"
+      ],
+      "commonMistakes": [
+        "Using it as a primary muscle-builder — evidence for HMB in well-trained athletes on adequate protein is weak. It shines most during caloric deficits or detraining.",
+        "Using calcium HMB instead of the free-acid form — HMB-FA absorbs significantly faster and has better acute performance data."
+      ]
+    },
+    "sodium-bicarbonate": {
+      "tagline": "Old-school acid buffer for high-intensity efforts",
+      "primaryUse": "Raises extracellular pH, buffering acid and improving performance in 1–7 minute efforts",
+      "overview": "Plain baking soda works as a performance aid because it raises blood pH, giving your muscles more buffer capacity to clear acid during intense efforts. It has been used by competitive athletes since the 1930s and has solid evidence for events lasting 1–7 minutes — from 800m track to MMA rounds. The main challenge is tolerating it without GI distress.",
+      "typicalDose": "200–300mg per kg bodyweight",
+      "bestFor": ["Swimmers & rowers", "800m–1500m track athletes", "MMA & boxing"],
+      "keyFacts": [
+        "One of the original sports supplements — used by athletes since the 1930s",
+        "Take 60–90 min before exercise; GI distress is the main side effect (use enteric capsules)",
+        "Loading over 3–5 days can reduce GI issues and maintain performance"
+      ],
+      "commonMistakes": [
+        "Taking it on an empty stomach — GI distress (nausea, cramps) is the main barrier; always take with a light meal and plenty of water.",
+        "Taking it too close to the event — allow 60–90 minutes for absorption, and consider a 3–5 day lead-in dose to adapt your gut before competition."
+      ]
+    },
+    "taurine": {
+      "tagline": "Essential amino acid for hydration, endurance, and heart function",
+      "primaryUse": "Acts as an osmolyte regulating cell volume under stress; supports mitochondrial function and reduces exercise-induced oxidative damage",
+      "overview": "Taurine is one of the most abundant amino acids in muscle tissue and plays a structural role in keeping cells hydrated during exercise. It acts as an osmolyte — drawing water into cells to maintain volume under stress — and reduces exercise-induced oxidative damage. It is the reason taurine is a mainstay in every major energy drink formula, though its effect is not stimulant-based. Unlike caffeine, taurine is calming and neuroprotective, counterbalancing the overstimulation caffeine can produce.",
+      "typicalDose": "1–3g daily",
+      "bestFor": ["Endurance athletes", "Pre-workout formulas without extra stimulants", "Heart health support"],
+      "keyFacts": [
+        "Second most abundant amino acid in muscle tissue after glutamine",
+        "Found in energy drinks not for stimulation but for cellular hydration and fatigue protection — the caffeine provides the stimulation",
+        "Conditionally essential during intense training — demand can exceed endogenous synthesis capacity"
+      ],
+      "commonMistakes": [
+        "Thinking taurine is a stimulant because it's in energy drinks — it's actually calming and neuroprotective; the stimulation comes from caffeine. They serve complementary, not overlapping, roles.",
+        "Underdosing — most energy drinks contain only 500–1000mg. Performance benefits are better supported at 1–3g per day."
+      ]
+    },
+    "magnesium-glycinate": {
+      "tagline": "The premium relaxation mineral — gentle and highly absorbed",
+      "primaryUse": "Activates GABA receptors and supports the parasympathetic nervous system",
+      "overview": "Magnesium is involved in over 300 enzymatic reactions, including directly activating GABA — your brain's main calming neurotransmitter. Most people don't get enough from diet alone, and deficiency commonly shows up as restlessness, muscle cramps, and fragmented sleep. Glycinate pairs magnesium with the amino acid glycine, which itself has independent sleep-promoting properties.",
+      "typicalDose": "200–400mg elemental Mg before bed",
+      "bestFor": ["Stress-related sleep issues", "Muscle cramps at night", "People with low dietary magnesium"],
+      "keyFacts": [
+        "Glycinate chelation makes it one of the most bioavailable forms with minimal laxative effect",
+        "Up to 68% of the population is estimated to be deficient in magnesium",
+        "Takes 4–8 weeks of consistent use to normalize deficiency symptoms"
+      ],
+      "commonMistakes": [
+        "Using magnesium oxide for sleep — it has <10% absorption and a strong laxative effect, providing little actual calming benefit.",
+        "Expecting instant results — correcting a deficiency takes 4–8 weeks of nightly use; don't judge it in the first week."
+      ]
+    },
+    "melatonin": {
+      "tagline": "Regulate your circadian clock with precision",
+      "primaryUse": "Signals sleep onset by binding MT1/MT2 receptors in the suprachiasmatic nucleus",
+      "overview": "Melatonin is a hormone your brain naturally produces when it gets dark — it signals your body that it's time to sleep. Supplementing doesn't knock you out like a sedative; instead it shifts your internal clock, making it most valuable for jet lag, shift work, or delayed sleep phase. Both timing and dose matter far more than most people realize.",
+      "typicalDose": "0.5–3mg 30–60 min before bed",
+      "bestFor": ["Jet lag & shift workers", "Delayed sleep phase", "Adjusting to new sleep schedules"],
+      "keyFacts": [
+        "More is not better — 0.5mg is as effective as 5mg for sleep onset in most adults",
+        "Works best for circadian phase-shifting, not as a sedative",
+        "Light exposure (especially blue light) suppresses natural melatonin production by 50%+"
+      ],
+      "commonMistakes": [
+        "Taking too high a dose — 0.5mg is as effective as 5mg for most people and avoids next-day grogginess. Higher doses are not stronger, just longer-lasting.",
+        "Using it as a nightly sedative for chronic sleep issues — melatonin is a circadian regulator. For ongoing sleep problems, address sleep hygiene and light exposure first."
+      ]
+    },
+    "l-theanine": {
+      "tagline": "Calm the mind without sedation",
+      "primaryUse": "Increases alpha brain wave activity, promoting relaxed alertness and sleep onset",
+      "overview": "L-Theanine is an amino acid unique to tea leaves that promotes alpha brain waves — the mental state associated with calm, unfocused awareness. It's non-sedating, so it won't make you drowsy during the day, but it quiets the mental chatter that can prevent sleep onset at night. It also pairs exceptionally well with caffeine to smooth out jitteriness.",
+      "typicalDose": "100–200mg before bed",
+      "bestFor": ["Anxiety-driven sleep issues", "Stacking with caffeine for calm focus", "Light sleepers"],
+      "keyFacts": [
+        "Naturally found in green tea — typically 20–30mg per cup",
+        "Does not cause grogginess; alpha wave effect is non-sedating",
+        "200mg + 100mg caffeine is one of the most studied cognitive stacks"
+      ],
+      "commonMistakes": [
+        "Underdosing — green tea contains only 20–30mg per cup. Therapeutic effects for sleep or focus require 100–200mg from a supplement.",
+        "Expecting a strong sedative effect — it's subtle and calming, not a knockout. Those with significant anxiety or insomnia may need to stack it with other approaches."
+      ]
+    },
+    "ashwagandha": {
+      "tagline": "Adaptogen that lowers cortisol and improves sleep quality",
+      "primaryUse": "Reduces cortisol and stress biomarkers, improving non-REM sleep duration",
+      "overview": "Ashwagandha is one of the most well-researched adaptogens — plants that help your body modulate its stress response. It directly lowers cortisol, the hormone that keeps your nervous system in alert mode and fragments deep sleep. The KSM-66 extract specifically uses root-only material and has the strongest clinical validation among ashwagandha forms.",
+      "typicalDose": "300–600mg KSM-66 daily",
+      "bestFor": ["High-stress lifestyles", "Cortisol-disrupted sleep", "Athletes in heavy training blocks"],
+      "keyFacts": [
+        "KSM-66 is a root-only extract with 5% withanolides — the most clinically tested form",
+        "Cortisol reduction of ~28% reported in 8-week RCT vs placebo",
+        "Dual benefit: improves sleep quality AND may modestly boost testosterone"
+      ],
+      "commonMistakes": [
+        "Using cheap root powder instead of a standardized extract — active withanolide content varies wildly in unverified powders; KSM-66 or Sensoril with stated percentages are essential.",
+        "Expecting fast results — cortisol normalization is a slow process. Give it 4–8 weeks of consistent daily use before evaluating."
+      ]
+    },
+    "glycine": {
+      "tagline": "Amino acid that lowers core body temperature for better sleep",
+      "primaryUse": "Facilitates sleep by reducing core body temperature and modulating NMDA receptors",
+      "overview": "Glycine is a simple amino acid with a surprisingly direct effect on sleep: it lowers your core body temperature by dilating blood vessels in the skin, and cooling is one of the body's key triggers for sleep onset. Users consistently report waking up feeling less fatigued the next morning — a sign of improved sleep architecture rather than just longer time in bed.",
+      "typicalDose": "3g 30–60 min before bed",
+      "bestFor": ["Poor sleep quality without clear cause", "Shift workers", "Stacking with magnesium"],
+      "keyFacts": [
+        "Lowers core body temperature by ~0.3°C — a known trigger for sleep onset",
+        "Subjective reports show significantly reduced daytime fatigue the next morning",
+        "Extremely safe at any dose — also used at 15–60g daily for metabolic conditions"
+      ],
+      "commonMistakes": [
+        "Overlooking it because it's \"just an amino acid\" — the core temperature-lowering mechanism is distinct from other sleep aids and complements magnesium well.",
+        "Taking it too early — the temperature drop needs to coincide with your sleep window; take it 30–60 minutes before you actually intend to sleep."
+      ]
+    },
+    "5-htp": {
+      "tagline": "Serotonin precursor for mood, sleep onset, and appetite control",
+      "primaryUse": "Directly converts to serotonin in the brain, which is subsequently converted to melatonin in the pineal gland",
+      "overview": "5-HTP is the immediate precursor to serotonin and crosses the blood-brain barrier more efficiently than tryptophan, which competes with other amino acids for transport. The result is a more reliable increase in serotonin and downstream melatonin, making it useful for sleep onset, mood stabilization, and appetite regulation. Its dual serotonin/melatonin action makes it especially effective for people whose sleep issues are driven by anxiety or low mood.",
+      "typicalDose": "50–200mg 30–45 min before bed",
+      "bestFor": ["Anxiety-driven sleep issues", "Mood support alongside sleep", "Carbohydrate craving reduction"],
+      "keyFacts": [
+        "More efficient at raising brain serotonin than L-tryptophan — bypasses the rate-limiting conversion step",
+        "Do not combine with SSRIs or MAOIs without medical supervision — serotonin syndrome risk",
+        "Sourced from Griffonia simplicifolia seed extract — no animal-derived ingredients"
+      ],
+      "commonMistakes": [
+        "Combining with SSRIs or MAOIs — 5-HTP increases serotonin activity, directly overlapping with antidepressant mechanisms; this combination can cause serotonin syndrome, a potentially serious condition.",
+        "Taking it indefinitely without cycling — prolonged continuous use can downregulate serotonin receptors; cycle off every 4–6 weeks or use on an as-needed basis."
+      ]
+    },
+    "valerian-root": {
+      "tagline": "Traditional sleep herb with GABA-modulating properties",
+      "primaryUse": "Increases GABA availability by inhibiting its breakdown and reuptake, reducing neurological excitation",
+      "overview": "Valerian root is one of the oldest sleep remedies in Western herbalism, used since ancient Greece and Rome. Modern research suggests it works by increasing GABA — the brain's primary inhibitory neurotransmitter — by inhibiting its breakdown and reuptake. Unlike pharmaceutical GABA modulators, it achieves this gently without significant sedative hangover in most users. Effects are often more pronounced after 2–4 weeks of consistent use than on the first night.",
+      "typicalDose": "300–600mg standardized extract 30–60 min before bed",
+      "bestFor": ["Difficulty falling asleep", "Stress-related sleep disruption", "Stacking with magnesium or L-theanine"],
+      "keyFacts": [
+        "Valerenic acid is the primary active compound — look for standardized extracts specifying valerenic acid content",
+        "Evidence is stronger for consistent 2–4 week use than for single-dose acute effects",
+        "Pairs well with lemon balm (Melissa officinalis) — several clinical trials use this combination"
+      ],
+      "commonMistakes": [
+        "Judging it on the first night — acute single-dose effects are mild; the strongest clinical evidence is for regular use over 2–4 weeks for sleep latency improvement.",
+        "Assuming more is better — doses above 900mg can have a paradoxical stimulating effect in some individuals; stick to 300–600mg."
+      ]
+    },
+    "lions-mane": {
+      "tagline": "The nerve growth factor mushroom for brain health",
+      "primaryUse": "Stimulates NGF synthesis, supporting neuroplasticity and long-term cognitive health",
+      "overview": "Lion's Mane is one of the few supplements with evidence for stimulating Nerve Growth Factor (NGF) — a protein essential for the growth and maintenance of brain neurons. It's not a stimulant; effects are slow-building and cumulative over months, supporting cognitive health rather than delivering acute focus. Most valuable for long-term brain maintenance and anxiety-related focus issues.",
+      "typicalDose": "500mg–2g fruiting body extract daily",
+      "bestFor": ["Long-term brain health", "Cognitive recovery", "Anxiety-related focus issues"],
+      "keyFacts": [
+        "Hericenones and erinacines are the active compounds that cross the blood-brain barrier",
+        "Fruiting body extracts are more potent than mycelium-only products",
+        "Human trials show promise for mild cognitive impairment; more data needed"
+      ],
+      "commonMistakes": [
+        "Buying mycelium-on-grain products — these contain mostly starch filler, not active compounds. Look for fruiting body extracts standardized to beta-glucan content.",
+        "Expecting an immediate nootropic effect — benefits accumulate over 8+ weeks and are about long-term brain health, not acute focus or energy."
+      ]
+    },
+    "bacopa-monnieri": {
+      "tagline": "Ayurvedic herb for long-term memory consolidation",
+      "primaryUse": "Enhances memory formation via antioxidant activity and cholinergic modulation",
+      "overview": "Bacopa is one of the best-studied herbs for memory, used in Ayurvedic medicine for centuries and validated in modern RCTs. It enhances synaptic communication and protects neurons from oxidative stress, translating to faster information recall and better learning retention over time. It won't make you sharper tomorrow — but consistently over 8–12 weeks, the evidence is compelling.",
+      "typicalDose": "300–450mg standardized extract daily",
+      "bestFor": ["Students & memory work", "Age-related cognitive decline", "Long-term supplementation plans"],
+      "keyFacts": [
+        "Effects are slow-building — most trials show significant results at 8–12 weeks",
+        "Bacosides A and B are the active components — look for 20–55% standardization",
+        "Best taken with a fat-containing meal for improved absorption"
+      ],
+      "commonMistakes": [
+        "Giving up too early — most trials show meaningful cognitive improvement only at 8–12 weeks; quitting after 2–3 weeks means missing the benefit entirely.",
+        "Taking on an empty stomach — bacosides are fat-soluble; absorption is significantly improved when taken with a meal containing fat."
+      ]
+    },
+    "alpha-gpc": {
+      "tagline": "Premium choline source for acetylcholine synthesis",
+      "primaryUse": "Crosses the blood-brain barrier to rapidly boost acetylcholine levels",
+      "overview": "Acetylcholine is the neurotransmitter behind focus, learning, and the mind-muscle connection in training. Alpha-GPC is the most efficient way to raise brain acetylcholine levels because it crosses the blood-brain barrier directly, unlike most choline sources. Athletes use it for cognitive sharpness and its reported boost to power output and growth hormone release.",
+      "typicalDose": "300–600mg daily",
+      "bestFor": ["Focus-demanding tasks", "Stacking with racetams", "Athletes seeking power output boost"],
+      "keyFacts": [
+        "Contains ~40% choline by weight — one of the most bioavailable choline forms",
+        "Also has independent nootropic effects beyond just choline donation",
+        "A single 600mg dose may acutely increase growth hormone release"
+      ],
+      "commonMistakes": [
+        "Substituting CDP-choline without adjusting dose — CDP-choline contains ~18% choline vs Alpha-GPC's ~40%; you'd need roughly double the milligrams.",
+        "Stacking with racetams without enough choline — racetams increase acetylcholine demand; inadequate choline supply leads to brain fog and headaches."
+      ]
+    },
+    "rhodiola-rosea": {
+      "tagline": "Adaptogen that fights mental fatigue under stress",
+      "primaryUse": "Modulates stress hormones and supports serotonergic/dopaminergic transmission",
+      "overview": "Rhodiola has one key advantage over most adaptogens: it works acutely. You can feel anti-fatigue and mood-stabilizing effects within hours of a dose, not just after weeks of use. It modulates the stress response axis and supports dopaminergic and serotonergic transmission — genuinely useful during exam periods, high-deadline weeks, or hard training blocks.",
+      "typicalDose": "200–600mg 3% rosavins / 1% salidroside",
+      "bestFor": ["Burnout & overtraining recovery", "Exam / deadline periods", "Morning energy without caffeine"],
+      "keyFacts": [
+        "Acts within hours for acute anti-fatigue effects — unlike most adaptogens",
+        "Cyclic use (5 days on, 2 days off) may prevent tolerance buildup",
+        "Used by Soviet military and athletes for decades before Western research began"
+      ],
+      "commonMistakes": [
+        "Using it continuously without breaks — tolerance appears to build; cycling 5 days on / 2 days off (or taking weekends off) preserves effectiveness over time.",
+        "Taking it late in the day — it's mildly activating and can interfere with sleep if taken in the afternoon or evening."
+      ]
+    },
+    "panax-ginseng": {
+      "tagline": "Classic adaptogen for energy and cognitive resilience",
+      "primaryUse": "Ginsenosides modulate the HPA axis and multiple neurotransmitter systems",
+      "overview": "Panax ginseng is one of the most thoroughly researched adaptogens, with evidence spanning cognitive performance, immune function, and blood sugar regulation. Its active ginsenosides modulate the hypothalamic-pituitary-adrenal axis — essentially the body's stress-response control center. Korean Red Ginseng, made by steaming the root, has the strongest clinical track record of any form.",
+      "typicalDose": "200–400mg standardized extract daily",
+      "bestFor": ["Mental stamina & sustained focus", "Immune resilience", "Older adults (cognitive maintenance)"],
+      "keyFacts": [
+        "Korean Red Ginseng (steamed & dried) has the most clinical evidence",
+        "Ginsenoside Rg1 and Rb1 are primary active compounds",
+        "May modestly improve blood glucose regulation when used consistently"
+      ],
+      "commonMistakes": [
+        "Confusing it with Siberian (Eleuthero) or American Ginseng — different plants with different active compounds and use cases; not interchangeable.",
+        "Using unstandardized products — active ginsenoside content varies enormously between brands. Always look for a product specifying total ginsenoside percentage."
+      ]
+    },
+    "phosphatidylserine": {
+      "tagline": "Cell membrane phospholipid essential for brain function",
+      "primaryUse": "Supports neuronal membrane fluidity and blunts the cortisol response to stress",
+      "overview": "Phosphatidylserine is a phospholipid that forms a critical component of every brain cell membrane. As we age, PS levels decline, affecting memory and processing speed. It also blunts the cortisol spike after intense exercise — making it uniquely valuable for athletes who want to recover faster without suppressing the training adaptations that cortisol also drives.",
+      "typicalDose": "100–300mg daily with a meal",
+      "bestFor": ["High-stress athletes (overtraining prevention)", "Age-related memory concerns", "Executive function support"],
+      "keyFacts": [
+        "FDA allows a qualified health claim for PS and cognitive decline risk reduction",
+        "Soy-derived PS (most common) has equivalent bioavailability to sunflower-derived",
+        "Cortisol-blunting effect is most pronounced at 400–800mg — relevant post-exercise"
+      ],
+      "commonMistakes": [
+        "Skipping it due to cost — lower doses of 100–200mg still provide meaningful cortisol-blunting effects for athletes at a more manageable price point.",
+        "Taking on an empty stomach — PS is fat-soluble and absorption is significantly improved when taken with a fat-containing meal."
+      ]
+    },
+    "alcar": {
+      "tagline": "Mitochondrial fuel transporter with a nootropic edge",
+      "primaryUse": "Shuttles fatty acids into mitochondria for energy; the acetyl group crosses the blood-brain barrier to support acetylcholine synthesis",
+      "overview": "ALCAR does two things simultaneously: the carnitine moiety shuttles long-chain fatty acids into mitochondria to be burned for energy, and the acetyl group crosses the blood-brain barrier and contributes to acetylcholine synthesis — the same neurotransmitter that Alpha-GPC targets. This dual action makes it a rare crossover between a metabolic supplement and a nootropic. Evidence is strongest for age-related cognitive decline, neuropathic pain, and fatigue, with modest but real benefits for focus and energy in healthy adults.",
+      "typicalDose": "500–2000mg daily, preferably morning or pre-workout",
+      "bestFor": ["Fat metabolism and energy support", "Cognitive sharpness and focus", "Older adults with age-related energy and cognitive decline"],
+      "keyFacts": [
+        "Only the acetylated form (ALCAR) — not plain L-Carnitine — crosses the blood-brain barrier for cognitive effects",
+        "Best-documented clinical use is neuropathic pain and age-related cognitive decline",
+        "Carnitine biosynthesis declines with age; dietary red meat is the primary food source"
+      ],
+      "commonMistakes": [
+        "Using plain L-Carnitine for nootropic effects — only the acetylated ALCAR form crosses the blood-brain barrier; plain carnitine stays in the periphery and has no central nervous system activity.",
+        "Expecting dramatic fat loss — the metabolic benefit is real but modest; ALCAR enhances fat as a fuel source during exercise, not as a standalone thermogenic."
+      ]
+    },
+    "citicoline": {
+      "tagline": "Premium choline source that doubles as a brain membrane builder",
+      "primaryUse": "Donates choline for acetylcholine synthesis while the cytidine component converts to uridine, supporting neuronal membrane phospholipid synthesis",
+      "overview": "Citicoline is a two-in-one nootropic: it provides choline for acetylcholine synthesis (like Alpha-GPC) while its cytidine component converts to uridine — a compound that supports neuronal membrane repair and dopaminergic activity. This means citicoline not only boosts acetylcholine but also supports the structural maintenance of neurons and may improve mood via dopamine pathways. It is approved as a pharmaceutical drug for stroke recovery and cognitive impairment across Europe and Japan.",
+      "typicalDose": "250–500mg daily",
+      "bestFor": ["Focus and working memory", "Stacking with racetams", "Cognitive maintenance in older adults"],
+      "keyFacts": [
+        "Provides ~18% choline by weight vs Alpha-GPC's ~40% — but the uridine component adds independent neuroplasticity benefits Alpha-GPC does not offer",
+        "Approved as a pharmaceutical drug for stroke and cognitive disorders in Europe and Japan",
+        "May increase dopamine receptor density with long-term use — relevant for motivation and mood"
+      ],
+      "commonMistakes": [
+        "Directly substituting for Alpha-GPC at the same dose — citicoline contains ~18% choline vs Alpha-GPC's ~40%; you'd need roughly double the milligrams for equivalent choline output, though the uridine benefit partially offsets this.",
+        "Expecting an acute stimulant-like effect — cognitive improvements from citicoline are subtle and cumulative over weeks, not immediate sharpness."
+      ]
+    },
+    "ginkgo-biloba": {
+      "tagline": "Ancient tree extract for cerebral circulation and cognitive longevity",
+      "primaryUse": "Increases cerebral blood flow via platelet-activating factor inhibition and provides neuroprotective antioxidant activity",
+      "overview": "Ginkgo biloba is one of the oldest living tree species and one of the most widely purchased supplements globally. Its leaves contain flavonoid glycosides and ginkgolides that increase cerebral blood flow and protect neurons from oxidative damage. Evidence is strongest for age-related cognitive decline, where improved circulation produces meaningful functional differences. In healthy younger adults, improvements in attention speed and processing are the most reproducible finding.",
+      "typicalDose": "120–240mg standardized extract daily (24% flavonoids / 6% terpenes)",
+      "bestFor": ["Age-related cognitive decline", "Tinnitus and vertigo from circulation issues", "Peripheral circulation support"],
+      "keyFacts": [
+        "EGb 761® is the most clinically studied extract — standardized to 24% ginkgo flavone glycosides and 6% terpene lactones",
+        "Inhibits platelet-activating factor — a mild blood-thinning effect; caution with anticoagulants",
+        "One of the most studied natural compounds for dementia prevention in European geriatric medicine"
+      ],
+      "commonMistakes": [
+        "Using unstandardized ginkgo products — active compound concentration varies enormously between brands; always look for EGb 761® or explicit 24% flavonoids / 6% terpenes on the label.",
+        "Taking it alongside anticoagulants without medical advice — ginkgo's platelet-inhibiting effect meaningfully increases bleeding risk when combined with warfarin or daily aspirin."
+      ]
+    },
+    "tart-cherry": {
+      "tagline": "Natural anti-inflammatory for post-exercise muscle soreness",
+      "primaryUse": "Anthocyanins reduce oxidative stress and muscle damage markers post-exercise",
+      "overview": "Tart cherries are exceptionally rich in anthocyanins — the pigments behind their deep red color that act as potent antioxidants. After hard training, your muscles undergo significant oxidative stress; these anthocyanins accelerate the cleanup process, reducing soreness and speeding up strength recovery. As a bonus, tart cherries also contain natural melatonin for a sleep quality benefit.",
+      "typicalDose": "480mg extract or 240–480ml juice twice daily",
+      "bestFor": ["Endurance athletes", "Back-to-back training days", "Race week / peak competition prep"],
+      "keyFacts": [
+        "Also improves sleep quality due to natural melatonin content",
+        "Most effective when started 4–5 days before a high-stress event",
+        "Montmorency variety has the highest anthocyanin concentration"
+      ],
+      "commonMistakes": [
+        "Starting it the morning of an event — most of the evidence uses a 4–7 day loading period before the high-stress activity to saturate tissues with anthocyanins.",
+        "Using sweet cherry juice instead of tart Montmorency — the anthocyanin concentration in sweet varieties is dramatically lower and likely insufficient for the effect."
+      ]
+    },
+    "omega-3": {
+      "tagline": "Essential fatty acids for systemic inflammation control",
+      "primaryUse": "EPA/DHA reduce prostaglandin-mediated inflammation and support joint health",
+      "overview": "EPA and DHA are long-chain fatty acids your body cannot efficiently synthesize — they must come from diet or supplements. EPA is the primary driver of anti-inflammatory activity, directly competing with the inflammatory pathways behind joint pain and post-exercise soreness. DHA concentrates in brain cell membranes and supports cognitive function. Most Western diets are severely deficient in both.",
+      "typicalDose": "1–3g EPA+DHA daily with a meal",
+      "bestFor": ["Joint health & flexibility", "Post-training inflammation", "Cardiovascular health"],
+      "keyFacts": [
+        "EPA primarily drives anti-inflammatory effects; DHA supports brain structure",
+        "Triglyceride form (fish oil) absorbs ~70% better than ethyl ester form",
+        "Look for IFOS or similar 3rd-party certification for purity and oxidation levels"
+      ],
+      "commonMistakes": [
+        "Counting total fish oil milligrams instead of EPA+DHA — a \"1000mg fish oil\" capsule typically contains only 300mg of actual omega-3s. Check the label.",
+        "Using rancid oil — oxidized fish oil is pro-inflammatory. Check for a fresh smell (not fishy), look for IFOS certification, and keep it refrigerated after opening."
+      ]
+    },
+    "collagen-peptides": {
+      "tagline": "Structural protein for tendons, joints, and connective tissue",
+      "primaryUse": "Provides hydroxyproline and glycine substrates for connective tissue collagen synthesis",
+      "overview": "Tendons, ligaments, and cartilage are made of collagen but have poor blood supply, making connective tissue injuries notoriously slow to heal. Taking hydrolyzed collagen 30–60 minutes before exercise has been shown to increase collagen synthesis specifically in tendons during the post-exercise window. Vitamin C is a required co-factor — without it, the synthesis process is incomplete.",
+      "typicalDose": "10–15g daily, ideally with Vitamin C",
+      "bestFor": ["Tendon & ligament injuries", "Joint pain in athletes", "Skin & hair health"],
+      "keyFacts": [
+        "Take 30–60 min before exercise for maximum collagen synthesis stimulation in connective tissue",
+        "Vitamin C is a required co-factor for collagen synthesis — combine them",
+        "Hydrolyzed form (peptides) has significantly better absorption than gelatin"
+      ],
+      "commonMistakes": [
+        "Taking it without vitamin C — collagen synthesis requires vitamin C as a co-factor. Skipping it means significantly reduced connective tissue benefit.",
+        "Using collagen as a general protein supplement — its amino acid profile lacks tryptophan and is not optimal for muscle building; its purpose is specifically connective tissue."
+      ]
+    },
+    "curcumin": {
+      "tagline": "Potent anti-inflammatory compound from turmeric root",
+      "primaryUse": "Inhibits NF-kB pathway, reducing systemic inflammatory cytokines",
+      "overview": "Curcumin is the active compound in turmeric and works by blocking NF-kB — one of the master switches of inflammation in the body. The critical catch is bioavailability: standard curcumin is almost completely insoluble and barely absorbed. With piperine from black pepper, absorption jumps by up to 2000%. Without an absorption enhancer, you're essentially taking an inert powder.",
+      "typicalDose": "500–1000mg daily with piperine or fat",
+      "bestFor": ["Chronic inflammation & joint issues", "Post-exercise soreness", "Gut inflammation"],
+      "keyFacts": [
+        "Standard curcumin has <1% bioavailability alone — piperine boosts absorption by ~2000%",
+        "Newer forms like Meriva® (phytosome), BCM-95® and Longvida® absorb even better",
+        "Curcumin is only ~3% of dried turmeric by weight — supplements far exceed food amounts"
+      ],
+      "commonMistakes": [
+        "Relying on turmeric in food for a therapeutic effect — you'd need to eat enormous quantities, and the fat and piperine required for absorption still aren't guaranteed.",
+        "Buying standard curcumin without an absorption enhancer — piperine, Meriva®, or BCM-95® are not optional; without them, bioavailability is below 1%."
+      ]
+    },
+    "glutamine": {
+      "tagline": "Conditionally essential amino acid for gut and immune health",
+      "primaryUse": "Most abundant amino acid; supports gut barrier integrity and immune cell function",
+      "overview": "Glutamine is the most abundant amino acid in muscle tissue and the primary fuel source for gut lining cells and immune lymphocytes. During intense training, illness, or injury, your body's glutamine demand can exceed its production capacity — leading to muscle catabolism and immune suppression. Supplementing helps plug this gap, with the strongest evidence for gut barrier integrity.",
+      "typicalDose": "5–10g daily (or up to 20g in clinical settings)",
+      "bestFor": ["Gut permeability issues (\"leaky gut\")", "Intense training & overtraining recovery", "Post-illness immune rebuilding"],
+      "keyFacts": [
+        "Becomes \"conditionally essential\" during high physiological stress or injury",
+        "Primary fuel source for enterocytes (gut lining cells) and immune lymphocytes",
+        "High-dose evidence for performance is weak; gut/immune benefits are better supported"
+      ],
+      "commonMistakes": [
+        "Expecting muscle-building effects comparable to creatine — evidence for glutamine improving hypertrophy or strength in well-nourished athletes is weak.",
+        "Overlooking the gut health application — the strongest case for glutamine supplementation is gut barrier integrity (\"leaky gut\"), not muscle performance."
+      ]
+    },
+    "msm": {
+      "tagline": "Bioavailable sulfur for joints, cartilage, and post-exercise inflammation",
+      "primaryUse": "Provides organic sulfur for collagen, cartilage, and glutathione synthesis; reduces inflammatory cytokines post-exercise",
+      "overview": "MSM is an organic sulfur compound found naturally in plants, meat, and dairy — though cooking destroys most of it. Sulfur is a structural component of collagen, cartilage, keratin, and glutathione, making MSM a useful substrate for connective tissue repair and antioxidant defense. Clinical evidence shows it reduces joint pain and stiffness in osteoarthritis and decreases exercise-induced muscle damage markers. It is most commonly stacked with collagen peptides and glucosamine, where combined evidence is stronger than any single agent alone.",
+      "typicalDose": "1.5–3g daily",
+      "bestFor": ["Joint pain and osteoarthritis", "Post-exercise muscle soreness", "Connective tissue support alongside collagen"],
+      "keyFacts": [
+        "Sulfur from MSM is incorporated into collagen and cartilage within 24 hours — highly bioavailable",
+        "Synergistic with glucosamine and chondroitin — most joint formulas combine all three",
+        "Also reduces allergy symptoms by inhibiting IgE-mediated mast cell histamine release"
+      ],
+      "commonMistakes": [
+        "Expecting rapid relief like an NSAID — MSM works by supporting tissue structure over weeks, not by acutely blocking pain; give it 4–6 weeks before evaluating effectiveness.",
+        "Taking a single large daily dose — splitting into two doses (morning and evening) improves tolerability and provides more consistent tissue sulfur availability throughout the day."
+      ]
+    },
+    "vitamin-d3-k2": {
+      "tagline": "The essential sunshine vitamin pair for bone and immune health",
+      "primaryUse": "D3 regulates calcium absorption; K2 directs calcium to bones rather than arteries",
+      "overview": "Vitamin D acts more like a hormone than a vitamin — it regulates gene expression across hundreds of tissues and is essential for immune function, bone density, and testosterone production. Most people in northern latitudes or who work indoors are deficient. K2 is the critical partner: D3 increases calcium absorption, and K2 ensures that calcium goes to your bones rather than calcifying your arteries.",
+      "typicalDose": "2000–5000 IU D3 + 100–200mcg K2 (MK-7) daily",
+      "bestFor": ["Northerners / low sun exposure", "Bone density maintenance", "Immune system baseline"],
+      "keyFacts": [
+        "Estimated 40–50% of adults worldwide are deficient; deficiency linked to 200+ conditions",
+        "K2 prevents the \"calcium paradox\" — D3 increases calcium absorption, K2 ensures it goes to bone not arteries",
+        "Cholecalciferol (D3) raises blood levels ~3× more effectively than ergocalciferol (D2)"
+      ],
+      "commonMistakes": [
+        "Taking D3 long-term without K2 — without K2, increased calcium absorption from D3 can deposit in arteries instead of bones. The two work as a pair.",
+        "Stopping supplementation once levels look \"normal\" — standard lab reference ranges are often set too low. Optimal function is typically at 40–60 ng/mL, not just above deficiency threshold."
+      ]
+    },
+    "zinc-bisglycinate": {
+      "tagline": "Essential mineral for immunity, hormones, and wound healing",
+      "primaryUse": "Cofactor in 300+ enzymatic reactions; critical for testosterone synthesis and immune function",
+      "overview": "Zinc is a cofactor in over 300 enzymes and plays a direct role in testosterone synthesis, immune activation, and wound repair. Athletes are particularly at risk for depletion since zinc is lost in sweat and high training volumes increase metabolic demand. The bisglycinate chelate form absorbs dramatically more effectively than the zinc oxide found in cheap multivitamins.",
+      "typicalDose": "15–30mg elemental zinc daily",
+      "bestFor": ["Athletes (zinc lost in sweat)", "Immune support during intense training", "Hormonal health"],
+      "keyFacts": [
+        "Bisglycinate chelate absorbs ~43% more efficiently than zinc oxide",
+        "Zinc competes with copper — long-term high doses (>40mg) may need copper balancing",
+        "Deficiency is associated with reduced testosterone, impaired wound healing, and increased illness"
+      ],
+      "commonMistakes": [
+        "Relying on zinc oxide from cheap multivitamins — it has <10% absorption. Bisglycinate or picolinate forms are significantly more effective per milligram.",
+        "Taking high doses long-term without balancing copper — zinc and copper compete for absorption; sustained doses above 40mg/day can gradually deplete copper."
+      ]
+    },
+    "magnesium-malate": {
+      "tagline": "Daytime magnesium form that supports energy metabolism",
+      "primaryUse": "Malate participates in the Krebs cycle; supports ATP production and energy output",
+      "overview": "Magnesium malate is the daytime-optimized magnesium form, pairing the mineral with malic acid — a key intermediate in the Krebs cycle that your cells use to produce ATP. Unlike magnesium glycinate (which has a calming, sleep-oriented effect), malate supports cellular energy without the sedating component, making it better suited for morning or pre-workout use.",
+      "typicalDose": "200–400mg elemental Mg daily",
+      "bestFor": ["Daytime energy & fatigue reduction", "Athletes with high training volume", "Fibromyalgia management"],
+      "keyFacts": [
+        "Malic acid is a key Krebs cycle intermediate — this form supports cellular energy, not just relaxation",
+        "Less sedating than glycinate — better taken in the morning or pre-workout",
+        "Used in fibromyalgia research where malic acid + magnesium showed pain reduction"
+      ],
+      "commonMistakes": [
+        "Using magnesium glycinate in the morning and feeling sluggish — glycinate's calming effect is better suited for evening. Malate is the right form for daytime energy.",
+        "Confusing total compound weight with elemental magnesium content — the label's milligrams refer to the full compound, not just the active magnesium; check the elemental amount."
+      ]
+    },
+    "probiotics": {
+      "tagline": "Gut microbiome support for digestion and immunity",
+      "primaryUse": "Restore healthy gut flora balance and modulate the gut-immune axis",
+      "overview": "Your gut microbiome influences far more than digestion — it modulates immune function, mental health via the gut-brain axis, and systemic inflammation. Probiotics introduce beneficial bacteria to compete with harmful strains and support the gut lining. Multi-strain formulas outperform single-strain in most studies because different strains colonize different regions of the gut.",
+      "typicalDose": "10–50 billion CFU daily",
+      "bestFor": ["Post-antibiotic microbiome recovery", "IBS / digestive discomfort", "Immune maintenance"],
+      "keyFacts": [
+        "Lactobacillus and Bifidobacterium genera have the most clinical evidence",
+        "Multi-strain formulas show better outcomes than single-strain in most studies",
+        "Refrigerated probiotics maintain higher viability — check the expiry and storage"
+      ],
+      "commonMistakes": [
+        "Leaving refrigerated probiotics at room temperature — viability degrades quickly without cold storage; always check storage requirements and expiry date before buying.",
+        "Starting at a high CFU dose immediately — some people experience significant gas and bloating. Start at 5–10 billion CFU and increase gradually over 1–2 weeks."
+      ]
+    },
+    "vitamin-c": {
+      "tagline": "Foundational antioxidant and immune system pillar",
+      "primaryUse": "Cofactor in collagen synthesis; reduces oxidative stress and supports immune function",
+      "overview": "Vitamin C is an essential cofactor for collagen synthesis and a frontline antioxidant that neutralizes free radicals generated during exercise and illness. Your body can't store large amounts, so consistent daily intake matters more than occasional megadosing. It's also essential to pair with collagen peptides — without adequate vitamin C, collagen synthesis is incomplete regardless of dose.",
+      "typicalDose": "250–1000mg daily (split doses)",
+      "bestFor": ["Immune system baseline", "Collagen synthesis (skin, joints)", "High oxidative-stress periods (illness, intense training)"],
+      "keyFacts": [
+        "Absorption saturates at ~400mg per dose — split into 2x for better uptake",
+        "Does not prevent colds but reduces duration by ~8% in adults (14% in athletes)",
+        "Buffered forms (sodium ascorbate) are gentler on the stomach at high doses"
+      ],
+      "commonMistakes": [
+        "Megadosing in one go — absorption plateaus at ~400mg per dose; a single 1000mg dose wastes most of it in urine. Split into two smaller doses instead.",
+        "Only taking it when sick — vitamin C doesn't prevent colds but reduces duration when levels are already maintained through daily intake."
+      ]
+    },
+    "berberine": {
+      "tagline": "Plant alkaloid with significant metabolic effects",
+      "primaryUse": "Activates AMPK, improving insulin sensitivity and blood glucose regulation",
+      "overview": "Berberine is a plant alkaloid that activates AMPK — often called the \"metabolic master switch\" — leading to improved insulin sensitivity and lower blood glucose. It has a remarkably consistent track record in clinical trials, with multiple meta-analyses comparing its blood sugar effects favorably to Metformin. It's one of the most evidence-backed natural compounds for metabolic health.",
+      "typicalDose": "500mg 2–3× daily with meals",
+      "bestFor": ["Blood sugar management", "Metabolic syndrome", "PCOS-related insulin resistance"],
+      "keyFacts": [
+        "Multiple meta-analyses show blood glucose reductions comparable to Metformin",
+        "Poor bioavailability — dihydroberberine (DHB) absorbs ~5× better",
+        "Not recommended during pregnancy; may interact with CYP enzymes"
+      ],
+      "commonMistakes": [
+        "Using standard berberine and being disappointed by weak effects — its bioavailability is poor. Dihydroberberine (DHB) absorbs ~5× more efficiently.",
+        "Taking it away from meals — berberine's glucose-lowering effect is most relevant around mealtimes; take 20–30 minutes before eating for best results."
+      ]
+    },
+    "coq10": {
+      "tagline": "Mitochondrial electron carrier for cellular energy and heart health",
+      "primaryUse": "Transfers electrons in the mitochondrial electron transport chain for ATP production",
+      "overview": "CoQ10 is a fat-soluble compound that acts as an electron shuttle in your mitochondria's energy production chain. Your body synthesizes it naturally, but levels peak around age 20 and decline steadily after 40. Statins dramatically accelerate this depletion by blocking the same metabolic pathway. Ubiquinol is the active, reduced form that bypasses a conversion step that becomes less efficient with age.",
+      "typicalDose": "100–300mg ubiquinol daily with a meal",
+      "bestFor": ["Statin users (CoQ10 depleted by statins)", "Cardiovascular health support", "Age-related energy decline (drops after 40)"],
+      "keyFacts": [
+        "Ubiquinol (reduced form) absorbs up to 8× better than ubiquinone for adults over 40",
+        "Statin medications inhibit the same pathway that produces CoQ10 — supplementation is widely recommended",
+        "Body levels naturally decline with age, starting from around age 40"
+      ],
+      "commonMistakes": [
+        "Using ubiquinone (standard CoQ10) over the age of 40 — the ability to convert ubiquinone to active ubiquinol declines with age; ubiquinol absorbs directly and is worth the premium.",
+        "Taking it without food — CoQ10 is fat-soluble and absorption is dramatically reduced when taken on an empty stomach."
+      ]
+    },
+    "nac": {
+      "tagline": "Master antioxidant precursor and respiratory health cornerstone",
+      "primaryUse": "Replenishes intracellular glutathione — the body's primary endogenous antioxidant defense system",
+      "overview": "NAC is the rate-limiting precursor to glutathione — your body's most important antioxidant, present in virtually every cell. Unlike glutathione itself, NAC is absorbed efficiently and converted intracellularly on demand. It has a remarkably broad evidence base: it is a licensed pharmaceutical antidote for acetaminophen overdose, used clinically for COPD and mucus clearance, and has accumulating evidence for psychiatric conditions including OCD. Athletes use it to reduce exercise-induced oxidative stress, though timing around workouts requires nuance.",
+      "typicalDose": "600–1800mg daily",
+      "bestFor": ["Oxidative stress from intense training", "Respiratory health and mucus clearance", "Liver protection support"],
+      "keyFacts": [
+        "Licensed pharmaceutical antidote at high doses for acetaminophen (paracetamol) overdose — one of emergency medicine's most established uses",
+        "May reduce alcohol cravings — one of the more replicated findings in addiction research",
+        "Chronic use immediately around training sessions may blunt adaptation signals — some oxidative stress is required for training response"
+      ],
+      "commonMistakes": [
+        "Taking it pre- and post-workout every session — some reactive oxygen species are required for training adaptation signaling; chronic antioxidant blunting around workouts may reduce long-term gains.",
+        "Combining with nitroglycerin or other vasodilating medications — NAC potentiates vasodilation and can cause rapid blood pressure drops when paired with these drugs."
+      ]
+    },
+    "spirulina": {
+      "tagline": "Nutrient-dense algae with anti-inflammatory and iron-rich properties",
+      "primaryUse": "Dense source of complete protein, phycocyanin, iron, and B vitamins with broad antioxidant and anti-inflammatory activity",
+      "overview": "Spirulina is a blue-green algae with extraordinary nutrient density: up to 70% protein by dry weight with a complete amino acid profile, iron, B vitamins, and phycocyanin — the blue pigment that drives most of its anti-inflammatory and antioxidant effects. It is particularly relevant for plant-based athletes filling micronutrient gaps, for anyone with suboptimal iron status, and as a general anti-inflammatory stack addition. Quality and sourcing matter significantly — heavy metal contamination is a real concern with low-grade products.",
+      "typicalDose": "1–3g daily (up to 8–10g in more therapeutic protocols)",
+      "bestFor": ["Plant-based athletes needing protein and iron", "Allergy and rhinitis symptom reduction", "General micronutrient and antioxidant support"],
+      "keyFacts": [
+        "Up to 70% protein by dry weight with a complete amino acid profile — one of the most protein-dense whole foods",
+        "Phycocyanin, the blue-green pigment, is the primary anti-inflammatory active compound",
+        "Rich in iron and B vitamins — particularly valuable for vegan and vegetarian athletes"
+      ],
+      "commonMistakes": [
+        "Relying on spirulina as a meaningful protein source — the percentage is high but total grams per dose are low; you would need very large daily amounts to replace dietary protein.",
+        "Buying the cheapest available without sourcing transparency — spirulina absorbs heavy metals from contaminated water; always buy from brands that publish third-party heavy metal testing."
+      ]
+    },
+    "nmn": {
+      "tagline": "NAD+ precursor at the frontier of longevity science",
+      "primaryUse": "Converts directly to NAD+ — a coenzyme essential for energy metabolism, DNA repair, and sirtuin longevity pathway activation",
+      "overview": "NAD+ is a coenzyme that declines approximately 50% between ages 20 and 60, a decline now understood to be a central mechanism of aging — impairing mitochondrial energy production, DNA repair, and sirtuin activity. NMN converts directly to NAD+ in cells, making it one of the most efficient supplemental routes to restore levels. Human trials now show measurable NAD+ increases and improvements in muscle insulin sensitivity and arterial flexibility. The longevity narrative is somewhat ahead of the clinical evidence, but the mechanistic case is solid.",
+      "typicalDose": "250–500mg daily, morning",
+      "bestFor": ["Longevity-focused adults over 40", "Metabolic health and insulin sensitivity", "Pairing with resveratrol in longevity stacks"],
+      "keyFacts": [
+        "NAD+ declines ~50% between age 20 and 60 — NMN supplementation demonstrably raises levels in human trials",
+        "Pairs synergistically with resveratrol — NMN raises NAD+, which is the required cofactor for SIRT1 that resveratrol activates",
+        "Sublingual forms may provide better bioavailability than standard oral capsules"
+      ],
+      "commonMistakes": [
+        "Choosing NMN based on price alone — purity and stability vary dramatically between brands; prioritize products with third-party purity testing or sublingual forms with published stability data.",
+        "Expecting dramatic short-term anti-aging effects — current human data shows meaningful biochemical changes but the longevity narrative outpaces clinical evidence; it is a promising piece of a broader protocol, not a standalone solution."
+      ]
+    },
+    "quercetin": {
+      "tagline": "Flavonoid powerhouse for immunity, inflammation, and allergies",
+      "primaryUse": "Inhibits histamine release from mast cells, suppresses NF-kB inflammatory signaling, and acts as a broad-spectrum antioxidant",
+      "overview": "Quercetin is one of the most abundant dietary flavonoids — found in onions, apples, and capers — but at concentrations far too low in food to produce clinical effects. As a supplement it inhibits histamine release (making it relevant for allergies and rhinitis), suppresses the NF-kB inflammatory pathway, and has antiviral properties under active investigation. Its bioavailability is naturally low, but pairing with Vitamin C or using phytosome delivery forms substantially extends its activity.",
+      "typicalDose": "500–1000mg daily with a meal and Vitamin C",
+      "bestFor": ["Allergy and hay fever symptom reduction", "Immune resilience during high-stress periods", "Anti-inflammatory stack alongside omega-3 and curcumin"],
+      "keyFacts": [
+        "Bioavailability is low from standard quercetin — phytosome forms like Quercefit® or pairing with bromelain significantly improve absorption",
+        "Synergistic with Vitamin C — ascorbate regenerates oxidized quercetin, extending its antioxidant activity duration in the body",
+        "Strong in vitro antiviral evidence including SARS-CoV-2 entry inhibition — human trial data is still developing"
+      ],
+      "commonMistakes": [
+        "Taking standard quercetin without a bioavailability enhancer — plain quercetin has poor absorption; look for phytosome delivery (Quercefit®) or pair with bromelain to meaningfully increase what reaches circulation.",
+        "Not pairing it with Vitamin C — ascorbate regenerates quercetin after it has been oxidized, dramatically extending its active lifespan in the body and amplifying the antioxidant effect."
+      ]
+    },
+    "vitamin-b12": {
+      "tagline": "Essential vitamin for nerves, energy, and red blood cell formation",
+      "primaryUse": "Required for myelin sheath synthesis, red blood cell maturation, and methyl group donation in the one-carbon metabolic cycle",
+      "overview": "Vitamin B12 is essential for the nervous system, DNA synthesis, and energy metabolism — yet it is one of the most common deficiencies globally, affecting up to 40% of adults over 60 and virtually all long-term vegans and vegetarians. Unlike most water-soluble vitamins, B12 is stored in the liver, so deficiency can take years to develop but also years to fully resolve. Absorption requires intrinsic factor from the stomach, which declines with age and with long-term use of proton pump inhibitors and Metformin.",
+      "typicalDose": "500–1000mcg daily (sublingual for fastest absorption)",
+      "bestFor": ["Vegans and vegetarians (no dietary B12 sources)", "Adults over 50 with declining intrinsic factor", "Fatigue, brain fog, and neurological symptoms"],
+      "keyFacts": [
+        "Found exclusively in animal products — plant-based dieters will develop deficiency without supplementation; it is not optional",
+        "Methylcobalamin is the neurologically active coenzyme form — preferred over cyanocobalamin for nerve and brain applications",
+        "Very high oral doses (1000mcg+) bypass intrinsic factor via passive diffusion — useful for those with absorption disorders"
+      ],
+      "commonMistakes": [
+        "Using cyanocobalamin when nerve or cognitive symptoms are present — cyanocobalamin requires hepatic conversion to active methylcobalamin, which is less efficient; choose methylcobalamin directly for neurological applications.",
+        "Assuming fermented or fortified plant foods provide adequate B12 — amounts are unreliable and highly variable; supplementation is essential for anyone not eating animal products regularly."
+      ]
+    },
+    "resveratrol": {
+      "tagline": "Polyphenol at the heart of longevity and cardiovascular research",
+      "primaryUse": "Activates SIRT1 — a longevity-associated sirtuin enzyme — mimicking aspects of caloric restriction at the cellular level",
+      "overview": "Resveratrol is the compound that launched the modern longevity supplement movement when researchers found it activated SIRT1, a gene associated with life-extending effects of caloric restriction in animal models. Human trials have been more nuanced than animal data suggested, but consistent findings include improved endothelial function, reduced inflammatory markers, and better insulin sensitivity. It pairs directly with NMN: resveratrol activates SIRT1, which requires NAD+ (raised by NMN) as its essential cofactor.",
+      "typicalDose": "100–500mg daily with a meal",
+      "bestFor": ["Cardiovascular health and endothelial function", "Longevity stacks pairing with NMN", "Blood glucose and insulin sensitivity support"],
+      "keyFacts": [
+        "A glass of red wine contains only ~1–2mg of resveratrol — far below any therapeutic dose used in research",
+        "Trans-resveratrol is the bioactive isomer — the cis- form is biologically inactive; always confirm the label specifies trans-",
+        "SIRT1 activation by resveratrol requires NAD+ as a cofactor — this is why NMN + resveratrol is one of the most discussed longevity pairings"
+      ],
+      "commonMistakes": [
+        "Assuming red wine provides health benefits through resveratrol — a glass delivers ~1–2mg while studies use 100–500mg. Moderate wine's cardiovascular associations are attributed to other factors entirely.",
+        "Buying products that do not specify trans-resveratrol — the cis- isomer is inactive. This distinction should be explicit on the label, and many budget products omit it."
+      ]
+    },
+    "selenium": {
+      "tagline": "Essential trace mineral for thyroid conversion and antioxidant enzymes",
+      "primaryUse": "Active site of over 25 selenoproteins including glutathione peroxidase and the iodothyronine deiodinases that convert T4 to active T3",
+      "overview": "Selenium is a trace mineral with outsized biological importance: it is the active site of over 25 selenoproteins, including the glutathione peroxidase enzymes that form the body's primary cellular antioxidant defense, and the deiodinase enzymes that convert inactive thyroid hormone T4 into active T3. Low selenium directly impairs both antioxidant capacity and thyroid function. Scandinavian soils are notably selenium-poor, making supplementation particularly relevant for users in this region.",
+      "typicalDose": "100–200mcg daily",
+      "bestFor": ["Thyroid health and T4-to-T3 hormone conversion", "Immune function and antioxidant support", "Scandinavian and Northern European residents (selenium-poor soils)"],
+      "keyFacts": [
+        "Selenomethionine (organic form) absorbs significantly better than inorganic selenite or selenate — the preferred supplemental form",
+        "Scandinavian soils are notably selenium-poor — regional food cannot reliably provide adequate intake",
+        "Upper tolerable intake is 400mcg/day — toxicity (selenosis) is real; do not exceed recommended doses"
+      ],
+      "commonMistakes": [
+        "Exceeding 200mcg daily without monitoring serum selenium — selenium has one of the narrower therapeutic windows among minerals; toxicity causes hair loss, nail brittleness, and neurological symptoms.",
+        "Using inorganic forms (selenite or selenate) — selenomethionine has significantly higher bioavailability and tissue retention and is the form used in the majority of positive clinical trials."
+      ]
+    },
+    "bcaas": {
+      "tagline": "The world's best-selling amino acid supplement for muscle and recovery",
+      "primaryUse": "Stimulates muscle protein synthesis via leucine signalling and reduces exercise-induced muscle breakdown",
+      "overview": "BCAAs — leucine, isoleucine, and valine — are three of the nine essential amino acids that must come from diet. Leucine in particular acts as a direct anabolic signal, activating the mTOR pathway that initiates muscle protein synthesis. BCAAs are most valuable when training fasted, on low-protein diets, or during prolonged sessions where muscle protein breakdown otherwise rises. If total daily protein intake is already adequate (1.6–2.2g/kg), incremental BCAA supplementation adds limited benefit beyond what full-spectrum EAAs provide.",
+      "typicalDose": "5–10g intra-workout or post-workout",
+      "bestFor": ["Fasted training sessions", "Low-calorie / cutting phases", "Athletes training multiple times per day"],
+      "keyFacts": [
+        "The 2:1:1 ratio (leucine:isoleucine:valine) is the most researched — leucine drives the anabolic signal while isoleucine and valine support energy use",
+        "BCAAs cannot build complete muscle protein alone — they lack the other six essential amino acids; EAAs or whole-protein sources are more complete",
+        "Most useful when dietary protein is insufficient; redundant for those already hitting 1.6–2g/kg from food"
+      ],
+      "commonMistakes": [
+        "Using BCAAs as a substitute for adequate total protein — they contain only 3 of 9 essential amino acids and cannot trigger complete muscle protein synthesis the way whey or EAAs can.",
+        "Taking BCAAs post-workout when you already had a protein-rich meal — if leucine needs are met by food, additional BCAA supplementation adds negligible extra stimulus."
+      ]
+    },
+    "eaas": {
+      "tagline": "Complete amino acid spectrum for muscle synthesis without whole food",
+      "primaryUse": "Provides all nine essential amino acids required for complete muscle protein synthesis, including all three BCAAs",
+      "overview": "EAAs supply all nine amino acids the body cannot synthesise: histidine, isoleucine, leucine, lysine, methionine, phenylalanine, threonine, tryptophan, and valine. Unlike BCAAs, which provide only three, EAAs can support a complete round of muscle protein synthesis. They are the superior choice for fasted training, between-meal recovery windows, or for anyone who struggles to eat adequate protein. The leucine content remains the key anabolic trigger, but the full spectrum ensures no amino acid becomes a limiting factor.",
+      "typicalDose": "10–15g intra- or post-workout",
+      "bestFor": ["Fasted morning training", "Between-meal muscle maintenance", "Plant-based athletes with amino acid gaps"],
+      "keyFacts": [
+        "Contains all BCAAs — choosing EAAs over BCAAs always provides equal or greater benefit at similar cost",
+        "Particularly valuable for vegan and plant-based athletes whose individual plant proteins are often low in specific aminos like lysine or methionine",
+        "Absorbed and acted upon rapidly — peak plasma amino acid levels within 30–60 minutes of ingestion"
+      ],
+      "commonMistakes": [
+        "Choosing BCAAs over EAAs when both are similarly priced — EAAs provide the same BCAA signal plus all remaining essential amino acids, making them objectively more complete.",
+        "Treating EAAs as a replacement for whole protein sources — EAAs lack non-essential amino acids, creatine, and the micronutrient density of whole-food protein; they supplement, not replace."
+      ]
+    },
+    "electrolytes": {
+      "tagline": "Hydration minerals that prevent cramps and sustain performance",
+      "primaryUse": "Replenishes sodium, potassium, magnesium, and chloride lost through sweat to maintain fluid balance and neuromuscular function",
+      "overview": "Electrolytes — primarily sodium, potassium, magnesium, and chloride — govern fluid distribution between cells and the bloodstream. During exercise, sweat losses deplete these minerals, reducing plasma volume, impairing muscle contraction, and triggering cramping. Sodium is the dominant electrolyte in sweat and the primary driver of thirst; replacing it with fluids during long sessions maintains plasma volume far more effectively than plain water alone. The modern electrolyte supplement market has exploded because many people are chronically mildly dehydrated and perform better with deliberate replenishment.",
+      "typicalDose": "500–1000mg sodium + 200–400mg potassium per hour of exercise",
+      "bestFor": ["Endurance athletes (sessions over 60 minutes)", "Hot-weather training and competition", "Anyone prone to exercise-induced cramps"],
+      "keyFacts": [
+        "Sodium is the electrolyte lost in greatest quantity through sweat — it is the primary driver of effective rehydration, not potassium or magnesium alone",
+        "Plain water during prolonged exercise can dilute remaining electrolytes, causing hyponatraemia — a dangerous condition; electrolytes prevent this",
+        "Individual sweat rates and sodium losses vary dramatically — heavy, salty sweaters need significantly more sodium than light sweaters"
+      ],
+      "commonMistakes": [
+        "Using electrolytes with insufficient sodium — many consumer products prioritise taste and undersupply sodium, the key electrolyte. Look for at least 500–1000mg of sodium per serving for genuine rehydration during exercise.",
+        "Drinking plain water to rehydrate after heavy sweating — water alone without electrolytes can dilute plasma sodium, worsen cramping, and paradoxically prolong dehydration."
+      ]
+    },
+    "beetroot-extract": {
+      "tagline": "Natural nitrate source that expands blood vessels and boosts endurance",
+      "primaryUse": "Provides dietary nitrate which converts to nitric oxide in the body, reducing the oxygen cost of exercise and improving endurance capacity",
+      "overview": "Beetroot is the richest dietary source of inorganic nitrate. Once ingested, bacteria on the tongue convert nitrate to nitrite, which is then reduced to nitric oxide in the bloodstream. Nitric oxide dilates blood vessels, reducing the oxygen cost of submaximal exercise — meaning the same effort requires less oxygen. This translates to improved time to exhaustion, faster time-trial performance, and lower perceived effort at given intensities. It is particularly effective for endurance athletes and those doing sustained moderate-intensity work.",
+      "typicalDose": "400–600mg nitrate (≈ 500ml beetroot juice) 2–3 hours pre-exercise",
+      "bestFor": ["Endurance athletes (cycling, running, rowing)", "Moderate-intensity sustained efforts (30–70% VO2max)", "Athletes who cannot tolerate caffeine"],
+      "keyFacts": [
+        "Effect is most pronounced at moderate intensities — high-intensity work above 85% VO2max shows less consistent benefit",
+        "Concentrated shots (70ml) are more practical than 500ml beetroot juice; both deliver ~400–600mg nitrate",
+        "The oral microbiome is essential — antibacterial mouthwash used before ingestion eliminates the nitrate-to-nitrite conversion and destroys the effect"
+      ],
+      "commonMistakes": [
+        "Using antibacterial mouthwash on the same day — it kills the oral bacteria that convert nitrate to nitrite, completely eliminating the ergogenic effect. Avoid mouthwash before training when using beetroot.",
+        "Timing it too close to exercise — peak plasma nitrite levels occur 2–3 hours post-ingestion; taking it 30 minutes before provides minimal benefit."
+      ]
+    },
+    "l-carnitine": {
+      "tagline": "Fat transport molecule for energy metabolism and exercise recovery",
+      "primaryUse": "Transports long-chain fatty acids into mitochondria for beta-oxidation, supporting fat metabolism and reducing post-exercise muscle damage markers",
+      "overview": "L-Carnitine is synthesised in the liver from lysine and methionine and plays an essential role in energy metabolism — it acts as the molecular shuttle that carries long-chain fatty acids through the inner mitochondrial membrane for oxidation. L-Carnitine L-Tartrate (LCLT) is the form with the strongest exercise recovery data, reducing muscle soreness markers, improving insulin sensitivity, and increasing androgenic receptor density in muscle tissue. Unlike ALCAR (which prioritises brain effects), LCLT targets peripheral muscle and metabolic outcomes.",
+      "typicalDose": "1–3g daily, ideally with a carbohydrate-containing meal",
+      "bestFor": ["Fat loss support during caloric restriction", "Reducing post-exercise muscle soreness", "Older adults with naturally declining carnitine synthesis"],
+      "keyFacts": [
+        "Muscle uptake of supplemental carnitine requires insulin — taking it with a carb-containing meal dramatically improves tissue retention",
+        "Vegetarians and vegans have naturally lower carnitine levels as dietary sources are almost exclusively animal products",
+        "L-Carnitine L-Tartrate (LCLT) has the most robust exercise recovery data among all carnitine forms"
+      ],
+      "commonMistakes": [
+        "Taking it without carbohydrates — muscle carnitine uptake is insulin-dependent; taking it without food or on an empty stomach drastically reduces how much the muscle actually absorbs.",
+        "Expecting rapid fat loss results — carnitine improves the machinery for fat oxidation but does not force fat burning; it works best alongside a caloric deficit, not as a standalone fat burner."
+      ]
+    },
+    "gaba": {
+      "tagline": "The brain's primary inhibitory neurotransmitter in supplement form",
+      "primaryUse": "Promotes relaxation and sleep onset by reducing neuronal excitability via GABA-A receptor activity",
+      "overview": "GABA (gamma-aminobutyric acid) is the central nervous system's chief inhibitory neurotransmitter — it reduces neuronal excitability and creates the calm, relaxed state needed for sleep onset. Low GABA activity is associated with anxiety, insomnia, and stress sensitivity. Oral GABA supplementation has a nuanced pharmacology: conventional wisdom held that GABA cannot cross the blood-brain barrier, but more recent data using Pharma GABA (a fermented form) and higher doses shows measurable central effects. It is best viewed as an anxiolytic and relaxation aid rather than a direct sedative.",
+      "typicalDose": "100–500mg, 30–60 minutes before bed",
+      "bestFor": ["Anxiety-related sleep difficulty", "Stress-driven insomnia", "Reducing mental chatter before bed"],
+      "keyFacts": [
+        "PharmaGABA (naturally fermented form) appears to have superior central effects compared to synthetic GABA due to different absorption kinetics",
+        "Stacks well with L-Theanine, which also enhances GABAergic tone — the combination produces additive relaxation effects",
+        "Unlike benzodiazepines (which act on GABA-A receptors), supplemental GABA does not cause dependency or rebound insomnia"
+      ],
+      "commonMistakes": [
+        "Using synthetic GABA and expecting the same effects as pharmaceutical GABA-A agonists — supplemental GABA works via a different, gentler mechanism and is not equivalent to prescription anxiolytics.",
+        "Expecting it to work immediately for severe anxiety — GABA supplements provide mild anxiolytic effects; significant anxiety disorders require professional treatment, not just supplementation."
+      ]
+    },
+    "myo-inositol": {
+      "tagline": "Sugar alcohol with remarkable effects on sleep, anxiety, and hormonal balance",
+      "primaryUse": "Acts as a secondary messenger in serotonin and insulin signalling pathways; reduces anxiety, improves sleep quality, and supports hormonal regulation",
+      "overview": "Myo-inositol is a naturally occurring sugar alcohol found in high concentrations in the brain, where it acts as a precursor to the phosphoinositide signalling system — a key pathway for serotonin, dopamine, and insulin receptor function. Clinical research has established it as an effective treatment for anxiety disorders, PCOS, and metabolic insulin resistance. Its sleep effects appear to work through serotonin pathway modulation, reducing the mental hyperactivity that prevents sleep onset. It has become one of the fastest-growing supplements among women for its PCOS and cycle-regulating effects.",
+      "typicalDose": "2–4g before bed; 2–4g twice daily for PCOS/hormonal goals",
+      "bestFor": ["Anxiety and OCD spectrum conditions", "PCOS and hormonal cycle regulation", "Sleep onset difficulties driven by mental restlessness"],
+      "keyFacts": [
+        "One of the few supplements with multiple randomised controlled trials demonstrating efficacy for anxiety — comparable to some pharmaceutical interventions at higher doses",
+        "For PCOS, the 40:1 myo-inositol to D-chiro-inositol ratio mirrors physiological concentrations and shows superior results to either alone",
+        "Extremely safe with no significant drug interactions — unlike most anxiolytics, it is safe in pregnancy and widely recommended in fertility protocols"
+      ],
+      "commonMistakes": [
+        "Using D-chiro-inositol alone for PCOS — research consistently shows the 40:1 myo:D-chiro ratio outperforms D-chiro alone; many cheaper products contain only D-chiro-inositol.",
+        "Expecting fast results for hormonal regulation — myo-inositol's hormonal effects on menstrual regularity and PCOS markers typically take 3–6 months of consistent use to become clinically apparent."
+      ]
+    },
+    "magnesium-l-threonate": {
+      "tagline": "The only magnesium form proven to cross the blood-brain barrier",
+      "primaryUse": "Raises brain magnesium levels to support synaptic plasticity, memory consolidation, and cognitive function",
+      "overview": "Magnesium L-Threonate (MgT) was developed specifically to address a key limitation of magnesium supplementation: most forms of magnesium poorly cross the blood-brain barrier and minimally affect brain magnesium concentrations. MgT was engineered to bypass this limitation — animal studies showed it increased cerebrospinal fluid magnesium by ~15% and significantly improved memory and learning. Human data is still emerging but shows improvements in short-term memory, processing speed, and attention in older adults. It occupies a niche distinct from sleep and muscle-focused magnesium forms.",
+      "typicalDose": "1.5–2g elemental magnesium (≈ 144mg elemental) daily, split morning and evening",
+      "bestFor": ["Age-related cognitive decline prevention", "Memory and learning optimisation", "Brain-focused magnesium supplementation"],
+      "keyFacts": [
+        "The L-threonate chelate was specifically designed for blood-brain barrier penetration — not a property shared by glycinate, malate, or citrate forms",
+        "Magtein® is the patented and most studied form — generic MgT products may not replicate the same brain uptake kinetics",
+        "Works synergistically with sleep: improves sleep quality (shared with glycinate) while additionally supporting memory consolidation during slow-wave sleep"
+      ],
+      "commonMistakes": [
+        "Choosing MgT when the primary goal is sleep or muscle relaxation — glycinate or malate are better studied and more cost-effective for those goals; MgT's premium price is justified only for cognitive applications.",
+        "Judging it by acute effects — brain magnesium normalisation takes weeks of consistent supplementation before cognitive changes become noticeable; do not discontinue after a few days."
+      ]
+    },
+    "mucuna-pruriens": {
+      "tagline": "Natural L-DOPA source for dopamine, motivation, and hormonal support",
+      "primaryUse": "Provides L-DOPA, the direct precursor to dopamine, supporting motivation, mood, and testosterone via prolactin reduction",
+      "overview": "Mucuna pruriens (velvet bean) contains naturally high concentrations of L-DOPA — the direct amino acid precursor to dopamine. Unlike dopamine itself, L-DOPA crosses the blood-brain barrier, where it is converted to dopamine in dopaminergic neurons. This makes Mucuna a genuinely nootropic compound: it can raise dopamine tone, improving motivation, drive, focus, and mood. It also suppresses prolactin, which indirectly supports testosterone. In Ayurvedic medicine it has been used for thousands of years for neurological and reproductive health.",
+      "typicalDose": "300–500mg of standardised extract (15–40% L-DOPA) daily",
+      "bestFor": ["Motivation and drive deficits", "Post-exercise dopamine recovery", "Testosterone support through prolactin reduction"],
+      "keyFacts": [
+        "Standardisation matters critically — a 15% L-DOPA extract is very different from a 40% extract; always check the standardisation on the label",
+        "Synergistic with carbidopa (found in pharmaceutical formulations) — some practitioners combine it with green tea catechins that mildly inhibit dopamine breakdown",
+        "Not recommended for daily long-term use without breaks — chronic L-DOPA exposure can downregulate dopamine receptors; cycling is advisable"
+      ],
+      "commonMistakes": [
+        "Using non-standardised whole-seed powder — L-DOPA content varies enormously between batches; standardised extracts are essential for consistent and predictable dosing.",
+        "Taking it continuously without cycling — sustained L-DOPA exposure risks receptor downregulation and dependency; cycle with 5 days on, 2 days off or use a monthly break."
+      ]
+    },
+    "glucosamine": {
+      "tagline": "The world's most used joint supplement for cartilage maintenance",
+      "primaryUse": "Provides a precursor for glycosaminoglycan synthesis in cartilage, supporting joint structure and reducing osteoarthritis pain",
+      "overview": "Glucosamine is a naturally occurring amino sugar that is a primary building block of cartilage — specifically glycosaminoglycans, the structural proteins that give cartilage its shock-absorbing properties. As cartilage has no blood supply, it depends on diffusion from synovial fluid for nutrients; glucosamine supplementation boosts the available substrate for cartilage maintenance and repair. The largest clinical trials (GAIT, LEGS) show moderate pain reduction in knee osteoarthritis, particularly with glucosamine sulfate over the HCl form. Benefits accumulate over months, not days.",
+      "typicalDose": "1500mg glucosamine sulfate daily",
+      "bestFor": ["Knee osteoarthritis and joint pain", "Athletes with high joint load (running, weightlifting)", "Joint maintenance over 40"],
+      "keyFacts": [
+        "Glucosamine sulfate shows stronger clinical evidence than glucosamine HCl — the sulfate form appears superior; many cheaper products use HCl",
+        "The GAIT trial showed glucosamine alone was superior to placebo in the moderate-to-severe osteoarthritis subgroup — the most clinically relevant finding",
+        "Often paired with chondroitin — the combination has additive effects on cartilage hydration and may slow structural joint progression"
+      ],
+      "commonMistakes": [
+        "Using glucosamine HCl instead of glucosamine sulfate — the sulfate form has materially better clinical trial outcomes; verify the form before purchasing.",
+        "Stopping after 2–4 weeks due to no effect — cartilage turnover is slow; benefits of glucosamine typically require 8–12 weeks of consistent use to become apparent."
+      ]
+    },
+    "chondroitin": {
+      "tagline": "Structural cartilage molecule that retains water and resists compression",
+      "primaryUse": "Maintains cartilage hydration and structural integrity by providing sulfated glycosaminoglycans and inhibiting degradative enzymes",
+      "overview": "Chondroitin sulfate is a major structural component of cartilage, responsible for its ability to attract and retain water — giving cartilage its gel-like shock-absorbing properties. As a supplement, it provides raw material for cartilage repair and may inhibit the matrix metalloproteinases (MMPs) that degrade cartilage in osteoarthritis. Clinical data shows moderate but real benefits for knee pain and joint function, with the strongest evidence emerging from the MOVES trial and several European studies. It is most consistently effective when combined with glucosamine.",
+      "typicalDose": "800–1200mg daily",
+      "bestFor": ["Knee and hip osteoarthritis", "Athletes maintaining high joint load", "Long-term joint health stacking with glucosamine"],
+      "keyFacts": [
+        "Molecular weight matters — high molecular weight chondroitin (>15,000 Da) shows better outcomes in trials; ultra-low MW forms may be less effective",
+        "The MOVES trial showed chondroitin plus glucosamine was non-inferior to celecoxib (a prescription NSAID) for knee osteoarthritis pain over 6 months",
+        "Takes 3–6 months for meaningful effects — cartilage remodelling is a slow process; patience is essential"
+      ],
+      "commonMistakes": [
+        "Expecting rapid pain relief like NSAIDs — chondroitin works structurally over months; it is not an analgesic and should not be used as a substitute for acute pain management.",
+        "Buying from unverified manufacturers — chondroitin is one of the most adulterated supplements; independent third-party testing is critical as label claims frequently do not match actual content."
+      ]
+    },
+    "hyaluronic-acid": {
+      "tagline": "Joint and skin hydration from the inside out",
+      "primaryUse": "Provides hyaluronate to synovial fluid and skin dermis, improving joint lubrication, cushioning, and skin moisture retention",
+      "overview": "Hyaluronic acid (HA) is a high-molecular-weight polysaccharide naturally abundant in synovial joint fluid, skin, and connective tissue. In joints, it acts as a lubricant and shock absorber; in skin, it is the primary molecule responsible for moisture retention and structural volume. Oral HA supplementation — once thought ineffective due to molecular size — is now supported by evidence showing that intestinal bacteria and digestive enzymes cleave HA into absorbable fragments that are then distributed to target tissues. Clinical trials show reductions in knee pain and measurable improvements in skin hydration.",
+      "typicalDose": "80–200mg daily",
+      "bestFor": ["Joint pain and stiffness, particularly knee discomfort", "Skin hydration and anti-ageing", "Stacking with glucosamine and collagen"],
+      "keyFacts": [
+        "Low-molecular-weight HA (< 300 kDa) is better absorbed orally than high-MW forms — check product specifications",
+        "Native type II collagen combined with HA shows additive joint effects in clinical data — a promising combination stack",
+        "In skin, clinical trials show measurable increases in skin moisture and reductions in fine lines after 4–8 weeks of oral supplementation"
+      ],
+      "commonMistakes": [
+        "Expecting the same effect from topical HA as from oral HA — topical HA primarily sits on the skin surface and provides surface hydration; oral HA reaches deeper dermal layers and synovial fluid.",
+        "Using high-molecular-weight HA products for oral use — large HA molecules are poorly absorbed; low-MW or enzymatically degraded forms are needed for effective oral bioavailability."
+      ]
+    },
+    "iron": {
+      "tagline": "Essential mineral for oxygen transport, energy, and immune defence",
+      "primaryUse": "Core component of haemoglobin and myoglobin; required for oxygen transport and mitochondrial energy production",
+      "overview": "Iron deficiency is the single most common nutritional deficiency worldwide, affecting roughly 25% of the global population. Iron is the functional centre of haemoglobin — without adequate iron, red blood cells cannot carry sufficient oxygen, producing the fatigue, shortness of breath, and cognitive impairment characteristic of anaemia. Iron bisglycinate (also called iron glycinate or Ferrochel) is the best-tolerated and most bioavailable supplemental form, causing far less constipation and GI irritation than cheaper ferrous sulfate. Women of reproductive age, athletes, and plant-based eaters are at highest risk.",
+      "typicalDose": "18–45mg elemental iron daily (therapeutic: 100–200mg under medical supervision)",
+      "bestFor": ["Women of reproductive age (menstrual losses)", "Endurance athletes (foot-strike haemolysis and sweat losses)", "Vegans and vegetarians (non-haem iron is less bioavailable)"],
+      "keyFacts": [
+        "Iron bisglycinate has 2–4× greater absorption than ferrous sulfate and causes significantly fewer GI side effects — worth the higher cost",
+        "Vitamin C dramatically enhances non-haem iron absorption — always take with citrus juice or a Vitamin C supplement",
+        "Never supplement iron without confirming deficiency via blood test — iron overload (haemochromatosis) is dangerous and symptoms can resemble deficiency"
+      ],
+      "commonMistakes": [
+        "Self-supplementing without a blood test — iron overload is as dangerous as deficiency. Always confirm serum ferritin and transferrin saturation before starting iron supplementation.",
+        "Taking iron with calcium, coffee, or tea — calcium competes with iron for absorption; tannins in tea and coffee inhibit non-haem iron uptake by up to 60%. Take iron away from these."
+      ]
+    },
+    "folate": {
+      "tagline": "Essential B vitamin for DNA synthesis, cell division, and neural development",
+      "primaryUse": "Acts as a methyl group carrier in one-carbon metabolism, essential for DNA synthesis, red blood cell formation, and homocysteine regulation",
+      "overview": "Folate (Vitamin B9) is one of the most critical nutrients in human biology — it is essential for DNA synthesis, cell division, and the methylation reactions that regulate gene expression. Its importance during early pregnancy for preventing neural tube defects (spina bifida) is so well established that fortification of flour is mandated in over 80 countries. As a supplement, the active form L-methylfolate (5-MTHF) bypasses the MTHFR enzyme step that up to 40% of people have reduced activity in — making it far superior to folic acid for those with this common genetic variant.",
+      "typicalDose": "400–800mcg daily (800mcg–1mg for pregnancy or MTHFR variants)",
+      "bestFor": ["Pregnancy and pre-conception (neural tube defect prevention)", "Individuals with MTHFR gene variants", "Elevated homocysteine management"],
+      "keyFacts": [
+        "Up to 40% of people have MTHFR variants that reduce conversion of folic acid to the active form — L-methylfolate (5-MTHF) bypasses this step entirely",
+        "The neural tube closes within 28 days of conception — supplementation must begin before pregnancy is confirmed, not after",
+        "Works synergistically with B12 — both are required for the homocysteine-to-methionine conversion; deficiency in either raises cardiovascular risk"
+      ],
+      "commonMistakes": [
+        "Using folic acid instead of methylfolate if you have an MTHFR variant — folic acid requires enzymatic conversion that MTHFR-variant individuals do poorly; unmetabolised folic acid can accumulate and may have adverse effects.",
+        "Starting folate only after a positive pregnancy test — the neural tube closes in the first 28 days, often before pregnancy is known; women planning pregnancy should begin supplementing at least 1–3 months before conception."
+      ]
+    },
+    "biotin": {
+      "tagline": "The B vitamin behind healthy hair, skin, nails, and metabolism",
+      "primaryUse": "Essential cofactor for five carboxylase enzymes involved in fatty acid synthesis, amino acid catabolism, and gluconeogenesis",
+      "overview": "Biotin (Vitamin B7) is a water-soluble B vitamin that serves as the essential cofactor for five carboxylase enzymes critical to macronutrient metabolism. Clinical biotin deficiency is rare but produces unmistakable symptoms: hair thinning, brittle nails, and scaly skin rash. The supplement market around biotin — often at megadoses of 1000–10,000mcg — was built on its established role in hair and nail keratin synthesis. While megadose biotin is unlikely to benefit people without deficiency, those with subtly low biotin (frequent raw egg consumption, alcoholism, certain medications) show real improvements in hair and nail quality.",
+      "typicalDose": "30–100mcg daily (adequate intake); 1000–5000mcg for hair/nail goals",
+      "bestFor": ["Hair thinning associated with biotin deficiency", "Brittle nails", "Individuals consuming raw eggs regularly (avidin blocks biotin absorption)"],
+      "keyFacts": [
+        "Raw egg whites contain avidin — a protein that binds biotin and prevents its absorption; regular raw egg consumption is a genuine cause of biotin deficiency",
+        "High-dose biotin (≥ 5mg) interferes with thyroid and troponin lab tests — stop supplementation 3–7 days before blood tests to avoid false readings",
+        "True biotin deficiency is rare in healthy adults eating cooked food; megadose supplementation likely only benefits those with genuine deficiency"
+      ],
+      "commonMistakes": [
+        "Not disclosing biotin supplementation before blood tests — high-dose biotin causes false thyroid (TSH, T4) and cardiac (troponin) results, which can lead to serious diagnostic errors. Stop 3–7 days before testing.",
+        "Expecting megadose biotin to grow hair significantly beyond baseline in non-deficient individuals — the popular belief that 5000–10,000mcg promotes hair growth in everyone is not supported by evidence; the benefit is specific to deficiency correction."
+      ]
+    },
+    "milk-thistle": {
+      "tagline": "The world's most studied herb for liver protection and detoxification",
+      "primaryUse": "Silymarin flavonoids stabilise hepatocyte membranes and act as powerful antioxidants, protecting liver cells from toxin-induced damage",
+      "overview": "Milk thistle (Silybum marianum) contains a group of flavonoid compounds collectively called silymarin, with silybin being the most biologically active. Silymarin exerts hepatoprotective effects through multiple mechanisms: stabilising liver cell membranes against toxin permeation, acting as a potent antioxidant that scavenges free radicals in hepatocytes, stimulating RNA polymerase I to accelerate liver cell regeneration, and reducing fibrotic activity in chronic liver disease. It has the longest evidence base of any hepatoprotective herb and is recommended by liver specialists in several European countries for alcoholic liver disease and non-alcoholic fatty liver disease.",
+      "typicalDose": "140mg silymarin (standardised to 70–80%) two to three times daily",
+      "bestFor": ["Liver support during alcohol consumption or medication use", "Non-alcoholic fatty liver disease (NAFLD)", "Post-cycle therapy stacks for performance-drug users"],
+      "keyFacts": [
+        "Standardisation is critical — products should state silymarin content (70–80% standardised extract), not just milk thistle seed powder which has variable and low silymarin content",
+        "Phytosome forms (Siliphos®) have 4–10× greater bioavailability than standard silymarin due to enhanced absorption",
+        "Protective effect has been shown against Amanita phalloides (death cap mushroom) toxicity — the pharmacological basis is well established, not anecdotal"
+      ],
+      "commonMistakes": [
+        "Buying non-standardised milk thistle seed powder — silymarin content in raw powder varies enormously and is typically very low; always choose products standardised to 70–80% silymarin.",
+        "Expecting it to undo liver damage from alcohol consumed immediately before — milk thistle works prophylactically and through chronic supplementation, not as a same-day recovery agent."
+      ]
+    },
+    "elderberry": {
+      "tagline": "Clinically validated berry extract for faster cold and flu recovery",
+      "primaryUse": "Flavonoid compounds in elderberry inhibit viral entry and replication while modulating immune cytokine production",
+      "overview": "Black elderberry (Sambucus nigra) is one of the few herbal remedies with genuine randomised controlled trial data for its primary indication — reducing the severity and duration of upper respiratory infections. Elderberry's anthocyanins have been shown in vitro and in clinical trials to inhibit viral haemagglutinin proteins, blocking viral attachment to host cells, and to stimulate cytokine production that coordinates immune response. Meta-analyses consistently show reductions in cold duration of 1–2 days when supplementation begins at symptom onset.",
+      "typicalDose": "600–900mg elderberry extract daily at symptom onset; 150–300mg for prevention",
+      "bestFor": ["Reducing cold and flu duration when taken at first symptoms", "Winter immune support", "Frequent travellers and those in high-exposure environments"],
+      "keyFacts": [
+        "Most effective when started at the first sign of symptoms — prophylactic use shows smaller benefits than early therapeutic use",
+        "Raw elderberries are toxic (contain cyanogenic glycosides) — only use processed extracts, syrups, or supplements, never raw berries",
+        "Quality standardisation matters — look for products standardised to anthocyanin content; many elderberry gummies contain negligible active compounds"
+      ],
+      "commonMistakes": [
+        "Consuming raw elderberries or unprocessed elderberry products — raw elderberries and leaves contain sambunigrin (a cyanogenic glycoside) that causes nausea and vomiting; only use heat-processed extracts.",
+        "Taking elderberry syrup products with high sugar content — many commercial syrups contain more sugar than elderberry; this may blunt immune benefit and is counterproductive for those managing blood sugar."
+      ]
+    },
+    "tongkat-ali": {
+      "tagline": "Southeast Asian adaptogen for testosterone, energy, and stress resilience",
+      "primaryUse": "Reduces cortisol and supports the hypothalamic-pituitary-gonadal (HPG) axis, leading to improved testosterone levels in stressed or sub-optimal conditions",
+      "overview": "Tongkat Ali (Eurycoma longifolia) has been used for centuries in Malaysian and Indonesian traditional medicine as a tonic for male vitality and energy. Modern research has focused on its ability to reduce sex hormone binding globulin (SHBG) and lower cortisol — both of which increase free testosterone. The standardised extract LJ100® (200:1 root extract) has the strongest clinical backing, with multiple trials showing significant testosterone increases in men with late-onset hypogonadism, chronic stress, and physically demanding training. Its effects are most pronounced in those with below-optimal testosterone, rather than those already at the high end of normal.",
+      "typicalDose": "200–400mg standardised extract (LJ100® or equivalent) daily",
+      "bestFor": ["Men with stress-related testosterone suppression", "Male athletes in heavy training blocks (overtraining)", "Age-related testosterone decline (40+)"],
+      "keyFacts": [
+        "LJ100® is the most clinically validated extract — it is a 200:1 water extract standardised to glycosaponins, eurypeptides, and polysaccharides; generic tongkat ali root powder is not equivalent",
+        "Effects are cortisol-dependent — it works best in stressed individuals; already low-cortisol individuals see smaller testosterone shifts",
+        "Also used in female protocols for libido and energy — not exclusive to men, though most data is in male populations"
+      ],
+      "commonMistakes": [
+        "Using unverified bulk powder instead of standardised extract — the ratio of tongkat ali root extract (100:1, 200:1) dramatically affects active compound concentration; cheap powders may contain negligible eurypeptides.",
+        "Expecting rapid testosterone shifts within days — meaningful hormonal changes from tongkat ali require 4–8 weeks of consistent supplementation to become statistically and physiologically significant."
+      ]
+    },
+    "maca-root": {
+      "tagline": "Andean adaptogen for energy, libido, and hormonal balance",
+      "primaryUse": "Non-hormonal adaptogen that modulates hypothalamic function to support libido, fertility, energy, and endocrine balance",
+      "overview": "Maca (Lepidium meyenii) is a cruciferous root vegetable grown at high altitudes in the Peruvian Andes that has been used as food and medicine for over 2000 years. Unlike many libido supplements, maca does not directly alter sex hormone levels — it appears to work through the hypothalamus, modulating the endocrine system upstream. Clinical trials show consistent improvements in sexual desire in men and women, improved sperm quality in men, and reductions in menopausal symptoms (hot flushes, mood changes) in women. Black maca has the strongest evidence for fertility and cognition, while red maca is better studied for prostate health.",
+      "typicalDose": "1.5–3g of gelatinised maca powder daily",
+      "bestFor": ["Libido and sexual function (men and women)", "Menopausal symptom relief (hot flushes, mood)", "Sustained energy without stimulants"],
+      "keyFacts": [
+        "Gelatinised (cooked/pre-gelatinised) maca has improved digestibility and starch removal — raw maca can cause GI discomfort and has less bioavailable macamides",
+        "Colour matters clinically — black maca: best for cognition and male fertility; red maca: best for prostate health and female hormonal balance; yellow: general purpose",
+        "Does not raise oestrogen or testosterone directly — safe for oestrogen-sensitive conditions unlike many libido supplements"
+      ],
+      "commonMistakes": [
+        "Using raw maca powder instead of gelatinised — raw maca contains high starch content that can cause GI distress, and its macamide content is less bioavailable; gelatinised (heat-processed) maca is the preferred supplemental form.",
+        "Expecting immediate libido effects — maca's adaptogenic action builds over weeks; studies showing libido improvements typically run for 6–12 weeks before meaningful effects emerge."
+      ]
+    },
+    "vitamin-a": {
+      "tagline": "Essential fat-soluble vitamin for vision, immunity, and cellular growth",
+      "primaryUse": "Required for rhodopsin synthesis in photoreceptors, immune cell differentiation, and regulation of gene expression via retinoic acid receptors",
+      "overview": "Vitamin A encompasses two distinct forms: preformed retinol (from animal foods) and provitamin A carotenoids like beta-carotene (from plant foods). Retinol is biologically active immediately; beta-carotene must be converted to retinol in the intestinal wall — a process that is genetically variable and inefficient in some individuals. Vitamin A is essential for low-light vision (rhodopsin), immune T-cell development, skin and mucosal barrier integrity, and reproductive function. Deficiency causes night blindness and severe immune impairment. Supplemental vitamin A requires care as it is one of the fat-soluble vitamins that accumulates and can reach toxic levels.",
+      "typicalDose": "700–900mcg RAE (2300–3000 IU) daily; do not exceed 3000mcg RAE (10,000 IU) from retinol",
+      "bestFor": ["Deficiency correction (common in developing regions)", "Immune support, particularly mucosal immunity", "Night vision and eye health maintenance"],
+      "keyFacts": [
+        "Beta-carotene (plant-sourced) is not toxic at high doses — only preformed retinol (animal-sourced/supplements) accumulates and can cause toxicity",
+        "Up to 45% of people are poor converters of beta-carotene to retinol due to BCMO1 gene variants — these individuals must get preformed retinol from diet or supplements",
+        "Vitamin A and Vitamin D work synergistically — Vitamin D receptors require retinoic acid for optimal expression; they compete at high doses and should be balanced"
+      ],
+      "commonMistakes": [
+        "Taking high-dose preformed retinol supplements when dietary intake is already adequate — preformed vitamin A accumulates in the liver and is the most common cause of fat-soluble vitamin toxicity; beta-carotene is far safer for supplementation.",
+        "Assuming plant-based diets provide adequate vitamin A via beta-carotene — poor converters (a common genetic variant) can have very low retinol status despite high beta-carotene intake; checking retinol blood levels is advisable for vegans."
+      ]
+    },
+    "vitamin-e": {
+      "tagline": "Fat-soluble antioxidant that protects cell membranes and supports immune function",
+      "primaryUse": "Acts as a chain-breaking antioxidant in lipid membranes, preventing oxidative cascade damage to polyunsaturated fatty acids",
+      "overview": "Vitamin E is a family of eight related compounds — four tocopherols and four tocotrienols — with alpha-tocopherol being the most biologically active and the form that the human body preferentially maintains. Its primary function is to protect cell membranes and circulating lipoproteins from oxidative damage by intercepting free radical chain reactions in lipid bilayers. It also plays roles in immune signalling and platelet aggregation inhibition. The caveat: high-dose supplemental vitamin E (above 400 IU/day) has shown adverse effects in some large trials, including increased mortality risk — reinforcing that whole-food tocopherols and modest supplementation are preferable to megadoses.",
+      "typicalDose": "15mg (22 IU natural, 33 IU synthetic) daily; do not exceed 1000mg (1500 IU)",
+      "bestFor": ["Antioxidant support for high-oxidative-stress lifestyles", "Cardiovascular protection in combination with other antioxidants", "Skin and mucosal membrane health"],
+      "keyFacts": [
+        "Natural d-alpha-tocopherol is significantly more bioavailable than synthetic dl-alpha-tocopherol — look for the 'd-' prefix, not 'dl-'",
+        "Full-spectrum tocopherol (mixed tocopherols including gamma-tocopherol) is more physiologically relevant than isolated alpha-tocopherol alone; high-dose alpha-T displaces gamma-T",
+        "Vitamin E and K2 interact — high vitamin E can antagonise vitamin K-dependent clotting factors; those on anticoagulants should seek medical guidance"
+      ],
+      "commonMistakes": [
+        "Using high-dose isolated alpha-tocopherol (400+ IU) — large RCTs including HOPE-TOO show increased adverse outcomes at high doses. Whole-food or mixed tocopherol sources at physiological doses are safer.",
+        "Buying synthetic dl-alpha-tocopherol products — synthetic vitamin E has roughly 50% the biological activity of natural d-alpha-tocopherol for the same stated IU dose; natural forms are materially superior."
+      ]
+    },
+    "astaxanthin": {
+      "tagline": "The most potent antioxidant carotenoid in nature",
+      "primaryUse": "Crosses cell membranes to quench singlet oxygen and neutralise free radicals throughout the entire lipid bilayer — inside and outside simultaneously",
+      "overview": "Astaxanthin is a xanthophyll carotenoid that gives salmon, flamingos, and shrimp their pink-red colour. What makes it remarkable is its molecular structure: it spans the entire width of cell membranes and can quench free radicals on both the interior and exterior simultaneously — a property no other antioxidant carotenoid possesses. Animal studies consistently demonstrate extraordinary antioxidant potency. Human trials show benefits for exercise recovery (reduced oxidative stress and inflammation), skin photoprotection and elasticity, eye health, and cardiovascular markers. Bioavailability is poor without fat — always take with a meal containing fat.",
+      "typicalDose": "6–12mg daily with a fat-containing meal",
+      "bestFor": ["Exercise recovery and reduced muscle damage from oxidative stress", "Skin health and UV protection from within", "Eye strain and retinal protection"],
+      "keyFacts": [
+        "Natural astaxanthin from Haematococcus pluvialis algae is considered superior to synthetic astaxanthin, which consists of different isomers with lower biological activity",
+        "Fat-soluble and requires dietary fat for absorption — take with a meal; taking it fasted dramatically reduces blood levels",
+        "Among carotenoids, it cannot be converted to vitamin A — this means no risk of vitamin A toxicity, even at higher doses"
+      ],
+      "commonMistakes": [
+        "Taking it on an empty stomach — astaxanthin is highly fat-soluble and poorly absorbed without dietary fat; always take it with a meal containing fat to achieve meaningful plasma levels.",
+        "Buying synthetic astaxanthin to save cost — synthetic astaxanthin contains racemic isomers not found in natural sources, which have lower antioxidant activity; natural algae-derived astaxanthin is the research-validated form."
+      ]
+    },
+    "iodine": {
+      "tagline": "Essential trace mineral that is the backbone of thyroid hormone production",
+      "primaryUse": "Required for biosynthesis of the thyroid hormones T3 and T4, which regulate metabolism, energy production, and development",
+      "overview": "Iodine is incorporated directly into thyroid hormones — thyroxine (T4) and triiodothyronine (T3) — making it the only mineral with a structural rather than cofactor role in hormone synthesis. Iodine deficiency is the leading preventable cause of intellectual disability globally and produces goitre, hypothyroidism, and severe developmental impairment in foetuses when deficient in pregnant women. Despite iodised salt programmes, deficiency has re-emerged in many populations following dietary shifts away from iodised salt and dairy, increased use of non-iodised sea salt, and vegan diets (limited seafood and dairy). Supplemental iodine must be dosed carefully — excess can also disrupt thyroid function.",
+      "typicalDose": "150mcg daily (RDA); 220mcg during pregnancy; do not routinely exceed 1100mcg",
+      "bestFor": ["Vegan and plant-based eaters avoiding seaweed and dairy", "Pregnant and breastfeeding women", "Those using non-iodised salt exclusively"],
+      "keyFacts": [
+        "Seaweed is rich in iodine but concentration varies dramatically by species and harvest region — kelp supplements can deliver unpredictably high doses and are not reliable for precise dosing",
+        "Selenium and iodine work together — selenium deficiency impairs iodine utilisation; ensure selenium is adequate alongside iodine supplementation",
+        "Excess iodine (Wolff-Chaikoff effect) can paradoxically suppress thyroid function — stay within established safe upper limits"
+      ],
+      "commonMistakes": [
+        "Using kelp as an iodine supplement — kelp iodine content varies from trace amounts to dangerously high concentrations between batches; potassium iodide tablets provide precise and predictable dosing.",
+        "Supplementing iodine without adequate selenium — selenium is required for iodine metabolism (as selenodeiodinase enzymes); iodine without selenium in deficiency states can worsen thyroid dysfunction."
+      ]
+    },
+    "chromium": {
+      "tagline": "Trace mineral that enhances insulin sensitivity and glucose metabolism",
+      "primaryUse": "Potentiates insulin receptor signalling, improving glucose uptake and reducing blood sugar fluctuations after meals",
+      "overview": "Chromium is an essential trace mineral that enhances the activity of insulin — the key hormone that shuttles glucose into cells. Its proposed mechanism involves chromodulin, a chromium-binding oligopeptide that amplifies insulin receptor tyrosine kinase activity. Clinical evidence for chromium picolinate (the best-absorbed supplemental form) shows modest but real reductions in fasting blood glucose and HbA1c in people with type 2 diabetes and insulin resistance. Effects in healthy, insulin-sensitive individuals are much smaller and inconsistent. It is most relevant for those with blood sugar regulation challenges.",
+      "typicalDose": "200–1000mcg chromium picolinate daily with meals",
+      "bestFor": ["Insulin resistance and pre-diabetes management", "Reducing post-meal blood sugar spikes", "Carbohydrate cravings and blood sugar control on hypocaloric diets"],
+      "keyFacts": [
+        "Chromium picolinate is substantially better absorbed than chromium chloride or chromium polynicotinate — always check the form",
+        "The evidence base is strongest for type 2 diabetics and those with impaired glucose tolerance; healthy individuals with normal insulin sensitivity see minimal benefit",
+        "Processed foods deplete dietary chromium — refined sugar consumption increases urinary chromium losses, creating a vicious cycle for blood sugar regulation"
+      ],
+      "commonMistakes": [
+        "Using chromium chloride instead of chromium picolinate — chloride is very poorly absorbed; picolinate is the form used in the vast majority of positive clinical trials.",
+        "Expecting chromium to substitute for dietary change — chromium improves insulin signal quality but cannot compensate for chronically high sugar or refined carbohydrate intake; it works best as an adjunct to a lower-glycaemic diet."
+      ]
+    },
+    "saw-palmetto": {
+      "tagline": "Plant extract for prostate health and DHT management",
+      "primaryUse": "Inhibits 5-alpha reductase, reducing conversion of testosterone to DHT, to support prostate health and manage androgenic hair loss",
+      "overview": "Saw palmetto (Serenoa repens) is derived from the berries of a native North American palm. Its primary biological mechanism is inhibition of 5-alpha reductase — the enzyme that converts testosterone to the more potent androgen dihydrotestosterone (DHT). DHT is the primary driver of both benign prostatic hyperplasia (BPH) and androgenic alopecia. Clinical trials for BPH symptoms show saw palmetto reduces urinary frequency and improves urinary flow comparably to tamsulosin (an alpha-blocker drug) in mild-to-moderate BPH. Evidence for hair loss is more modest but emerging.",
+      "typicalDose": "320mg of standardised liposterolic extract daily",
+      "bestFor": ["Benign prostatic hyperplasia (BPH) symptom relief", "DHT-related hair loss prevention", "Prostate health maintenance in men over 45"],
+      "keyFacts": [
+        "The liposterolic extract (fat-soluble, typically hexane-extracted) is the form with clinical evidence; water extracts and powders lack the active fatty acid and phytosterol content",
+        "Takes 4–8 weeks minimum for BPH symptom improvements — do not assess effectiveness before 2–3 months of consistent use",
+        "Does not lower PSA (prostate-specific antigen) the way finasteride does — important for prostate cancer screening, as PSA levels remain informative under saw palmetto"
+      ],
+      "commonMistakes": [
+        "Using non-standardised saw palmetto berry powder — the whole berry powder lacks the concentrated fatty acid content of liposterolic extract; look specifically for products standardised to 85–95% fatty acids.",
+        "Expecting it to fully reverse established hair loss — saw palmetto may slow DHT-mediated hair loss and is most effective as a preventive measure; established alopecia requires more aggressive intervention alongside it."
+      ]
+    },
+    "lutein-zeaxanthin": {
+      "tagline": "Macular pigments that protect eyes from blue light and age-related degeneration",
+      "primaryUse": "Concentrated in the macula and lens, these carotenoids filter high-energy blue light and quench singlet oxygen to protect photoreceptors",
+      "overview": "Lutein and zeaxanthin are the only dietary carotenoids selectively concentrated in the macula — the central region of the retina responsible for high-acuity vision. They form the macular pigment, which functions as a natural blue-light filter and antioxidant shield for photoreceptors. The landmark AREDS2 trial established lutein + zeaxanthin supplementation as a standard of care for reducing progression of intermediate age-related macular degeneration (AMD) to advanced AMD by ~25%. Emerging evidence also supports benefits for visual performance in high screen-time environments, reducing glare sensitivity and improving contrast sensitivity.",
+      "typicalDose": "10mg lutein + 2mg zeaxanthin daily",
+      "bestFor": ["Age-related macular degeneration (AMD) prevention and progression reduction", "High screen-time users and digital eye strain", "Those with a family history of AMD or macular disease"],
+      "keyFacts": [
+        "The AREDS2 trial — the largest and most rigorous eye supplement trial ever conducted — replaced beta-carotene with lutein/zeaxanthin in the formula due to superior safety and efficacy",
+        "The 5:1 lutein-to-zeaxanthin ratio mirrors the natural macular pigment composition — products deviating significantly from this ratio are less physiologically optimised",
+        "Dark green vegetables (kale, spinach, collards) are the richest food sources, but dietary amounts rarely reach the 10mg lutein threshold used in the AREDS2 trial"
+      ],
+      "commonMistakes": [
+        "Taking beta-carotene supplements simultaneously — high-dose beta-carotene competes with lutein and zeaxanthin for intestinal absorption and was removed from the updated AREDS2 formula for this reason; avoid combining them.",
+        "Using products with very low zeaxanthin content — many cheap lutein supplements contain only trace zeaxanthin despite its distinct and important role in the central macula; look for at least 2mg zeaxanthin alongside 10mg lutein."
+      ]
+    }
+  },
+  "healthProfileOptions": {
+    "goals": {
+      "buildMuscle": "Build muscle",
+      "loseFat": "Lose fat",
+      "improveEnergy": "Improve energy",
+      "betterSleep": "Better sleep",
+      "immuneSupport": "Immune support",
+      "athleticPerformance": "Athletic performance",
+      "cognitiveFocus": "Cognitive focus",
+      "generalHealth": "General health"
+    },
+    "diet": {
+      "standard": "Standard",
+      "vegetarian": "Vegetarian",
+      "vegan": "Vegan",
+      "keto": "Keto",
+      "paleo": "Paleo",
+      "glutenFree": "Gluten-free",
+      "dairyFree": "Dairy-free"
+    }
+  },
+  "profileSetup": {
+    "buttonSetup": "Set up profile",
+    "buttonEdit": "Edit profile",
+    "ctaTitle": "Personalise your recommendations",
+    "ctaSubtitle": "Answer 5 quick questions to get supplement recommendations tailored to you.",
+    "summaryTitle": "Your health profile",
+    "optional": "optional",
+    "continue": "Continue",
+    "skip": "Skip",
+    "saving": "Saving…",
+    "done": "Save profile",
+    "ageQuestion": "How old are you?",
+    "ageSubtitle": "Helps tailor dosage recommendations.",
+    "ageUnder25": "Under 25",
+    "age2534": "25–34",
+    "age3544": "35–44",
+    "age4554": "45–54",
+    "age55plus": "55+",
+    "goalQuestion": "What's your main goal?",
+    "goalSubtitle": "We'll prioritise supplements that support this.",
+    "dietQuestion": "Any dietary preferences?",
+    "dietSubtitle": "Select all that apply.",
+    "trainingQuestion": "How active are you?",
+    "trainingSubtitle": "Affects which performance supplements make sense.",
+    "trainingSedentary": "Sedentary",
+    "trainingSedentaryDesc": "Little to no exercise",
+    "trainingLightly": "Lightly active",
+    "trainingLightlyDesc": "1–3× per week",
+    "trainingModerately": "Moderately active",
+    "trainingModeratelyDesc": "3–5× per week",
+    "trainingVery": "Very active",
+    "trainingVeryDesc": "6–7× per week",
+    "trainingAthlete": "Athlete",
+    "trainingAthleteDesc": "Daily intense training",
+    "knowledgeQuestion": "How much do you know about supplements?",
+    "knowledgeSubtitle": "We'll adjust the depth of explanations.",
+    "knowledgeBeginner": "Beginner",
+    "knowledgeBeginnerDesc": "Just getting started",
+    "knowledgeIntermediate": "Intermediate",
+    "knowledgeIntermediateDesc": "Know the basics",
+    "knowledgeAdvanced": "Advanced",
+    "knowledgeAdvancedDesc": "Research-oriented",
+    "summaryAge": "Age",
+    "summaryGoal": "Goal",
+    "summaryDiet": "Diet",
+    "summaryActivity": "Activity",
+    "summaryKnowledge": "Knowledge",
+    "noDataYet": "Not set"
+  }
+}

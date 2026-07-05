@@ -158,8 +158,8 @@ export default function SearchScreen() {
       onMoveShouldSetPanResponder: (_, gs) =>
         Math.abs(gs.dx) > Math.abs(gs.dy) && Math.abs(gs.dx) > 20,
       onPanResponderRelease: (_, gs) => {
-        if (gs.dx > 60) router.navigate('/(tabs)/history');
-        else if (gs.dx < -60) router.navigate('/(tabs)/rewards');
+        if (gs.dx > 60) router.navigate('/(tabs)/stack' as any);
+        else if (gs.dx < -60) router.navigate('/(tabs)/profile' as any);
       },
     })
   ).current;
