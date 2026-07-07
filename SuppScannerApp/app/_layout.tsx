@@ -60,6 +60,7 @@ export default function RootLayout() {
             <Stack.Screen name="product/[barcode]" options={{ headerShown: false }} />
             <Stack.Screen name="manual-add" options={{ headerShown: false }} />
             <Stack.Screen name="premium" options={{ headerShown: false }} />
+            <Stack.Screen name="saved-deep-dives" options={{ headerShown: false }} />
             <Stack.Screen name="sign-in" options={{ headerShown: false, presentation: 'modal' }} />
             <Stack.Screen name="modal" options={{ presentation: 'modal', title: 'Modal' }} />
           </Stack>

@@ -46,6 +46,13 @@
     "experiments": {
       "typedRoutes": true,
       "reactCompiler": true
-    }
+    },
+    "extra": {
+      "router": {},
+      "eas": {
+        "projectId": "07b59809-682f-4399-9bbd-1f543f6e3490"
+      }
+    },
+    "owner": "owlsnap"
   }
 }

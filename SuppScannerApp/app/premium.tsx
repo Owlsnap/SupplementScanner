@@ -1,7 +1,13 @@
 import { MaterialIcons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 import { LinearGradient } from 'expo-linear-gradient';
+import * as Linking from 'expo-linking';
+import * as WebBrowser from 'expo-web-browser';
+import { useState } from 'react';
 import {
+  ActivityIndicator,
+  Alert,
+  Platform,
   ScrollView,
   StyleSheet,
   Text,
@@ -9,7 +15,11 @@ import {
   View,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { API_BASE_URL } from '../src/config/api';
+import { useAuth } from '../src/contexts/AuthContext';
 import { useTheme } from '../src/contexts/ThemeContext';
+
+type Plan = 'monthly' | 'yearly';
 
 const FREE_FEATURES = [
   'Supplement Index (70+ supps)',
@@ -43,6 +53,65 @@ const FEATURE_TABLE = [
 export default function PremiumScreen() {
   const router = useRouter();
   const { colors, isDark } = useTheme();
+  const { session, isPremium, refreshPremiumStatus } = useAuth();
+  const [loadingPlan, setLoadingPlan] = useState<Plan | null>(null);
+
+  const isAndroid = Platform.OS === 'android';
+
+  const handleSubscribe = async (plan: Plan) => {
+    if (!isAndroid) {
+      Alert.alert(
+        'Coming soon on iOS',
+        'Subscriptions on iOS are on the way. For now, subscribe from an Android device.'
+      );
+      return;
+    }
+
+    if (!session) {
+      router.push('/sign-in' as any);
+      return;
+    }
+
+    if (isPremium) return;
+
+    setLoadingPlan(plan);
+    try {
+      const redirectTo = Linking.createURL('premium-callback');
+      const res = await fetch(`${API_BASE_URL}/api/payment/create-subscription-checkout`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${session.access_token}`,
+        },
+        body: JSON.stringify({
+          plan,
+          successUrl: `${redirectTo}?subscribed=1`,
+          cancelUrl: redirectTo,
+        }),
+      });
+      const data = await res.json();
+      if (!data.url) {
+        Alert.alert('Something went wrong', data.error || 'Please try again.');
+        return;
+      }
+
+      const result = await WebBrowser.openAuthSessionAsync(data.url, redirectTo);
+      if (result.type !== 'success') return;
+
+      const { queryParams } = Linking.parse(result.url);
+      if (queryParams?.subscribed === '1') {
+        // Stripe's webhook writes the subscription row asynchronously — give it a moment.
+        await new Promise(r => setTimeout(r, 1500));
+        await refreshPremiumStatus();
+        Alert.alert('Welcome to Premium', 'Your subscription is now active.');
+        router.back();
+      }
+    } catch {
+      Alert.alert('Network error', 'Please check your connection and try again.');
+    } finally {
+      setLoadingPlan(null);
+    }
+  };
 
   return (
     <View style={[styles.root, { backgroundColor: colors.surface }]}>
@@ -89,6 +158,11 @@ export default function PremiumScreen() {
         <View style={styles.body}>
           {/* Pricing cards */}
           <Text style={[styles.sectionTitle, { color: colors.onSurface }]}>Choose your plan</Text>
+          {!isAndroid && (
+            <Text style={[styles.disclaimer, { color: colors.outline, marginBottom: 14 }]}>
+              iOS subscriptions are coming soon — available on Android now.
+            </Text>
+          )}
           <View style={styles.pricingRow}>
             {/* Monthly */}
             <View style={[styles.pricingCard, { backgroundColor: colors.surfaceContainerLowest, borderColor: colors.borderCard }]}>
@@ -101,8 +175,14 @@ export default function PremiumScreen() {
               <TouchableOpacity
                 style={[styles.planBtn, styles.planBtnOutline, { borderColor: colors.primary }]}
                 activeOpacity={0.85}
+                disabled={loadingPlan !== null}
+                onPress={() => handleSubscribe('monthly')}
               >
-                <Text style={[styles.planBtnText, { color: colors.primary }]}>Get Monthly</Text>
+                {loadingPlan === 'monthly' ? (
+                  <ActivityIndicator color={colors.primary} />
+                ) : (
+                  <Text style={[styles.planBtnText, { color: colors.primary }]}>Get Monthly</Text>
+                )}
               </TouchableOpacity>
             </View>
 
@@ -120,8 +200,14 @@ export default function PremiumScreen() {
               <TouchableOpacity
                 style={[styles.planBtn, styles.planBtnSolid]}
                 activeOpacity={0.85}
+                disabled={loadingPlan !== null}
+                onPress={() => handleSubscribe('yearly')}
               >
-                <Text style={[styles.planBtnText, { color: '#00685f' }]}>Get Yearly</Text>
+                {loadingPlan === 'yearly' ? (
+                  <ActivityIndicator color="#00685f" />
+                ) : (
+                  <Text style={[styles.planBtnText, { color: '#00685f' }]}>Get Yearly</Text>
+                )}
               </TouchableOpacity>
             </View>
           </View>

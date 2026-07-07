@@ -172,6 +172,36 @@ create table if not exists public.supplement_deep_dives (
   expires_at   timestamptz not null
 );
 
+-- ============================================================
+-- 6. Saved Deep Dives (per-user bookmarks, snapshot of content
+--    at save time so it still renders/downloads if the cache expires)
+-- ============================================================
+
+create table if not exists public.saved_deep_dives (
+  id         uuid primary key default gen_random_uuid(),
+  user_id    uuid not null references auth.users(id) on delete cascade,
+  slug       text not null,
+  content    jsonb not null,
+  saved_at   timestamptz not null default now(),
+  unique(user_id, slug)
+);
+
+create index if not exists idx_saved_deep_dives_user on public.saved_deep_dives(user_id);
+
+alter table public.saved_deep_dives enable row level security;
+
+create policy "Users can read own saved deep dives"
+  on public.saved_deep_dives for select
+  using (auth.uid() = user_id);
+
+create policy "Users can insert own saved deep dives"
+  on public.saved_deep_dives for insert
+  with check (auth.uid() = user_id);
+
+create policy "Users can delete own saved deep dives"
+  on public.saved_deep_dives for delete
+  using (auth.uid() = user_id);
+
 create index if not exists idx_deep_dives_slug on public.supplement_deep_dives(slug);
 
 alter table public.supplement_deep_dives enable row level security;

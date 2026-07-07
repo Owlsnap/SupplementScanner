@@ -2236,7 +2236,7 @@ app.get('/api/payment/verify-access-token', (req, res) => {
 app.post('/api/payment/create-subscription-checkout', requireAuth, async (req, res) => {
   if (!stripe) return res.status(503).json({ success: false, error: 'Payment not configured' });
 
-  const { plan } = req.body;
+  const { plan, successUrl, cancelUrl } = req.body;
   const priceId = plan === 'yearly'
     ? process.env.STRIPE_PRICE_ID_YEARLY
     : process.env.STRIPE_PRICE_ID_MONTHLY;
@@ -2249,8 +2249,10 @@ app.post('/api/payment/create-subscription-checkout', requireAuth, async (req, r
       mode: 'subscription',
       customer_email: req.user.email,
       line_items: [{ price: priceId, quantity: 1 }],
-      success_url: `${SITE_URL}/premium?subscribed=1`,
-      cancel_url: `${SITE_URL}/premium`,
+      // Mobile passes an app deep link so expo-web-browser can detect completion;
+      // web falls back to the site's premium page.
+      success_url: successUrl || `${SITE_URL}/premium?subscribed=1`,
+      cancel_url: cancelUrl || `${SITE_URL}/premium`,
       metadata: { userId: req.user.id, plan },
     });
     return res.json({ success: true, url: session.url });

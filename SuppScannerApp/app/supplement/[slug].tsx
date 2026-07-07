@@ -1,6 +1,6 @@
 import { MaterialIcons } from '@expo/vector-icons';
 import { useLocalSearchParams, useRouter } from 'expo-router';
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useEffect } from 'react';
 import {
   ActivityIndicator,
   ScrollView,
@@ -13,8 +13,9 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { encyclopediaSupplements, type EncyclopediaCategory, type EvidenceTier } from '../../src/data/encyclopediaData';
 import { t, ta } from '../../src/i18n';
 import { useStack } from '../../src/contexts/StackContext';
-import { useAuth } from '../../src/contexts/AuthContext';
+import { useAuth, supabase } from '../../src/contexts/AuthContext';
 import { API_BASE_URL } from '../../src/config/api';
+import { downloadDeepDivePdf } from '../../src/utils/deepDiveExport';
 
 const COLORS = {
   primary: '#00685f',
@@ -105,6 +106,9 @@ export default function SupplementDetailScreen() {
   const [ddLoading, setDdLoading] = useState(false);
   const [ddError, setDdError] = useState<string | null>(null);
   const [ddStarted, setDdStarted] = useState(false);
+  const [ddSaved, setDdSaved] = useState(false);
+  const [ddSaving, setDdSaving] = useState(false);
+  const [ddExporting, setDdExporting] = useState(false);
 
   const loadDeepDive = useCallback(() => {
     if (!slug) return;
@@ -120,6 +124,44 @@ export default function SupplementDetailScreen() {
       .catch(() => setDdError('Network error — check connection'))
       .finally(() => setDdLoading(false));
   }, [slug]);
+
+  useEffect(() => {
+    if (!user || !slug) { setDdSaved(false); return; }
+    supabase
+      .from('saved_deep_dives')
+      .select('slug')
+      .eq('user_id', user.id)
+      .eq('slug', slug)
+      .maybeSingle()
+      .then(({ data }) => setDdSaved(!!data));
+  }, [user?.id, slug]);
+
+  const toggleSaveDeepDive = useCallback(async () => {
+    if (!user || !slug || !deepDive || ddSaving) return;
+    setDdSaving(true);
+    if (ddSaved) {
+      await supabase.from('saved_deep_dives').delete().eq('user_id', user.id).eq('slug', slug);
+      setDdSaved(false);
+    } else {
+      await supabase
+        .from('saved_deep_dives')
+        .upsert({ user_id: user.id, slug, content: deepDive }, { onConflict: 'user_id,slug' });
+      setDdSaved(true);
+    }
+    setDdSaving(false);
+  }, [user, slug, deepDive, ddSaved, ddSaving]);
+
+  const handleDownload = useCallback(async () => {
+    if (!deepDive || !supp || ddExporting) return;
+    setDdExporting(true);
+    try {
+      await downloadDeepDivePdf(supp.name, deepDive);
+    } catch {
+      setDdError('Could not generate PDF — please try again');
+    } finally {
+      setDdExporting(false);
+    }
+  }, [deepDive, supp, ddExporting]);
 
   if (!supp) {
     return (
@@ -211,6 +253,34 @@ export default function SupplementDetailScreen() {
               <View style={styles.deepDiveTitleRow}>
                 <MaterialIcons name="auto-awesome" size={18} color={catColor} />
                 <Text style={styles.deepDiveTitle}>Research Deep Dive</Text>
+                {deepDive && !ddLoading && (
+                  <View style={styles.deepDiveActions}>
+                    <TouchableOpacity
+                      onPress={toggleSaveDeepDive}
+                      disabled={ddSaving}
+                      style={styles.deepDiveActionBtn}
+                      hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
+                      activeOpacity={0.7}
+                    >
+                      <MaterialIcons
+                        name={ddSaved ? 'bookmark' : 'bookmark-border'}
+                        size={20}
+                        color={ddSaved ? catColor : COLORS.outline}
+                      />
+                    </TouchableOpacity>
+                    <TouchableOpacity
+                      onPress={handleDownload}
+                      disabled={ddExporting}
+                      style={styles.deepDiveActionBtn}
+                      hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
+                      activeOpacity={0.7}
+                    >
+                      {ddExporting
+                        ? <ActivityIndicator size="small" color={COLORS.outline} />
+                        : <MaterialIcons name="file-download" size={20} color={COLORS.outline} />}
+                    </TouchableOpacity>
+                  </View>
+                )}
               </View>
               <Text style={styles.deepDiveSubtitle}>
                 Mechanism, dosing protocols, forms, synergies & interactions
@@ -550,6 +620,19 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     gap: 8,
     marginBottom: 4,
+  },
+  deepDiveActions: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 4,
+    marginLeft: 'auto',
+  },
+  deepDiveActionBtn: {
+    width: 30,
+    height: 30,
+    borderRadius: 15,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   deepDiveTitle: {
     fontFamily: 'Manrope_800ExtraBold',

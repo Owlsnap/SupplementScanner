@@ -205,7 +205,7 @@ export default function ExploreScreen() {
         <View style={[styles.topBar, { borderBottomColor: colors.border }]}>
           <Text style={[styles.topBarTitle, { color: colors.onSurface }]}>Supplement Index</Text>
           <View style={[styles.topBarBadge, { backgroundColor: colors.primary }]}>
-            <Text style={styles.topBarBadgeText}>{encyclopediaSupplements.length}</Text>
+            <Text style={styles.topBarBadgeText}>{encyclopediaSupplements.length} supplements</Text>
           </View>
         </View>
       </SafeAreaView>

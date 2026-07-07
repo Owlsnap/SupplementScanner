@@ -428,6 +428,27 @@ export default function ProfileScreen() {
                 </View>
                 <MaterialIcons name="chevron-right" size={20} color={colors.outline} />
               </TouchableOpacity>
+              {user && (
+                <>
+                  <View style={[styles.settingDivider, { backgroundColor: colors.borderCard }]} />
+                  <TouchableOpacity
+                    style={styles.settingRow}
+                    onPress={() => { setSettingsVisible(false); router.push('/saved-deep-dives' as any); }}
+                    activeOpacity={0.7}
+                  >
+                    <View style={styles.settingRowLeft}>
+                      <View style={[styles.settingIcon, { backgroundColor: colors.surfaceContainerLow }]}>
+                        <MaterialIcons name="bookmark" size={18} color={colors.primary} />
+                      </View>
+                      <View>
+                        <Text style={[styles.settingLabel, { color: colors.onSurface }]}>Saved Deep Dives</Text>
+                        <Text style={[styles.settingSubLabel, { color: colors.onSurfaceVariant }]}>Bookmarked research, download as PDF</Text>
+                      </View>
+                    </View>
+                    <MaterialIcons name="chevron-right" size={20} color={colors.outline} />
+                  </TouchableOpacity>
+                </>
+              )}
             </View>
 
             <Text style={[styles.modalSectionLabel, { color: colors.outline }]}>ABOUT</Text>

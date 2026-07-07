@@ -11,6 +11,7 @@ interface AuthContextValue {
   session: Session | null;
   loading: boolean;
   isPremium: boolean;
+  refreshPremiumStatus: () => Promise<void>;
   signIn: (email: string, password: string) => Promise<{ error: string | null }>;
   signUp: (email: string, password: string) => Promise<{ error: string | null; needsConfirmation?: boolean }>;
   signInWithGoogle: () => Promise<{ error: string | null }>;
@@ -53,6 +54,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     if (!user?.id || !user?.email) { setIsPremium(false); return; }
     checkPremiumStatus(user.id, user.email).then(setIsPremium);
   }, [user?.id]);
+
+  const refreshPremiumStatus = async () => {
+    if (!user?.id || !user?.email) return;
+    setIsPremium(await checkPremiumStatus(user.id, user.email));
+  };
 
   const signIn = async (email: string, password: string) => {
     const { error } = await supabase.auth.signInWithPassword({ email, password });
@@ -97,6 +103,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       session,
       loading,
       isPremium,
+      refreshPremiumStatus,
       signIn,
       signUp,
       signInWithGoogle,
