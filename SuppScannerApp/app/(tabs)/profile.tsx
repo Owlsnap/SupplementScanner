@@ -81,7 +81,7 @@ export default function ProfileScreen() {
       onMoveShouldSetPanResponderCapture: (_, gs) =>
         Math.abs(gs.dx) > Math.abs(gs.dy) * 2 && Math.abs(gs.dx) > 40,
       onPanResponderRelease: (_, gs) => {
-        if (gs.dx > 60) router.navigate('/(tabs)/search' as any);
+        if (gs.dx > 60) router.navigate('/(tabs)/saved-deep-dives' as any);
       },
     })
   ).current;
@@ -183,7 +183,7 @@ export default function ProfileScreen() {
           {stackSupplements.length === 0 ? (
             <View style={styles.emptyStackRow}>
               <Text style={[styles.emptyStackText, { color: colors.onSurfaceVariant }]}>No supplements added yet.</Text>
-              <TouchableOpacity onPress={() => router.navigate('/(tabs)/index' as any)} activeOpacity={0.8}>
+              <TouchableOpacity onPress={() => router.navigate('/(tabs)' as any)} activeOpacity={0.8}>
                 <Text style={[styles.emptyStackLink, { color: colors.primary }]}>Browse Index →</Text>
               </TouchableOpacity>
             </View>
@@ -433,7 +433,7 @@ export default function ProfileScreen() {
                   <View style={[styles.settingDivider, { backgroundColor: colors.borderCard }]} />
                   <TouchableOpacity
                     style={styles.settingRow}
-                    onPress={() => { setSettingsVisible(false); router.push('/saved-deep-dives' as any); }}
+                    onPress={() => { setSettingsVisible(false); router.push('/(tabs)/saved-deep-dives' as any); }}
                     activeOpacity={0.7}
                   >
                     <View style={styles.settingRowLeft}>

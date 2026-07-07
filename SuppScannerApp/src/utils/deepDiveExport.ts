@@ -1,5 +1,22 @@
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import * as FileSystem from 'expo-file-system/legacy';
 import * as Print from 'expo-print';
 import * as Sharing from 'expo-sharing';
+import { Platform } from 'react-native';
+
+const SAF_DIR_KEY = 'deepDiveDownloadDirUri';
+const DOWNLOADED_SLUGS_KEY = 'downloadedDeepDiveSlugs';
+
+export async function getDownloadedSlugs(): Promise<string[]> {
+  const raw = await AsyncStorage.getItem(DOWNLOADED_SLUGS_KEY);
+  return raw ? JSON.parse(raw) : [];
+}
+
+async function markSlugDownloaded(slug: string) {
+  const slugs = await getDownloadedSlugs();
+  if (slugs.includes(slug)) return;
+  await AsyncStorage.setItem(DOWNLOADED_SLUGS_KEY, JSON.stringify([...slugs, slug]));
+}
 
 interface DosingInfo { low: string; standard: string; high: string; timing: string }
 interface FormInfo { name: string; bioavailability: string; notes: string }
@@ -60,9 +77,63 @@ function buildHtml(supplementName: string, content: DeepDiveContent): string {
   `;
 }
 
-export async function downloadDeepDivePdf(supplementName: string, content: DeepDiveContent) {
+function fileNameFor(supplementName: string): string {
+  const slug = supplementName.trim().replace(/[^a-z0-9]+/gi, '-').replace(/^-+|-+$/g, '');
+  return `${slug || 'supplement'}-deep-dive.pdf`;
+}
+
+async function saveToAndroidDownloads(uri: string, fileName: string): Promise<boolean> {
+  const { StorageAccessFramework } = FileSystem;
+  let dirUri = await AsyncStorage.getItem(SAF_DIR_KEY);
+
+  if (!dirUri) {
+    const permissions = await StorageAccessFramework.requestDirectoryPermissionsAsync();
+    if (!permissions.granted) return false;
+    dirUri = permissions.directoryUri;
+    await AsyncStorage.setItem(SAF_DIR_KEY, dirUri);
+  }
+
+  const base64 = await FileSystem.readAsStringAsync(uri, { encoding: FileSystem.EncodingType.Base64 });
+
+  try {
+    const destUri = await StorageAccessFramework.createFileAsync(dirUri, fileName, 'application/pdf');
+    await FileSystem.writeAsStringAsync(destUri, base64, { encoding: FileSystem.EncodingType.Base64 });
+    return true;
+  } catch {
+    // Previously granted folder is no longer valid (e.g. permission revoked) — forget it and retry once.
+    await AsyncStorage.removeItem(SAF_DIR_KEY);
+    const permissions = await StorageAccessFramework.requestDirectoryPermissionsAsync();
+    if (!permissions.granted) return false;
+    await AsyncStorage.setItem(SAF_DIR_KEY, permissions.directoryUri);
+    const destUri = await StorageAccessFramework.createFileAsync(permissions.directoryUri, fileName, 'application/pdf');
+    await FileSystem.writeAsStringAsync(destUri, base64, { encoding: FileSystem.EncodingType.Base64 });
+    return true;
+  }
+}
+
+export type DeepDiveExportResult = 'downloaded' | 'shared' | 'cancelled';
+
+/**
+ * Saves the deep dive as a PDF to a user-picked folder on Android (via Storage Access
+ * Framework, prompted once and reused after). iOS has no equivalent "Downloads" location,
+ * so it falls back to the share sheet, which is the standard way to save into Files there.
+ */
+export async function downloadDeepDivePdf(
+  slug: string,
+  supplementName: string,
+  content: DeepDiveContent
+): Promise<DeepDiveExportResult> {
   const html = buildHtml(supplementName, content);
   const { uri } = await Print.printToFileAsync({ html });
+  const fileName = fileNameFor(supplementName);
+
+  if (Platform.OS === 'android') {
+    const saved = await saveToAndroidDownloads(uri, fileName);
+    if (saved) {
+      await markSlugDownloaded(slug);
+      return 'downloaded';
+    }
+  }
 
   if (await Sharing.isAvailableAsync()) {
     await Sharing.shareAsync(uri, {
@@ -70,5 +141,9 @@ export async function downloadDeepDivePdf(supplementName: string, content: DeepD
       dialogTitle: `${supplementName} Deep Dive`,
       UTI: 'com.adobe.pdf',
     });
+    await markSlugDownloaded(slug);
+    return 'shared';
   }
+
+  return 'cancelled';
 }

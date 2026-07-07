@@ -1,19 +1,24 @@
 import { MaterialIcons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import {
   ActivityIndicator,
+  Animated,
   FlatList,
+  Modal,
+  PanResponder,
+  Platform,
+  Pressable,
   StyleSheet,
   Text,
   TouchableOpacity,
   View,
 } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
-import { encyclopediaSupplements, type EncyclopediaCategory } from '../src/data/encyclopediaData';
-import { useAuth, supabase } from '../src/contexts/AuthContext';
-import { useTheme } from '../src/contexts/ThemeContext';
-import { downloadDeepDivePdf, type DeepDiveContent } from '../src/utils/deepDiveExport';
+import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
+import { encyclopediaSupplements, type EncyclopediaCategory } from '../../src/data/encyclopediaData';
+import { useAuth, supabase } from '../../src/contexts/AuthContext';
+import { useTheme } from '../../src/contexts/ThemeContext';
+import { downloadDeepDivePdf, getDownloadedSlugs, type DeepDiveContent } from '../../src/utils/deepDiveExport';
 
 const categoryColors: Record<EncyclopediaCategory, string> = {
   Performance: '#00685f',
@@ -39,11 +44,44 @@ interface SavedRow {
 
 export default function SavedDeepDivesScreen() {
   const router = useRouter();
+  const insets = useSafeAreaInsets();
   const { colors } = useTheme();
   const { user } = useAuth();
   const [rows, setRows] = useState<SavedRow[]>([]);
   const [loading, setLoading] = useState(true);
   const [exportingSlug, setExportingSlug] = useState<string | null>(null);
+  const [menuTarget, setMenuTarget] = useState<SavedRow | null>(null);
+  const [downloadedSlugs, setDownloadedSlugs] = useState<string[]>([]);
+
+  const [toastMessage, setToastMessage] = useState<string | null>(null);
+  const toastAnim = useRef(new Animated.Value(0)).current;
+  const toastTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  const showToast = useCallback((message: string) => {
+    if (toastTimer.current) clearTimeout(toastTimer.current);
+    setToastMessage(message);
+    toastAnim.setValue(0);
+    Animated.timing(toastAnim, { toValue: 1, duration: 200, useNativeDriver: true }).start();
+    toastTimer.current = setTimeout(() => {
+      Animated.timing(toastAnim, { toValue: 0, duration: 200, useNativeDriver: true }).start(() => setToastMessage(null));
+    }, 2200);
+  }, [toastAnim]);
+
+  useEffect(() => {
+    getDownloadedSlugs().then(setDownloadedSlugs);
+    return () => { if (toastTimer.current) clearTimeout(toastTimer.current); };
+  }, []);
+
+  const panResponder = useRef(
+    PanResponder.create({
+      onMoveShouldSetPanResponderCapture: (_, gs) =>
+        Math.abs(gs.dx) > Math.abs(gs.dy) * 2 && Math.abs(gs.dx) > 40,
+      onPanResponderRelease: (_, gs) => {
+        if (gs.dx > 60) router.navigate('/(tabs)/stack' as any);
+        else if (gs.dx < -60) router.navigate('/(tabs)/profile' as any);
+      },
+    })
+  ).current;
 
   const load = useCallback(() => {
     if (!user) { setRows([]); setLoading(false); return; }
@@ -63,6 +101,7 @@ export default function SavedDeepDivesScreen() {
 
   const unsave = async (slug: string) => {
     if (!user) return;
+    setMenuTarget(null);
     setRows(prev => prev.filter(r => r.slug !== slug));
     await supabase.from('saved_deep_dives').delete().eq('user_id', user.id).eq('slug', slug);
   };
@@ -70,21 +109,28 @@ export default function SavedDeepDivesScreen() {
   const download = async (slug: string, content: DeepDiveContent) => {
     const supp = encyclopediaSupplements.find(s => s.slug === slug);
     if (!supp || exportingSlug) return;
+    setMenuTarget(null);
     setExportingSlug(slug);
     try {
-      await downloadDeepDivePdf(supp.name, content);
+      const result = await downloadDeepDivePdf(slug, supp.name, content);
+      if (result === 'downloaded') {
+        setDownloadedSlugs(prev => (prev.includes(slug) ? prev : [...prev, slug]));
+        showToast('Downloaded to your device');
+      } else if (result === 'shared') {
+        setDownloadedSlugs(prev => (prev.includes(slug) ? prev : [...prev, slug]));
+        showToast('Shared');
+      }
     } finally {
       setExportingSlug(null);
     }
   };
 
+  const menuSupp = menuTarget ? encyclopediaSupplements.find(s => s.slug === menuTarget.slug) : null;
+
   return (
-    <View style={[styles.root, { backgroundColor: colors.surface }]}>
+    <View style={[styles.root, { backgroundColor: colors.surface }]} {...panResponder.panHandlers}>
       <SafeAreaView edges={['top']} style={[styles.topBarSafe, { backgroundColor: colors.surface }]}>
         <View style={[styles.topBar, { borderBottomColor: colors.border }]}>
-          <TouchableOpacity onPress={() => router.back()} style={styles.backBtn} activeOpacity={0.7}>
-            <MaterialIcons name="arrow-back" size={22} color={colors.onSurface} />
-          </TouchableOpacity>
           <Text style={[styles.topBarTitle, { color: colors.onSurface }]}>Saved Deep Dives</Text>
         </View>
       </SafeAreaView>
@@ -121,7 +167,7 @@ export default function SavedDeepDivesScreen() {
                       <Text style={[styles.cardName, { color: colors.onSurface }]}>{supp.name}</Text>
                     </View>
                     <TouchableOpacity
-                      onPress={() => download(item.slug, item.content)}
+                      onPress={() => setMenuTarget(item)}
                       disabled={exportingSlug === item.slug}
                       style={[styles.iconBtn, { backgroundColor: colors.surfaceContainerHigh }]}
                       hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
@@ -129,15 +175,7 @@ export default function SavedDeepDivesScreen() {
                     >
                       {exportingSlug === item.slug
                         ? <ActivityIndicator size="small" color={colors.outline} />
-                        : <MaterialIcons name="file-download" size={16} color={colors.outline} />}
-                    </TouchableOpacity>
-                    <TouchableOpacity
-                      onPress={() => unsave(item.slug)}
-                      style={[styles.iconBtn, { backgroundColor: colors.surfaceContainerHigh }]}
-                      hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
-                      activeOpacity={0.7}
-                    >
-                      <MaterialIcons name="bookmark-remove" size={16} color={colors.outline} />
+                        : <MaterialIcons name="more-vert" size={16} color={colors.outline} />}
                     </TouchableOpacity>
                   </View>
                   <Text style={[styles.cardSnippet, { color: colors.onSurfaceVariant }]} numberOfLines={2}>
@@ -160,6 +198,72 @@ export default function SavedDeepDivesScreen() {
           }
         />
       )}
+
+      <Modal
+        visible={!!menuTarget}
+        transparent
+        animationType="fade"
+        onRequestClose={() => setMenuTarget(null)}
+      >
+        <Pressable style={styles.menuBackdrop} onPress={() => setMenuTarget(null)}>
+          <Pressable
+            style={[
+              styles.menuSheet,
+              { backgroundColor: colors.surfaceContainerLowest, paddingBottom: Math.max(insets.bottom, 16) + 12 },
+            ]}
+          >
+            {menuSupp && (
+              <Text style={[styles.menuTitle, { color: colors.onSurfaceVariant }]} numberOfLines={1}>
+                {menuSupp.name}
+              </Text>
+            )}
+            <TouchableOpacity
+              style={styles.menuRow}
+              onPress={() => menuTarget && download(menuTarget.slug, menuTarget.content)}
+              activeOpacity={0.7}
+            >
+              <MaterialIcons name={Platform.OS === 'android' ? 'file-download' : 'share'} size={20} color={colors.onSurface} />
+              <Text style={[styles.menuRowText, { color: colors.onSurface, flex: 1 }]}>
+                {Platform.OS === 'android' ? 'Download PDF' : 'Share PDF'}
+              </Text>
+              {menuTarget && downloadedSlugs.includes(menuTarget.slug) && (
+                <MaterialIcons name="check-circle" size={16} color={colors.primary} />
+              )}
+            </TouchableOpacity>
+            <View style={[styles.menuDivider, { backgroundColor: colors.borderCard }]} />
+            <TouchableOpacity
+              style={styles.menuRow}
+              onPress={() => menuTarget && unsave(menuTarget.slug)}
+              activeOpacity={0.7}
+            >
+              <MaterialIcons name="bookmark-remove" size={20} color="#ba1a1a" />
+              <Text style={[styles.menuRowText, { color: '#ba1a1a' }]}>Remove from Saved</Text>
+            </TouchableOpacity>
+            <View style={[styles.menuDivider, { backgroundColor: colors.borderCard }]} />
+            <TouchableOpacity style={styles.menuRow} onPress={() => setMenuTarget(null)} activeOpacity={0.7}>
+              <Text style={[styles.menuRowText, { color: colors.onSurfaceVariant }]}>Cancel</Text>
+            </TouchableOpacity>
+          </Pressable>
+        </Pressable>
+      </Modal>
+
+      {toastMessage && (
+        <Animated.View
+          pointerEvents="none"
+          style={[
+            styles.toast,
+            {
+              backgroundColor: colors.onSurface,
+              bottom: insets.bottom + 20,
+              opacity: toastAnim,
+              transform: [{ translateY: toastAnim.interpolate({ inputRange: [0, 1], outputRange: [12, 0] }) }],
+            },
+          ]}
+        >
+          <MaterialIcons name="check-circle" size={16} color="#ffffff" />
+          <Text style={styles.toastText}>{toastMessage}</Text>
+        </Animated.View>
+      )}
     </View>
   );
 }
@@ -174,12 +278,6 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     paddingVertical: 14,
     borderBottomWidth: StyleSheet.hairlineWidth,
-  },
-  backBtn: {
-    width: 36,
-    height: 36,
-    alignItems: 'center',
-    justifyContent: 'center',
   },
   topBarTitle: {
     fontFamily: 'Manrope_800ExtraBold',
@@ -273,5 +371,64 @@ const styles = StyleSheet.create({
     fontSize: 14,
     textAlign: 'center',
     lineHeight: 22,
+  },
+
+  menuBackdrop: {
+    flex: 1,
+    backgroundColor: 'rgba(0,0,0,0.4)',
+    justifyContent: 'flex-end',
+  },
+  menuSheet: {
+    borderTopLeftRadius: 20,
+    borderTopRightRadius: 20,
+    paddingTop: 8,
+    paddingHorizontal: 8,
+  },
+  menuTitle: {
+    fontFamily: 'Inter_600SemiBold',
+    fontWeight: '600',
+    fontSize: 12,
+    textTransform: 'uppercase',
+    letterSpacing: 0.5,
+    paddingHorizontal: 12,
+    paddingVertical: 12,
+  },
+  menuRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 14,
+    paddingHorizontal: 12,
+    paddingVertical: 14,
+  },
+  menuRowText: {
+    fontFamily: 'Inter_600SemiBold',
+    fontWeight: '600',
+    fontSize: 15,
+  },
+  menuDivider: {
+    height: StyleSheet.hairlineWidth,
+    marginHorizontal: 4,
+  },
+
+  toast: {
+    position: 'absolute',
+    alignSelf: 'center',
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+    paddingHorizontal: 16,
+    paddingVertical: 12,
+    borderRadius: 999,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.2,
+    shadowRadius: 8,
+    elevation: 6,
+  },
+  toastText: {
+    fontFamily: 'Inter_600SemiBold',
+    fontWeight: '600',
+    fontSize: 13,
+    color: '#ffffff',
   },
 });

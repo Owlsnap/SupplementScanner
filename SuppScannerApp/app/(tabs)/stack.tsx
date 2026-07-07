@@ -44,8 +44,8 @@ export default function StackScreen() {
       onMoveShouldSetPanResponderCapture: (_, gs) =>
         Math.abs(gs.dx) > Math.abs(gs.dy) * 2 && Math.abs(gs.dx) > 40,
       onPanResponderRelease: (_, gs) => {
-        if (gs.dx > 60) router.navigate('/(tabs)/index' as any);
-        if (gs.dx < -60) router.navigate('/(tabs)/search' as any);
+        if (gs.dx > 60) router.navigate('/(tabs)' as any);
+        if (gs.dx < -60) router.navigate('/(tabs)/saved-deep-dives' as any);
       },
     })
   ).current;
@@ -163,7 +163,7 @@ export default function StackScreen() {
             </Text>
             <TouchableOpacity
               style={[styles.browseBtn, { backgroundColor: colors.primary }]}
-              onPress={() => router.navigate('/(tabs)/index' as any)}
+              onPress={() => router.navigate('/(tabs)' as any)}
               activeOpacity={0.85}
             >
               <Text style={styles.browseBtnText}>Browse Index</Text>

@@ -13,7 +13,7 @@ type TabConfig = {
 const TABS: TabConfig[] = [
   { route: 'index', label: 'Explore', icon: 'menu-book' },
   { route: 'stack', label: 'Stack', icon: 'layers' },
-  { route: 'search', label: 'Search', icon: 'search' },
+  { route: 'saved-deep-dives', label: 'Saved', icon: 'bookmark' },
   { route: 'profile', label: 'Profile', icon: 'person' },
 ];
 

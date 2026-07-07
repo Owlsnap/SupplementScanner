@@ -10,7 +10,7 @@ export default function TabLayout() {
     >
       <Tabs.Screen name="index" options={{ title: 'Explore' }} />
       <Tabs.Screen name="stack" options={{ title: 'Stack' }} />
-      <Tabs.Screen name="search" options={{ title: 'Search' }} />
+      <Tabs.Screen name="saved-deep-dives" options={{ title: 'Saved' }} />
       <Tabs.Screen name="profile" options={{ title: 'Profile' }} />
     </Tabs>
   );

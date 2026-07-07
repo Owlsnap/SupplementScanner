@@ -15,7 +15,6 @@ import { t, ta } from '../../src/i18n';
 import { useStack } from '../../src/contexts/StackContext';
 import { useAuth, supabase } from '../../src/contexts/AuthContext';
 import { API_BASE_URL } from '../../src/config/api';
-import { downloadDeepDivePdf } from '../../src/utils/deepDiveExport';
 
 const COLORS = {
   primary: '#00685f',
@@ -108,7 +107,6 @@ export default function SupplementDetailScreen() {
   const [ddStarted, setDdStarted] = useState(false);
   const [ddSaved, setDdSaved] = useState(false);
   const [ddSaving, setDdSaving] = useState(false);
-  const [ddExporting, setDdExporting] = useState(false);
 
   const loadDeepDive = useCallback(() => {
     if (!slug) return;
@@ -151,18 +149,6 @@ export default function SupplementDetailScreen() {
     setDdSaving(false);
   }, [user, slug, deepDive, ddSaved, ddSaving]);
 
-  const handleDownload = useCallback(async () => {
-    if (!deepDive || !supp || ddExporting) return;
-    setDdExporting(true);
-    try {
-      await downloadDeepDivePdf(supp.name, deepDive);
-    } catch {
-      setDdError('Could not generate PDF — please try again');
-    } finally {
-      setDdExporting(false);
-    }
-  }, [deepDive, supp, ddExporting]);
-
   if (!supp) {
     return (
       <View style={[styles.root, { alignItems: 'center', justifyContent: 'center' }]}>
@@ -184,16 +170,32 @@ export default function SupplementDetailScreen() {
           <TouchableOpacity onPress={() => router.back()} style={styles.backBtn} activeOpacity={0.7}>
             <MaterialIcons name="arrow-back" size={22} color="#ffffff" />
           </TouchableOpacity>
-          <TouchableOpacity
-            onPress={() => (isSignedIn ? toggleStack(supp.slug) : router.push('/sign-in' as any))}
-            style={[styles.stackHeaderBtn, stacked ? styles.stackHeaderBtnActive : styles.stackHeaderBtnInactive]}
-            activeOpacity={0.8}
-          >
-            <MaterialIcons name={stacked ? 'check' : 'add'} size={16} color={stacked ? catColor : '#ffffff'} />
-            <Text style={[styles.stackHeaderBtnText, { color: stacked ? catColor : '#ffffff' }]}>
-              {stacked ? 'In Stack' : 'Add to Stack'}
-            </Text>
-          </TouchableOpacity>
+          <View style={styles.headerRightActions}>
+            {deepDive && !ddLoading && (
+              <TouchableOpacity
+                onPress={isSignedIn ? toggleSaveDeepDive : () => router.push('/sign-in' as any)}
+                disabled={ddSaving}
+                style={[styles.saveHeaderBtn, ddSaved ? styles.stackHeaderBtnActive : styles.stackHeaderBtnInactive]}
+                activeOpacity={0.8}
+              >
+                <MaterialIcons
+                  name={ddSaved ? 'bookmark' : 'bookmark-border'}
+                  size={18}
+                  color={ddSaved ? catColor : '#ffffff'}
+                />
+              </TouchableOpacity>
+            )}
+            <TouchableOpacity
+              onPress={() => (isSignedIn ? toggleStack(supp.slug) : router.push('/sign-in' as any))}
+              style={[styles.stackHeaderBtn, stacked ? styles.stackHeaderBtnActive : styles.stackHeaderBtnInactive]}
+              activeOpacity={0.8}
+            >
+              <MaterialIcons name={stacked ? 'check' : 'add'} size={16} color={stacked ? catColor : '#ffffff'} />
+              <Text style={[styles.stackHeaderBtnText, { color: stacked ? catColor : '#ffffff' }]}>
+                {stacked ? 'In Stack' : 'Add to Stack'}
+              </Text>
+            </TouchableOpacity>
+          </View>
         </View>
       </SafeAreaView>
 
@@ -253,34 +255,6 @@ export default function SupplementDetailScreen() {
               <View style={styles.deepDiveTitleRow}>
                 <MaterialIcons name="auto-awesome" size={18} color={catColor} />
                 <Text style={styles.deepDiveTitle}>Research Deep Dive</Text>
-                {deepDive && !ddLoading && (
-                  <View style={styles.deepDiveActions}>
-                    <TouchableOpacity
-                      onPress={toggleSaveDeepDive}
-                      disabled={ddSaving}
-                      style={styles.deepDiveActionBtn}
-                      hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
-                      activeOpacity={0.7}
-                    >
-                      <MaterialIcons
-                        name={ddSaved ? 'bookmark' : 'bookmark-border'}
-                        size={20}
-                        color={ddSaved ? catColor : COLORS.outline}
-                      />
-                    </TouchableOpacity>
-                    <TouchableOpacity
-                      onPress={handleDownload}
-                      disabled={ddExporting}
-                      style={styles.deepDiveActionBtn}
-                      hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
-                      activeOpacity={0.7}
-                    >
-                      {ddExporting
-                        ? <ActivityIndicator size="small" color={COLORS.outline} />
-                        : <MaterialIcons name="file-download" size={20} color={COLORS.outline} />}
-                    </TouchableOpacity>
-                  </View>
-                )}
               </View>
               <Text style={styles.deepDiveSubtitle}>
                 Mechanism, dosing protocols, forms, synergies & interactions
@@ -414,6 +388,27 @@ export default function SupplementDetailScreen() {
                     ))}
                   </SectionCard>
                 )}
+
+                <TouchableOpacity
+                  onPress={toggleSaveDeepDive}
+                  disabled={ddSaving}
+                  style={[
+                    styles.ddSaveBottomBtn,
+                    ddSaved
+                      ? { backgroundColor: catColor + '15', borderColor: catColor }
+                      : { backgroundColor: catColor, borderColor: catColor },
+                  ]}
+                  activeOpacity={0.85}
+                >
+                  <MaterialIcons
+                    name={ddSaved ? 'bookmark' : 'bookmark-border'}
+                    size={20}
+                    color={ddSaved ? catColor : '#ffffff'}
+                  />
+                  <Text style={[styles.ddSaveBottomBtnText, { color: ddSaved ? catColor : '#ffffff' }]}>
+                    {ddSaved ? 'Saved to Deep Dives' : 'Save Deep Dive'}
+                  </Text>
+                </TouchableOpacity>
               </View>
             )}
           </View>
@@ -452,6 +447,19 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(255,255,255,0.2)',
     alignItems: 'center',
     justifyContent: 'center',
+  },
+  headerRightActions: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+  },
+  saveHeaderBtn: {
+    width: 38,
+    height: 38,
+    borderRadius: 19,
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderWidth: 1.5,
   },
   stackHeaderBtn: {
     flexDirection: 'row',
@@ -621,19 +629,6 @@ const styles = StyleSheet.create({
     gap: 8,
     marginBottom: 4,
   },
-  deepDiveActions: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 4,
-    marginLeft: 'auto',
-  },
-  deepDiveActionBtn: {
-    width: 30,
-    height: 30,
-    borderRadius: 15,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
   deepDiveTitle: {
     fontFamily: 'Manrope_800ExtraBold',
     fontWeight: '800',
@@ -719,6 +714,24 @@ const styles = StyleSheet.create({
     fontSize: 12,
     color: 'rgba(255,255,255,0.75)',
     marginTop: 2,
+  },
+
+  // Bottom save button
+  ddSaveBottomBtn: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 10,
+    borderRadius: 16,
+    borderWidth: 1.5,
+    paddingVertical: 16,
+    marginTop: 4,
+  },
+  ddSaveBottomBtnText: {
+    fontFamily: 'Manrope_800ExtraBold',
+    fontWeight: '800',
+    fontSize: 15,
+    letterSpacing: -0.2,
   },
 
   ddLoadingContainer: {
