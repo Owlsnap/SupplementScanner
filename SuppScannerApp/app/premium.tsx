@@ -26,7 +26,6 @@ const FREE_FEATURES = [
   'Basic supplement info',
   'Personal stack tracking',
   'Health profile',
-  '3 deep dives / month',
 ];
 
 const PREMIUM_FEATURES = [
@@ -43,7 +42,7 @@ const FEATURE_TABLE = [
   { label: 'Supplement Index', free: true, premium: true },
   { label: 'Personal Stack', free: true, premium: true },
   { label: 'Health Profile', free: true, premium: true },
-  { label: 'AI Deep Dives', free: '3 / month', premium: 'Unlimited' },
+  { label: 'AI Deep Dives', free: 'Basic', premium: 'Full research' },
   { label: 'Stack Evaluation', free: false, premium: true },
   { label: 'Interaction Check', free: false, premium: true },
   { label: 'Gap Analysis', free: false, premium: true },

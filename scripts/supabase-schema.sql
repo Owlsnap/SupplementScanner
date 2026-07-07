@@ -407,3 +407,29 @@ drop policy if exists "Authenticated users can check own beta tester status" on 
 create policy "Authenticated users can check own beta tester status"
   on public.beta_testers for select
   using (email = (auth.jwt() ->> 'email'));
+
+-- ============================================================
+-- 12. Premium RAG: Deep Dive cache (per-purchaser snapshot)
+-- Persists the generated result of the no-question "open" call so
+-- revisiting a premium deep dive (including via the emailed access link
+-- for single-dive Stripe purchases) loads instantly instead of re-running
+-- embeddings + GPT-4o generation. Keyed by user_id, which may be a real
+-- auth.users UUID (subscriber) or a `stripe:<sessionId>` pseudo-id
+-- (single-dive purchaser) — hence text, not a uuid FK.
+-- Only ever read/written by the server via the service-role client;
+-- requirePremiumAccess enforces access control before any query, so RLS
+-- blocks all direct client access (no policies defined).
+-- ============================================================
+
+create table if not exists public.premium_deep_dives (
+  id           uuid primary key default gen_random_uuid(),
+  user_id      text not null,
+  slug         text not null,
+  data         jsonb not null,
+  generated_at timestamptz not null default now(),
+  unique(user_id, slug)
+);
+
+create index if not exists idx_premium_deep_dives_user on public.premium_deep_dives(user_id);
+
+alter table public.premium_deep_dives enable row level security;

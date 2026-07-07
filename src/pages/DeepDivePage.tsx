@@ -1,7 +1,8 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { ArrowLeft, Warning, Lightning, CheckCircle, Info } from '@phosphor-icons/react';
+import { ArrowLeft, Warning, Lightning, CheckCircle, Info, BookmarkSimple } from '@phosphor-icons/react';
 import type { EvidenceTier } from '../data/encyclopediaData';
 import { useLanguage } from '../contexts/LanguageContext';
+import { useAuth, supabase } from '../contexts/AuthContext';
 
 interface DosingInfo {
   low: string;
@@ -77,7 +78,10 @@ export default function DeepDivePage({
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [wasFreshlyGenerated, setWasFreshlyGenerated] = useState(false);
+  const [ddSaved, setDdSaved] = useState(false);
+  const [ddSaving, setDdSaving] = useState(false);
   const { t } = useLanguage();
+  const { user, loading: authLoading } = useAuth();
 
   const tierStyle = evidenceTierColors[evidenceTier];
 
@@ -101,8 +105,51 @@ export default function DeepDivePage({
   }, [slug]);
 
   useEffect(() => {
-    loadContent();
-  }, [loadContent]);
+    // Wait for auth to resolve so a signed-in user's saved snapshot can be
+    // checked first — hydrating from it is instant and avoids re-fetching
+    // (and possibly regenerating) content the user already saved.
+    if (authLoading) return;
+
+    if (!user) {
+      setDdSaved(false);
+      loadContent();
+      return;
+    }
+
+    setLoading(true);
+    supabase
+      .from('saved_deep_dives')
+      .select('slug, content')
+      .eq('user_id', user.id)
+      .eq('slug', slug)
+      .maybeSingle()
+      .then(({ data }) => {
+        setDdSaved(!!data);
+        if (data?.content) {
+          setDeepDive(data.content);
+          setWasFreshlyGenerated(false);
+          setError(null);
+          setLoading(false);
+        } else {
+          loadContent();
+        }
+      });
+  }, [authLoading, user?.id, slug, loadContent]);
+
+  const toggleSaveDeepDive = useCallback(async () => {
+    if (!user || !deepDive || ddSaving) return;
+    setDdSaving(true);
+    if (ddSaved) {
+      await supabase.from('saved_deep_dives').delete().eq('user_id', user.id).eq('slug', slug);
+      setDdSaved(false);
+    } else {
+      await supabase
+        .from('saved_deep_dives')
+        .upsert({ user_id: user.id, slug, content: deepDive }, { onConflict: 'user_id,slug' });
+      setDdSaved(true);
+    }
+    setDdSaving(false);
+  }, [user, slug, deepDive, ddSaved, ddSaving]);
 
   const cardStyle: React.CSSProperties = {
     background: 'var(--bg-surface)',
@@ -131,6 +178,8 @@ export default function DeepDivePage({
     color: 'var(--text-muted)',
     lineHeight: 1.65,
     margin: 0,
+    overflowWrap: 'break-word',
+    wordBreak: 'break-word',
   };
 
   const skeletonBlockStyle: React.CSSProperties = {
@@ -168,7 +217,7 @@ export default function DeepDivePage({
       `}</style>
 
       {/* Content */}
-      <div style={{ maxWidth: '760px', margin: '0 auto', padding: '1.5rem 1rem 3rem' }}>
+      <div style={{ maxWidth: '760px', margin: '0 auto', padding: '1.5rem 1rem 3rem', overflowX: 'hidden' }}>
         <button
           onClick={onBack}
           style={{
@@ -184,16 +233,43 @@ export default function DeepDivePage({
         </button>
 
         {/* Title + tagline */}
-        <h1 style={{
-          fontFamily: "'Manrope', sans-serif",
-          fontWeight: 800,
-          fontSize: '1.75rem',
-          color: 'var(--text-primary)',
-          letterSpacing: '-0.5px',
-          margin: '0 0 0.375rem',
-        }}>
-          {supplementName}
-        </h1>
+        <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: '0.75rem' }}>
+          <h1 style={{
+            fontFamily: "'Manrope', sans-serif",
+            fontWeight: 800,
+            fontSize: '1.75rem',
+            color: 'var(--text-primary)',
+            letterSpacing: '-0.5px',
+            margin: '0 0 0.375rem',
+            overflowWrap: 'break-word',
+            wordBreak: 'break-word',
+          }}>
+            {supplementName}
+          </h1>
+          {!loading && deepDive && user && (
+            <button
+              onClick={toggleSaveDeepDive}
+              disabled={ddSaving}
+              title={ddSaved ? 'Saved to Deep Dives' : 'Save Deep Dive'}
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                width: '38px',
+                height: '38px',
+                borderRadius: '50%',
+                flexShrink: 0,
+                marginTop: '2px',
+                border: `1.5px solid ${ddSaved ? '#00685f' : 'var(--border-strong)'}`,
+                background: ddSaved ? 'var(--primary-light)' : 'transparent',
+                cursor: ddSaving ? 'default' : 'pointer',
+                opacity: ddSaving ? 0.6 : 1,
+              }}
+            >
+              <BookmarkSimple size={18} color={ddSaved ? '#00685f' : 'var(--text-secondary)'} weight={ddSaved ? 'fill' : 'regular'} />
+            </button>
+          )}
+        </div>
         <p style={{ ...bodyTextStyle, color: 'var(--text-secondary)', marginBottom: '1.5rem', fontSize: '0.9375rem' }}>
           {t(tagline)}
         </p>
@@ -322,10 +398,10 @@ export default function DeepDivePage({
                 alignItems: 'flex-start',
                 gap: '0.5rem',
               }}>
-                <span style={{ fontSize: '0.75rem', fontWeight: 600, color: 'var(--text-secondary)', textTransform: 'uppercase', letterSpacing: '0.6px', fontFamily: "'Inter', sans-serif", whiteSpace: 'nowrap', paddingTop: '2px' }}>
+                <span style={{ fontSize: '0.75rem', fontWeight: 600, color: 'var(--text-secondary)', textTransform: 'uppercase', letterSpacing: '0.6px', fontFamily: "'Inter', sans-serif", whiteSpace: 'nowrap', paddingTop: '2px', flexShrink: 0 }}>
                   {t('deepDive.timing')}
                 </span>
-                <span style={{ ...bodyTextStyle, fontSize: '0.875rem' }}>{deepDive.dosing.timing}</span>
+                <span style={{ ...bodyTextStyle, fontSize: '0.875rem', minWidth: 0 }}>{deepDive.dosing.timing}</span>
               </div>
             </div>
 
@@ -359,8 +435,8 @@ export default function DeepDivePage({
                       }}>
                         {form.bioavailability}
                       </span>
-                      <div>
-                        <div style={{ fontFamily: "'Manrope', sans-serif", fontWeight: 700, fontSize: '0.875rem', color: 'var(--text-primary)', marginBottom: '0.125rem' }}>
+                      <div style={{ minWidth: 0 }}>
+                        <div style={{ fontFamily: "'Manrope', sans-serif", fontWeight: 700, fontSize: '0.875rem', color: 'var(--text-primary)', marginBottom: '0.125rem', overflowWrap: 'break-word', wordBreak: 'break-word' }}>
                           {form.name}
                         </div>
                         <div style={{ ...bodyTextStyle, fontSize: '0.8125rem' }}>{form.notes}</div>
@@ -395,7 +471,7 @@ export default function DeepDivePage({
                         }}>
                           {s.supplement}
                         </span>
-                        <span style={{ ...bodyTextStyle, fontSize: '0.8125rem', paddingTop: '3px' }}>{s.reason}</span>
+                        <span style={{ ...bodyTextStyle, fontSize: '0.8125rem', paddingTop: '3px', minWidth: 0 }}>{s.reason}</span>
                       </div>
                     </div>
                   ))}
@@ -429,7 +505,7 @@ export default function DeepDivePage({
                         onMouseLeave={e => { (e.currentTarget as HTMLDivElement).style.borderColor = 'var(--border)'; }}
                       >
                         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: '0.75rem', marginBottom: '0.375rem' }}>
-                          <span style={{ fontFamily: "'Manrope', sans-serif", fontWeight: 700, fontSize: '0.875rem', color: 'var(--text-primary)', lineHeight: 1.4 }}>
+                          <span style={{ fontFamily: "'Manrope', sans-serif", fontWeight: 700, fontSize: '0.875rem', color: 'var(--text-primary)', lineHeight: 1.4, minWidth: 0, overflowWrap: 'break-word', wordBreak: 'break-word' }}>
                             {study.title}
                           </span>
                           <span style={{ fontFamily: "'Inter', sans-serif", fontSize: '0.75rem', fontWeight: 600, color: '#00685f', whiteSpace: 'nowrap', flexShrink: 0 }}>

@@ -252,6 +252,7 @@ export default function PremiumDeepDivePage({
   const bodyText: React.CSSProperties = {
     fontFamily: "'Inter', sans-serif", fontWeight: 400, fontSize: '0.9375rem',
     color: 'var(--text-muted)', lineHeight: 1.65, margin: 0,
+    overflowWrap: 'break-word', wordBreak: 'break-word',
   };
 
   const dangerInteractions  = interactions.filter(i => i.severity === 'danger');
@@ -294,7 +295,7 @@ export default function PremiumDeepDivePage({
         }
       `}</style>
 
-      <div style={{ maxWidth: '760px', margin: '0 auto', padding: '1.5rem 1rem 3rem' }}>
+      <div style={{ maxWidth: '760px', margin: '0 auto', padding: '1.5rem 1rem 3rem', overflowX: 'hidden' }}>
 
         {/* Back */}
         <button
@@ -323,6 +324,7 @@ export default function PremiumDeepDivePage({
           <h1 style={{
             fontFamily: "'Manrope', sans-serif", fontWeight: 800, fontSize: '1.75rem',
             color: 'var(--text-primary)', letterSpacing: '-0.5px', margin: '0 0 0.375rem',
+            overflowWrap: 'break-word', wordBreak: 'break-word',
           }}>
             {supplementName}
           </h1>
@@ -459,10 +461,10 @@ export default function PremiumDeepDivePage({
                   ))}
                 </div>
                 <div style={{ background: 'var(--bg-hover)', borderRadius: '10px', padding: '0.75rem 1rem', display: 'flex', alignItems: 'flex-start', gap: '0.5rem' }}>
-                  <span style={{ fontSize: '0.75rem', fontWeight: 600, color: 'var(--text-secondary)', textTransform: 'uppercase', letterSpacing: '0.6px', fontFamily: "'Inter', sans-serif", whiteSpace: 'nowrap', paddingTop: '2px' }}>
+                  <span style={{ fontSize: '0.75rem', fontWeight: 600, color: 'var(--text-secondary)', textTransform: 'uppercase', letterSpacing: '0.6px', fontFamily: "'Inter', sans-serif", whiteSpace: 'nowrap', paddingTop: '2px', flexShrink: 0 }}>
                     {t('deepDive.timing')}
                   </span>
-                  <span style={{ ...bodyText, fontSize: '0.875rem' }}>{freeData.dosing.timing}</span>
+                  <span style={{ ...bodyText, fontSize: '0.875rem', minWidth: 0 }}>{freeData.dosing.timing}</span>
                 </div>
               </div>
             )}
@@ -495,8 +497,8 @@ export default function PremiumDeepDivePage({
                       }}>
                         {form.bioavailability}
                       </span>
-                      <div>
-                        <div style={{ fontFamily: "'Manrope', sans-serif", fontWeight: 700, fontSize: '0.875rem', color: 'var(--text-primary)', marginBottom: '0.125rem' }}>
+                      <div style={{ minWidth: 0 }}>
+                        <div style={{ fontFamily: "'Manrope', sans-serif", fontWeight: 700, fontSize: '0.875rem', color: 'var(--text-primary)', marginBottom: '0.125rem', overflowWrap: 'break-word', wordBreak: 'break-word' }}>
                           {form.name}
                         </div>
                         <div style={{ ...bodyText, fontSize: '0.8125rem' }}>{form.notes}</div>
@@ -545,7 +547,7 @@ export default function PremiumDeepDivePage({
                       }}>
                         {s.supplement}
                       </span>
-                      <span style={{ ...bodyText, fontSize: '0.8125rem', paddingTop: '3px' }}>{s.reason}</span>
+                      <span style={{ ...bodyText, fontSize: '0.8125rem', paddingTop: '3px', minWidth: 0 }}>{s.reason}</span>
                     </div>
                   ))}
                 </div>

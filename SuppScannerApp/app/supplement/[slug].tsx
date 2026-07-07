@@ -1,11 +1,16 @@
 import { MaterialIcons } from '@expo/vector-icons';
 import { useLocalSearchParams, useRouter } from 'expo-router';
+import * as Linking from 'expo-linking';
+import * as WebBrowser from 'expo-web-browser';
 import { useState, useCallback, useEffect } from 'react';
 import {
   ActivityIndicator,
+  Alert,
+  Linking as RNLinking,
   ScrollView,
   StyleSheet,
   Text,
+  TextInput,
   TouchableOpacity,
   View,
 } from 'react-native';
@@ -15,6 +20,7 @@ import { t, ta } from '../../src/i18n';
 import { useStack } from '../../src/contexts/StackContext';
 import { useAuth, supabase } from '../../src/contexts/AuthContext';
 import { API_BASE_URL } from '../../src/config/api';
+import { getSessionIdForSlug, savePaidDive } from '../../src/utils/paidDives';
 
 const COLORS = {
   primary: '#00685f',
@@ -69,6 +75,58 @@ interface DeepDiveContent {
   cautions: string[];
 }
 
+interface Citation {
+  index: number;
+  pmid: string;
+  title: string;
+  year: number;
+  study_type: string;
+  sample_size: number | null;
+  funding_source: string | null;
+  url: string;
+}
+
+interface PremiumDeepDiveData {
+  summary: string;
+  the_catch: string[];
+  dosage_gap: string | null;
+  interesting_findings: string[];
+  confidence_score: number | null;
+  citations: Citation[];
+  studies_found: number;
+}
+
+interface Interaction {
+  id: string;
+  substance_a: string;
+  substance_b: string;
+  severity: 'danger' | 'caution' | 'synergy';
+  mechanism: string;
+}
+
+const SEVERITY_CONFIG = {
+  danger:  { color: '#ba1a1a', bg: '#fff5f5', icon: 'cancel' as const },
+  caution: { color: '#d97706', bg: '#fef3c7', icon: 'warning' as const },
+  synergy: { color: '#00685f', bg: '#e6f4f1', icon: 'check-circle' as const },
+};
+
+function formatSubstanceName(slug: string) {
+  return slug.split('-').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
+}
+
+function renderSummaryWithCitations(text: string) {
+  const parts = text.split(/(\[\d+\])/g);
+  return parts.map((part, i) => {
+    const match = part.match(/^\[(\d+)\]$/);
+    if (match) {
+      return (
+        <Text key={i} style={styles.citationBadge}>{` ${match[1]} `}</Text>
+      );
+    }
+    return part;
+  });
+}
+
 function InfoRow({ icon, label, value }: { icon: keyof typeof MaterialIcons.glyphMap; label: string; value: string }) {
   return (
     <View style={styles.infoRow}>
@@ -96,7 +154,7 @@ export default function SupplementDetailScreen() {
   const { slug } = useLocalSearchParams<{ slug: string }>();
   const router = useRouter();
   const { inStack, toggleStack } = useStack();
-  const { user } = useAuth();
+  const { user, session, isPremium } = useAuth();
   const isSignedIn = !!user;
 
   const supp = encyclopediaSupplements.find(s => s.slug === slug);
@@ -107,6 +165,125 @@ export default function SupplementDetailScreen() {
   const [ddStarted, setDdStarted] = useState(false);
   const [ddSaved, setDdSaved] = useState(false);
   const [ddSaving, setDdSaving] = useState(false);
+
+  // Premium (RAG-grounded) deep dive — gated by subscription or a 1x paid session
+  const [stripeSessionId, setStripeSessionId] = useState<string | null>(null);
+  const [checkingSession, setCheckingSession] = useState(true);
+  const [buying, setBuying] = useState(false);
+  const [premiumData, setPremiumData] = useState<PremiumDeepDiveData | null>(null);
+  const [interactions, setInteractions] = useState<Interaction[]>([]);
+  const [premiumLoading, setPremiumLoading] = useState(false);
+  const [premiumError, setPremiumError] = useState<string | null>(null);
+  const [question, setQuestion] = useState('');
+  const [asking, setAsking] = useState(false);
+  const [questionAnswer, setQuestionAnswer] = useState<{ q: string; answer: string; citations: Citation[] } | null>(null);
+
+  const canAccessPremium = isPremium || !!stripeSessionId;
+
+  useEffect(() => {
+    if (!slug) return;
+    setCheckingSession(true);
+    getSessionIdForSlug(slug).then(id => {
+      setStripeSessionId(id);
+      setCheckingSession(false);
+    });
+  }, [slug]);
+
+  const premiumHeaders = useCallback((): Record<string, string> => {
+    const h: Record<string, string> = { 'Content-Type': 'application/json' };
+    if (stripeSessionId) h['x-stripe-session'] = stripeSessionId;
+    else if (session?.access_token) h['Authorization'] = `Bearer ${session.access_token}`;
+    return h;
+  }, [stripeSessionId, session]);
+
+  const loadPremiumDeepDive = useCallback(() => {
+    if (!slug) return;
+    setPremiumLoading(true);
+    setPremiumError(null);
+
+    fetch(`${API_BASE_URL}/api/premium/interactions/${slug}`, { headers: premiumHeaders() })
+      .then(r => r.json())
+      .then(json => { if (json.success) setInteractions(json.data || []); })
+      .catch(() => {});
+
+    fetch(`${API_BASE_URL}/api/premium/deep-dive/${slug}`, {
+      method: 'POST',
+      headers: premiumHeaders(),
+      body: JSON.stringify({}),
+    })
+      .then(r => r.json())
+      .then(json => {
+        if (json.success) setPremiumData(json.data);
+        else setPremiumError(json.error || 'Failed to load premium content');
+      })
+      .catch(() => setPremiumError('Network error — check connection'))
+      .finally(() => setPremiumLoading(false));
+  }, [slug, premiumHeaders]);
+
+  useEffect(() => {
+    if (checkingSession || !canAccessPremium) return;
+    loadPremiumDeepDive();
+  }, [checkingSession, canAccessPremium, slug]);
+
+  const askQuestion = useCallback(() => {
+    if (!question.trim() || !slug) return;
+    setAsking(true);
+    setQuestionAnswer(null);
+    fetch(`${API_BASE_URL}/api/premium/deep-dive/${slug}`, {
+      method: 'POST',
+      headers: premiumHeaders(),
+      body: JSON.stringify({ question: question.trim() }),
+    })
+      .then(r => r.json())
+      .then(json => {
+        if (json.success) setQuestionAnswer({ q: question.trim(), answer: json.data.summary, citations: json.data.citations });
+        else Alert.alert('Something went wrong', json.error || 'Failed to answer question');
+      })
+      .catch(() => Alert.alert('Network error', 'Please check your connection and try again.'))
+      .finally(() => setAsking(false));
+  }, [question, slug, premiumHeaders]);
+
+  const handleBuyDive = useCallback(async () => {
+    if (!slug || buying) return;
+    setBuying(true);
+    try {
+      const redirectTo = Linking.createURL(`supplement/${slug}`);
+      const res = await fetch(`${API_BASE_URL}/api/payment/create-checkout`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          supplementSlug: slug,
+          successUrl: `${redirectTo}?dive_paid=1&session_id={CHECKOUT_SESSION_ID}`,
+          cancelUrl: redirectTo,
+        }),
+      });
+      const data = await res.json();
+      if (!data.url) {
+        Alert.alert('Something went wrong', data.error || 'Please try again.');
+        return;
+      }
+
+      const result = await WebBrowser.openAuthSessionAsync(data.url, redirectTo);
+      if (result.type !== 'success') return;
+
+      const { queryParams } = Linking.parse(result.url);
+      const paidSessionId = queryParams?.session_id as string | undefined;
+      if (queryParams?.dive_paid === '1' && paidSessionId) {
+        const verifyRes = await fetch(`${API_BASE_URL}/api/payment/verify-session?id=${paidSessionId}`);
+        const verifyData = await verifyRes.json();
+        if (verifyData.paid) {
+          await savePaidDive(slug, paidSessionId);
+          setStripeSessionId(paidSessionId);
+        } else {
+          Alert.alert('Payment not completed', 'Please try again.');
+        }
+      }
+    } catch {
+      Alert.alert('Network error', 'Please check your connection and try again.');
+    } finally {
+      setBuying(false);
+    }
+  }, [slug, buying]);
 
   const loadDeepDive = useCallback(() => {
     if (!slug) return;
@@ -127,11 +304,19 @@ export default function SupplementDetailScreen() {
     if (!user || !slug) { setDdSaved(false); return; }
     supabase
       .from('saved_deep_dives')
-      .select('slug')
+      .select('slug, content')
       .eq('user_id', user.id)
       .eq('slug', slug)
       .maybeSingle()
-      .then(({ data }) => setDdSaved(!!data));
+      .then(({ data }) => {
+        setDdSaved(!!data);
+        if (data?.content) {
+          // Hydrate instantly from the user's saved snapshot — never
+          // re-fetch/regenerate content the user already saved.
+          setDeepDive(data.content);
+          setDdStarted(true);
+        }
+      });
   }, [user?.id, slug]);
 
   const toggleSaveDeepDive = useCallback(async () => {
@@ -409,6 +594,173 @@ export default function SupplementDetailScreen() {
                     {ddSaved ? 'Saved to Deep Dives' : 'Save Deep Dive'}
                   </Text>
                 </TouchableOpacity>
+              </View>
+            )}
+
+            {/* Premium Insights — RAG-grounded, gated by subscription or 1x purchase */}
+            {isSignedIn && !checkingSession && (
+              <View style={styles.premiumSection}>
+                <View style={styles.premiumHeader}>
+                  <MaterialIcons name="workspace-premium" size={18} color="#f59e0b" />
+                  <Text style={styles.premiumHeaderTitle}>Premium Insights</Text>
+                </View>
+
+                {!canAccessPremium && (
+                  <View style={styles.ddLockContainer}>
+                    <View style={[styles.ddLockIconWrap, { backgroundColor: catColor + '15' }]}>
+                      <MaterialIcons name="lock" size={28} color={catColor} />
+                    </View>
+                    <Text style={styles.ddLockTitle}>Unlock evidence-grounded analysis</Text>
+                    <Text style={styles.ddLockBody}>
+                      Cited studies, interaction & safety checks, dosage-gap alerts, and the ability to ask follow-up questions about {supp.name}.
+                    </Text>
+                    <TouchableOpacity
+                      style={[styles.ddSignInBtn, { backgroundColor: catColor }]}
+                      onPress={() => router.push('/premium' as any)}
+                      activeOpacity={0.85}
+                    >
+                      <Text style={styles.ddSignInBtnText}>Go Premium</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity
+                      style={[styles.buyDiveBtn, { borderColor: catColor }]}
+                      onPress={handleBuyDive}
+                      disabled={buying}
+                      activeOpacity={0.85}
+                    >
+                      {buying ? (
+                        <ActivityIndicator color={catColor} />
+                      ) : (
+                        <Text style={[styles.buyDiveBtnText, { color: catColor }]}>Buy this deep dive · $1.99</Text>
+                      )}
+                    </TouchableOpacity>
+                  </View>
+                )}
+
+                {canAccessPremium && premiumLoading && (
+                  <View style={styles.ddLoadingContainer}>
+                    <ActivityIndicator size="large" color={catColor} />
+                    <Text style={styles.ddLoadingText}>Retrieving evidence…</Text>
+                  </View>
+                )}
+
+                {canAccessPremium && premiumError && !premiumLoading && (
+                  <View style={styles.ddErrorContainer}>
+                    <MaterialIcons name="error-outline" size={32} color="#ba1a1a" />
+                    <Text style={styles.ddErrorText}>{premiumError}</Text>
+                    <TouchableOpacity style={[styles.retryBtn, { borderColor: catColor }]} onPress={loadPremiumDeepDive} activeOpacity={0.8}>
+                      <Text style={[styles.retryBtnText, { color: catColor }]}>Try again</Text>
+                    </TouchableOpacity>
+                  </View>
+                )}
+
+                {canAccessPremium && premiumData && !premiumLoading && (
+                  <View>
+                    {premiumData.confidence_score !== null && (
+                      <SectionCard title="Evidence Confidence">
+                        <View style={styles.confidenceRow}>
+                          <View style={styles.confidenceBarTrack}>
+                            <View style={[styles.confidenceBarFill, {
+                              width: `${premiumData.confidence_score}%`,
+                              backgroundColor: premiumData.confidence_score >= 70 ? '#00685f' : premiumData.confidence_score >= 45 ? '#d97706' : '#ba1a1a',
+                            }]} />
+                          </View>
+                          <Text style={styles.confidenceScoreText}>{premiumData.confidence_score}%</Text>
+                        </View>
+                        <Text style={styles.confidenceSubtext}>Based on {premiumData.studies_found} cited {premiumData.studies_found === 1 ? 'study' : 'studies'}</Text>
+                      </SectionCard>
+                    )}
+
+                    <SectionCard title="Grounded Summary">
+                      <Text style={styles.bodyText}>{renderSummaryWithCitations(premiumData.summary)}</Text>
+                    </SectionCard>
+
+                    {premiumData.dosage_gap && (
+                      <SectionCard title="Dosage Gap">
+                        <Text style={styles.bodyText}>{premiumData.dosage_gap}</Text>
+                      </SectionCard>
+                    )}
+
+                    {premiumData.the_catch.length > 0 && (
+                      <SectionCard title="The Catch">
+                        {premiumData.the_catch.map((c, i) => (
+                          <BulletItem key={i} text={c} color="#d97706" icon="warning" />
+                        ))}
+                      </SectionCard>
+                    )}
+
+                    {premiumData.interesting_findings.length > 0 && (
+                      <SectionCard title="Interesting Findings">
+                        {premiumData.interesting_findings.map((f, i) => (
+                          <BulletItem key={i} text={f} color={catColor} icon="lightbulb" />
+                        ))}
+                      </SectionCard>
+                    )}
+
+                    {premiumData.citations.length > 0 && (
+                      <SectionCard title="Cited Studies">
+                        {premiumData.citations.map(c => (
+                          <TouchableOpacity
+                            key={c.index}
+                            style={styles.citationRow}
+                            onPress={() => RNLinking.openURL(c.url)}
+                            activeOpacity={0.7}
+                          >
+                            <Text style={styles.citationIndex}>[{c.index}]</Text>
+                            <View style={{ flex: 1 }}>
+                              <Text style={styles.citationTitle}>{c.title}</Text>
+                              <Text style={styles.citationMeta}>{c.study_type} · {c.year}{c.sample_size ? ` · n=${c.sample_size}` : ''}</Text>
+                            </View>
+                          </TouchableOpacity>
+                        ))}
+                      </SectionCard>
+                    )}
+
+                    {interactions.length > 0 && (
+                      <SectionCard title="Interaction & Safety Check">
+                        {interactions.map(inter => {
+                          const cfg = SEVERITY_CONFIG[inter.severity];
+                          return (
+                            <View key={inter.id} style={[styles.interactionCard, { backgroundColor: cfg.bg, borderColor: cfg.color }]}>
+                              <View style={styles.interactionTop}>
+                                <MaterialIcons name={cfg.icon} size={15} color={cfg.color} />
+                                <Text style={[styles.interactionName, { color: cfg.color }]}>
+                                  {formatSubstanceName(inter.substance_b)}
+                                </Text>
+                              </View>
+                              <Text style={styles.interactionMechanism}>{inter.mechanism}</Text>
+                            </View>
+                          );
+                        })}
+                      </SectionCard>
+                    )}
+
+                    <SectionCard title="Ask a Question">
+                      <TextInput
+                        style={styles.questionInput}
+                        placeholder={`Ask anything about ${supp.name}…`}
+                        placeholderTextColor={COLORS.outline}
+                        value={question}
+                        onChangeText={setQuestion}
+                        multiline
+                      />
+                      <TouchableOpacity
+                        style={[styles.askBtn, { backgroundColor: catColor }, (!question.trim() || asking) && { opacity: 0.6 }]}
+                        onPress={askQuestion}
+                        disabled={!question.trim() || asking}
+                        activeOpacity={0.85}
+                      >
+                        {asking ? <ActivityIndicator color="#ffffff" /> : <Text style={styles.askBtnText}>Ask</Text>}
+                      </TouchableOpacity>
+
+                      {questionAnswer && (
+                        <View style={styles.questionAnswerBox}>
+                          <Text style={styles.questionAnswerQ}>{questionAnswer.q}</Text>
+                          <Text style={styles.bodyText}>{renderSummaryWithCitations(questionAnswer.answer)}</Text>
+                        </View>
+                      )}
+                    </SectionCard>
+                  </View>
+                )}
               </View>
             )}
           </View>
@@ -890,5 +1242,157 @@ const styles = StyleSheet.create({
     fontSize: 13,
     color: COLORS.onSurfaceVariant,
     lineHeight: 20,
+  },
+
+  // Premium insights
+  premiumSection: { marginTop: 16 },
+  premiumHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+    marginBottom: 12,
+  },
+  premiumHeaderTitle: {
+    fontFamily: 'Manrope_800ExtraBold',
+    fontWeight: '800',
+    fontSize: 16,
+    color: COLORS.onSurface,
+    letterSpacing: -0.2,
+  },
+  buyDiveBtn: {
+    borderWidth: 1.5,
+    borderRadius: 28,
+    paddingHorizontal: 24,
+    paddingVertical: 11,
+    marginTop: 10,
+  },
+  buyDiveBtnText: {
+    fontFamily: 'Inter_600SemiBold',
+    fontWeight: '600',
+    fontSize: 14,
+  },
+  confidenceRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 10,
+    marginBottom: 6,
+  },
+  confidenceBarTrack: {
+    flex: 1,
+    height: 6,
+    borderRadius: 999,
+    backgroundColor: COLORS.surfaceContainerHigh,
+    overflow: 'hidden',
+  },
+  confidenceBarFill: {
+    height: '100%',
+    borderRadius: 999,
+  },
+  confidenceScoreText: {
+    fontFamily: 'Manrope_800ExtraBold',
+    fontWeight: '800',
+    fontSize: 14,
+    color: COLORS.onSurface,
+  },
+  confidenceSubtext: {
+    fontFamily: 'Inter_400Regular',
+    fontWeight: '400',
+    fontSize: 12,
+    color: COLORS.outline,
+  },
+  citationBadge: {
+    fontFamily: 'Inter_600SemiBold',
+    fontWeight: '600',
+    fontSize: 10,
+    color: '#ffffff',
+    backgroundColor: '#00685f',
+    borderRadius: 4,
+    overflow: 'hidden',
+    paddingHorizontal: 3,
+  },
+  citationRow: {
+    flexDirection: 'row',
+    gap: 10,
+    paddingVertical: 8,
+    borderBottomWidth: StyleSheet.hairlineWidth,
+    borderBottomColor: 'rgba(109,122,119,0.12)',
+  },
+  citationIndex: {
+    fontFamily: 'Inter_600SemiBold',
+    fontWeight: '600',
+    fontSize: 13,
+    color: COLORS.primary,
+  },
+  citationTitle: {
+    fontFamily: 'Inter_600SemiBold',
+    fontWeight: '600',
+    fontSize: 13,
+    color: COLORS.onSurface,
+    marginBottom: 2,
+  },
+  citationMeta: {
+    fontFamily: 'Inter_400Regular',
+    fontWeight: '400',
+    fontSize: 12,
+    color: COLORS.outline,
+  },
+  interactionCard: {
+    borderWidth: 1,
+    borderRadius: 12,
+    padding: 12,
+    marginBottom: 10,
+  },
+  interactionTop: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 6,
+    marginBottom: 4,
+  },
+  interactionName: {
+    fontFamily: 'Manrope_800ExtraBold',
+    fontWeight: '800',
+    fontSize: 13,
+  },
+  interactionMechanism: {
+    fontFamily: 'Inter_400Regular',
+    fontWeight: '400',
+    fontSize: 13,
+    color: COLORS.onSurfaceVariant,
+    lineHeight: 19,
+  },
+  questionInput: {
+    borderWidth: 1,
+    borderColor: COLORS.surfaceContainerHigh,
+    borderRadius: 12,
+    padding: 12,
+    fontFamily: 'Inter_400Regular',
+    fontSize: 14,
+    color: COLORS.onSurface,
+    minHeight: 44,
+    marginBottom: 10,
+  },
+  askBtn: {
+    borderRadius: 28,
+    paddingVertical: 11,
+    alignItems: 'center',
+  },
+  askBtnText: {
+    fontFamily: 'Inter_600SemiBold',
+    fontWeight: '600',
+    fontSize: 14,
+    color: '#ffffff',
+  },
+  questionAnswerBox: {
+    marginTop: 12,
+    paddingTop: 12,
+    borderTopWidth: StyleSheet.hairlineWidth,
+    borderTopColor: 'rgba(109,122,119,0.15)',
+  },
+  questionAnswerQ: {
+    fontFamily: 'Manrope_800ExtraBold',
+    fontWeight: '800',
+    fontSize: 13,
+    color: COLORS.onSurface,
+    marginBottom: 6,
   },
 });

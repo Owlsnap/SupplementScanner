@@ -1813,6 +1813,27 @@ app.post('/api/premium/deep-dive/:slug', requirePremiumAccess, async (req, res) 
     return res.status(403).json({ success: false, error: 'This session is not valid for this supplement' });
   }
 
+  // Only the no-question "open" call is cached — each asked question is a
+  // distinct query, but reopening the same deep dive should never re-run
+  // embeddings + GPT-4o generation for something already paid for and seen.
+  const db = getSupabaseService();
+  if (!question) {
+    try {
+      const { data: cached } = await db
+        .from('premium_deep_dives')
+        .select('data')
+        .eq('user_id', req.user.id)
+        .eq('slug', slug)
+        .maybeSingle();
+      if (cached?.data) {
+        return res.json({ success: true, cached: true, data: cached.data });
+      }
+    } catch (err) {
+      console.error(`💥 Premium deep dive cache read error for ${slug}:`, err.message);
+      // Fall through to regeneration — a cache miss/error should never block access.
+    }
+  }
+
   try {
     const name = SLUG_TO_NAME[slug] || slug.split('-').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
     const query = question ? `${name}: ${question}` : `${name} supplementation efficacy dosage mechanisms`;
@@ -1905,21 +1926,32 @@ Respond with a JSON object with exactly these fields:
       ? Math.round((weights.reduce((a, b) => a + b, 0) / weights.length) * 100)
       : null;
 
-    return res.json({
-      success: true,
-      data: {
-        slug,
-        supplement: name,
-        question: userQuery,
-        summary: parsed.summary || '',
-        the_catch: Array.isArray(parsed.the_catch) ? parsed.the_catch : [],
-        dosage_gap: parsed.dosage_gap || null,
-        interesting_findings: Array.isArray(parsed.interesting_findings) ? parsed.interesting_findings : [],
-        confidence_score: confidenceScore,
-        citations,
-        studies_found: citations.length,
-      },
-    });
+    const resultData = {
+      slug,
+      supplement: name,
+      question: userQuery,
+      summary: parsed.summary || '',
+      the_catch: Array.isArray(parsed.the_catch) ? parsed.the_catch : [],
+      dosage_gap: parsed.dosage_gap || null,
+      interesting_findings: Array.isArray(parsed.interesting_findings) ? parsed.interesting_findings : [],
+      confidence_score: confidenceScore,
+      citations,
+      studies_found: citations.length,
+    };
+
+    if (!question) {
+      try {
+        await db.from('premium_deep_dives').upsert(
+          { user_id: req.user.id, slug, data: resultData, generated_at: new Date().toISOString() },
+          { onConflict: 'user_id,slug' }
+        );
+      } catch (err) {
+        console.error(`💥 Premium deep dive cache write error for ${slug}:`, err.message);
+        // Non-fatal — the user still gets their freshly generated result this request.
+      }
+    }
+
+    return res.json({ success: true, cached: false, data: resultData });
 
   } catch (error) {
     console.error(`💥 Premium deep dive error for ${slug}:`, error);
@@ -2105,14 +2137,16 @@ const SITE_URL = (process.env.SITE_URL || 'http://localhost:5173').trim();
 app.post('/api/payment/create-checkout', async (req, res) => {
   if (!stripe) return res.status(503).json({ success: false, error: 'Payment not configured' });
 
-  const { supplementSlug } = req.body;
+  const { supplementSlug, successUrl: successUrlOverride, cancelUrl: cancelUrlOverride } = req.body;
 
-  const successUrl = supplementSlug
+  // Mobile passes an app deep link so expo-web-browser can detect completion;
+  // web falls back to the site's premium-deep-dive page.
+  const successUrl = successUrlOverride || (supplementSlug
     ? `${SITE_URL}/encyclopedia/${supplementSlug}/premium-deep-dive?dive_paid=1&session_id={CHECKOUT_SESSION_ID}`
-    : `${SITE_URL}/premium`;
-  const cancelUrl = supplementSlug
+    : `${SITE_URL}/premium`);
+  const cancelUrl = cancelUrlOverride || (supplementSlug
     ? `${SITE_URL}/encyclopedia/${supplementSlug}`
-    : `${SITE_URL}/premium`;
+    : `${SITE_URL}/premium`);
 
   console.log('🛒 Creating checkout — slug:', supplementSlug, '| success_url:', successUrl);
 

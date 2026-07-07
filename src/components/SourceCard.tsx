@@ -65,7 +65,7 @@ export default function SourceCard({ citation }: SourceCardProps) {
       }}
     >
       {/* Top row: index badge + study type pill + arrow */}
-      <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.5rem' }}>
+      <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.5rem', flexWrap: 'wrap' }}>
         <span style={{
           width: '20px', height: '20px',
           background: '#00685f', color: '#fff',
@@ -122,6 +122,8 @@ export default function SourceCard({ citation }: SourceCardProps) {
         WebkitLineClamp: 2,
         WebkitBoxOrient: 'vertical',
         overflow: 'hidden',
+        overflowWrap: 'break-word',
+        wordBreak: 'break-word',
       }}>
         {citation.title}
       </p>
