@@ -1743,6 +1743,486 @@
         "Att ta betakarotentillskott simultaneously — höga doser betakaroten konkurrerar med lutein och zeaxantin om tarmabsorption och togs bort från den uppdaterade AREDS2-formeln av denna anledning; undvik att kombinera dem.",
         "Att använda produkter med mycket lågt zeaxantininnehåll — många billiga lutentillskott innehåller bara spårzeaxantin trots dess distinkta och viktiga roll i den centrala makula; leta efter minst 2 mg zeaxantin vid sidan av 10 mg lutein."
       ]
+    },
+    "whey-protein": {
+      "tagline": "Standardproteinet med snabbt upptag för muskelreparation",
+      "primaryUse": "Ger en komplett, leucinrik aminosyraprofil som snabbt stimulerar muskelproteinsyntes",
+      "overview": "Vassle är en biprodukt från osttillverkning, rik på alla nio essentiella aminosyror och ovanligt högt i leucin — den primära utlösaren för muskelproteinsyntes. Den bryts ner snabbare än kasein eller växtprotein, vilket gör den idealisk runt träning när snabb aminosyratillförsel är viktigast. Årtionden av forskning visar konsekvent att den stödjer muskeltillväxt och återhämtning minst lika bra som, och ofta bättre än, andra proteinkällor gram för gram.",
+      "typicalDose": "20–40 g per portion, 1–2 gånger dagligen",
+      "bestFor": ["Återhämtning efter träning", "Att nå dagliga proteinmål", "Mager muskeluppbyggnad"],
+      "keyFacts": [
+        "Leucininnehållet (~2,5–3 g per 25 g portion) överskrider den ~2,5 g-tröskel som visat sig maximalt utlösa muskelproteinsyntes",
+        "Vassleisolat är ~90 %+ protein med minimal laktos — bättre tolererat vid känslighet än koncentrat",
+        "Totalt dagligt proteinintag spelar större roll än exakt timing — vassle är ett bekvämt verktyg, inte ett magiskt fönster"
+      ],
+      "commonMistakes": [
+        "Att fixera vid det 30-minuters långa fönstret efter träning — totalt dagligt proteinintag och fördelning över måltider spelar mycket större roll än exakt timing.",
+        "Att välja koncentrat vid laktosintolerans — isolat eller hydrolysat tar bort nästan all laktos och undviker magbesvär."
+      ]
+    },
+    "l-arginine": {
+      "tagline": "Kväveoxidprekursor med svagare pumpeffekt än citrullin",
+      "primaryUse": "Fungerar som direkt substrat för kväveoxidsyntas och stödjer kärlutvidgning",
+      "overview": "L-Arginin är aminosyran som kväveoxidsyntas omvandlar direkt till kväveoxid, molekylen som ansvarar för blodkärlsutvidgning. I teorin borde detta öka pump och blodflöde, men en stor del av oralt intaget arginin bryts ner av tarm- och leverarginas innan det når blodomloppet — en begränsning citrullin (som kringgår denna first-pass-metabolism) inte delar. Arginin har fortfarande verklig evidens för kardiovaskulärt och erektilt stöd vid högre, konsekventa doser.",
+      "typicalDose": "3–6 g dagligen",
+      "bestFor": ["Kardiovaskulärt och blodtrycksstöd", "Erektilt funktionsstöd", "Allmän kväveoxidproduktion"],
+      "keyFacts": [
+        "Oral biotillgänglighet begränsas av first-pass-metabolism i levern — citrullin höjer plasmaarginin effektivare än arginin i sig",
+        "Högre doser (6 g+) förknippas med magbesvär inklusive kramper och diarré",
+        "Långtidsstudier stödjer måttliga blodtryckssänkningar hos personer med högt blodtryck"
+      ],
+      "commonMistakes": [
+        "Att ta det direkt före träning i hopp om akut pumpeffekt — citrullinmalat är det bättre studerade valet för just det syftet.",
+        "Att kombinera med PDE5-hämmare (sildenafil) eller nitratmediciner utan läkarkontakt — den additiva kärlutvidgningen kan orsaka farliga blodtrycksfall."
+      ]
+    },
+    "yohimbine": {
+      "tagline": "Stimulerande alkaloid marknadsförd för envis fettförbränning, hög biverkningsbörda",
+      "primaryUse": "Blockerar alfa-2-adrenerga receptorer som annars hämmar fettmobilisering i envisa fettdepåer",
+      "overview": "Yohimbin, utvunnet från barken på Pausinystalia yohimbe, blockerar alfa-2-receptorer som normalt dämpar fettnedbrytning i områden med hög täthet av dem (nedre buk, höfter). Mekanismen är genuint intressant, men mänskliga data om fettförbränning är tunna och inkonsekventa, och den stimulerande biverkningsprofilen (ångest, förhöjd hjärtfrekvens, blodtrycksspikar) är betydande även vid standarddoser. Bör bara användas fastande, eftersom mat kraftigt dämpar effekten, och aldrig kombineras med andra stimulantia.",
+      "typicalDose": "0,2 mg/kg kroppsvikt, fastande",
+      "bestFor": ["Fastande cardio för envis fettvävnad", "Erfarna användare toleranta mot stimulantia", "Endast korttidsanvändning"],
+      "keyFacts": [
+        "Måste tas fastande — insulin från mat blockerar nästan helt den alfa-2-antagonistiska mekanismen",
+        "Orsakar ofta ångest, rastlöshet och förhöjd hjärtfrekvens redan vid rekommenderad dos",
+        "Kontraindicerat vid ångestsyndrom, hjärt-kärlsjukdom och MAO-hämmare"
+      ],
+      "commonMistakes": [
+        "Att ta det med eller efter mat — detta eliminerar i praktiken den fettmobiliserande effekten eftersom insulin direkt motverkar alfa-2-blockaden.",
+        "Att stapla med koffein eller andra stimulantia — båda höjer puls och blodtryck via överlappande vägar, vilket markant ökar den kardiovaskulära belastningen."
+      ]
+    },
+    "kava": {
+      "tagline": "Traditionellt rotextrakt från Stillahavsöarna mot ångest och avslappning",
+      "primaryUse": "Kavalaktoner modulerar GABA-A-receptorer och blockerar spänningsstyrda natrium-/kalciumkanaler, vilket ger ångestdämpande effekt",
+      "overview": "Kava är en rot som länge använts ceremoniellt i Stillahavsöarna för sin lugnande, milt euforiska effekt. De aktiva kavalaktonerna verkar på GABA-A-receptorer på ett sätt som liknar bensodiazepiner men via en annan mekanism, och flera RCT:er stödjer meningsfull ångestminskning. Den stora reservationen gäller leversäkerhet: ett litet antal fall av leverskada (mestadels kopplade till lågkvalitativa etanol-/acetonextrakt snarare än traditionella vattenbaserade beredningar) ledde till förbud i flera länder på 2000-talet, senare hävt efter förbättrad standardisering.",
+      "typicalDose": "70–250 mg kavalaktoner dagligen",
+      "bestFor": ["Situationsbunden och generaliserad ångest", "Avslappning inför sömn", "Social ångest vid korttidsanvändning"],
+      "keyFacts": [
+        "Vattenextraherad kava av ädel sort har betydligt bättre leversäkerhetsprofil än äldre etanol-/acetonextrakt kopplade till tidigare leverskadefall",
+        "Effekten märks inom 1–2 timmar, till skillnad från ashwagandhas flerveckors upptrappning",
+        "Bör inte kombineras med alkohol eller andra levermetaboliserade lugnande medel"
+      ],
+      "commonMistakes": [
+        "Att använda icke-ädla kavasorter eller icke-vattenbaserade extrakt — dessa bär den leverrisk som gav kava sitt (till stor del åtgärdade) dåliga rykte.",
+        "Att kombinera med alkohol, bensodiazepiner eller andra levertoxiska/lugnande medel — additiv leverbelastning och risk för CNS-dämpning."
+      ]
+    },
+    "passionflower": {
+      "tagline": "Milt GABAergiskt örtextrakt för ångest och insomning",
+      "primaryUse": "Höjer GABA-nivåerna i hjärnan, vilket ger mild ångestdämpande och lugnande effekt",
+      "overview": "Passionsblomma (Passiflora incarnata) har lång folkmedicinsk historia mot nervositet och sömnlöshet, och moderna studier stödjer måttliga men verkliga ångestdämpande effekter — inklusive en studie som visade jämförbar ångestminskning med en lågdos bensodiazepin men med färre kognitiva biverkningar. Den är mildare än kava eller vänderot, vilket gör den till ett rimligt förstahandsval vid mild ångest eller svårighet att varva ner inför sömn.",
+      "typicalDose": "250–500 mg extrakt, eller 1 kopp te före sänggåendet",
+      "bestFor": ["Mild till måttlig ångest", "Nedvarvning inför sömn", "De som är känsliga för starkare lugnande medel"],
+      "keyFacts": [
+        "En RCT från 2001 visade att passionsblommeextrakt var jämförbart med oxazepam för generaliserad ångest, med mindre påverkan på arbetsprestation",
+        "Effekten är mild jämfört med vänderot eller kava — bäst lämpad för lågnivåångest, inte akut panik",
+        "Generellt väl tolererat med minimal morgontrötthet vid standarddoser"
+      ],
+      "commonMistakes": [
+        "Att förvänta sig kraftig sedering — passionsblommans effekt är subtil; de som behöver starkare lugnande stöd kan behöva vänderot eller melatonin istället.",
+        "Att kombinera med andra lugnande medel (alkohol, bensodiazepiner, andra GABAergiska tillskott) utan att räkna med additiv dåsighet."
+      ]
+    },
+    "holy-basil": {
+      "tagline": "Adaptogen ört för stressmotstånd och blodsockerstöd",
+      "primaryUse": "Modulerar kortisol och stressresponsvägar samtidigt som den stödjer friska blodsockernivåer",
+      "overview": "Heligt basilika, eller tulsi (Ocimum sanctum), är en hörnsten i ayurvedisk medicin som används som adaptogen — ett ämne som hjälper kroppen normalisera sin stressrespons. Studier på människor visar minskad upplevd stress, ångest och kortisol, samt måttliga förbättringar av fasteblodsocker i vissa populationer. Den är mildare och långsammare än ashwagandha men delar en liknande adaptogen profil, med en extra metabolisk vinkel som ashwagandha inte betonar lika starkt.",
+      "typicalDose": "300–600 mg extrakt dagligen, eller 2–3 koppar te",
+      "bestFor": ["Kronisk lågnivåstress", "Blodsockerstöd", "Allmän adaptogen användning tillsammans med kostförändringar"],
+      "keyFacts": [
+        "Flera små RCT:er visar minskad upplevd stress och ångestpoäng över 6–8 veckors användning",
+        "Viss evidens för mild blodsockersänkande effekt — försiktighet vid kombination med diabetesmedicin",
+        "Traditionellt intaget som te, även om standardiserade extrakt ger mer konsekvent dosering"
+      ],
+      "commonMistakes": [
+        "Att förvänta sig snabba resultat — precis som de flesta adaptogener byggs heligt basilikas stressfördelar upp under flera veckors konsekvent användning, inte enstaka doser.",
+        "Att kombinera med diabetesmedicin utan monitorering — den milda blodsockersänkande effekten kan förstärkas tillsammans med metformin eller sulfonylureider."
+      ]
+    },
+    "l-tyrosine": {
+      "tagline": "Aminosyraprekursor för dopamin och noradrenalin under stress",
+      "primaryUse": "Återfyller katekolaminprekursorer som töms vid akut stress, kyla eller sömnbrist",
+      "overview": "Tyrosin är den direkta prekursorn till dopamin och noradrenalin. Under normala förhållanden gör kroppen gott om det från kostprotein, men militär- och kognitiv prestationsforskning visar konsekvent att det hjälper bevara arbetsminne och kognitiv prestation specifikt under akuta stressorer — sömnbrist, köldexponering, multitaskingkrav — där katekolaminsyntesen inte hänger med efterfrågan. Det gör lite för väl utvilad baslinjekognition.",
+      "typicalDose": "500–2000 mg, 30–60 minuter före en stressor",
+      "bestFor": ["Kognitiv prestation under akut stress", "Prestation vid sömnbrist", "Multitaskingtunga arbetspass"],
+      "keyFacts": [
+        "Mest konsekvent effektivt vid akut stress, kyla eller sömnbrist — minimal effekt på kognition i utvilat, lågstresstillstånd",
+        "N-Acetyl-Tyrosin (NALT) marknadsförs ofta som mer biotillgängligt men har svagare evidens än vanligt L-tyrosin",
+        "Bör undvikas eller användas försiktigt med MAO-hämmare på grund av risk för katekolamininteraktion"
+      ],
+      "commonMistakes": [
+        "Att ta det dagligen i hopp om en generell kognitiv boost — evidensbasen gäller specifikt prestation under akut stress, inte allmän nootropisk användning.",
+        "Att välja NALT framför vanligt L-tyrosin i tron om bättre upptag — den ursprungliga forskningen och starkaste evidensbasen använder standard-L-tyrosin."
+      ]
+    },
+    "pqq": {
+      "tagline": "Mitokondriell biogenesförening med tidig human evidens",
+      "primaryUse": "Utlöser PGC-1α-signalering för att främja tillväxt av nya mitokondrier",
+      "overview": "PQQ (pyrrolokinolinkinon) är en redoxaktiv förening som finns i spårmängder i fermenterad mat och kombineras ofta med CoQ10. Djurstudier visar att den stimulerar mitokondriell biogenes via PGC-1α-vägen, och en handfull små humanstudier antyder fördelar för sömnkvalitet, arbetsminne och inflammationsmarkörer. Den humana evidensbasen är fortfarande tunn jämfört med mer etablerade mitokondriestödjande tillskott som CoQ10 eller ALCAR.",
+      "typicalDose": "10–20 mg dagligen",
+      "bestFor": ["Mitokondriellt stöd tillsammans med CoQ10", "Allmänt kognitivt och energistöd", "Långsiktiga hälsospannsprotokoll"],
+      "keyFacts": [
+        "Djurdata om mitokondriell biogenes är stark; human RCT-data är begränsad till ett fåtal studier",
+        "Kombineras ofta med CoQ10 för kompletterande mitokondriellt stöd — biogenes (PQQ) plus elektrontransport (CoQ10)",
+        "Generellt väl tolererat vid studerade doser utan större säkerhetssignaler"
+      ],
+      "commonMistakes": [
+        "Att förvänta sig akuta energieffekter — PQQ:s föreslagna mekanism (bygga nya mitokondrier) utspelar sig över veckor till månader, inte enstaka doser.",
+        "Att behandla det som en bevisad ersättning för CoQ10 — de två har olika, kompletterande mekanismer och PQQ har en mycket mindre human evidensbas."
+      ]
+    },
+    "nadh": {
+      "tagline": "Stabiliserad koenzymform marknadsförd för cellenergi och trötthet",
+      "primaryUse": "Fungerar som den reducerade formen av NAD+, elektronbäraren central för mitokondriell ATP-produktion",
+      "overview": "NADH är den reducerade (elektronbärande) formen av NAD+, ett koenzym essentiellt för elektrontransportkedjan som genererar cellulärt ATP. Små studier — mestadels vid kroniskt trötthetssyndrom och jetlag — antyder måttliga symtomförbättringar, men oralt NADH har notoriskt dålig och inkonsekvent biotillgänglighet eftersom det är en stor, instabil molekyl som lätt bryts ner före upptag. NMN och NR är generellt bättre stödda vägar för att höja cellulära NAD+-nivåer.",
+      "typicalDose": "5–20 mg dagligen, på tom mage",
+      "bestFor": ["Stöd vid tröttheteymptom", "Lindring av jetlag", "Komplement till andra NAD+-prekursorer"],
+      "keyFacts": [
+        "Oral biotillgänglighet är dålig och inkonsekvent — molekylen är stor och bryts lätt ner i tarmen före upptag",
+        "Stabiliserade, entericbelagda formuleringar försöker adressera upptaget men evidensen för att meningsfullt höja NAD+ i blodet är begränsad",
+        "Små studier vid kroniskt trötthetssyndrom visar måttlig men inkonsekvent symtomlindring"
+      ],
+      "commonMistakes": [
+        "Att förvänta sig att det höjer cellulärt NAD+ lika tillförlitligt som NMN eller NR — oralt NADH:s upptagsproblem gör det till en mindre bevisad väg mot det resultatet.",
+        "Att ta det med mat — upptaget är redan marginellt; tom mage rekommenderas generellt för bästa möjliga chans."
+      ]
+    },
+    "cla": {
+      "tagline": "Fettsyra marknadsförd för fettförbränning, evidensen är måttlig och inkonsekvent",
+      "primaryUse": "Förändrar fettcellsmetabolism och kan måttligt minska kroppsfettmassa över månaders användning",
+      "overview": "CLA (konjugerad linolsyra) är en naturligt förekommande fettsyra som finns i nöt- och mejeriprodukter, isolerad och koncentrerad i tillskottsform för sina föreslagna fettmetaboliska effekter. Metaanalyser visar en liten men statistiskt verklig minskning av kroppsfett (ungefär 0,05–0,1 kg per vecka) vid regelbunden användning över månader — betydligt mer måttligt än marknadsföringspåståenden antyder, och vissa studier visar ingen effekt alls. Det är inget substitut för ett kaloriunderskott.",
+      "typicalDose": "3,2–6 g dagligen, uppdelat vid måltider",
+      "bestFor": ["Måttligt komplement till en fettförbränningsdiet", "Långtidsanvändning (månader), inte korta cykler", "De som redan har kaloriunderskott"],
+      "keyFacts": [
+        "Metaanalyser visar att effektstorlekarna är små och starkt beroende av studielängd — meningsfulla resultat tar månader, inte veckor",
+        "Vissa studier rapporterar ingen signifikant fettförbränningseffekt alls — resultaten är inkonsekventa mellan studier",
+        "Magbesvär (uppblåsthet, lös avföring) är en vanlig biverkning vid högre doser"
+      ],
+      "commonMistakes": [
+        "Att förvänta sig märkbar fettförbränning utan kaloriunderskott — CLA:s effektstorlek är för liten för att överkomma en underhålls- eller överskottsdiet.",
+        "Att förvänta sig snabba resultat — studierna som visade fördel pågick i månader; kortvarig användning ger sannolikt ingen mätbar skillnad."
+      ]
+    },
+    "colostrum": {
+      "tagline": "Förstamjölkens immun- och tarmstödjande förening, med förnyat forskningsintresse",
+      "primaryUse": "Levererar immunglobuliner och tillväxtfaktorer som stödjer tarmbarriärens integritet och immunfunktion",
+      "overview": "Bovint colostrum är den näring- och antikroppstäta förstamjölken som produceras efter kalvning, rik på immunglobuliner (särskilt IgG), laktoferrin och tillväxtfaktorer som IGF-1. Humanstudier stödjer fördelar för tarmbarriärens integritet — särskilt minskad träningsinducerad tarmpermeabilitet hos uthållighetsidrottare — och vissa immunstödjande resultat som minskad frekvens av övre luftvägsinfektioner. Evidensen för direkt idrottsprestation eller styrkeökning är mycket svagare än för tarm-/immunstöd.",
+      "typicalDose": "10–20 g dagligen",
+      "bestFor": ["Uthållighetsidrottare som hanterar tarmpermeabilitet", "Allmänt immunstöd", "Tarmbarriär-/läckande tarm-stödprotokoll"],
+      "keyFacts": [
+        "Bäst stödda användningsområdet är minskning av träningsinducerad tarmpermeabilitet (\"läckande tarm\") vid uthållighetsträning",
+        "Innehåller IGF-1 i spårmängder — inte tillräckligt för att meningsfullt påverka hormonnivåer, trots marknadsföringspåståenden",
+        "Utvunnet från mejeri — risk för korsreaktiv allergi finns för de med svår mjölkproteinallergi"
+      ],
+      "commonMistakes": [
+        "Att förvänta sig betydande muskelbyggande eller prestationseffekter — den starkaste evidensen gäller tarmbarriär- och immunstöd, inte hypertrofi.",
+        "Att anta att det är säkert vid mejeriallergi — det kommer från komjölk och är olämpligt för de med svår mjölkproteinallergi, även om laktosinnehållet vanligtvis är lågt."
+      ]
+    },
+    "forskolin": {
+      "tagline": "Coleus forskohlii-extrakt marknadsfört för fettförbränning via cAMP-aktivering",
+      "primaryUse": "Aktiverar adenylatcyklas, vilket höjer cAMP-nivåer som kan främja fettnedbrytning och bevarande av mager massa",
+      "overview": "Forskolin, från roten av Coleus forskohlii, aktiverar direkt adenylatcyklas för att höja intracellulärt cAMP — en signalmolekyl involverad i fettmobilisering. Det blev en populär \"fettförbrännare\" efter att mediehypen sprang om evidensen; de faktiska humanstudierna är små, korta och blandade, med den mest citerade studien som visade förbättrad kroppssammansättning (mer bevarande av mager massa) utan signifikant total viktminskning, snarare än den dramatiska fettförbränning som marknadsförs.",
+      "typicalDose": "250 mg av 10 % forskolinextrakt, två gånger dagligen",
+      "bestFor": ["Stöd för kroppssammansättning tillsammans med träning", "De som redan följer en strukturerad kost-/träningsplan", "Korttidsanvändning som komplement, inte primär strategi"],
+      "keyFacts": [
+        "Den mest citerade humanstudien (Godard m.fl., 2005) visade förbättrad kroppssammansättning, inte signifikant fettförbränning, hos överviktiga män",
+        "Kan sänka blodtrycket och interagerar med blodtrycks- och blodförtunnande mediciner",
+        "Evidensbasen är liten — ett fåtal korta studier, inte den stora forskningsvolymen bakom CLA eller koffein"
+      ],
+      "commonMistakes": [
+        "Att förvänta sig betydande fristående fettförbränning — den faktiska evidensen visar förändringar i kroppssammansättning (mest från bevarande av mager massa), inte dramatisk viktnedgång.",
+        "Att kombinera med blodtrycksmediciner utan läkarkontakt — forskolins cAMP-medierade kärlutvidgning kan ha additiva blodtryckssänkande effekter."
+      ]
+    },
+    "shilajit": {
+      "tagline": "Mineralrikt himalayaexsudat för energi, testosteron och antioxidantstöd",
+      "primaryUse": "Levererar fulvinsyra och spårmineraler som stödjer mitokondriefunktion och hormonnivåer",
+      "overview": "Shilajit är ett tjärliknande ämne som sipprar från berg i höghöjdsområden som Himalaya, format över århundraden av nedbrutet växtmaterial. Det är rikt på fulvinsyra och spårmineraler, och små humana RCT:er visar måttliga testosteronökningar hos friska män samt förbättringar av trötthet och spermieparametrar. Renhet är en stor oro — obehandlad shilajit kan vara förorenad med tungmetaller, så endast renade, labbtestade (PTM-renade) produkter bör användas.",
+      "typicalDose": "300–500 mg renad kåda/extrakt dagligen",
+      "bestFor": ["Testosteron- och vitalitetsstöd hos män", "Allmänt trötthets- och energistöd", "Antioxidant-/mineraltillskott"],
+      "keyFacts": [
+        "En RCT från 2016 fann en måttlig men signifikant testosteronökning hos friska män över 90 dagar jämfört med placebo",
+        "Orenad shilajit bär verklig risk för tungmetallförorening — köp endast PTM-renade, tredjepartstestade produkter",
+        "Fulvinsyrainnehållet tros hjälpa mineral- och näringsupptag, även om humana data om just denna mekanism är begränsade"
+      ],
+      "commonMistakes": [
+        "Att köpa orenad eller overifierad rå shilajit — förorening med bly, arsenik och andra tungmetaller är en dokumenterad risk vid lågkvalitativ källa.",
+        "Att förvänta sig dramatiska korttidsförändringar i testosteron — den stödjande studien visade måttliga ökningar över en 90-dagarsperiod, inte omedelbara effekter."
+      ]
+    },
+    "vitamin-d3": {
+      "tagline": "Den vanligaste bristen i nordliga klimat, grundläggande för immunförsvar och benhälsa",
+      "primaryUse": "Reglerar kalciumupptag, immunfunktion och hundratals genuttrycksvägar via vitamin D-receptorn",
+      "overview": "Vitamin D3 (kolekalciferol) är formen din hud producerar från solljus och den form som effektivast höjer blodnivåer av 25(OH)D. Brist är extremt vanligt på nordliga breddgrader med begränsad solexponering, särskilt under vintermånaderna, och kopplas till nedsatt immunfunktion, dålig bentäthet och lågt humör. Till skillnad från många tillskott har korrigering av vitamin D3-brist en av de starkaste och mest konsekventa evidensbaserna inom hela kosttillskottsvetenskapen.",
+      "typicalDose": "1000–4000 IE dagligen (högre vid korrigering av diagnostiserad brist)",
+      "bestFor": ["Invånare på nordliga breddgrader, särskilt vintertid", "Bentäthets- och immunstöd", "Korrigering av labbbekräftad brist"],
+      "keyFacts": [
+        "Fettlösligt — ta tillsammans med en fetthaltig måltid för betydligt bättre upptag",
+        "Blodprov (25-hydroxivitamin D) är enda tillförlitliga sättet att veta din faktiska status och dosbehov",
+        "Kombination med K2 och magnesium förbättrar hur det kalcium som mobiliseras faktiskt används"
+      ],
+      "commonMistakes": [
+        "Att ta det på tom mage — som ett fettlösligt vitamin är upptaget betydligt bättre tillsammans med kostfett.",
+        "Att gissa dosering utan testning — det faktiska behovet varierar kraftigt med utgångsnivåer, kroppsvikt och solexponering; ett blodprov tar bort gissningen."
+      ]
+    },
+    "vitamin-k2": {
+      "tagline": "Styr kalcium till skelettet och bort från artärerna",
+      "primaryUse": "Aktiverar proteiner (osteokalcin, matrix Gla-protein) som styr kalcium till skelettet och bort från mjukvävnad som artärer",
+      "overview": "Vitamin K2, särskilt MK-7-formen, aktiverar osteokalcin (som binder kalcium till skelettet) och matrix Gla-protein (som hämmar kalciumavlagring i artärväggar). Detta gör det till den naturliga partnern till vitamin D3- och kalciumtillskott — utan tillräckligt K2 kan kalcium som mobiliserats av D3 hamna på fel ställen. Observationsdata kopplar högre K2-intag till minskad artärförkalkning och bättre kardiovaskulära utfall, även om storskaliga RCT:er fortfarande är begränsade.",
+      "typicalDose": "90–200 mikrogram MK-7 dagligen",
+      "bestFor": ["Kombination med vitamin D3 och kalcium", "Kardiovaskulär kalciumhantering", "Bentäthetsstöd"],
+      "keyFacts": [
+        "MK-7 har en mycket längre halveringstid än MK-4, vilket möjliggör effektiv dosering en gång dagligen",
+        "Fettlösligt — ta tillsammans med en fetthaltig måltid för upptag",
+        "Interagerar betydligt med warfarin på grund av delad involvering i vitamin K-beroende koagulationsfaktorer — kräver läkarsamordning"
+      ],
+      "commonMistakes": [
+        "Att ta D3 utan K2 långsiktigt — utan K2 som vägvisare har mobiliserat kalcium mindre styrning mot skelettet och bort från mjukvävnad.",
+        "Att ta det under warfarinbehandling utan att informera läkaren — vitamin K-intag påverkar direkt INR och warfarindoseringsbehov."
+      ]
+    },
+    "multivitamin": {
+      "tagline": "Bred försäkring mot kostens mikronäringsluckor",
+      "primaryUse": "Ger baslinjeteckning av essentiella vitaminer och mineraler för att fylla luckor i en ofullkomlig kost",
+      "overview": "Ett kvalitetsmultivitamin är inte designat för att ersätta en bra kost, utan för att fånga de luckor nästan alla har — få når konsekvent optimalt intag av varje mikronäringsämne enbart via mat. Evidensen för att multivitaminer förebygger stora sjukdomsutfall hos välnärda populationer är svag, men fallet för grundläggande mikronäringsförsäkring — särskilt vid restriktiv kost, hög träningsbelastning eller åldrande populationer — är mer solitt. Kvaliteten varierar enormt mellan produkter — leta efter tredjepartstestade märken med biotillgängliga mineralformer (glycinat, citrat) snarare än billiga oxider.",
+      "typicalDose": "1 portion dagligen enligt förpackning, med mat",
+      "bestFor": ["Mikronäringsförsäkring vid ofullkomlig kost", "Restriktiv kost (vegansk, lågkalori, eliminationsdiet)", "Äldre vuxna med nedsatt näringsupptag"],
+      "keyFacts": [
+        "Stora studier (som Physicians' Health Study II) visar minimal effekt på stora sjukdomsutfall hos välnärda populationer — det är försäkring, inte behandling",
+        "Mineralform spelar roll — glycinat- och citratformer tas upp mycket bättre än billiga oxidformer vanliga i budgetprodukter",
+        "Ersätter inte hantering av en specifik diagnostiserad brist, som vanligtvis behöver en högre riktad dos än ett multivitamin ger"
+      ],
+      "commonMistakes": [
+        "Att förvänta sig märkbart förbättrad energi eller hälsomarkörer vid en redan bra kost — dess värde ligger i att fylla luckor, inte lägga till fördelar ovanpå tillräcklig näring.",
+        "Att köpa baserat på antal tabletter eller pris ensamt — många budgetmultivitaminer använder dåligt upptagbara mineraloxidformer som ger betydligt mindre än etiketten antyder."
+      ]
+    },
+    "calcium": {
+      "tagline": "Grundläggande mineral för bentäthet och strukturell hälsa",
+      "primaryUse": "Ger det primära strukturella mineralet för benmassa, samt roller i muskelkontraktion och nervsignalering",
+      "overview": "Kalcium är kroppens mest förekommande mineral, med 99 % lagrat i skelett och tänder. Tillräckligt intag genom hela livet, särskilt under tonåren och efter klimakteriet, är en av de bäst etablerade interventionerna för att bibehålla bentäthet och minska frakturrisk. De flesta kan nå kalciummål genom kosten (mejeri, bladgrönsaker, berikad mat), och tillskott är mest relevant vid lågt kostintag, laktosintolerans eller ökat behov som hos äldre och kvinnor efter klimakteriet.",
+      "typicalDose": "500–1000 mg dagligen, uppdelat i doser om 500 mg eller mindre",
+      "bestFor": ["Kvinnor efter klimakteriet och äldre vuxna", "Lågt kalciumintag från kosten (mejerifri kost)", "Bentäthetsunderhåll tillsammans med vitamin D och K2"],
+      "keyFacts": [
+        "Upptaget begränsas till ungefär 500 mg per dos — dela upp större totalmängder över dagen istället för att ta allt på en gång",
+        "Bör kombineras med vitamin D (för upptag) och K2 (för korrekt avlagring) snarare än tas ensamt",
+        "Överdrivet tillskottskalcium (långt över kostbehov) har i vissa studier kopplats till ökad kardiovaskulär risk — kost i första hand föredras, tillskott för att fylla verkliga luckor"
+      ],
+      "commonMistakes": [
+        "Att ta en stor engångsdos — upptagseffektiviteten sjunker kraftigt över ~500 mg åt gången; att dela upp doser över dagen är betydligt effektivare.",
+        "Att tillskotta kraftigt utan behov — de som redan når kalciummål via kosten vinner lite och kan möta onödig kardiovaskulär risk från höga tillskottsdoser."
+      ]
+    },
+    "potassium": {
+      "tagline": "Essentiell elektrolyt för blodtryck och muskelfunktion, kroniskt underkonsumerad",
+      "primaryUse": "Reglerar vätskebalans, nervsignalering och muskelkontraktion, och motverkar natriums effekt på blodtrycket",
+      "overview": "Kalium är avgörande för att bibehålla cellulär vätskebalans, nervledning och muskelkontraktion, inklusive hjärtat. De flesta i västerländsk kost konsumerar långt under rekommenderat intag samtidigt som de konsumerar överskott av natrium — en kombination kopplad till förhöjt blodtryck. Eftersom högdostillskott av kalium bär verklig risk för hjärtarytmi vid nedsatt njurfunktion, begränsas de flesta kaliumtillskott till låga doser (99 mg) av reglering, med matkällor (bananer, potatis, bladgrönsaker) som huvudvägen till tillräckligt intag.",
+      "typicalDose": "99 mg per tillskottsdos (regulatoriskt tak); matkällor för merparten av intaget",
+      "bestFor": ["Blodtrycksstöd tillsammans med minskat natriumintag", "Idrottare med hög svettförlust", "De med mycket lågt kaliumintag i kosten"],
+      "keyFacts": [
+        "Tillskottsdoser begränsas lågt (vanligtvis 99 mg) av regulatorer på grund av risk för hjärtarytmi vid snabbt högdosintag — mat är den praktiska vägen till målet på ~3500–4700 mg dagligen",
+        "De med nedsatt njurfunktion eller på kaliumsparande diuretika/ACE-hämmare får inte tillskotta utan läkarövervakning",
+        "Förhållandet natrium till kalium spelar större roll för blodtrycket än kaliumintag isolerat"
+      ],
+      "commonMistakes": [
+        "Att anta att tillskott ensamt kan höja intaget meningsfullt — regulatoriska dostak gör att matkällor (bananer, potatis, spenat, bönor) står för det mesta av det verkliga arbetet.",
+        "Att tillskotta kalium under ACE-hämmare, ARB eller kaliumsparande diuretika utan läkarkontakt — denna kombination riskerar farlig hyperkalemi."
+      ]
+    },
+    "vitamin-b6": {
+      "tagline": "Koenzym för över 100 enzymatiska reaktioner, inklusive signalsubstanssyntes",
+      "primaryUse": "Fungerar som kofaktor vid aminosyrametabolism och syntes av serotonin, dopamin och GABA",
+      "overview": "Vitamin B6 (pyridoxin) är involverat i mer än 100 enzymatiska reaktioner, mest anmärkningsvärt som en nödvändig kofaktor för att omvandla aminosyror till signalsubstanser som serotonin, dopamin och GABA. Den spelar också roll i hemoglobinsyntes och homocysteinmetabolism tillsammans med B12 och folat. Brist är ovanligt hos personer med varierad kost men kan förekomma vid vissa mediciner, alkoholbruk eller malabsorption, och yttrar sig som irritabilitet, lågt humör eller perifer neuropati.",
+      "typicalDose": "10–25 mg dagligen (undvik kroniska höga doser)",
+      "bestFor": ["Humör- och signalsubstansstöd", "De på mediciner som tömmer B6 (isoniazid, vissa p-piller)", "Homocysteinhantering tillsammans med B12 och folat"],
+      "keyFacts": [
+        "Kronisk högdosanvändning (vanligtvis 200 mg+ dagligen över månader) är en väldokumenterad orsak till perifer sensorisk neuropati — mer är inte bättre här",
+        "Verkar tillsammans med B12 och folat för att reglera homocystein, en aminosyra kopplad till kardiovaskulär risk vid förhöjda nivåer",
+        "Vissa mediciner (isoniazid, hydralazin, vissa p-piller) ökar B6-behovet"
+      ],
+      "commonMistakes": [
+        "Att ta mycket höga doser långsiktigt i tron att ett vattenlösligt vitamin inte kan skada — kroniska doser över 100–200 mg har orsakat reversibel men obehaglig perifer neuropati i dokumenterade fall.",
+        "Att ignorera det som ett isolerat näringsämne — B6:s roll i homocysteinmetabolism är mest relevant tillsammans med B12- och folatstatus, inte isolerat."
+      ]
+    },
+    "niacin": {
+      "tagline": "B-vitamin med genuin lipidhanteringskraft vid farmakologiska doser",
+      "primaryUse": "Nödvändig kofaktor för NAD+/NADH-syntes, och vid höga doser sänker den oberoende LDL och höjer HDL-kolesterol",
+      "overview": "Niacin (vitamin B3) är essentiellt i små mängder för NAD+-syntes — samma koenzymsystem som NMN och NR riktar in sig på. Vid mycket högre farmakologiska doser (500 mg+) har niacin en oberoende, väldokumenterad effekt på lipidprofiler: sänker LDL och triglycerider samtidigt som HDL höjs, historiskt använt som receptbelagd kolesterolbehandling. Fångsten är den ökända \"niacinrodnaden\" — en ofarlig men obehaglig hudrodnad och klåda som begränsar tolerabiliteten vid dessa högre doser.",
+      "typicalDose": "14–16 mg dagligen för grundläggande RDI; 500 mg+ endast under läkarövervakning för lipideffekter",
+      "bestFor": ["Grundläggande B-vitamin-/NAD+-vägstöd vid RDI-doser", "Lipidhantering vid farmakologiska doser (läkarövervakat)", "NAD+-prekursor tillsammans med andra B-vitaminer"],
+      "keyFacts": [
+        "\"Niacinrodnaden\" (hudrodnad, värme, klåda) förekommer vid högre doser och är ofarlig men misstas ofta för en allergisk reaktion",
+        "\"Flush-free\" inositolhexanikotinatformer undviker rodnaden men levererar heller inte tillförlitligt de lipidhanteringsfördelar som flushande niacin ger",
+        "Högdosniacin (1-3 g/dag) kräver övervakning av leverenzymer på grund av sällsynt men dokumenterad levertoxicitetsrisk"
+      ],
+      "commonMistakes": [
+        "Att självförskriva höga farmakologiska doser för kolesterol utan läkarövervakning — doser effektiva för lipidhantering kräver verkliga leverövervakningsbehov.",
+        "Att köpa \"flush-free\" niacin i förväntan om samma kolesterolfördelar som flushande niacin — inositolhexanikotinatformen saknar till stor del evidensbasen för lipideffekter."
+      ]
+    },
+    "thiamine": {
+      "tagline": "Grundläggande B-vitamin för kolhydratmetabolism och nervfunktion",
+      "primaryUse": "Nödvändig kofaktor för att omvandla kolhydrater till cellulär energi och bibehålla nervledning",
+      "overview": "Tiamin (vitamin B1) är essentiellt för att omvandla kolhydrater och grenade aminosyror till användbar cellulär energi, samt för att bibehålla frisk nervfunktion. Svår brist orsakar beriberi och Wernicke-Korsakoffs syndrom, historiskt kopplat till alkoholism och restriktiv kost, men även mild otillräcklighet — vanligare än antaget vid kolhydratrik, näringsfattig kost och tungt alkoholbruk — kan orsaka trötthet och kognitiv dimma. Det är billigt, lågrisk och lätt att korrigera med mat eller grundläggande tillskott.",
+      "typicalDose": "1,2–1,5 mg dagligen (RDI); högre vid korrigering av brist",
+      "bestFor": ["De med tungt alkoholintag eller malabsorption", "Kolhydratrik kost med låg näringstäthet", "Allmänt energimetabolismstöd"],
+      "keyFacts": [
+        "Tungt alkoholbruk försämrar betydligt tiaminupptaget och är den ledande orsaken till kliniskt signifikant brist i utvecklade länder",
+        "Vattenlösligt utan etablerad toxicitet från oralt tillskott — överskott utsöndras helt enkelt",
+        "Benfotiamin, ett fettlösligt derivat, har bättre upptag och används ofta i nervhälsofokuserade formuleringar"
+      ],
+      "commonMistakes": [
+        "Att förbise det som en bidragande orsak till oförklarlig trötthet — mild otillräcklighet är vanligare än erkänt, särskilt vid högt alkoholintag eller mycket restriktiv kost.",
+        "Att anta att en normal kost täcker behovet fullt ut vid tungt drickande — alkohol försämrar aktivt tiaminupptaget oavsett kostintag."
+      ]
+    },
+    "riboflavin": {
+      "tagline": "B-vitaminkofaktor för energimetabolism med framväxande evidens för migränförebyggande",
+      "primaryUse": "Fungerar som prekursor för FAD och FMN, koenzymer centrala för mitokondriell energiproduktion",
+      "overview": "Riboflavin (vitamin B2) är en prekursor för FAD och FMN, koenzymer involverade i elektrontransportkedjan och bredare cellulär energimetabolism, samt antioxidantåtervinning via glutationreduktas. Utöver sin grundläggande metaboliska roll har riboflavin en av de bättre stödda evidensbaserna bland B-vitaminer för en specifik terapeutisk användning: migränförebyggande, där högdostillskott (400 mg) visat meningsfull minskning av migränfrekvens i flera RCT:er.",
+      "typicalDose": "1,1–1,3 mg dagligen (RDI); 400 mg dagligen specifikt för migränförebyggande",
+      "bestFor": ["Grundläggande energimetabolismstöd", "Minskad migränfrekvens (högdosprotokoll)", "De på riboflavintömmande mediciner"],
+      "keyFacts": [
+        "400 mg-dosen för migränförebyggande är ungefär 300 gånger grundläggande RDI och speglar en distinkt, väl studerad terapeutisk användning snarare än korrigering av näringsbrist",
+        "Orsakar ofarlig klargul urinmissfärgning vid högre doser — en vanlig källa till onödig oro",
+        "Brist är ovanligt vid varierad kost men mer sannolikt hos de med restriktiva ätmönster eller malabsorption"
+      ],
+      "commonMistakes": [
+        "Att bara ta RDI-nivådoser i förväntan om migränfördel — evidensen för migränförebyggande använde specifikt 400 mg dagligen, långt över grundläggande näringsbehov.",
+        "Att misstolka den klargula urinen från högre doser som ett problem — det är ett ofarligt, förväntat tecken på att riboflavins fluorescerande egenskaper utsöndras."
+      ]
+    },
+    "pantothenic-acid": {
+      "tagline": "Universellt nödvändigt B-vitamin för koenzym A-syntes",
+      "primaryUse": "Bildar koenzym A, essentiellt för fettsyremetabolism och syntes av hormoner och signalsubstanser",
+      "overview": "Pantotensyra (vitamin B5) behövs för att bygga koenzym A, en molekyl central för fettsyraoxidation, aminosyrametabolism och syntes av kolesterol och steroidhormoner. Verklig brist är extremt sällsynt eftersom det finns i nästan all mat (namnet kommer från grekiskans \"från överallt\"), så fristående tillskott ger lite fördel utöver att täcka den sällsynta luckan eller stödja en bredare B-komplexformel.",
+      "typicalDose": "5 mg dagligen (RDI); ofta inkluderat i högre doser i B-komplexformler",
+      "bestFor": ["Allmänt B-komplexstöd", "Sällsynta fall av kostbrist", "Koenzym A-vägstöd tillsammans med andra B-vitaminer"],
+      "keyFacts": [
+        "Brist är praktiskt taget okänt utanför allvarlig undernäring, med tanke på hur brett distribuerat det är över matkällor",
+        "Högdos pantetin (ett derivat) har separat, distinkt evidens för måttliga kolesterolsänkande effekter, till skillnad från vanlig pantotensyra",
+        "Tillskottas vanligtvis som del av ett B-komplex snarare än fristående, med tanke på den låga sannolikheten för isolerad brist"
+      ],
+      "commonMistakes": [
+        "Att tillskotta det isolerat i förväntan om märkbar effekt — verklig brist är så sällsynt att fristående tillskott sällan ger en märkbar fördel.",
+        "Att förväxla det med pantetin — pantetin har separat kolesterolrelaterad evidens som inte gäller vanliga pantotensyratillskott."
+      ]
+    },
+    "copper": {
+      "tagline": "Spårmineral essentiellt för järnmetabolism och bindvävsbildning",
+      "primaryUse": "Nödvändig kofaktor för enzymer involverade i järntransport, kollagenkorsbindning och antioxidantförsvar",
+      "overview": "Koppar är ett spårmineral som behövs för flera kritiska enzymer, inklusive ceruloplasmin (som mobiliserar järn för röd blodkroppsproduktion), lysyloxidas (som korsbinder kollagen och elastin för bindvävsstyrka) och superoxiddismutas (ett antioxidantenzym). Det är mest relevant som tillskott när det tas tillsammans med högdoszink, eftersom de två mineralerna konkurrerar om upptag och kronisk högdoszinkanvändning är en väldokumenterad orsak till kopparbrist.",
+      "typicalDose": "0,9 mg dagligen (RDI); 1–2 mg vid kompensation för högdoszink",
+      "bestFor": ["Kompensation för kopparutarmning från långvarig högdoszinkanvändning", "Bindvävs- och järnmetabolismstöd", "Korrigering av diagnostiserad brist"],
+      "keyFacts": [
+        "Kroniskt zinktillskott över ~40 mg/dag utan koppar är en av de vanligaste orsakerna till förvärvad kopparbrist",
+        "Symtom på kopparbrist (trötthet, anemi, immunfunktionsnedsättning) liknar nära järnbrist och feldiagnostiseras ofta",
+        "Överskott av koppar är genuint toxiskt — tillskott bör hålla sig nära RDI-nivåer om inte en labbbekräftad brist korrigeras"
+      ],
+      "commonMistakes": [
+        "Att ta högdoszink långsiktigt utan någon koppar — detta är den vanligaste förebyggbara orsaken till förvärvad kopparbrist hos tillskottsanvändare.",
+        "Att självtillskotta höga doser utan testning — kopparförgiftning är en verklig risk och till skillnad från vissa mineraler är mer genuint inte bättre här."
+      ]
+    },
+    "manganese": {
+      "tagline": "Spårmineralkofaktor för antioxidantförsvar och benbildning",
+      "primaryUse": "Aktiverar enzymer involverade i antioxidantförsvar (mangan-superoxiddismutas), benbildning och kolhydratmetabolism",
+      "overview": "Mangan är ett spårmineral som behövs för mangan-superoxiddismutas (MnSOD), ett viktigt mitokondriellt antioxidantenzym, samt enzymer involverade i benmatrixbildning och glukosmetabolism. Brist är sällsynt med tanke på hur brett distribuerat det är i fullkorn, nötter och bladgrönsaker, och tillskott är mest relevant som del av en bredare benhälso- eller antioxidantstödsformel snarare än som fristående intervention.",
+      "typicalDose": "1,8–2,3 mg dagligen (RDI), ofta inkluderat i multivitamin-/benformler",
+      "bestFor": ["Benhälsoformler tillsammans med kalcium och vitamin D", "Allmänt stöd för antioxidantenzymer", "Sällsynta fall av kostbrist"],
+      "keyFacts": [
+        "Fungerar som kofaktor för mitokondriellt MnSOD, ett av kroppens primära antioxidantförsvarsenzymer",
+        "Kroniskt överdrivet intag (långt över kostnivåer, vanligtvis från yrkesexponering) är neurotoxiskt — tillskottsdoser bör hållas konservativa",
+        "Fullkorn, nötter och bladgrönsaker ger gott om mangan för de flesta utan tillskott"
+      ],
+      "commonMistakes": [
+        "Att tillskotta höga doser i tron att mer antioxidantstöd alltid är bättre — mangan har en snävare säkerhetsmarginal än många spårmineraler, med dokumenterad neurotoxicitet vid kroniskt överskott.",
+        "Att ta det isolerat snarare än som del av en benhälsostack — dess praktiska relevans ligger vanligtvis tillsammans med kalcium, vitamin D och K2, inte fristående."
+      ]
+    },
+    "boron": {
+      "tagline": "Understuderat spårmineral med framväxande hormon- och ledhälsodata",
+      "primaryUse": "Kan påverka vitamin D-metabolism, könshormonnivåer och inflammationsmarkörer, även om evidensbasen fortfarande utvecklas",
+      "overview": "Bor är ett spårmineral med en genuint intressant men fortfarande begränsad forskningsbas. Små humanstudier antyder att det måttligt kan höja fritt testosteron och vitamin D-nivåer, minska inflammationsmarkörer som CRP och stödja ledkomfort. Det är billigt och verkar mycket säkert vid studerade doser, men den totala volymen kvalitativ humanforskning är liten jämfört med mer etablerade mineraler — behandla hormon- och inflammationspåståendena som lovande snarare än fastställda.",
+      "typicalDose": "3–6 mg dagligen",
+      "bestFor": ["Ledkomfortstöd", "Komplement till vitamin D- och testosteronstödsprotokoll", "Allmän spårmineraltäckning"],
+      "keyFacts": [
+        "Små studier visar måttliga ökningar av fritt testosteron och vitamin D-utnyttjande, men evidensbasen förblir begränsad i storlek och antal studier",
+        "Viss data tyder på minskade inflammationsmarkörer (CRP) vid regelbunden tillskott",
+        "Verkar ha en bred säkerhetsmarginal vid studerade doser (3–10 mg), utan större toxicitetssignaler rapporterade"
+      ],
+      "commonMistakes": [
+        "Att behandla testosteron-/hormonpåståendena som fastställd vetenskap — evidensen är verklig men kommer från ett litet antal studier; förväntningarna bör vara måttliga.",
+        "Att förvänta sig ledhälsoeffekter på samma tidslinje som glukosamin/kondroitin — bors evidensbas och typiska svarstid är båda mindre etablerade."
+      ]
+    },
+    "fish-oil": {
+      "tagline": "Koncentrerad EPA/DHA-källa för kardiovaskulär, hjärn- och ledhälsa",
+      "primaryUse": "Levererar omega-3-fettsyrorna EPA och DHA, som minskar inflammation och stödjer kardiovaskulär och kognitiv funktion",
+      "overview": "Fiskolja är ett av de mest omfattande studerade tillskotten, som levererar de långkedjiga omega-3-fettsyrorna EPA och DHA som de flesta västerländska kosthållningar ligger långt under. EPA är mer antiinflammatoriskt och kardiovaskulärt fokuserat, medan DHA är strukturellt kritiskt för hjärn- och näthinnevävnad. Regelbunden användning kopplas till minskade triglycerider, måttlig kardiovaskulär riskminskning och stöd för kognitiv och ledhälsa — funktionellt samma aktiva föreningar som encyklopedins alg-/fiskbaserade omega-3-post, bara sourcad och marknadsförd som en fristående fiskoljeprodukt.",
+      "typicalDose": "1000–2000 mg kombinerat EPA+DHA dagligen",
+      "bestFor": ["Kardiovaskulär hälsa och triglyceridhantering", "Led- och kognitivt hälsostöd", "De med lågt intag av fisk i kosten"],
+      "keyFacts": [
+        "Leta efter det kombinerade EPA+DHA-totalen på etiketten, inte bara total fiskoljevikt — många billiga produkter är mestadels fyllnadsolja",
+        "Triglyceridsänkande effekter är väl etablerade och dosberoende, med receptstyrka-omega-3 använt kliniskt vid 2-4 g/dag",
+        "Kan mildt öka blödningsrisk vid höga doser — relevant för de på blodförtunnande medicin eller inför operation"
+      ],
+      "commonMistakes": [
+        "Att köpa baserat på total fiskoljekapselvikt snarare än faktiskt EPA+DHA-innehåll — en 1000 mg-kapsel kan innehålla bara 300 mg aktiv omega-3.",
+        "Att ta höga doser tillsammans med blodförtunnande medicin utan läkarkontakt — den trombocythämmande effekten är additiv med antikoagulantia som warfarin."
+      ]
+    },
+    "beta-glucan": {
+      "tagline": "Fiberförening från havre, svamp eller jäst med immunmodulerande och kolesterolsänkande effekter",
+      "primaryUse": "Binder till immuncellsreceptorer för att modulera immunrespons, och bildar en gel i tarmen som sänker LDL-kolesterol",
+      "overview": "Betaglukaner är polysackarider som finns i cellväggarna hos havre, korn, svamp och jäst, med två distinkta, väl stödda mekanismer beroende på källa. Havre- och kornbetaglukan bildar en trögflytande gel i tarmen som binder gallsyror och sänker LDL-kolesterol — evidensen är solid nog att bära ett FDA-godkänt hälsopåstående om hjärtat. Jäst- och svampderiverade betaglukaner (som från reishi eller shiitake) binder istället till immuncellsreceptorer (Dektin-1) och modulerar immunrespons, vilket stödjer motstånd mot övre luftvägsinfektioner i flera studier.",
+      "typicalDose": "3 g dagligen (havre/korn för kolesterol); 250–500 mg dagligen (jäst/svamp för immunstöd)",
+      "bestFor": ["LDL-kolesterolhantering (havre-/kornkälla)", "Immunstöd under högstress- eller högexponeringsperioder (jäst-/svampkälla)", "Allmänt fiberintag"],
+      "keyFacts": [
+        "Havre-/kornbetaglukans kolesterolsänkande effekt är stark nog att bära ett FDA-godkänt hälsopåstående om hjärtat vid 3 g/dag",
+        "Jästderiverad (1,3/1,6-betaglukan) och svampderiverade former verkar genom en helt annan immunreceptormekanism än de kolesterolfokuserade spannmålsformerna",
+        "Effekterna byggs gradvis upp över veckors konsekvent dagligt intag snarare än akut"
+      ],
+      "commonMistakes": [
+        "Att förväxla spannmåls- (kolesterol) och jäst-/svamp- (immun) formerna som utbytbara — de verkar genom olika mekanismer och doseras väldigt olika.",
+        "Att förvänta sig akuta immuneffekter från en enstaka dos — den immunmodulerande fördelen byggs upp med konsekvent daglig användning, likt andra adaptogenliknande tillskott."
+      ]
+    },
+    "dhea": {
+      "tagline": "Binjurehormonprekursor, mest relevant för åldersrelaterad nedgång",
+      "primaryUse": "Fungerar som en prekursorhormon som kroppen omvandlar till testosteron och östrogen, som minskar betydligt med åldern",
+      "overview": "DHEA (dehydroepiandrosteron) produceras av binjurarna och fungerar som en prekursor som perifer vävnad omvandlar till testosteron och östrogen efter behov. Nivåerna toppar i mitten av 20-årsåldern och minskar stadigt med åldern, vilket är grunden för dess användning hos äldre vuxna — studier i denna population visar måttliga förbättringar av bentäthet, libido och humör, särskilt hos de med kliniskt låga utgångsnivåer. Hos yngre, friska vuxna med normala DHEA-nivåer visar tillskott liten tillagd fördel och bär verklig risk för hormonella biverkningar.",
+      "typicalDose": "25–50 mg dagligen (äldre vuxna med låga nivåer); rekommenderas generellt inte under 40 utan testning",
+      "bestFor": ["Äldre vuxna med labbbekräftat låga DHEA-S-nivåer", "Binjurebarksvikt-stöd (läkarövervakat)", "Åldersrelaterat libido- och bentäthetsstöd"],
+      "keyFacts": [
+        "Nivåer bör testas (DHEA-S-blodprov) före tillskott — det är ett hormon, inte ett allmänt wellness-tillskott",
+        "Kan orsaka akne, fet hud och hårförändringar på grund av dess omvandling till androgener, särskilt hos kvinnor",
+        "Kontraindicerat vid hormonkänsliga tillstånd (vissa bröst-, prostata- och äggstockscancerformer) på grund av dess omvandling till könshormoner"
+      ],
+      "commonMistakes": [
+        "Att tillskotta utan att testa utgångsnivåer först — som en hormonprekursor riskerar blind dosering att driva redan normala nivåer till ett överskott med verkliga biverkningar.",
+        "Att använda det hos yngre vuxna med normala DHEA-nivåer i förväntan om anti-åldrande fördelar — evidensbasen gäller specifikt äldre vuxna med dokumenterad åldersrelaterad nedgång."
+      ]
+    },
+    "ubiquinol": {
+      "tagline": "Den aktiva, reducerade formen av CoQ10 med bättre upptag hos äldre vuxna",
+      "primaryUse": "Stödjer direkt mitokondriell elektrontransport utan att kräva kroppens egen omvandlingssteg",
+      "overview": "Ubikinol är den reducerade (aktiva) formen av CoQ10 — formen dina celler faktiskt använder i den mitokondriella elektrontransportkedjan. Vanliga CoQ10-tillskott är vanligtvis den oxiderade \"ubikinon\"-formen, som kroppen måste omvandla till ubikinol före användning, en omvandling som blir mindre effektiv med åldern. För de flesta friska vuxna under 40 fungerar båda formerna liknande bra; ubikinols huvudfördel visar sig hos äldre vuxna eller de med tillstånd som försämrar denna omvandling, där det visar betydligt bättre upptag och blodnivåer.",
+      "typicalDose": "100–200 mg dagligen, med en fetthaltig måltid",
+      "bestFor": ["Vuxna över 40 eller de med statinrelaterad CoQ10-utarmning", "Kardiovaskulärt och mitokondriellt energistöd", "De som inte svarar bra på vanligt ubikinon-CoQ10"],
+      "keyFacts": [
+        "Fettlösligt — upptaget är betydligt bättre när det tas tillsammans med en måltid som innehåller kostfett",
+        "Omvandlingen från ubikinon till ubikinol blir mindre effektiv med åldern, vilket gör den förreducerade ubikinolformen mer relevant för äldre vuxna",
+        "Statiner tömmer endogen CoQ10-syntes, vilket gör tillskott (i båda formerna) relevant för de på långvarig statinbehandling"
+      ],
+      "commonMistakes": [
+        "Att betala en premie för ubikinol hos yngre, friska vuxna där vanligt ubikinon-CoQ10 omvandlas effektivt och fungerar jämförbart bra.",
+        "Att ta det på tom mage — som en fettlöslig förening sjunker upptaget betydligt utan närvarande kostfett."
+      ]
     }
   },
   "healthProfileOptions": {
