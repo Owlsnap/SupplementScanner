@@ -21,7 +21,9 @@ async function markSlugDownloaded(slug: string) {
 interface DosingInfo { low: string; standard: string; high: string; timing: string }
 interface FormInfo { name: string; bioavailability: string; notes: string }
 interface SynergyInfo { supplement: string; reason: string }
-export interface DeepDiveContent {
+// Legacy shape: ungrounded AI content. Users may still have these saved, so they keep working;
+// the API no longer produces them.
+export interface LegacyDeepDiveContent {
   whatItIs: string;
   howItWorks: string;
   dosing: DosingInfo;
@@ -30,11 +32,78 @@ export interface DeepDiveContent {
   cautions: string[];
 }
 
+export interface GroundedCitation {
+  index: number;
+  pmid: string;
+  title: string;
+  year: number | null;
+  study_type: string | null;
+  sample_size: number | null;
+  url: string;
+}
+
+// Current shape: a teaser built only from retrieved PubMed abstracts (generateFreeDive in server.js)
+export interface GroundedDeepDiveContent {
+  version: 2;
+  summary: string;
+  findings: { text: string; citations: number[] }[];
+  citations: GroundedCitation[];
+  stats: {
+    studies_analyzed: number;
+    type_counts: Record<string, number>;
+    year_min: number | null;
+    year_max: number | null;
+  };
+  insufficient_evidence: boolean;
+}
+
+export type DeepDiveContent = LegacyDeepDiveContent | GroundedDeepDiveContent;
+
+export const isGroundedDive = (c: DeepDiveContent): c is GroundedDeepDiveContent =>
+  (c as GroundedDeepDiveContent).version === 2;
+
+/** One-line preview for lists, for either shape. */
+export function deepDivePreview(c: DeepDiveContent | null | undefined): string {
+  if (!c) return '';
+  if (isGroundedDive(c)) return c.summary || c.findings[0]?.text || '';
+  return c.whatItIs ?? '';
+}
+
 function esc(s: string) {
   return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
 }
 
+function buildGroundedHtml(supplementName: string, content: GroundedDeepDiveContent): string {
+  const findings = content.findings
+    .map(f => {
+      const refs = f.citations.map(n => `[${n}]`).join(' ');
+      return `<li>${esc(f.text)} <span style="color: #00685f;">${refs}</span></li>`;
+    })
+    .join('');
+  const sources = content.citations
+    .map(c => `<li>[${c.index}] ${esc(c.title)} &mdash; PMID ${esc(c.pmid)}${c.year ? `, ${c.year}` : ''}${c.study_type ? `, ${esc(c.study_type)}` : ''}${c.sample_size ? `, n=${c.sample_size}` : ''}</li>`)
+    .join('');
+
+  return `
+    <html>
+      <head><meta charset="utf-8" /></head>
+      <body style="font-family: -apple-system, Helvetica, Arial, sans-serif; color: #171d1c; padding: 24px;">
+        <h1 style="color: #00685f; margin-bottom: 4px;">${esc(supplementName)}</h1>
+        <p style="color: #6d7a77; margin-top: 0;">Research summary &middot; ${content.stats.studies_analyzed} PubMed studies analysed</p>
+
+        ${content.summary ? `<h2>What the research says</h2><p>${esc(content.summary)}</p>` : ''}
+        ${findings ? `<h2>Interesting findings</h2><ul>${findings}</ul>` : ''}
+        ${sources ? `<h2>Sources</h2><ol style="list-style: none; padding-left: 0;">${sources}</ol>` : ''}
+
+        <hr style="margin-top: 32px; border: none; border-top: 1px solid #e4e9e7;" />
+        <p style="color: #6d7a77; font-size: 12px;">Automatically summarised from PubMed abstracts by SupplementScanner. For information only, not medical advice.</p>
+      </body>
+    </html>
+  `;
+}
+
 function buildHtml(supplementName: string, content: DeepDiveContent): string {
+  if (isGroundedDive(content)) return buildGroundedHtml(supplementName, content);
   const forms = (content.forms ?? [])
     .map(f => `<li><strong>${esc(f.name)}</strong> — ${esc(f.bioavailability)} bioavailability. ${esc(f.notes)}</li>`)
     .join('');

@@ -115,7 +115,7 @@ SuppScanner/
 ### Data Flows
 
 **Encyclopedia (web):**
-`encyclopediaData.ts` → user opens DeepDivePage → `GET /api/encyclopedia/deep-dive/:slug` → check `supplement_deep_dives` Supabase table (30d TTL) → hit or miss → Anthropic generates → cache → return JSON
+`encyclopediaData.ts` → user opens DeepDivePage → `GET /api/encyclopedia/deep-dive/:slug` → check `supplement_deep_dives` (30d TTL, `version: 2`) → miss → `generateFreeDive`: embed query, exact-cosine top 5 from `studies` (PubMed), GPT-4o temp 0 answers ONLY from those abstracts, code drops findings without a valid citation or with numbers not in the cited abstract → cache → return JSON (a cited teaser; the full report is the premium RAG deep-dive)
 
 **Barcode scan (mobile):**
 `CameraView.onBarcodeScanned` → `POST /api/ingest/barcode/:code` → `multiLayerExtractor` (OpenFoodFacts → Puppeteer scrape → OpenAI normalization) → `dbService.upsertProduct` → `product/[barcode].tsx`

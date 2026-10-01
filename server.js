@@ -1456,6 +1456,77 @@ const SLUG_TO_NAME = {
   'vitamin-c': 'Vitamin C (Ascorbic Acid)',
   'berberine': 'Berberine',
   'coq10': 'CoQ10 (Ubiquinol)',
+  // added to match the 100-supplement encyclopedia
+  'taurine': 'Taurine',
+  '5-htp': '5-HTP',
+  'valerian-root': 'Valerian Root',
+  'alcar': 'Acetyl-L-Carnitine (ALCAR)',
+  'citicoline': 'Citicoline (CDP-Choline)',
+  'ginkgo-biloba': 'Ginkgo Biloba',
+  'msm': 'MSM (Methylsulfonylmethane)',
+  'nac': 'NAC (N-Acetyl Cysteine)',
+  'spirulina': 'Spirulina',
+  'nmn': 'NMN (Nicotinamide Mononucleotide)',
+  'quercetin': 'Quercetin',
+  'vitamin-b12': 'Vitamin B12 (Methylcobalamin)',
+  'resveratrol': 'Resveratrol',
+  'selenium': 'Selenium',
+  'bcaas': 'BCAAs (Branched-Chain Amino Acids)',
+  'eaas': 'EAAs (Essential Amino Acids)',
+  'electrolytes': 'Electrolyte Complex',
+  'beetroot-extract': 'Beetroot Extract',
+  'l-carnitine': 'L-Carnitine (L-Tartrate)',
+  'gaba': 'GABA',
+  'myo-inositol': 'Myo-Inositol',
+  'magnesium-l-threonate': 'Magnesium L-Threonate',
+  'mucuna-pruriens': 'Mucuna Pruriens',
+  'glucosamine': 'Glucosamine',
+  'chondroitin': 'Chondroitin Sulfate',
+  'hyaluronic-acid': 'Hyaluronic Acid',
+  'iron': 'Iron (Bisglycinate)',
+  'folate': 'Folate (Vitamin B9)',
+  'biotin': 'Biotin (Vitamin B7)',
+  'milk-thistle': 'Milk Thistle (Silymarin)',
+  'elderberry': 'Elderberry Extract',
+  'tongkat-ali': 'Tongkat Ali',
+  'maca-root': 'Maca Root',
+  'vitamin-a': 'Vitamin A (Retinol)',
+  'vitamin-e': 'Vitamin E (Tocopherol)',
+  'astaxanthin': 'Astaxanthin',
+  'iodine': 'Iodine',
+  'chromium': 'Chromium Picolinate',
+  'saw-palmetto': 'Saw Palmetto',
+  'lutein-zeaxanthin': 'Lutein & Zeaxanthin',
+  'whey-protein': 'Whey Protein',
+  'l-arginine': 'L-Arginine',
+  'yohimbine': 'Yohimbine',
+  'kava': 'Kava',
+  'passionflower': 'Passionflower',
+  'holy-basil': 'Holy Basil (Tulsi)',
+  'l-tyrosine': 'L-Tyrosine',
+  'pqq': 'PQQ (Pyrroloquinoline Quinone)',
+  'nadh': 'NADH',
+  'cla': 'CLA (Conjugated Linoleic Acid)',
+  'colostrum': 'Bovine Colostrum',
+  'forskolin': 'Forskolin',
+  'shilajit': 'Shilajit',
+  'vitamin-d3': 'Vitamin D3 (Cholecalciferol)',
+  'vitamin-k2': 'Vitamin K2 (MK-7)',
+  'multivitamin': 'Multivitamin',
+  'calcium': 'Calcium (Citrate)',
+  'potassium': 'Potassium',
+  'vitamin-b6': 'Vitamin B6 (Pyridoxine)',
+  'niacin': 'Niacin (Vitamin B3)',
+  'thiamine': 'Thiamine (Vitamin B1)',
+  'riboflavin': 'Riboflavin (Vitamin B2)',
+  'pantothenic-acid': 'Pantothenic Acid (Vitamin B5)',
+  'copper': 'Copper (Glycinate)',
+  'manganese': 'Manganese',
+  'boron': 'Boron',
+  'fish-oil': 'Fish Oil',
+  'beta-glucan': 'Beta-Glucan',
+  'dhea': 'DHEA',
+  'ubiquinol': 'Ubiquinol (Reduced CoQ10)',
 };
 
 // Slug → typical retail dose (used to ground dosage_gap comparison in the RAG prompt)
@@ -1504,160 +1575,240 @@ const SLUG_TO_TYPICAL_DOSE = {
   'vitamin-b12': '500–1000mcg daily (sublingual for fastest absorption)',
   'resveratrol': '100–500mg daily with a meal',
   'selenium': '100–200mcg daily',
+  // added to match the 100-supplement encyclopedia (from en typicalDose)
+  'bcaas': '5–10g intra-workout or post-workout',
+  'eaas': '10–15g intra- or post-workout',
+  'electrolytes': '500–1000mg sodium + 200–400mg potassium per hour of exercise',
+  'beetroot-extract': '400–600mg nitrate (≈ 500ml beetroot juice) 2–3 hours pre-exercise',
+  'l-carnitine': '1–3g daily, ideally with a carbohydrate-containing meal',
+  'gaba': '100–500mg, 30–60 minutes before bed',
+  'myo-inositol': '2–4g before bed; 2–4g twice daily for PCOS/hormonal goals',
+  'magnesium-l-threonate': '1.5–2g elemental magnesium (≈ 144mg elemental) daily, split morning and evening',
+  'mucuna-pruriens': '300–500mg of standardised extract (15–40% L-DOPA) daily',
+  'glucosamine': '1500mg glucosamine sulfate daily',
+  'chondroitin': '800–1200mg daily',
+  'hyaluronic-acid': '80–200mg daily',
+  'iron': '18–45mg elemental iron daily (therapeutic: 100–200mg under medical supervision)',
+  'folate': '400–800mcg daily (800mcg–1mg for pregnancy or MTHFR variants)',
+  'biotin': '30–100mcg daily (adequate intake); 1000–5000mcg for hair/nail goals',
+  'milk-thistle': '140mg silymarin (standardised to 70–80%) two to three times daily',
+  'elderberry': '600–900mg elderberry extract daily at symptom onset; 150–300mg for prevention',
+  'tongkat-ali': '200–400mg standardised extract (LJ100® or equivalent) daily',
+  'maca-root': '1.5–3g of gelatinised maca powder daily',
+  'vitamin-a': '700–900mcg RAE (2300–3000 IU) daily; do not exceed 3000mcg RAE (10,000 IU) from retinol',
+  'vitamin-e': '15mg (22 IU natural, 33 IU synthetic) daily; do not exceed 1000mg (1500 IU)',
+  'astaxanthin': '6–12mg daily with a fat-containing meal',
+  'iodine': '150mcg daily (RDA); 220mcg during pregnancy; do not routinely exceed 1100mcg',
+  'chromium': '200–1000mcg chromium picolinate daily with meals',
+  'saw-palmetto': '320mg of standardised liposterolic extract daily',
+  'lutein-zeaxanthin': '10mg lutein + 2mg zeaxanthin daily',
+  'whey-protein': '20–40g per serving, 1–2× daily',
+  'l-arginine': '3–6g daily',
+  'yohimbine': '0.2mg/kg bodyweight, fasted',
+  'kava': '70–250mg kavalactones daily',
+  'passionflower': '250–500mg extract, or 1 cup tea before bed',
+  'holy-basil': '300–600mg extract daily, or 2–3 cups tea',
+  'l-tyrosine': '500–2000mg, 30–60 min before a stressor',
+  'pqq': '10–20mg daily',
+  'nadh': '5–20mg daily, on an empty stomach',
+  'cla': '3.2–6g daily, split with meals',
+  'colostrum': '10–20g daily',
+  'forskolin': '250mg of 10% forskolin extract, twice daily',
+  'shilajit': '300–500mg purified resin/extract daily',
+  'vitamin-d3': '1000–4000 IU daily (higher if correcting a diagnosed deficiency)',
+  'vitamin-k2': '90–200mcg MK-7 daily',
+  'multivitamin': '1 serving daily per label, with food',
+  'calcium': '500–1000mg daily, split into doses of 500mg or less',
+  'potassium': '99mg per supplement dose (regulatory cap); food sources for the bulk of intake',
+  'vitamin-b6': '10–25mg daily (avoid chronic high doses)',
+  'niacin': '14–16mg daily for basic RDA; 500mg+ only under medical supervision for lipid effects',
+  'thiamine': '1.2–1.5mg daily (RDA); higher for correcting deficiency',
+  'riboflavin': '1.1–1.3mg daily (RDA); 400mg daily specifically for migraine prevention',
+  'pantothenic-acid': '5mg daily (RDA); often included at higher doses in B-complex formulas',
+  'copper': '0.9mg daily (RDA); 1–2mg if offsetting high-dose zinc',
+  'manganese': '1.8–2.3mg daily (RDA), often included in multivitamin/bone formulas',
+  'boron': '3–6mg daily',
+  'fish-oil': '1000–2000mg combined EPA+DHA daily',
+  'beta-glucan': '3g daily (oat/barley for cholesterol); 250–500mg daily (yeast/mushroom for immune support)',
+  'dhea': '25–50mg daily (older adults with low levels); not generally recommended under 40 without testing',
+  'ubiquinol': '100–200mg daily, with a fat-containing meal',
 };
 
-const DEEP_DIVE_TOOL = {
-  name: 'generate_supplement_deep_dive',
-  description: 'Generate a comprehensive, science-based deep-dive encyclopedia entry for a supplement.',
-  input_schema: {
-    type: 'object',
-    properties: {
-      whatItIs: {
-        type: 'string',
-        description: '2-3 sentence plain-language explanation of what the supplement is and its origin (food, synthetic, plant).'
-      },
-      howItWorks: {
-        type: 'string',
-        description: '3-5 sentence mechanism of action — name the specific pathway, receptor, or enzyme it affects and why that matters.'
-      },
-      dosing: {
-        type: 'object',
-        properties: {
-          low: { type: 'string', description: 'Conservative/beginner dose with amount and unit, e.g., "1–2g".' },
-          standard: { type: 'string', description: 'Typical effective dose used in most studies, e.g., "5g".' },
-          high: { type: 'string', description: 'Upper research dose or advanced range, e.g., "10–20g loading phase".' },
-          timing: { type: 'string', description: 'When to take it: pre/post workout, with food, time of day, etc.' }
-        },
-        required: ['low', 'standard', 'high', 'timing']
-      },
-      forms: {
-        type: 'array',
-        description: 'Common available forms ranked best to worst bioavailability (2-4 forms).',
-        items: {
-          type: 'object',
-          properties: {
-            name: { type: 'string', description: 'Form name, e.g., "Monohydrate", "Bisglycinate".' },
-            bioavailability: { type: 'string', enum: ['Excellent', 'Good', 'Fair', 'Poor'], description: 'Bioavailability rating.' },
-            notes: { type: 'string', description: 'One sentence on why this form is notable.' }
-          },
-          required: ['name', 'bioavailability', 'notes']
-        }
-      },
-      synergies: {
-        type: 'array',
-        description: 'Up to 4 supplements that combine well with this one.',
-        items: {
-          type: 'object',
-          properties: {
-            supplement: { type: 'string', description: 'Name of the synergistic supplement.' },
-            reason: { type: 'string', description: 'One sentence explaining the synergistic mechanism or benefit.' }
-          },
-          required: ['supplement', 'reason']
-        }
-      },
-      cautions: {
-        type: 'array',
-        description: 'Up to 5 important cautions, contraindications, or drug interactions as plain-language strings.',
-        items: { type: 'string' }
-      },
-      recommendationsLink: {
-        type: 'string',
-        description: 'If this supplement maps to a health goal — "better sleep", "build muscle", "general health", or "energy boost" — return the exact string. Otherwise return empty string.',
-      },
-      studyCount: {
-        type: 'integer',
-        description: 'Conservative estimate of how many peer-reviewed human clinical trials (RCTs or controlled studies) have directly investigated this supplement. Count only studies you are confident exist — do not include animal studies, in-vitro studies, or observational reports. Return 0 if none exist.',
-      },
-      studies: {
-        type: 'array',
-        description: '3–5 key peer-reviewed human studies. Only include studies you are highly confident exist with accurate PubMed IDs. Do not fabricate PMIDs.',
-        items: {
-          type: 'object',
-          properties: {
-            pubmed_id: { type: 'string', description: 'Real PubMed PMID as a string, e.g., "28919842". Must be a real, verifiable ID.' },
-            title: { type: 'string', description: 'Shortened study title, max 90 characters.' },
-            year: { type: 'integer', description: 'Year the study was published.' },
-            participant_count: { type: 'integer', description: 'Number of human participants in the study. Use 0 if unknown.' },
-            finding: { type: 'string', description: 'One plain-English sentence describing the key finding.' }
-          },
-          required: ['pubmed_id', 'title', 'year', 'participant_count', 'finding']
-        }
-      }
-    },
-    required: ['whatItIs', 'howItWorks', 'dosing', 'forms', 'synergies', 'cautions', 'recommendationsLink', 'studyCount', 'studies']
+// ====== FREE DEEP DIVE (PubMed-grounded teaser) ======
+// The free page is a slice of the premium deep-dive: same retrieval query, same top-5
+// studies, same "answer ONLY from the snippets" rules. Nothing here comes from model memory.
+
+const FREE_DIVE_VERSION = 2;       // cached content without this version is regenerated
+const MIN_STUDIES_FOR_DIVE = 3;    // below this we skip the LLM entirely (insufficient evidence)
+const FREE_DIVE_TTL_MS = 30 * 24 * 60 * 60 * 1000;
+
+function supplementDisplayName(slug) {
+  return SLUG_TO_NAME[slug] || slug.split('-').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
+}
+
+// Embed the query and return the top-N most similar PubMed abstracts for a supplement.
+// Ranking is exact (cosine over that supplement's rows, ~20 each) rather than via the
+// match_studies RPC: its ivfflat index scans a single list and then applies the supplement
+// filter, which silently drops nearly every row (0-2 results for most supplements).
+async function retrieveStudies(slug, query, count) {
+  const embeddingRes = await openai.embeddings.create({
+    model: 'text-embedding-3-small',
+    input: query,
+  });
+  const q = embeddingRes.data[0].embedding;
+
+  const { data, error } = await getSupabaseService()
+    .from('studies')
+    .select('pmid, title, abstract, study_type, sample_size, year, funding_source, embedding')
+    .contains('supplements', [slug])
+    .limit(500);
+  if (error) throw error;
+
+  return (data || [])
+    .map(({ embedding, ...study }) => {
+      const v = typeof embedding === 'string' ? JSON.parse(embedding) : embedding;
+      // OpenAI embeddings are unit length, so the dot product is the cosine similarity
+      const similarity = Array.isArray(v) ? v.reduce((sum, x, i) => sum + x * q[i], 0) : -1;
+      return { ...study, similarity };
+    })
+    .sort((x, y) => y.similarity - x.similarity)
+    .slice(0, count);
+}
+
+// Real numbers about the evidence we hold for a supplement (never model-estimated).
+async function getStudyStats(slug) {
+  const { data, error } = await getSupabaseService()
+    .from('studies')
+    .select('study_type, year')
+    .contains('supplements', [slug])
+    .limit(1000);
+  if (error) throw error;
+
+  const rows = data || [];
+  const typeCounts = {};
+  for (const r of rows) typeCounts[r.study_type || 'other'] = (typeCounts[r.study_type || 'other'] || 0) + 1;
+  const years = rows.map(r => r.year).filter(Boolean);
+
+  return {
+    studies_analyzed: rows.length,
+    type_counts: typeCounts,
+    year_min: years.length ? Math.min(...years) : null,
+    year_max: years.length ? Math.max(...years) : null,
+  };
+}
+
+const numbersIn = (text) => (text.replace(/\[\d+\]/g, ' ').match(/\d+(?:[.,]\d+)?/g) || []).map(n => n.replace(',', '.'));
+
+// Keep only citation indexes that point at a real retrieved snippet.
+function validCites(cites, max) {
+  return [...new Set((Array.isArray(cites) ? cites : []).map(Number))].filter(n => Number.isInteger(n) && n >= 1 && n <= max);
+}
+
+// Code-level guardrail on top of the prompt: a finding survives only if it cites a retrieved
+// study and every number it states actually appears in a cited abstract.
+function keepGroundedFindings(findings, studies) {
+  const kept = [];
+  for (const f of Array.isArray(findings) ? findings : []) {
+    const text = typeof f?.text === 'string' ? f.text.trim() : '';
+    const cites = validCites(f?.cites, studies.length);
+    if (!text || !cites.length) continue;
+
+    const source = cites.map(n => `${studies[n - 1].title} ${studies[n - 1].abstract}`).join(' ').replace(/(\d),(\d)/g, '$1.$2');
+    const sourceNumbers = new Set(source.match(/\d+(?:\.\d+)?/g) || []);
+    if (!numbersIn(text).every(n => sourceNumbers.has(n))) continue;
+
+    // Citations are rendered from the structured `citations` list, so drop inline [N] markers from the text
+    kept.push({ text: text.replace(/\s*\[\d+\]/g, '').trim(), citations: cites });
   }
-};
+  return kept;
+}
 
-async function generateDeepDive(slug) {
-  const name = SLUG_TO_NAME[slug] || slug.split('-').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
+async function generateFreeDive(slug) {
+  const name = supplementDisplayName(slug);
+  // Same query as the premium open call so the free page is literally a slice of the full report.
+  const query = `${name} supplementation efficacy dosage mechanisms`;
 
-  const response = await getAnthropicClient().messages.create({
-    model: 'claude-sonnet-4-6',
-    max_tokens: 3072,
-    tools: [DEEP_DIVE_TOOL],
-    tool_choice: { type: 'tool', name: 'generate_supplement_deep_dive' },
-    messages: [{
-      role: 'user',
-      content: `Generate a complete, accurate, evidence-based deep-dive encyclopedia entry for: ${name}
+  const [studies, stats] = await Promise.all([retrieveStudies(slug, query, 5), getStudyStats(slug)]);
 
-Requirements:
-- Be precise with mechanisms (name the pathway, receptor, or enzyme)
-- Dose ranges must reflect what peer-reviewed studies actually used
-- Forms section: list 2-4 most commercially relevant forms
-- Cautions must be medically accurate (drug interactions, contraindications, who should avoid)
-- Tone: knowledgeable but accessible — like a trusted sports dietitian explaining to a motivated amateur
-- Do NOT use marketing language or exaggerate effects beyond the evidence
+  const citations = studies.map((s, i) => ({
+    index: i + 1,
+    pmid: s.pmid,
+    title: s.title,
+    year: s.year,
+    study_type: s.study_type,
+    sample_size: s.sample_size,
+    url: `https://pubmed.ncbi.nlm.nih.gov/${s.pmid}/`,
+  }));
 
-For recommendationsLink: return one of exactly these strings if applicable — "better sleep", "build muscle", "general health", "energy boost" — or an empty string if none fit well.
+  const base = { version: FREE_DIVE_VERSION, stats, citations, summary: '', findings: [], insufficient_evidence: false };
 
-For studies: include 3–5 real human clinical trials with accurate PubMed IDs (PMIDs). Only include studies you are highly confident exist — verify the PMID maps to a real paper before including it. Do not fabricate PMIDs. If fewer than 3 confident citations exist, return only those you are sure of.`
-    }]
+  if (studies.length < MIN_STUDIES_FOR_DIVE) {
+    console.log(`⚠️ Only ${studies.length} studies for ${slug} — skipping generation`);
+    return { ...base, insufficient_evidence: true };
+  }
+
+  const snippets = studies.map((s, i) => {
+    const meta = [s.study_type, s.sample_size ? `n=${s.sample_size}` : null, s.year].filter(Boolean).join(', ');
+    return `[${i + 1}] PMID:${s.pmid} (${meta})\n${s.title}\n${s.abstract}`;
+  }).join('\n\n---\n\n');
+
+  const completion = await openai.chat.completions.create({
+    model: 'gpt-4o',
+    temperature: 0.0,
+    response_format: { type: 'json_object' },
+    messages: [
+      {
+        role: 'system',
+        content: `You are a precise clinical nutrition analyst. Answer using ONLY the provided study snippets. Do not use any outside knowledge.
+
+Rules:
+- Cite every factual claim with [N] referencing the snippet number.
+- Only state numbers (doses, durations, sample sizes, percentages) that appear verbatim in the cited snippet.
+- If the snippets don't support a claim, leave it out. Never fill gaps from general knowledge.
+- Always say who or what was studied (e.g. healthy adults, patients, mice, cells). Never present animal or in-vitro results as effects in humans.
+- Be exact, not creative. Do not give medical advice or claim to treat any condition.
+
+STUDY SNIPPETS:
+${snippets}`,
+      },
+      {
+        role: 'user',
+        content: `Write a short teaser for ${name} for a public encyclopedia page. Respond with a JSON object with exactly these fields:
+{
+  "summary": "2-3 sentences on what the studies found, with [N] inline citations",
+  "findings": [
+    { "text": "One specific, interesting finding stated in one sentence, with a [N] citation", "cites": [N] }
+  ]
+}
+Provide 3-4 findings. Prefer concrete, surprising or practically useful results (effect sizes, doses used, populations, notable limitations) over generic statements.`,
+      },
+    ],
   });
 
-  const toolUse = response.content.find(b => b.type === 'tool_use');
-  if (!toolUse) throw new Error('Claude did not return structured tool_use data');
+  const parsed = JSON.parse(completion.choices[0].message.content);
 
-  const result = toolUse.input;
+  const summaryText = typeof parsed.summary === 'string' ? parsed.summary.trim() : '';
+  const summaryCites = [...summaryText.matchAll(/\[(\d+)\]/g)].map(m => Number(m[1]));
+  const summarySource = studies.map(s => `${s.title} ${s.abstract}`).join(' ').replace(/(\d),(\d)/g, '$1.$2');
+  const summarySourceNumbers = new Set(summarySource.match(/\d+(?:\.\d+)?/g) || []);
+  const summaryOk =
+    summaryText &&
+    summaryCites.length > 0 &&
+    summaryCites.every(n => n >= 1 && n <= studies.length) &&
+    numbersIn(summaryText).every(n => summarySourceNumbers.has(n));
 
-  // Overwrite Claude's titles with authoritative ones from PubMed to prevent title hallucination
-  if (result.studies && result.studies.length > 0) {
-    result.studies = await verifyPubMedTitles(result.studies);
-  }
+  const result = {
+    ...base,
+    summary: summaryOk ? summaryText : '',
+    findings: keepGroundedFindings(parsed.findings, studies),
+  };
 
-  console.log(`✅ Deep dive generated for: ${slug}`);
+  console.log(`✅ Free deep dive generated for: ${slug} (${result.findings.length} findings, summary ${summaryOk ? 'kept' : 'dropped'})`);
   return result;
 }
 
-async function verifyPubMedTitles(studies) {
-  const pmids = studies.map(s => s.pubmed_id).filter(Boolean).join(',');
-  if (!pmids) return studies;
-
-  try {
-    const url = `https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esummary.fcgi?db=pubmed&id=${pmids}&retmode=json`;
-    const resp = await fetch(url, { signal: AbortSignal.timeout(8000) });
-    if (!resp.ok) return studies;
-    const data = await resp.json();
-    const resultMap = data.result || {};
-
-    return studies.map(study => {
-      const item = resultMap[study.pubmed_id];
-      if (!item || item.error) {
-        // PMID didn't resolve — remove it so broken links don't ship
-        return null;
-      }
-      return {
-        ...study,
-        title: item.title ? item.title.replace(/<[^>]+>/g, '').replace(/\.$/, '') : study.title,
-      };
-    }).filter(Boolean);
-  } catch (err) {
-    console.warn('⚠️ PubMed title verification failed, using Claude titles:', err.message);
-    return studies;
-  }
-}
-
 // GET /api/encyclopedia/deep-dive/:slug
-// Returns cached deep dive or generates one via Claude (30-day TTL)
+// Returns the cached PubMed-grounded teaser or generates one via RAG (30-day TTL)
 app.get('/api/encyclopedia/deep-dive/:slug', async (req, res) => {
   const { slug } = req.params;
   console.log(`📖 GET /api/encyclopedia/deep-dive/${slug}`);
@@ -1672,18 +1823,18 @@ app.get('/api/encyclopedia/deep-dive/:slug', async (req, res) => {
 
     if (fetchError) throw fetchError;
 
-    // 2. Return if cache is fresh
-    if (cached && new Date(cached.expires_at) > new Date()) {
+    // 2. Return if cache is fresh and was built by the current (grounded) generator
+    if (cached && new Date(cached.expires_at) > new Date() && cached.content?.version === FREE_DIVE_VERSION) {
       console.log(`✅ Cache hit for: ${slug}`);
       return res.json({ success: true, data: cached.content, cached: true });
     }
 
-    // 3. Generate with Claude
-    console.log(`🤖 Cache miss — generating with Claude for: ${slug}`);
-    const content = await generateDeepDive(slug);
+    // 3. Generate from retrieved PubMed abstracts
+    console.log(`🤖 Cache miss — generating grounded teaser for: ${slug}`);
+    const content = await generateFreeDive(slug);
 
     // 4. Upsert into Supabase (insert or overwrite expired)
-    const expiresAt = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString();
+    const expiresAt = new Date(Date.now() + FREE_DIVE_TTL_MS).toISOString();
     const { error: upsertError } = await getSupabaseService()
       .from('supplement_deep_dives')
       .upsert(
@@ -1704,21 +1855,17 @@ app.get('/api/encyclopedia/deep-dive/:slug', async (req, res) => {
 });
 
 // GET /api/encyclopedia/study-count/:slug
-// Returns the studyCount from the cached deep dive, or null if not yet cached.
-// Never triggers AI generation — read-only.
+// Number of PubMed studies we hold for this supplement (a real count, read-only, no AI).
 app.get('/api/encyclopedia/study-count/:slug', async (req, res) => {
   const { slug } = req.params;
   try {
-    const { data: cached, error } = await getSupabaseService()
-      .from('supplement_deep_dives')
-      .select('content')
-      .eq('slug', slug)
-      .maybeSingle();
+    const { count, error } = await getSupabaseService()
+      .from('studies')
+      .select('pmid', { count: 'exact', head: true })
+      .contains('supplements', [slug]);
 
     if (error) throw error;
-
-    const studyCount = cached?.content?.studyCount ?? null;
-    return res.json({ success: true, studyCount });
+    return res.json({ success: true, studyCount: count ?? null });
   } catch (error) {
     console.error(`💥 study-count error for ${slug}:`, error);
     return res.status(500).json({ success: false, studyCount: null });
@@ -1732,8 +1879,8 @@ app.post('/api/encyclopedia/deep-dive/:slug/refresh', async (req, res) => {
   console.log(`🔄 POST /api/encyclopedia/deep-dive/${slug}/refresh`);
 
   try {
-    const content = await generateDeepDive(slug);
-    const expiresAt = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString();
+    const content = await generateFreeDive(slug);
+    const expiresAt = new Date(Date.now() + FREE_DIVE_TTL_MS).toISOString();
 
     const { error } = await getSupabaseService()
       .from('supplement_deep_dives')
@@ -1838,22 +1985,8 @@ app.post('/api/premium/deep-dive/:slug', requirePremiumAccess, async (req, res) 
     const name = SLUG_TO_NAME[slug] || slug.split('-').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
     const query = question ? `${name}: ${question}` : `${name} supplementation efficacy dosage mechanisms`;
 
-    // 1. Embed the query
-    const embeddingRes = await openai.embeddings.create({
-      model: 'text-embedding-3-small',
-      input: query,
-    });
-    const queryEmbedding = embeddingRes.data[0].embedding;
-
-    // 2. Retrieve top 5 most relevant studies via pgvector
-    const { data: studies, error: rpcError } = await getSupabaseService()
-      .rpc('match_studies', {
-        query_embedding: queryEmbedding,
-        supplement_slug: slug,
-        match_count: 5,
-      });
-
-    if (rpcError) throw rpcError;
+    // 1-2. Retrieve the top 5 most relevant studies for the query
+    const studies = await retrieveStudies(slug, query, 5);
 
     // 3. Build grounded prompt with study snippets
     const snippets = (studies || []).map((s, i) => {

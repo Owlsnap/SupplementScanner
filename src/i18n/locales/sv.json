@@ -211,7 +211,7 @@
   },
   "deepDive": {
     "back": "Tillbaka",
-    "generatingAi": "Genererar djupdykning med AI…",
+    "generatingAi": "Analyserar PubMed-studier…",
     "generatingSubtitle": "~5–10 sekunder. Cachas i 30 dagar efter första laddning.",
     "failedToLoad": "Det gick inte att ladda innehållet",
     "tryAgain": "Försök igen",
@@ -229,7 +229,30 @@
     },
     "recommendedFor": "Detta tillskott rekommenderas för:",
     "seeGoalRecommendations": "Se målrekommendationer →",
-    "freshlyGenerated": "✦ Nygenererat av AI — cachas i 30 dagar"
+    "freshlyGenerated": "✦ Nygenererat av AI — cachas i 30 dagar",
+    "groundedHeading": "Vad forskningen säger",
+    "findingsHeading": "Intressanta fynd",
+    "sourcesHeading": "Källor",
+    "studiesAnalysed": "PubMed-studier analyserade",
+    "studyTypeLabels": {
+      "meta-analysis": "Metaanalys",
+      "rct": "RCT",
+      "observational": "Observationsstudie",
+      "animal": "Djurstudie",
+      "other": "Studie"
+    },
+    "insufficientEvidence": "Vi har ännu inte tillräckligt många publicerade studier om det här kosttillskottet för att sammanfatta evidensen på ett ansvarsfullt sätt.",
+    "lockedHeading": "Vill du se hela bilden?",
+    "lockedIntro": "Den här sidan är en kort förhandsvisning. Den fullständiga djupdykningen går mycket djupare:",
+    "lockedItems": [
+      "Tillförlitlighetspoäng viktad efter studiernas kvalitet",
+      "Haken: begränsningar, urvalsstorlek och finansiering",
+      "Dos i studierna jämfört med vanlig dos i handeln",
+      "Interaktioner med läkemedel och andra kosttillskott",
+      "Ställ egna frågor, besvarade enbart utifrån studierna"
+    ],
+    "unlockCta": "Lås upp hela djupdykningen",
+    "disclaimer": "Automatiskt sammanfattat från PubMed-sammandrag. Endast för information, inte medicinsk rådgivning."
   },
   "premiumDeepDive": {
     "back": "Tillbaka",

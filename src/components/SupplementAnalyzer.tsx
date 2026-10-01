@@ -321,6 +321,7 @@ function DeepDiveRoute() {
         tagline={supp.tagline}
         onBack={() => navigate(-1 as any)}
         onGoToRecommendations={() => navigate('/recommendations')}
+        onUnlockFullReport={() => navigate(`/encyclopedia/${supp.slug}/premium-deep-dive`)}
       />
     </>
   );

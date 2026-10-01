@@ -21,6 +21,7 @@ import { useStack } from '../../src/contexts/StackContext';
 import { useAuth, supabase } from '../../src/contexts/AuthContext';
 import { API_BASE_URL } from '../../src/config/api';
 import { getSessionIdForSlug, savePaidDive } from '../../src/utils/paidDives';
+import { isGroundedDive, type DeepDiveContent } from '../../src/utils/deepDiveExport';
 
 const COLORS = {
   primary: '#00685f',
@@ -66,15 +67,6 @@ const bioColors: Record<string, string> = {
 interface DosingInfo { low: string; standard: string; high: string; timing: string }
 interface FormInfo { name: string; bioavailability: 'Excellent' | 'Good' | 'Fair' | 'Poor'; notes: string }
 interface SynergyInfo { supplement: string; reason: string }
-interface DeepDiveContent {
-  whatItIs: string;
-  howItWorks: string;
-  dosing: DosingInfo;
-  forms: FormInfo[];
-  synergies: SynergyInfo[];
-  cautions: string[];
-}
-
 interface Citation {
   index: number;
   pmid: string;
@@ -346,6 +338,8 @@ export default function SupplementDetailScreen() {
   const catIcon = categoryIcons[supp.category];
   const badge = evidenceTierColors[supp.evidenceTier];
   const stacked = inStack(supp.slug);
+  const grounded = deepDive && isGroundedDive(deepDive) ? deepDive : null;
+  const legacy = deepDive && !isGroundedDive(deepDive) ? deepDive : null;
 
   return (
     <View style={styles.root}>
@@ -442,7 +436,7 @@ export default function SupplementDetailScreen() {
                 <Text style={styles.deepDiveTitle}>Research Deep Dive</Text>
               </View>
               <Text style={styles.deepDiveSubtitle}>
-                Mechanism, dosing protocols, forms, synergies & interactions
+                What PubMed studies say: a summary and key findings
               </Text>
             </View>
 
@@ -454,7 +448,7 @@ export default function SupplementDetailScreen() {
                 </View>
                 <Text style={styles.ddLockTitle}>Sign in to unlock Deep Dives</Text>
                 <Text style={styles.ddLockBody}>
-                  Create a free account to access AI-generated research deep dives for every supplement.
+                  Create a free account to see what the published research says about every supplement.
                 </Text>
                 <TouchableOpacity
                   style={[styles.ddSignInBtn, { backgroundColor: catColor }]}
@@ -485,7 +479,7 @@ export default function SupplementDetailScreen() {
             {ddLoading && (
               <View style={styles.ddLoadingContainer}>
                 <ActivityIndicator size="large" color={catColor} />
-                <Text style={styles.ddLoadingText}>Generating deep dive…</Text>
+                <Text style={styles.ddLoadingText}>{t('deepDive.generatingAi')}</Text>
                 <Text style={styles.ddLoadingSubtext}>~5–10 seconds. Cached for 30 days after first load.</Text>
               </View>
             )}
@@ -504,40 +498,131 @@ export default function SupplementDetailScreen() {
             {/* Content */}
             {deepDive && !ddLoading && (
               <View style={styles.ddContent}>
+                {grounded && (
+                  <>
+                    <SectionCard title={t('deepDive.studiesAnalysed')}>
+                      <Text style={styles.bodyText}>
+                        {grounded.stats.studies_analyzed}
+                        {grounded.stats.year_min && grounded.stats.year_max ? ` · ${grounded.stats.year_min}–${grounded.stats.year_max}` : ''}
+                        {Object.entries(grounded.stats.type_counts)
+                          .filter(([, n]) => n > 0)
+                          .map(([k, n]) => ` · ${t(`deepDive.studyTypeLabels.${k}`)} ${n}`)
+                          .join('')}
+                      </Text>
+                    </SectionCard>
+
+                    {grounded.insufficient_evidence && (
+                      <SectionCard title={t('deepDive.groundedHeading')}>
+                        <Text style={styles.bodyText}>{t('deepDive.insufficientEvidence')}</Text>
+                      </SectionCard>
+                    )}
+
+                    {!!grounded.summary && (
+                      <SectionCard title={t('deepDive.groundedHeading')}>
+                        <Text style={styles.bodyText}>{grounded.summary}</Text>
+                      </SectionCard>
+                    )}
+
+                    {grounded.findings.length > 0 && (
+                      <SectionCard title={t('deepDive.findingsHeading')}>
+                        {grounded.findings.map((f, i) => (
+                          <View key={i}>
+                            <BulletItem text={f.text} color={catColor} icon="bolt" />
+                            <View style={styles.findingCites}>
+                              {f.citations.map(n => {
+                                const c = grounded.citations[n - 1];
+                                if (!c) return null;
+                                return (
+                                  <TouchableOpacity key={n} onPress={() => RNLinking.openURL(c.url)} activeOpacity={0.7}>
+                                    <Text style={[styles.findingCiteText, { color: catColor }]}>
+                                      {t(`deepDive.studyTypeLabels.${c.study_type || 'other'}`)}
+                                      {c.year ? ` · ${c.year}` : ''}
+                                      {c.sample_size ? ` · n=${c.sample_size}` : ''} ↗
+                                    </Text>
+                                  </TouchableOpacity>
+                                );
+                              })}
+                            </View>
+                          </View>
+                        ))}
+                      </SectionCard>
+                    )}
+
+                    {grounded.citations.length > 0 && (
+                      <SectionCard title={t('deepDive.sourcesHeading')}>
+                        {grounded.citations.map(c => (
+                          <TouchableOpacity
+                            key={c.pmid}
+                            style={styles.citationRow}
+                            onPress={() => RNLinking.openURL(c.url)}
+                            activeOpacity={0.7}
+                          >
+                            <Text style={styles.citationIndex}>[{c.index}]</Text>
+                            <View style={{ flex: 1 }}>
+                              <Text style={styles.citationTitle}>{c.title}</Text>
+                              <Text style={styles.citationMeta}>PMID {c.pmid}{c.year ? ` · ${c.year}` : ''}</Text>
+                            </View>
+                          </TouchableOpacity>
+                        ))}
+                        <Text style={styles.findingDisclaimer}>{t('deepDive.disclaimer')}</Text>
+                      </SectionCard>
+                    )}
+
+                    {/* Hook: what the full deep-dive adds (premium users already see it below) */}
+                    {!canAccessPremium && (
+                      <SectionCard title={t('deepDive.lockedHeading')}>
+                        <Text style={[styles.bodyText, { marginBottom: 8 }]}>{t('deepDive.lockedIntro')}</Text>
+                        {ta('deepDive.lockedItems').map((item, i) => (
+                          <BulletItem key={i} text={item} color={catColor} icon="lock" />
+                        ))}
+                        <TouchableOpacity
+                          style={[styles.ddSignInBtn, { backgroundColor: catColor, marginTop: 12 }]}
+                          onPress={() => router.push('/premium' as any)}
+                          activeOpacity={0.85}
+                        >
+                          <Text style={styles.ddSignInBtnText}>{t('deepDive.unlockCta')}</Text>
+                        </TouchableOpacity>
+                      </SectionCard>
+                    )}
+                  </>
+                )}
+
+                {legacy && (
+                  <>
                 <SectionCard title="What It Is">
-                  <Text style={styles.bodyText}>{deepDive.whatItIs}</Text>
+                  <Text style={styles.bodyText}>{legacy.whatItIs}</Text>
                 </SectionCard>
 
                 <SectionCard title="How It Works">
-                  <Text style={styles.bodyText}>{deepDive.howItWorks}</Text>
+                  <Text style={styles.bodyText}>{legacy.howItWorks}</Text>
                 </SectionCard>
 
                 <SectionCard title="Dosing Protocol">
-                  {deepDive.dosing && (
+                  {legacy.dosing && (
                     <>
                       {[
-                        { label: 'Conservative', value: deepDive.dosing.low },
-                        { label: 'Standard', value: deepDive.dosing.standard },
-                        { label: 'High / Loading', value: deepDive.dosing.high },
+                        { label: 'Conservative', value: legacy.dosing.low },
+                        { label: 'Standard', value: legacy.dosing.standard },
+                        { label: 'High / Loading', value: legacy.dosing.high },
                       ].map(row => (
                         <View key={row.label} style={styles.dosingRow}>
                           <Text style={styles.dosingLabel}>{row.label}</Text>
                           <Text style={styles.dosingValue}>{row.value}</Text>
                         </View>
                       ))}
-                      {deepDive.dosing.timing && (
+                      {legacy.dosing.timing && (
                         <View style={[styles.timingBox, { borderColor: catColor + '40', backgroundColor: catColor + '0D' }]}>
                           <MaterialIcons name="schedule" size={14} color={catColor} />
-                          <Text style={[styles.timingText, { color: catColor }]}>{deepDive.dosing.timing}</Text>
+                          <Text style={[styles.timingText, { color: catColor }]}>{legacy.dosing.timing}</Text>
                         </View>
                       )}
                     </>
                   )}
                 </SectionCard>
 
-                {deepDive.forms && deepDive.forms.length > 0 && (
+                {legacy.forms && legacy.forms.length > 0 && (
                   <SectionCard title="Forms & Bioavailability">
-                    {deepDive.forms.map((form, i) => (
+                    {legacy.forms.map((form, i) => (
                       <View key={i} style={styles.formRow}>
                         <View style={styles.formRowTop}>
                           <Text style={styles.formName}>{form.name}</Text>
@@ -553,9 +638,9 @@ export default function SupplementDetailScreen() {
                   </SectionCard>
                 )}
 
-                {deepDive.synergies && deepDive.synergies.length > 0 && (
+                {legacy.synergies && legacy.synergies.length > 0 && (
                   <SectionCard title="Synergies">
-                    {deepDive.synergies.map((syn, i) => (
+                    {legacy.synergies.map((syn, i) => (
                       <View key={i} style={styles.synergyRow}>
                         <View style={styles.synergyBadge}>
                           <Text style={styles.synergyBadgeText}>+ {syn.supplement}</Text>
@@ -566,12 +651,14 @@ export default function SupplementDetailScreen() {
                   </SectionCard>
                 )}
 
-                {deepDive.cautions && deepDive.cautions.length > 0 && (
+                {legacy.cautions && legacy.cautions.length > 0 && (
                   <SectionCard title="Cautions & Interactions">
-                    {deepDive.cautions.map((caution, i) => (
+                    {legacy.cautions.map((caution, i) => (
                       <BulletItem key={i} text={caution} color="#ea580c" icon="warning" />
                     ))}
                   </SectionCard>
+                )}
+                  </>
                 )}
 
                 <TouchableOpacity
@@ -1143,6 +1230,25 @@ const styles = StyleSheet.create({
   },
 
   ddContent: {},
+  findingCites: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: 12,
+    marginLeft: 26,
+    marginTop: -4,
+    marginBottom: 10,
+  },
+  findingCiteText: {
+    fontFamily: 'Inter_600SemiBold',
+    fontSize: 12,
+  },
+  findingDisclaimer: {
+    fontFamily: 'Inter_400Regular',
+    fontSize: 12,
+    color: COLORS.outline,
+    marginTop: 8,
+    lineHeight: 17,
+  },
 
   dosingRow: {
     flexDirection: 'row',

@@ -18,7 +18,7 @@ import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context'
 import { encyclopediaSupplements, type EncyclopediaCategory } from '../../src/data/encyclopediaData';
 import { useAuth, supabase } from '../../src/contexts/AuthContext';
 import { useTheme } from '../../src/contexts/ThemeContext';
-import { downloadDeepDivePdf, getDownloadedSlugs, type DeepDiveContent } from '../../src/utils/deepDiveExport';
+import { deepDivePreview, downloadDeepDivePdf, getDownloadedSlugs, type DeepDiveContent } from '../../src/utils/deepDiveExport';
 
 const categoryColors: Record<EncyclopediaCategory, string> = {
   Performance: '#00685f',
@@ -179,7 +179,7 @@ export default function SavedDeepDivesScreen() {
                     </TouchableOpacity>
                   </View>
                   <Text style={[styles.cardSnippet, { color: colors.onSurfaceVariant }]} numberOfLines={2}>
-                    {item.content?.whatItIs}
+                    {deepDivePreview(item.content)}
                   </Text>
                 </View>
               </TouchableOpacity>

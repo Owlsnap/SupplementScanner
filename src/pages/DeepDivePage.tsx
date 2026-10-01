@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { ArrowLeft, Warning, Lightning, CheckCircle, Info, BookmarkSimple } from '@phosphor-icons/react';
+import { ArrowLeft, Warning, Lightning, CheckCircle, Info, BookmarkSimple, Lock } from '@phosphor-icons/react';
 import type { EvidenceTier } from '../data/encyclopediaData';
 import { useLanguage } from '../contexts/LanguageContext';
 import { useAuth, supabase } from '../contexts/AuthContext';
@@ -30,7 +30,9 @@ interface StudyInfo {
   finding: string;
 }
 
-interface DeepDiveContent {
+// Legacy shape: ungrounded AI content. Still possible in snapshots users saved before the
+// PubMed-grounded rewrite, so it keeps rendering; the API no longer produces it.
+interface LegacyDeepDiveContent {
   whatItIs: string;
   howItWorks: string;
   dosing: DosingInfo;
@@ -41,6 +43,38 @@ interface DeepDiveContent {
   studies?: StudyInfo[];
 }
 
+interface GroundedCitation {
+  index: number;
+  pmid: string;
+  title: string;
+  year: number | null;
+  study_type: string | null;
+  sample_size: number | null;
+  url: string;
+}
+
+// Current shape: a teaser built only from retrieved PubMed abstracts (see generateFreeDive in server.js)
+interface GroundedDeepDiveContent {
+  version: 2;
+  summary: string;
+  findings: { text: string; citations: number[] }[];
+  citations: GroundedCitation[];
+  stats: {
+    studies_analyzed: number;
+    type_counts: Record<string, number>;
+    year_min: number | null;
+    year_max: number | null;
+  };
+  insufficient_evidence: boolean;
+}
+
+type DeepDiveContent = LegacyDeepDiveContent | GroundedDeepDiveContent;
+
+const isGroundedDive = (c: DeepDiveContent): c is GroundedDeepDiveContent =>
+  (c as GroundedDeepDiveContent).version === 2;
+
+const STUDY_TYPE_ORDER = ['meta-analysis', 'rct', 'observational', 'animal', 'other'];
+
 interface DeepDivePageProps {
   slug: string;
   supplementName: string;
@@ -49,6 +83,7 @@ interface DeepDivePageProps {
   tagline: string;
   onBack: () => void;
   onGoToRecommendations?: () => void;
+  onUnlockFullReport?: () => void;
 }
 
 const evidenceTierColors: Record<EvidenceTier, { bg: string; text: string; border: string }> = {
@@ -73,6 +108,7 @@ export default function DeepDivePage({
   tagline,
   onBack,
   onGoToRecommendations,
+  onUnlockFullReport,
 }: DeepDivePageProps) {
   const [deepDive, setDeepDive] = useState<DeepDiveContent | null>(null);
   const [loading, setLoading] = useState(true);
@@ -84,6 +120,8 @@ export default function DeepDivePage({
   const { user, loading: authLoading } = useAuth();
 
   const tierStyle = evidenceTierColors[evidenceTier];
+  const grounded = deepDive && isGroundedDive(deepDive) ? deepDive : null;
+  const legacy = deepDive && !isGroundedDive(deepDive) ? deepDive : null;
 
   const loadContent = useCallback(() => {
     const apiUrl = (import.meta as any).env?.VITE_API_URL || 'http://localhost:3001';
@@ -181,6 +219,20 @@ export default function DeepDivePage({
     overflowWrap: 'break-word',
     wordBreak: 'break-word',
   };
+
+  // Turn inline [N] markers into links to the matching PubMed citation
+  const renderCited = (text: string, citations: GroundedCitation[]) =>
+    text.split(/(\[\d+\])/g).map((part, i) => {
+      const m = part.match(/^\[(\d+)\]$/);
+      const c = m ? citations[Number(m[1]) - 1] : null;
+      if (!c) return <React.Fragment key={i}>{part}</React.Fragment>;
+      return (
+        <a key={i} href={c.url} target="_blank" rel="noopener noreferrer"
+          style={{ color: '#00685f', fontWeight: 600, fontSize: '0.75em', verticalAlign: 'super', textDecoration: 'none' }}>
+          [{m![1]}]
+        </a>
+      );
+    });
 
   const skeletonBlockStyle: React.CSSProperties = {
     background: 'var(--bg-hover)',
@@ -341,38 +393,157 @@ export default function DeepDivePage({
           </div>
         )}
 
-        {/* Deep dive content */}
-        {!loading && deepDive && (
+        {/* PubMed-grounded teaser */}
+        {!loading && grounded && (
+          <>
+            {/* Evidence stats */}
+            <div style={{ ...cardStyle, display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: '0.5rem 0.75rem' }}>
+              <span style={{ fontFamily: "'Manrope', sans-serif", fontWeight: 800, fontSize: '1.5rem', color: '#00685f', letterSpacing: '-0.5px' }}>
+                {grounded.stats.studies_analyzed}
+              </span>
+              <span style={{ ...bodyTextStyle, fontSize: '0.875rem', marginRight: '0.25rem' }}>
+                {t('deepDive.studiesAnalysed')}
+                {grounded.stats.year_min && grounded.stats.year_max ? ` · ${grounded.stats.year_min}–${grounded.stats.year_max}` : ''}
+              </span>
+              {STUDY_TYPE_ORDER.filter(k => grounded.stats.type_counts[k] > 0).map(k => (
+                <span key={k} style={{
+                  background: 'var(--primary-light)', color: '#00685f', border: '1px solid #6bd8cb',
+                  borderRadius: '999px', padding: '0.1875rem 0.625rem', fontSize: '0.75rem', fontWeight: 600,
+                  fontFamily: "'Inter', sans-serif",
+                }}>
+                  {t(`deepDive.studyTypeLabels.${k}`)} · {grounded.stats.type_counts[k]}
+                </span>
+              ))}
+            </div>
+
+            {grounded.insufficient_evidence && (
+              <div style={{ ...cardStyle, borderLeft: '3px solid var(--card-warning-border)' }}>
+                <p style={bodyTextStyle}>{t('deepDive.insufficientEvidence')}</p>
+              </div>
+            )}
+
+            {/* Summary */}
+            {grounded.summary && (
+              <div style={cardStyle}>
+                <div style={sectionTitleStyle}>
+                  <Info size={18} color="#00685f" />
+                  {t('deepDive.groundedHeading')}
+                </div>
+                <p style={bodyTextStyle}>{renderCited(grounded.summary, grounded.citations)}</p>
+              </div>
+            )}
+
+            {/* Findings */}
+            {grounded.findings.length > 0 && (
+              <div style={cardStyle}>
+                <div style={sectionTitleStyle}>
+                  <Lightning size={18} color="#00685f" weight="fill" />
+                  {t('deepDive.findingsHeading')}
+                </div>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
+                  {grounded.findings.map((f, i) => (
+                    <div key={i} style={{ background: 'var(--bg-hover)', borderRadius: '10px', padding: '0.875rem 1rem' }}>
+                      <p style={{ ...bodyTextStyle, marginBottom: '0.5rem' }}>{f.text}</p>
+                      <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.375rem' }}>
+                        {f.citations.map(n => {
+                          const c = grounded.citations[n - 1];
+                          if (!c) return null;
+                          return (
+                            <a key={n} href={c.url} target="_blank" rel="noopener noreferrer" style={{
+                              textDecoration: 'none', fontFamily: "'Inter', sans-serif", fontSize: '0.75rem', fontWeight: 600,
+                              color: '#00685f', border: '1px solid var(--border-strong)', borderRadius: '999px', padding: '0.125rem 0.5rem',
+                            }}>
+                              {t(`deepDive.studyTypeLabels.${c.study_type || 'other'}`)}{c.year ? ` · ${c.year}` : ''}{c.sample_size ? ` · n=${c.sample_size}` : ''} ↗
+                            </a>
+                          );
+                        })}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Sources */}
+            {grounded.citations.length > 0 && (
+              <div style={cardStyle}>
+                <div style={sectionTitleStyle}>{t('deepDive.sourcesHeading')}</div>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+                  {grounded.citations.map(c => (
+                    <a key={c.pmid} href={c.url} target="_blank" rel="noopener noreferrer" style={{ textDecoration: 'none', display: 'flex', gap: '0.625rem', alignItems: 'flex-start' }}>
+                      <span style={{ fontFamily: "'Inter', sans-serif", fontSize: '0.75rem', fontWeight: 700, color: '#00685f', flexShrink: 0, paddingTop: '2px' }}>[{c.index}]</span>
+                      <span style={{ ...bodyTextStyle, fontSize: '0.8125rem', minWidth: 0 }}>
+                        {c.title} <span style={{ color: 'var(--text-secondary)' }}>· PMID {c.pmid}{c.year ? ` · ${c.year}` : ''}</span>
+                      </span>
+                    </a>
+                  ))}
+                </div>
+                <p style={{ fontFamily: "'Inter', sans-serif", fontSize: '0.75rem', color: 'var(--text-secondary)', margin: '0.75rem 0 0', lineHeight: 1.5 }}>
+                  {t('deepDive.disclaimer')}
+                </p>
+              </div>
+            )}
+
+            {/* Hook: what the full deep-dive adds */}
+            <div style={{ ...cardStyle, border: '1.5px solid #6bd8cb', background: 'var(--primary-light)' }}>
+              <div style={sectionTitleStyle}>
+                <Lock size={18} color="#00685f" weight="fill" />
+                {t('deepDive.lockedHeading')}
+              </div>
+              <p style={{ ...bodyTextStyle, marginBottom: '0.75rem' }}>{t('deepDive.lockedIntro')}</p>
+              <ul style={{ margin: '0 0 1.25rem', padding: '0 0 0 1.25rem' }}>
+                {(t('deepDive.lockedItems', { returnObjects: true }) as unknown as string[]).map((item, i) => (
+                  <li key={i} style={{ ...bodyTextStyle, marginBottom: '0.25rem' }}>{item}</li>
+                ))}
+              </ul>
+              {onUnlockFullReport && (
+                <button
+                  onClick={onUnlockFullReport}
+                  style={{
+                    background: '#00685f', color: '#ffffff', border: 'none', borderRadius: '28px',
+                    padding: '0.75rem 1.75rem', fontFamily: "'Inter', sans-serif", fontWeight: 600,
+                    fontSize: '0.875rem', cursor: 'pointer',
+                  }}
+                >
+                  {t('deepDive.unlockCta')}
+                </button>
+              )}
+            </div>
+          </>
+        )}
+
+        {/* Legacy (pre-PubMed-grounding) saved snapshot */}
+        {!loading && legacy && (
           <>
             {/* What it is */}
             <div style={cardStyle}>
               <div style={sectionTitleStyle}>
                 <Info size={18} color="#00685f" />
-                {t('deepDive.whatItIs')}
+                {t('legacy.whatItIs')}
               </div>
-              <p style={bodyTextStyle}>{deepDive.whatItIs}</p>
+              <p style={bodyTextStyle}>{legacy.whatItIs}</p>
             </div>
 
             {/* How it works */}
             <div style={cardStyle}>
               <div style={sectionTitleStyle}>
                 <Lightning size={18} color="#00685f" weight="fill" />
-                {t('deepDive.howItWorks')}
+                {t('legacy.howItWorks')}
               </div>
-              <p style={bodyTextStyle}>{deepDive.howItWorks}</p>
+              <p style={bodyTextStyle}>{legacy.howItWorks}</p>
             </div>
 
             {/* Dosing */}
             <div style={cardStyle}>
               <div style={sectionTitleStyle}>
                 <CheckCircle size={18} color="#00685f" />
-                {t('deepDive.dosing')}
+                {t('legacy.dosing')}
               </div>
               <div className="dosing-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '0.75rem', marginBottom: '0.75rem' }}>
                 {[
-                  { label: t('deepDive.dosingLabels.conservative'), value: deepDive.dosing.low, accent: 'var(--bg-hover)', border: 'var(--border-strong)' },
-                  { label: t('deepDive.dosingLabels.standard'), value: deepDive.dosing.standard, accent: 'var(--primary-light)', border: '#00685f' },
-                  { label: t('deepDive.dosingLabels.highLoading'), value: deepDive.dosing.high, accent: 'var(--bg-hover)', border: 'var(--border-strong)' },
+                  { label: t('legacy.dosingLabels.conservative'), value: legacy.dosing.low, accent: 'var(--bg-hover)', border: 'var(--border-strong)' },
+                  { label: t('legacy.dosingLabels.standard'), value: legacy.dosing.standard, accent: 'var(--primary-light)', border: '#00685f' },
+                  { label: t('legacy.dosingLabels.highLoading'), value: legacy.dosing.high, accent: 'var(--bg-hover)', border: 'var(--border-strong)' },
                 ].map(({ label, value, accent, border }) => (
                   <div key={label} style={{
                     background: accent,
@@ -399,20 +570,20 @@ export default function DeepDivePage({
                 gap: '0.5rem',
               }}>
                 <span style={{ fontSize: '0.75rem', fontWeight: 600, color: 'var(--text-secondary)', textTransform: 'uppercase', letterSpacing: '0.6px', fontFamily: "'Inter', sans-serif", whiteSpace: 'nowrap', paddingTop: '2px', flexShrink: 0 }}>
-                  {t('deepDive.timing')}
+                  {t('legacy.timing')}
                 </span>
-                <span style={{ ...bodyTextStyle, fontSize: '0.875rem', minWidth: 0 }}>{deepDive.dosing.timing}</span>
+                <span style={{ ...bodyTextStyle, fontSize: '0.875rem', minWidth: 0 }}>{legacy.dosing.timing}</span>
               </div>
             </div>
 
             {/* Forms & bioavailability */}
-            {deepDive.forms && deepDive.forms.length > 0 && (
+            {legacy.forms && legacy.forms.length > 0 && (
               <div style={cardStyle}>
                 <div style={sectionTitleStyle}>
-                  {t('deepDive.formsAndBioavailability')}
+                  {t('legacy.formsAndBioavailability')}
                 </div>
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
-                  {deepDive.forms.map((form, i) => (
+                  {legacy.forms.map((form, i) => (
                     <div key={i} style={{
                       display: 'flex',
                       alignItems: 'flex-start',
@@ -448,13 +619,13 @@ export default function DeepDivePage({
             )}
 
             {/* Synergies */}
-            {deepDive.synergies && deepDive.synergies.length > 0 && (
+            {legacy.synergies && legacy.synergies.length > 0 && (
               <div style={cardStyle}>
                 <div style={sectionTitleStyle}>
-                  {t('deepDive.synergies')}
+                  {t('legacy.synergies')}
                 </div>
                 <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.5rem', marginBottom: '0.75rem' }}>
-                  {deepDive.synergies.map((s, i) => (
+                  {legacy.synergies.map((s, i) => (
                     <div key={i} style={{ width: '100%' }}>
                       <div className="synergy-row" style={{ display: 'flex', alignItems: 'flex-start', gap: '0.75rem' }}>
                         <span style={{
@@ -480,13 +651,13 @@ export default function DeepDivePage({
             )}
 
             {/* Key Studies */}
-            {deepDive.studies && deepDive.studies.length > 0 && (
+            {legacy.studies && legacy.studies.length > 0 && (
               <div style={cardStyle}>
                 <div style={sectionTitleStyle}>
                   Key Studies
                 </div>
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '0.625rem' }}>
-                  {deepDive.studies.map((study, i) => (
+                  {legacy.studies.map((study, i) => (
                     <a
                       key={i}
                       href={`https://pubmed.ncbi.nlm.nih.gov/${study.pubmed_id}/`}
@@ -534,15 +705,15 @@ export default function DeepDivePage({
             )}
 
             {/* Cautions */}
-            {deepDive.cautions && deepDive.cautions.length > 0 && (
+            {legacy.cautions && legacy.cautions.length > 0 && (
               <div style={{ ...cardStyle, borderLeft: '3px solid var(--card-warning-border)' }}>
                 <div style={sectionTitleStyle}>
                   <Warning size={18} color="#d97706" weight="fill" />
-                  {t('deepDive.cautionsAndInteractions')}
+                  {t('legacy.cautionsAndInteractions')}
                 </div>
                 <ul style={{ margin: 0, padding: '0 0 0 1.25rem' }}>
-                  {deepDive.cautions.map((c, i) => (
-                    <li key={i} style={{ ...bodyTextStyle, marginBottom: i < deepDive.cautions.length - 1 ? '0.5rem' : 0, color: 'var(--text-muted)' }}>
+                  {legacy.cautions.map((c, i) => (
+                    <li key={i} style={{ ...bodyTextStyle, marginBottom: i < legacy.cautions.length - 1 ? '0.5rem' : 0, color: 'var(--text-muted)' }}>
                       {c}
                     </li>
                   ))}
@@ -551,10 +722,10 @@ export default function DeepDivePage({
             )}
 
             {/* Recommendations link */}
-            {deepDive.recommendationsLink && onGoToRecommendations && (
+            {legacy.recommendationsLink && onGoToRecommendations && (
               <div style={{ ...cardStyle, textAlign: 'center' }}>
                 <p style={{ ...bodyTextStyle, marginBottom: '1rem', color: 'var(--text-secondary)' }}>
-                  {t('deepDive.recommendedFor')} <strong style={{ color: 'var(--text-primary)' }}>{deepDive.recommendationsLink.replace(/\b\w/g, (c: string) => c.toUpperCase())}</strong>
+                  {t('legacy.recommendedFor')} <strong style={{ color: 'var(--text-primary)' }}>{legacy.recommendationsLink.replace(/\b\w/g, (c: string) => c.toUpperCase())}</strong>
                 </p>
                 <button
                   onClick={onGoToRecommendations}
@@ -573,7 +744,7 @@ export default function DeepDivePage({
                   onMouseEnter={e => { (e.currentTarget as HTMLButtonElement).style.background = '#00685f'; }}
                   onMouseLeave={e => { (e.currentTarget as HTMLButtonElement).style.background = '#3f6560'; }}
                 >
-                  {t('deepDive.seeGoalRecommendations')}
+                  {t('legacy.seeGoalRecommendations')}
                 </button>
               </div>
             )}
@@ -591,7 +762,7 @@ export default function DeepDivePage({
                   fontWeight: 600,
                   fontFamily: "'Inter', sans-serif",
                 }}>
-                  {t('deepDive.freshlyGenerated')}
+                  {t('legacy.freshlyGenerated')}
                 </span>
               </div>
             )}
