@@ -255,6 +255,7 @@
       "meta-analysis": "Meta-analysis",
       "rct": "RCT",
       "observational": "Observational",
+      "review": "Review",
       "animal": "Animal study",
       "other": "Study"
     },
@@ -262,7 +263,7 @@
     "lockedHeading": "Want the full picture?",
     "lockedIntro": "This page is a short preview. The full deep-dive goes much further:",
     "lockedItems": [
-      "Confidence score weighted by study quality",
+      "Research-base score: how well studied it really is",
       "The catch: limitations, sample sizes and funding",
       "Dose used in studies vs. typical retail dose",
       "Interactions with medications and other supplements",
@@ -278,13 +279,14 @@
     "searchingPubMed": "Searching PubMed database · Grounding answer in studies",
     "failedToLoad": "Failed to load",
     "tryAgain": "Try again",
-    "evidenceConfidence": "Evidence confidence",
-    "confidenceLabels": {
-      "high": "High confidence",
-      "moderate": "Moderate confidence",
-      "low": "Low confidence"
+    "researchBase": "Research base",
+    "researchBaseLevels": {
+      "extensive": "Extensively studied",
+      "moderate": "Moderately studied",
+      "limited": "Limited research"
     },
-    "confidenceWeighting": "Weighted by study type: meta-analysis (100%) → RCT — Randomized Controlled Trial (80%) → observational (40%) → animal (10%)",
+    "researchBaseExplainer": "How much human research exists on {{name}} supplementation: PubMed lists {{ma}} meta-analyses or systematic reviews and {{rcts}} randomised controlled trials. This shows how well studied it is, not whether it works. The summary below covers what the studies found.",
+    "sourcesInSummary": "Sources in this summary",
     "evidenceSummary": "Evidence Summary",
     "theCatch": "The Catch",
     "catchIntro": "Limitations identified in the available evidence:",

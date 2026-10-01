@@ -22,6 +22,7 @@ const registries = {
   'web i18n en': new Set(Object.keys(JSON.parse(read('src/i18n/locales/en.json')).supplements)),
   'web i18n sv': new Set(Object.keys(JSON.parse(read('src/i18n/locales/sv.json')).supplements)),
   'pubmed terms': slugsIn(/^  '([^']+)':\s+'/gm, section(read('scripts/ingest-pubmed.js'), 'SUPPLEMENT_SEARCH_TERMS', '};')),
+  'evidence terms': slugsIn(/^  '([^']+)':\s+'/gm, section(read('scripts/evidence-terms.js'), 'SUBSTANCE_TERMS', '};')),
   'prerender': slugsIn(/'([a-z0-9-]+)'/g, section(read('scripts/prerender.js'), 'SUPPLEMENT_SLUGS', '];')),
   'prewarm': slugsIn(/'([a-z0-9-]+)'/g, section(read('scripts/prewarm-encyclopedia.js'), 'SLUGS', '];')),
   'mobile data': slugsIn(/slug: '([^']+)'/g, read('SuppScannerApp/src/data/encyclopediaData.ts')),

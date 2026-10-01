@@ -78,6 +78,8 @@ Content accuracy rule: only state claims you are confident are supported by huma
 ### Step 3: `scripts/ingest-pubmed.js`
 Add `'<slug>': '<pubmed search term>',` to `SUPPLEMENT_SEARCH_TERMS`.
 
+Also add `'<slug>': '<substance>[tiab] OR <synonym>[tiab]',` to `SUBSTANCE_TERMS` in `scripts/evidence-terms.js`. This is the substance alone (no "supplementation"/outcome words). The ingest uses it to count PubMed meta-analyses + RCTs for the premium "Research base" score; a missing entry means no score is shown.
+
 ### Step 4: `scripts/seed-interactions.js`
 Add rows to the `INTERACTIONS` array (shape):
 ```js

@@ -73,7 +73,7 @@ type DeepDiveContent = LegacyDeepDiveContent | GroundedDeepDiveContent;
 const isGroundedDive = (c: DeepDiveContent): c is GroundedDeepDiveContent =>
   (c as GroundedDeepDiveContent).version === 2;
 
-const STUDY_TYPE_ORDER = ['meta-analysis', 'rct', 'observational', 'animal', 'other'];
+const STUDY_TYPE_ORDER = ['meta-analysis', 'rct', 'observational', 'review', 'animal', 'other'];
 
 interface DeepDivePageProps {
   slug: string;

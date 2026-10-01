@@ -1638,7 +1638,8 @@ const SLUG_TO_TYPICAL_DOSE = {
 // The free page is a slice of the premium deep-dive: same retrieval query, same top-5
 // studies, same "answer ONLY from the snippets" rules. Nothing here comes from model memory.
 
-const FREE_DIVE_VERSION = 2;       // cached content without this version is regenerated
+const FREE_DIVE_VERSION = 2;       // response format; clients check it, so only bump on shape changes
+const FREE_DIVE_RETRIEVAL = 2;     // cached content from an older retrieval/classification is regenerated
 const MIN_STUDIES_FOR_DIVE = 3;    // below this we skip the LLM entirely (insufficient evidence)
 const FREE_DIVE_TTL_MS = 30 * 24 * 60 * 60 * 1000;
 
@@ -1646,10 +1647,16 @@ function supplementDisplayName(slug) {
   return SLUG_TO_NAME[slug] || slug.split('-').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
 }
 
-// Embed the query and return the top-N most similar PubMed abstracts for a supplement.
-// Ranking is exact (cosine over that supplement's rows, ~20 each) rather than via the
-// match_studies RPC: its ivfflat index scans a single list and then applies the supplement
-// filter, which silently drops nearly every row (0-2 results for most supplements).
+// Nudges ranking toward stronger study designs. Similarities between a supplement's top
+// abstracts are typically within a few hundredths of each other, so on broad queries pure
+// similarity favours narrative reviews over the meta-analyses they summarise.
+const STUDY_QUALITY_BOOST = { 'meta-analysis': 0.06, rct: 0.04, observational: 0.01, review: 0, other: 0, animal: -0.06 };
+
+// Embed the query and return the top-N PubMed abstracts for a supplement, ranked by
+// similarity plus a study-design boost. Ranking is exact (cosine over that supplement's rows,
+// ~20 each) rather than via the match_studies RPC: its ivfflat index scans a single list and
+// then applies the supplement filter, which silently drops nearly every row (0-2 results for
+// most supplements).
 async function retrieveStudies(slug, query, count) {
   const embeddingRes = await openai.embeddings.create({
     model: 'text-embedding-3-small',
@@ -1669,10 +1676,35 @@ async function retrieveStudies(slug, query, count) {
       const v = typeof embedding === 'string' ? JSON.parse(embedding) : embedding;
       // OpenAI embeddings are unit length, so the dot product is the cosine similarity
       const similarity = Array.isArray(v) ? v.reduce((sum, x, i) => sum + x * q[i], 0) : -1;
-      return { ...study, similarity };
+      return { ...study, similarity, rank: similarity + (STUDY_QUALITY_BOOST[study.study_type] ?? 0) };
     })
-    .sort((x, y) => y.similarity - x.similarity)
+    .sort((x, y) => y.rank - x.rank)
     .slice(0, count);
+}
+
+// How much human supplementation research exists on PubMed for a supplement (counts written
+// by scripts/ingest-pubmed.js). Log-scaled with 100% at ~1000 combined meta-analyses + RCTs:
+// caffeine ≈ 94%, beta-alanine ≈ 70%, ashwagandha ≈ 51%, lion's mane ≈ 20%. It measures the
+// size of the research base, not whether that research found an effect.
+function researchBaseScore({ meta_analyses, rcts }) {
+  const points = (meta_analyses + rcts) / 2;
+  return Math.round(100 * Math.min(1, Math.log10(1 + points) / Math.log10(501)));
+}
+
+async function getResearchBase(slug) {
+  const { data, error } = await getSupabaseService()
+    .from('supplement_evidence')
+    .select('meta_analyses, rcts')
+    .eq('slug', slug)
+    .maybeSingle();
+  if (error) {
+    console.error(`💥 Research base lookup error for ${slug}:`, error.message);
+    return null;
+  }
+  if (!data) return null;
+  const score = researchBaseScore(data);
+  const level = score >= 70 ? 'extensive' : score >= 40 ? 'moderate' : 'limited';
+  return { score, level, meta_analyses: data.meta_analyses, rcts: data.rcts };
 }
 
 // Real numbers about the evidence we hold for a supplement (never model-estimated).
@@ -1740,7 +1772,7 @@ async function generateFreeDive(slug) {
     url: `https://pubmed.ncbi.nlm.nih.gov/${s.pmid}/`,
   }));
 
-  const base = { version: FREE_DIVE_VERSION, stats, citations, summary: '', findings: [], insufficient_evidence: false };
+  const base = { version: FREE_DIVE_VERSION, retrieval: FREE_DIVE_RETRIEVAL, stats, citations, summary: '', findings: [], insufficient_evidence: false };
 
   if (studies.length < MIN_STUDIES_FOR_DIVE) {
     console.log(`⚠️ Only ${studies.length} studies for ${slug} — skipping generation`);
@@ -1824,7 +1856,7 @@ app.get('/api/encyclopedia/deep-dive/:slug', async (req, res) => {
     if (fetchError) throw fetchError;
 
     // 2. Return if cache is fresh and was built by the current (grounded) generator
-    if (cached && new Date(cached.expires_at) > new Date() && cached.content?.version === FREE_DIVE_VERSION) {
+    if (cached && new Date(cached.expires_at) > new Date() && cached.content?.version === FREE_DIVE_VERSION && cached.content?.retrieval === FREE_DIVE_RETRIEVAL) {
       console.log(`✅ Cache hit for: ${slug}`);
       return res.json({ success: true, data: cached.content, cached: true });
     }
@@ -1949,6 +1981,9 @@ async function requirePremiumAccess(req, res, next) {
   });
 }
 
+// Cached premium dives without this version are regenerated (v2: quality-boosted retrieval)
+const PREMIUM_DIVE_VERSION = 2;
+
 // RAG-grounded deep dive — premium subscriber or paid single session
 app.post('/api/premium/deep-dive/:slug', requirePremiumAccess, async (req, res) => {
   const { slug } = req.params;
@@ -1972,8 +2007,13 @@ app.post('/api/premium/deep-dive/:slug', requirePremiumAccess, async (req, res) 
         .eq('user_id', req.user.id)
         .eq('slug', slug)
         .maybeSingle();
-      if (cached?.data) {
-        return res.json({ success: true, cached: true, data: cached.data });
+      if (cached?.data?.version === PREMIUM_DIVE_VERSION) {
+        // Research base is looked up fresh so counts refreshed by the ingest show up immediately
+        const research_base = await getResearchBase(slug);
+        return res.json({
+          success: true, cached: true,
+          data: { ...cached.data, research_base, confidence_score: research_base?.score ?? null },
+        });
       }
     } catch (err) {
       console.error(`💥 Premium deep dive cache read error for ${slug}:`, err.message);
@@ -2052,14 +2092,11 @@ Respond with a JSON object with exactly these fields:
       url: `https://pubmed.ncbi.nlm.nih.gov/${s.pmid}/`,
     }));
 
-    // 6. Compute confidence score from study types
-    const typeWeights = { 'meta-analysis': 1.0, rct: 0.8, observational: 0.4, other: 0.3, animal: 0.1 };
-    const weights = citations.map(c => typeWeights[c.study_type] ?? 0.3);
-    const confidenceScore = weights.length
-      ? Math.round((weights.reduce((a, b) => a + b, 0) / weights.length) * 100)
-      : null;
+    // 6. Research base: size of the PubMed literature, not just these 5 sources
+    const research_base = await getResearchBase(slug);
 
     const resultData = {
+      version: PREMIUM_DIVE_VERSION,
       slug,
       supplement: name,
       question: userQuery,
@@ -2067,7 +2104,9 @@ Respond with a JSON object with exactly these fields:
       the_catch: Array.isArray(parsed.the_catch) ? parsed.the_catch : [],
       dosage_gap: parsed.dosage_gap || null,
       interesting_findings: Array.isArray(parsed.interesting_findings) ? parsed.interesting_findings : [],
-      confidence_score: confidenceScore,
+      research_base,
+      // Legacy field for app builds that predate research_base
+      confidence_score: research_base?.score ?? null,
       citations,
       studies_found: citations.length,
     };

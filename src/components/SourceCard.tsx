@@ -1,5 +1,5 @@
 import React from 'react';
-import { ArrowUpRight, Flask, TestTube, ChartBar, Question } from '@phosphor-icons/react';
+import { ArrowUpRight, Flask, TestTube, ChartBar, Question, BookOpen } from '@phosphor-icons/react';
 
 export interface Citation {
   index: number;
@@ -20,6 +20,7 @@ const STUDY_TYPE_LABELS: Record<string, { label: string; color: string }> = {
   'meta-analysis': { label: 'Meta-analysis',  color: '#00685f' },
   rct:             { label: 'RCT (Randomized Controlled Trial)', color: '#3f6560' },
   observational:   { label: 'Observational',   color: '#d97706' },
+  review:          { label: 'Review',          color: '#6d7a77' },
   animal:          { label: 'Animal study',    color: '#9e6a03' },
   other:           { label: 'Study',           color: '#6d7a77' },
 };
@@ -28,6 +29,7 @@ const STUDY_TYPE_ICONS: Record<string, React.ReactNode> = {
   'meta-analysis': <ChartBar size={12} weight="fill" />,
   rct:             <Flask size={12} weight="fill" />,
   observational:   <TestTube size={12} weight="fill" />,
+  review:          <BookOpen size={12} weight="fill" />,
   animal:          <TestTube size={12} weight="fill" />,
   other:           <Question size={12} weight="fill" />,
 };

@@ -9,6 +9,13 @@ import { useLanguage } from '../contexts/LanguageContext';
 
 // ─── Types ───────────────────────────────────────────────────────────────────
 
+interface ResearchBase {
+  score: number;
+  level: 'extensive' | 'moderate' | 'limited';
+  meta_analyses: number;
+  rcts: number;
+}
+
 interface PremiumDeepDiveData {
   slug: string;
   supplement: string;
@@ -17,7 +24,7 @@ interface PremiumDeepDiveData {
   the_catch: string[];
   dosage_gap: string | null;
   interesting_findings: string[];
-  confidence_score: number | null;
+  research_base: ResearchBase | null;
   citations: Citation[];
   studies_found: number;
 }
@@ -60,17 +67,17 @@ function formatSubstanceName(slug: string) {
   return slug.split('-').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
 }
 
-function getStudyBreakdown(citations: Citation[]) {
+function getStudyBreakdown(citations: Citation[], t: (key: string) => string) {
   const counts: Record<string, number> = {};
   for (const c of citations) {
     const type = c.study_type || 'other';
     counts[type] = (counts[type] || 0) + 1;
   }
-  const order = ['meta-analysis', 'rct', 'observational', 'animal', 'other'];
+  const order = ['meta-analysis', 'rct', 'observational', 'review', 'animal', 'other'];
   return Object.entries(counts)
     .sort(([a], [b]) => order.indexOf(a) - order.indexOf(b))
-    .map(([type, n]) => `${n} ${type}${n > 1 && !type.endsWith('s') ? 's' : ''}`)
-    .join(', ');
+    .map(([type, n]) => `${t(`deepDive.studyTypeLabels.${type}`)} × ${n}`)
+    .join(' · ');
 }
 
 function renderSummaryWithCitations(text: string): React.ReactNode {
@@ -94,38 +101,41 @@ function renderSummaryWithCitations(text: string): React.ReactNode {
 
 // ─── Sub-components ───────────────────────────────────────────────────────────
 
-function ConfidenceMeter({ score, citations }: { score: number; citations: Citation[] }) {
+// Neutral-to-strong scale: a small research base isn't a danger signal, so no red
+const RESEARCH_BASE_COLORS = { extensive: '#00685f', moderate: '#d97706', limited: '#8a8f98' } as const;
+
+function ResearchBaseMeter({ base, supplementName, citations }: { base: ResearchBase; supplementName: string; citations: Citation[] }) {
   const { t } = useLanguage();
-  const color = score >= 70 ? '#00685f' : score >= 45 ? '#d97706' : '#ba1a1a';
-  const label = score >= 70
-    ? t('premiumDeepDive.confidenceLabels.high')
-    : score >= 45
-    ? t('premiumDeepDive.confidenceLabels.moderate')
-    : t('premiumDeepDive.confidenceLabels.low');
-  const breakdown = citations.length > 0 ? getStudyBreakdown(citations) : null;
+  const color = RESEARCH_BASE_COLORS[base.level];
+  const breakdown = citations.length > 0 ? getStudyBreakdown(citations, t) : null;
+  const caption = { fontFamily: "'Inter', sans-serif", fontSize: '0.75rem', color: 'var(--text-secondary)', margin: 0, lineHeight: 1.5 };
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
         <span style={{ fontFamily: "'Inter', sans-serif", fontSize: '0.8125rem', color: 'var(--text-secondary)', fontWeight: 500 }}>
-          {t('premiumDeepDive.evidenceConfidence')}
+          {t('premiumDeepDive.researchBase')}
         </span>
         <span style={{ fontFamily: "'Manrope', sans-serif", fontSize: '0.875rem', fontWeight: 800, color }}>
-          {score}% · {label}
+          {base.score}% · {t(`premiumDeepDive.researchBaseLevels.${base.level}`)}
         </span>
       </div>
       <div style={{ height: '6px', borderRadius: '999px', background: 'var(--bg-hover)', overflow: 'hidden' }}>
         <div style={{
-          height: '100%', borderRadius: '999px', width: `${score}%`,
+          height: '100%', borderRadius: '999px', width: `${base.score}%`,
           background: color, transition: 'width 0.6s ease',
         }} />
       </div>
-      <p style={{ fontFamily: "'Inter', sans-serif", fontSize: '0.75rem', color: 'var(--text-secondary)', margin: 0, lineHeight: 1.5 }}>
-        {t('premiumDeepDive.confidenceWeighting')}
+      <p style={caption}>
+        {t('premiumDeepDive.researchBaseExplainer', {
+          name: supplementName,
+          ma: base.meta_analyses.toLocaleString(),
+          rcts: base.rcts.toLocaleString(),
+        })}
       </p>
       {breakdown && (
-        <p style={{ fontFamily: "'Inter', sans-serif", fontSize: '0.75rem', color: 'var(--text-secondary)', margin: 0, lineHeight: 1.5 }}>
-          Based on {citations.length} {citations.length === 1 ? 'study' : 'studies'}: {breakdown}
+        <p style={caption}>
+          <strong style={{ fontWeight: 600 }}>{t('premiumDeepDive.sourcesInSummary')}:</strong> {breakdown}
         </p>
       )}
     </div>
@@ -396,10 +406,10 @@ export default function PremiumDeepDivePage({
               </div>
             )}
 
-            {/* 3 — Evidence confidence [PREMIUM] */}
-            {data.confidence_score !== null && (
+            {/* 3 — Research base [PREMIUM] */}
+            {data.research_base && (
               <div style={cardStyle}>
-                <ConfidenceMeter score={data.confidence_score} citations={data.citations} />
+                <ResearchBaseMeter base={data.research_base} supplementName={data.supplement} citations={data.citations} />
               </div>
             )}
 

@@ -6,12 +6,14 @@
  *   node scripts/ingest-pubmed.js
  *   node scripts/ingest-pubmed.js --slug creatine-monohydrate   # single supplement
  *   node scripts/ingest-pubmed.js --dry-run                     # fetch & log, no DB writes
+ *   node scripts/ingest-pubmed.js --reclassify                  # re-derive study_type for every stored study
  */
 
 import { config } from 'dotenv';
 config({ path: '.env.local' });
 import { createClient } from '@supabase/supabase-js';
 import OpenAI from 'openai';
+import { SUBSTANCE_TERMS, SUPPLEMENTATION_FILTER, PUBTYPE_FILTERS } from './evidence-terms.js';
 
 const SUPABASE_URL = process.env.SUPABASE_URL;
 const SUPABASE_SERVICE_ROLE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY;
@@ -171,7 +173,8 @@ function parseAbstractsXml(xml) {
 
     const funding     = block.includes('industry') || block.includes('manufacturer') ? 'industry' : null;
     const pubTypes    = [...block.matchAll(/<PublicationType[^>]*>([\s\S]*?)<\/PublicationType>/g)].map(m => m[1].toLowerCase());
-    const studyType   = pubTypes.length ? inferStudyTypeFromPubTypes(pubTypes) : inferStudyType(title + ' ' + abstract);
+    const meshTerms   = [...block.matchAll(/<DescriptorName[^>]*>([\s\S]*?)<\/DescriptorName>/g)].map(m => m[1].toLowerCase());
+    const studyType   = classifyStudy(pubTypes, meshTerms, `${title || ''} ${abstract || ''}`);
 
     if (!pmid || !abstract) continue;
 
@@ -197,22 +200,28 @@ function stripXmlTags(str) {
   return str.replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim();
 }
 
-// Primary: use PubMed's own PublicationType tags — much more reliable than text matching
-function inferStudyTypeFromPubTypes(pubTypes) {
-  if (pubTypes.some(t => t.includes('meta-analysis') || t.includes('systematic review'))) return 'meta-analysis';
-  if (pubTypes.some(t => t.includes('randomized controlled trial') || t.includes('controlled clinical trial'))) return 'rct';
-  if (pubTypes.some(t => t.includes('clinical trial'))) return 'rct';
-  if (pubTypes.some(t => t.includes('observational') || t.includes('cohort'))) return 'observational';
-  return 'other';
+// Every PubMed record carries at least "Journal Article", so PublicationType alone can't be the
+// only signal: animal-only research is identified via MeSH (Animals without Humans), and
+// records with no specific type (often recent, not yet indexed) fall back to text matching.
+const OBSERVATIONAL_MESH = ['cohort studies', 'cross-sectional studies', 'case-control studies', 'prospective studies'];
+
+function classifyStudy(pubTypes, meshTerms, text) {
+  const has = (t) => pubTypes.some(p => p.includes(t));
+  if (meshTerms.includes('animals') && !meshTerms.includes('humans')) return 'animal';
+  if (has('meta-analysis') || has('systematic review')) return 'meta-analysis';
+  if (has('randomized controlled trial') || has('clinical trial')) return 'rct';
+  if (has('observational') || meshTerms.some(m => OBSERVATIONAL_MESH.includes(m))) return 'observational';
+  if (has('review') || has('guideline') || has('consensus')) return 'review';
+  return inferStudyTypeFromText(text);
 }
 
-// Fallback: text inference for articles missing PublicationType
-function inferStudyType(text) {
+function inferStudyTypeFromText(text) {
   const t = text.toLowerCase();
   if (t.includes('meta-analysis') || t.includes('systematic review')) return 'meta-analysis';
-  if (t.includes('randomized') || t.includes('double-blind') || t.includes('rct')) return 'rct';
-  if (t.includes('animal') || t.includes('rat ') || t.includes('mice')) return 'animal';
+  if (t.includes('randomized') || t.includes('randomised') || t.includes('double-blind') || t.includes('placebo-controlled')) return 'rct';
   if (t.includes('observational') || t.includes('cohort') || t.includes('cross-sectional')) return 'observational';
+  if (/\b(rats?|mice|murine|in vitro)\b/.test(t)) return 'animal';
+  if (t.includes('review')) return 'review';
   return 'other';
 }
 
@@ -236,11 +245,90 @@ async function upsertStudies(rows) {
   if (error) throw error;
 }
 
+// Existing rows keyed by PMID, so a study found by several supplements' searches keeps all of
+// its tags (upserting `supplements: [slug]` used to overwrite them) and isn't re-embedded.
+async function fetchExisting(pmids) {
+  const { data, error } = await supabase
+    .from('studies')
+    .select('pmid, supplements')
+    .in('pmid', pmids);
+  if (error) throw error;
+  return new Map((data || []).map(r => [r.pmid, r.supplements || []]));
+}
+
+// ── Research base (PubMed counts) ─────────────────────────────────────────────
+
+async function countPubMed(term) {
+  const url = `${NCBI_BASE}/esearch.fcgi?db=pubmed&rettype=count&retmode=json&term=${encodeURIComponent(term)}`;
+  const res = await fetch(url);
+  if (!res.ok) throw new Error(`PubMed count failed: ${res.status}`);
+  return Number((await res.json()).esearchresult.count);
+}
+
+async function updateEvidenceCounts(slug) {
+  const substance = SUBSTANCE_TERMS[slug];
+  if (!substance) {
+    console.warn(`\n  ⚠ No substance term for "${slug}" in evidence-terms.js, research base not updated`);
+    return null;
+  }
+  const base = `(${substance}) AND ${SUPPLEMENTATION_FILTER}`;
+  const meta_analyses = await countPubMed(`${base} AND ${PUBTYPE_FILTERS.meta_analyses}`);
+  await sleep(DELAY_MS);
+  const rcts = await countPubMed(`${base} AND ${PUBTYPE_FILTERS.rcts}`);
+  await sleep(DELAY_MS);
+
+  const row = { slug, meta_analyses, rcts, pubmed_query: base, updated_at: new Date().toISOString() };
+  if (!dryRun) {
+    const { error } = await supabase.from('supplement_evidence').upsert(row, { onConflict: 'slug' });
+    if (error) throw error;
+  }
+  return row;
+}
+
+// ── Reclassify ────────────────────────────────────────────────────────────────
+
+// Re-fetches every stored study from PubMed and updates only its study_type.
+async function reclassifyAll() {
+  const stored = [];
+  for (let from = 0; ; from += 1000) {
+    const { data, error } = await supabase.from('studies').select('pmid, study_type').range(from, from + 999);
+    if (error) throw error;
+    stored.push(...data);
+    if (data.length < 1000) break;
+  }
+  console.log(`Reclassifying ${stored.length} stored studies...`);
+
+  const current = new Map(stored.map(r => [r.pmid, r.study_type]));
+  const changed = {};
+  for (let i = 0; i < stored.length; i += 200) {
+    const articles = await fetchAbstracts(stored.slice(i, i + 200).map(r => r.pmid));
+    for (const a of articles) {
+      if (a.study_type !== current.get(a.pmid)) (changed[a.study_type] ??= []).push(a.pmid);
+    }
+    await sleep(DELAY_MS);
+  }
+
+  for (const [type, ids] of Object.entries(changed)) {
+    console.log(`  → ${type}: ${ids.length} changed`);
+    if (dryRun) continue;
+    for (let i = 0; i < ids.length; i += 200) {
+      const { error } = await supabase.from('studies').update({ study_type: type }).in('pmid', ids.slice(i, i + 200));
+      if (error) throw error;
+    }
+  }
+}
+
 // ── Main ──────────────────────────────────────────────────────────────────────
 
 const args = process.argv.slice(2);
 const dryRun = args.includes('--dry-run');
 const slugArg = args.includes('--slug') ? args[args.indexOf('--slug') + 1] : null;
+
+if (args.includes('--reclassify')) {
+  await reclassifyAll();
+  console.log('\nDone.');
+  process.exit(0);
+}
 
 const slugs = slugArg
   ? [slugArg]
@@ -263,34 +351,42 @@ for (const slug of slugs) {
   await sleep(DELAY_MS);
 
   const articles = await fetchAbstracts(pmids);
-  process.stdout.write(` ${articles.length} abstracts parsed. Embedding...`);
+  process.stdout.write(` ${articles.length} abstracts parsed.`);
   await sleep(DELAY_MS);
+
+  const evidence = await updateEvidenceCounts(slug);
+  if (evidence) process.stdout.write(` Research base: ${evidence.meta_analyses} MA/SR, ${evidence.rcts} RCTs.`);
 
   if (!articles.length) {
     console.log(' nothing to insert.');
     continue;
   }
 
-  // Embed in batches
+  const existing = await fetchExisting(articles.map(a => a.pmid));
+  const fresh = articles.filter(a => !existing.has(a.pmid));
+  const known = articles.filter(a => existing.has(a.pmid));
+
+  // Embed only studies we don't already have
+  process.stdout.write(` Embedding ${fresh.length} new...`);
   const allEmbeddings = [];
-  for (let i = 0; i < articles.length; i += EMBED_BATCH_SIZE) {
-    const batch = articles.slice(i, i + EMBED_BATCH_SIZE);
+  for (let i = 0; i < fresh.length; i += EMBED_BATCH_SIZE) {
+    const batch = fresh.slice(i, i + EMBED_BATCH_SIZE);
     const embeddings = await embedBatch(batch);
     allEmbeddings.push(...embeddings);
   }
 
-  const rows = articles.map((a, i) => ({
-    ...a,
-    embedding: allEmbeddings[i],
-    supplements: [slug],
-  }));
+  // Two separate upserts so every row in a call has the same columns: supabase-js nulls out
+  // columns missing from some rows, which would wipe existing embeddings.
+  const freshRows = fresh.map((a, i) => ({ ...a, embedding: allEmbeddings[i], supplements: [slug] }));
+  const knownRows = known.map(a => ({ ...a, supplements: [...new Set([...existing.get(a.pmid), slug])] }));
 
   if (dryRun) {
-    console.log(`\n  [DRY RUN] Would upsert ${rows.length} rows. Sample PMID: ${rows[0]?.pmid}`);
+    console.log(`\n  [DRY RUN] Would insert ${freshRows.length} and update ${knownRows.length} rows.`);
   } else {
-    await upsertStudies(rows);
-    console.log(` ✓ upserted ${rows.length} rows.`);
-    totalInserted += rows.length;
+    if (freshRows.length) await upsertStudies(freshRows);
+    if (knownRows.length) await upsertStudies(knownRows);
+    console.log(` ✓ ${freshRows.length} inserted, ${knownRows.length} updated.`);
+    totalInserted += freshRows.length + knownRows.length;
   }
 
   await sleep(DELAY_MS);

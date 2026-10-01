@@ -225,7 +225,7 @@ create table if not exists public.studies (
   title          text not null,
   abstract       text not null,
   embedding      vector(1536),
-  study_type     text check (study_type in ('meta-analysis', 'rct', 'animal', 'observational', 'other')),
+  study_type     text check (study_type in ('meta-analysis', 'rct', 'observational', 'review', 'animal', 'other')),
   sample_size    integer,
   year           integer,
   funding_source text,
@@ -248,6 +248,28 @@ create policy "Service role can manage studies"
   on public.studies for all
   using (true)
   with check (true);
+
+-- Migration (existing DBs): allow 'review' as a study type
+alter table public.studies drop constraint if exists studies_study_type_check;
+alter table public.studies add constraint studies_study_type_check
+  check (study_type in ('meta-analysis', 'rct', 'observational', 'review', 'animal', 'other'));
+
+-- Research base: how much human supplementation research exists on PubMed per supplement.
+-- Written by scripts/ingest-pubmed.js (PubMed esearch counts); the score shown to users is
+-- derived from these counts in server.js so the formula can change without re-ingesting.
+create table if not exists public.supplement_evidence (
+  slug          text primary key,
+  meta_analyses integer not null,
+  rcts          integer not null,
+  pubmed_query  text not null,
+  updated_at    timestamptz default now()
+);
+
+alter table public.supplement_evidence enable row level security;
+
+create policy "Supplement evidence is publicly readable"
+  on public.supplement_evidence for select
+  using (true);
 
 -- ============================================================
 -- 7. Premium RAG: Interactions (supplement/drug interaction DB)

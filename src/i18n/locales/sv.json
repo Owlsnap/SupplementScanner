@@ -238,6 +238,7 @@
       "meta-analysis": "Metaanalys",
       "rct": "RCT",
       "observational": "Observationsstudie",
+      "review": "Översikt",
       "animal": "Djurstudie",
       "other": "Studie"
     },
@@ -245,7 +246,7 @@
     "lockedHeading": "Vill du se hela bilden?",
     "lockedIntro": "Den här sidan är en kort förhandsvisning. Den fullständiga djupdykningen går mycket djupare:",
     "lockedItems": [
-      "Tillförlitlighetspoäng viktad efter studiernas kvalitet",
+      "Forskningsunderlag: hur väl studerat tillskottet verkligen är",
       "Haken: begränsningar, urvalsstorlek och finansiering",
       "Dos i studierna jämfört med vanlig dos i handeln",
       "Interaktioner med läkemedel och andra kosttillskott",
@@ -261,13 +262,14 @@
     "searchingPubMed": "Söker i PubMed-databas · Grundar svaret i studier",
     "failedToLoad": "Det gick inte att ladda",
     "tryAgain": "Försök igen",
-    "evidenceConfidence": "Evidenskonfidans",
-    "confidenceLabels": {
-      "high": "Hög konfidans",
-      "moderate": "Måttlig konfidans",
-      "low": "Låg konfidans"
+    "researchBase": "Forskningsunderlag",
+    "researchBaseLevels": {
+      "extensive": "Väl studerat",
+      "moderate": "Måttligt studerat",
+      "limited": "Begränsad forskning"
     },
-    "confidenceWeighting": "Viktad efter studietyp: metaanalys (100 %) → RCT — Randomiserad kontrollerad studie (80 %) → observationsstudie (40 %) → djurstudie (10 %)",
+    "researchBaseExplainer": "Hur mycket forskning på människor som finns om tillskott av {{name}}: PubMed listar {{ma}} metaanalyser eller systematiska översikter och {{rcts}} randomiserade kontrollerade studier. Det visar hur väl studerat tillskottet är, inte om det fungerar. Sammanfattningen nedan beskriver vad studierna kom fram till.",
+    "sourcesInSummary": "Källor i den här sammanfattningen",
     "evidenceSummary": "Evidenssammanfattning",
     "theCatch": "Begränsningar",
     "catchIntro": "Begränsningar identifierade i tillgänglig evidens:",

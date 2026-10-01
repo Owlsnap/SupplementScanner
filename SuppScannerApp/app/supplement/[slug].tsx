@@ -83,9 +83,29 @@ interface PremiumDeepDiveData {
   the_catch: string[];
   dosage_gap: string | null;
   interesting_findings: string[];
-  confidence_score: number | null;
+  research_base: ResearchBase | null;
   citations: Citation[];
   studies_found: number;
+}
+
+interface ResearchBase {
+  score: number;
+  level: 'extensive' | 'moderate' | 'limited';
+  meta_analyses: number;
+  rcts: number;
+}
+
+// Neutral-to-strong scale: a small research base isn't a danger signal, so no red
+const RESEARCH_BASE_COLORS = { extensive: '#00685f', moderate: '#d97706', limited: '#8a8f98' } as const;
+const STUDY_TYPE_ORDER = ['meta-analysis', 'rct', 'observational', 'review', 'animal', 'other'];
+
+function summarizeStudyTypes(citations: Citation[]) {
+  const counts: Record<string, number> = {};
+  for (const c of citations) counts[c.study_type || 'other'] = (counts[c.study_type || 'other'] || 0) + 1;
+  return Object.entries(counts)
+    .sort(([a], [b]) => STUDY_TYPE_ORDER.indexOf(a) - STUDY_TYPE_ORDER.indexOf(b))
+    .map(([type, n]) => `${t(`deepDive.studyTypeLabels.${type}`)} × ${n}`)
+    .join(' · ');
 }
 
 interface Interaction {
@@ -742,18 +762,32 @@ export default function SupplementDetailScreen() {
 
                 {canAccessPremium && premiumData && !premiumLoading && (
                   <View>
-                    {premiumData.confidence_score !== null && (
-                      <SectionCard title="Evidence Confidence">
+                    {premiumData.research_base && (
+                      <SectionCard title={t('premiumDeepDive.researchBase')}>
                         <View style={styles.confidenceRow}>
                           <View style={styles.confidenceBarTrack}>
                             <View style={[styles.confidenceBarFill, {
-                              width: `${premiumData.confidence_score}%`,
-                              backgroundColor: premiumData.confidence_score >= 70 ? '#00685f' : premiumData.confidence_score >= 45 ? '#d97706' : '#ba1a1a',
+                              width: `${premiumData.research_base.score}%`,
+                              backgroundColor: RESEARCH_BASE_COLORS[premiumData.research_base.level],
                             }]} />
                           </View>
-                          <Text style={styles.confidenceScoreText}>{premiumData.confidence_score}%</Text>
+                          <Text style={styles.confidenceScoreText}>{premiumData.research_base.score}%</Text>
                         </View>
-                        <Text style={styles.confidenceSubtext}>Based on {premiumData.studies_found} cited {premiumData.studies_found === 1 ? 'study' : 'studies'}</Text>
+                        <Text style={[styles.confidenceLevelText, { color: RESEARCH_BASE_COLORS[premiumData.research_base.level] }]}>
+                          {t(`premiumDeepDive.researchBaseLevels.${premiumData.research_base.level}`)}
+                        </Text>
+                        <Text style={styles.confidenceSubtext}>
+                          {t('premiumDeepDive.researchBaseExplainer', {
+                            name: supp.name,
+                            ma: premiumData.research_base.meta_analyses,
+                            rcts: premiumData.research_base.rcts,
+                          })}
+                        </Text>
+                        {premiumData.citations.length > 0 && (
+                          <Text style={styles.confidenceSubtext}>
+                            {t('premiumDeepDive.sourcesInSummary')}: {summarizeStudyTypes(premiumData.citations)}
+                          </Text>
+                        )}
                       </SectionCard>
                     )}
 
@@ -1400,10 +1434,18 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: COLORS.onSurface,
   },
+  confidenceLevelText: {
+    fontFamily: 'Inter_600SemiBold',
+    fontWeight: '600',
+    fontSize: 13,
+    marginBottom: 6,
+  },
   confidenceSubtext: {
     fontFamily: 'Inter_400Regular',
     fontWeight: '400',
     fontSize: 12,
+    lineHeight: 17,
+    marginTop: 4,
     color: COLORS.outline,
   },
   citationBadge: {
