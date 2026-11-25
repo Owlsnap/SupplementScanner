@@ -435,7 +435,9 @@
     "dangerTitle": "Danger — Avoid combining",
     "cautionTitle": "Caution — Use carefully",
     "synergyTitle": "Synergy — Beneficial combinations",
-    "networkError": "Network error — please try again"
+    "networkError": "Network error — please try again",
+    "guidanceTitle": "General guidance",
+    "guidanceBody": "The schedule, overlaps and suggestions below are general AI guidance. Unlike the interaction warnings above, they are not backed by cited sources. Check with a healthcare professional before changing your routine."
   },
   "mobileApp": {
     "badge": "iOS & ANDROID — COMING SOON",

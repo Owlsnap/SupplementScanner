@@ -94,7 +94,7 @@ Add rows to the `INTERACTIONS` array (shape):
 These were previously allowed to drift; keep them at parity with `encyclopediaData.ts` on every run:
 - `scripts/prerender.js` `SUPPLEMENT_SLUGS`: static SEO prerender; new slugs are not crawlable until added.
 - `scripts/prewarm-encyclopedia.js` `SLUGS`: pre-generates free deep dives on Railway.
-- `server.js` `SLUG_TO_NAME` (display name) and `SLUG_TO_TYPICAL_DOSE` (grounds the dosage-gap comparison in the premium RAG prompt; use the English `typicalDose`). Both are near line 1428-1500.
+- `lib/rag.js` `SLUG_TO_NAME` (display name) and `SLUG_TO_TYPICAL_DOSE` (grounds the dosage-gap comparison in the premium RAG prompt; use the English `typicalDose`). Both are at the top of the file.
 - Mobile: copy `src/data/encyclopediaData.ts` over `SuppScannerApp/src/data/encyclopediaData.ts` (they're meant to be identical) and add the new `supplements.<slug>` blocks from web `en.json` to `SuppScannerApp/src/i18n/en.json` (English only; mobile has no sv file). Insert textually; mobile `en.json` has hand-formatted inline objects, so don't re-serialize the whole file. Only edit under `SuppScanner/SuppScannerApp/`.
 
 ### Step 5: Verify (no network)
@@ -107,7 +107,7 @@ node scripts/ingest-pubmed.js --dry-run --slug <slug> # fetches PubMed only, no 
 `ingest-pubmed.js --dry-run` hits NCBI **and still calls OpenAI embeddings** (small cost, `text-embedding-3-small`, ~20 abstracts per slug); it only skips the Supabase write. It needs `OPENAI_API_KEY` + Supabase vars in `.env.local` just to start. The "PMIDs found / abstracts parsed" line per slug is what to check: if a term returns <10, refine it before the live run. `seed-interactions.js --dry-run` makes no writes and only prints severity counts.
 
 ### Step 6: Live writes — ask first
-The PubMed ingest is **required**, not optional: both deep-dives are strictly PubMed-grounded RAG. The free page (`GET /api/encyclopedia/deep-dive/:slug`, `generateFreeDive` in `server.js`) is a cited teaser built from the top-5 retrieved abstracts, and with fewer than 3 stored studies it shows "insufficient evidence" instead of generating anything. A new supplement without ingested studies therefore has an empty deep-dive.
+The PubMed ingest is **required**, not optional: both deep-dives are strictly PubMed-grounded RAG. The free page (`GET /api/encyclopedia/deep-dive/:slug`, `generateFreeDive` in `lib/rag.js`) is a cited teaser built from the top-5 retrieved abstracts, and with fewer than 3 stored studies it shows "insufficient evidence" instead of generating anything. A new supplement without ingested studies therefore has an empty deep-dive.
 
 These write to the **production Supabase** project and (for PubMed) spend OpenAI credits. Get explicit user approval in this conversation, then run:
 ```bash

@@ -27,7 +27,7 @@ const registries = {
   'prewarm': slugsIn(/'([a-z0-9-]+)'/g, section(read('scripts/prewarm-encyclopedia.js'), 'SLUGS', '];')),
   'mobile data': slugsIn(/slug: '([^']+)'/g, read('SuppScannerApp/src/data/encyclopediaData.ts')),
   'mobile i18n': new Set(Object.keys(JSON.parse(read('SuppScannerApp/src/i18n/en.json')).supplements)),
-  'server names': slugsIn(/^  '([^']+)':/gm, section(read('server.js'), 'const SLUG_TO_NAME', 'const SLUG_TO_TYPICAL_DOSE')),
+  'server names': slugsIn(/^  '([^']+)':/gm, section(read('lib/rag.js'), 'const SLUG_TO_NAME', 'const SLUG_TO_TYPICAL_DOSE')),
 };
 
 // Interaction coverage: substances that appear in scripts/seed-interactions.js

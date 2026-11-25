@@ -421,7 +421,9 @@
     "dangerTitle": "Fara — Undvik att kombinera",
     "cautionTitle": "Varning — Använd varsamt",
     "synergyTitle": "Synergi — Fördelaktiga kombinationer",
-    "networkError": "Nätverksfel — försök igen"
+    "networkError": "Nätverksfel — försök igen",
+    "guidanceTitle": "Allmän vägledning",
+    "guidanceBody": "Schemat, överlappningarna och förslagen nedan är allmän AI-vägledning. Till skillnad från interaktionsvarningarna ovan bygger de inte på citerade källor. Rådfråga vårdpersonal innan du ändrar dina rutiner."
   },
   "mobileApp": {
     "badge": "iOS & ANDROID — KOMMER SNART",

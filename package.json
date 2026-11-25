@@ -18,6 +18,8 @@
     "ingest:pubmed:dry": "node scripts/ingest-pubmed.js --dry-run",
     "seed:interactions": "node scripts/seed-interactions.js",
     "seed:interactions:dry": "node scripts/seed-interactions.js --dry-run",
+    "eval:rag": "node scripts/eval-rag.js",
+    "eval:rag:retrieval": "node scripts/eval-rag.js --retrieval-only",
     "seo:analyze": "node scripts/seo-aeo-agent.js --mode analyze",
     "seo:generate": "node scripts/seo-aeo-agent.js --mode generate",
     "seo:keywords": "node scripts/seo-aeo-agent.js --mode keywords",

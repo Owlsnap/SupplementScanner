@@ -6,8 +6,8 @@
 
 SupplementScanner is two products in one repo:
 
-1. **Web app** (`SuppScanner/`) — supplement encyclopedia with AI-generated deep dives on 30+ supplements. This is the primary product.
-2. **Mobile app** (`SuppScanner/SuppScannerApp/`) — companion barcode scanner that calls the same backend API. Built with Expo/React Native.
+1. **Web app** (`SuppScanner/`) — supplement encyclopedia (100 supplements) with PubMed-grounded RAG deep-dives: a free cited teaser per supplement and a premium full report. This is the primary product.
+2. **Mobile app** (`SuppScanner/SuppScannerApp/`) — encyclopedia-first companion app (explore, stack, saved deep-dives; the barcode scanner is unlinked) that calls the same backend API. Built with Expo/React Native.
 
 > ⚠️ **Deployment split — read before touching API calls or env vars:**
 > - **Frontend (Vite/React)** → deployed on **Vercel** at `https://www.supplementscanner.io`
@@ -27,8 +27,8 @@ SupplementScanner is two products in one repo:
 
 ### Backend (`SuppScanner/server.js` + `SuppScanner/api/`)
 - Node.js / **Express 5**
-- **OpenAI SDK** (`openai`) — used for supplement data extraction/normalization
-- **Anthropic SDK** (`@anthropic-ai/sdk`) — used for encyclopedia deep dive generation
+- **OpenAI SDK** (`openai`) — `text-embedding-3-small` for retrieval, GPT-4o (temp 0) for both deep-dives, GPT-4o for product extraction/normalization
+- **Anthropic SDK** (`@anthropic-ai/sdk`) — Claude Haiku 4.5 for stack insights (labelled general guidance), Claude for retailer page extraction
 - **Puppeteer** — scraping Swedish supplement retailer pages
 - **Supabase** (`@supabase/supabase-js`) — PostgreSQL production database
 - **express-rate-limit** — 100 req/15min general, 10 req/15min on `/api/ingest`
@@ -68,6 +68,8 @@ SupplementScanner is two products in one repo:
 ```
 SuppScanner/
 ├── server.js              # Express app — API routes + static file serving
+├── lib/
+│   └── rag.js             # RAG core: retrieval, grounding checks, free + premium generators, slug maps
 ├── src/
 │   ├── App.tsx            # Root: BrowserRouter + DarkModeProvider
 │   ├── components/
@@ -75,7 +77,7 @@ SuppScanner/
 │   ├── pages/             # EncyclopediaPage, DeepDivePage, SupplementInfoPage,
 │   │                      # PremiumPage, MobileAppPage, RecommendationsPage
 │   ├── data/
-│   │   └── encyclopediaData.ts    # 30 hardcoded supplements (source of truth)
+│   │   └── encyclopediaData.ts    # 100 hardcoded supplements (source of truth)
 │   ├── contexts/
 │   │   └── DarkModeContext.tsx
 │   ├── services/
@@ -91,13 +93,18 @@ SuppScanner/
 │   │   └── manual.js          # POST — manual product entry
 │   ├── product/[barcode].js   # GET — fetch product from Supabase
 │   ├── search.js              # GET — search products
-│   ├── stats.js               # GET — product stats
-│   └── encyclopedia/          # GET /deep-dive/:slug — cache-or-generate (30d TTL)
+│   └── stats.js               # GET — product stats
 ├── scripts/
+│   ├── ingest-pubmed.js       # PubMed → classify → embed → Supabase `studies`; MA/RCT counts
+│   ├── eval-rag.js            # RAG eval harness (coverage, retrieval, generation); CI-gated
+│   ├── eval/rag-cases.json    # Generation eval cases
 │   └── supabase-schema.sql    # Full DB schema (run in Supabase SQL Editor)
 └── SuppScannerApp/
     ├── app/
-    │   ├── (tabs)/            # Tab screens: index (scanner), history, search, rewards
+    │   ├── (tabs)/            # Tab screens: index (explore), stack, saved-deep-dives, profile
+    │   ├── supplement/[slug].tsx  # Supplement page + deep-dive
+    │   ├── premium.tsx, sign-in.tsx
+    │   ├── scanner.tsx            # Barcode scanner (kept, not linked from nav)
     │   ├── product/[barcode].tsx  # Product detail screen
     │   ├── manual-add.tsx         # Manual product entry
     │   └── _layout.tsx
@@ -115,7 +122,12 @@ SuppScanner/
 ### Data Flows
 
 **Encyclopedia (web):**
-`encyclopediaData.ts` → user opens DeepDivePage → `GET /api/encyclopedia/deep-dive/:slug` → check `supplement_deep_dives` (30d TTL, `version: 2`) → miss → `generateFreeDive`: embed query, exact-cosine top 5 from `studies` (PubMed), GPT-4o temp 0 answers ONLY from those abstracts, code drops findings without a valid citation or with numbers not in the cited abstract → cache → return JSON (a cited teaser; the full report is the premium RAG deep-dive)
+`encyclopediaData.ts` → user opens DeepDivePage → `GET /api/encyclopedia/deep-dive/:slug` → check `supplement_deep_dives` (30d TTL, `version: 2`) → miss → `generateFreeDive` (`lib/rag.js`): embed query, exact-cosine top 5 from `studies` (PubMed), GPT-4o temp 0 answers ONLY from those abstracts, code drops findings without a valid citation or with numbers not in the cited abstract → cache → return JSON (a cited teaser; the full report is the premium RAG deep-dive)
+
+**Premium deep-dive (web + mobile):**
+`POST /api/premium/deep-dive/:slug` (subscription, beta tester or Stripe single-dive session) → no-question calls cached per user in `premium_deep_dives` (`version: 3`) → `generatePremiumDive` (`lib/rag.js`): same retrieval, GPT-4o temp 0 → grounding check drops any summary sentence, finding, limitation or dose note with an invalid citation or a number not in the cited abstract, and returns a `grounding` report → add `research_base` (PubMed MA+RCT counts)
+
+**RAG eval:** `npm run eval:rag` (`scripts/eval-rag.js`) calls the same `lib/rag.js` functions; runs in CI via `.github/workflows/rag-eval.yml` when retrieval/grounding/ingest code changes. Changing retrieval or prompts? Run it before and after.
 
 **Barcode scan (mobile):**
 `CameraView.onBarcodeScanned` → `POST /api/ingest/barcode/:code` → `multiLayerExtractor` (OpenFoodFacts → Puppeteer scrape → OpenAI normalization) → `dbService.upsertProduct` → `product/[barcode].tsx`
@@ -162,6 +174,9 @@ npm run build        # Production Vite build
 npm run lint         # ESLint (legacy config: ESLINT_USE_FLAT_CONFIG=false)
 npm run format       # Prettier — format all src, api, server files
 npm run format:check # Prettier — check without writing (used in CI)
+npm run eval:rag     # RAG eval: coverage + retrieval + GPT-4o generation (~$0.15)
+npm run eval:rag:retrieval  # coverage + retrieval only (embeddings, near-free)
+npm run ingest:pubmed       # PubMed ingest (--slug <slug>, --dry-run)
 ```
 
 ### Mobile (run from `SuppScanner/SuppScannerApp/`)
@@ -195,7 +210,7 @@ npm run lint         # Expo lint
 - History tab uses AsyncStorage only — not backed by Supabase; no cross-device sync
 - Search, Rewards tabs exist in the tab bar but their content state is unclear — verify before editing
 - ESLint uses legacy config (`.eslintrc.cjs`) — needs `ESLINT_USE_FLAT_CONFIG=false` flag
-- No test suite in either web or mobile
+- No unit test suite in either web or mobile; the RAG pipeline is covered by `scripts/eval-rag.js`
 - `DEV_PREMIUM_BYPASS` flag in `SupplementAnalyzer.tsx` via `VITE_DEV_PREMIUM_BYPASS` env var — dev only
 
 ---

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ArrowLeft, ArrowRight, Warning, Lightning, Sparkle, CheckCircle, UserCircle, Sun, Barbell, ForkKnife, Moon, Star, CopySimple, PlusCircle } from '@phosphor-icons/react';
+import { ArrowLeft, ArrowRight, Warning, Lightning, Sparkle, CheckCircle, UserCircle, Sun, Barbell, ForkKnife, Moon, Star, CopySimple, PlusCircle, Info } from '@phosphor-icons/react';
 import { useStack } from '../contexts/StackContext';
 import { useAuth } from '../contexts/AuthContext';
 import { useLanguage } from '../contexts/LanguageContext';
@@ -513,6 +513,23 @@ export default function StackEvaluationPage() {
             )}
             {insights && (
               <>
+                {(insights.schedule.length > 0 || insights.redundancies.length > 0 || insights.missing_complements.length > 0) && (
+                  <div style={{
+                    display: 'flex', gap: '0.625rem', alignItems: 'flex-start',
+                    background: 'var(--bg-surface)', border: '1px dashed var(--text-muted)',
+                    borderRadius: '12px', padding: '0.875rem 1.125rem', margin: '1.5rem 0 1rem',
+                  }}>
+                    <Info size={18} color="var(--text-secondary)" style={{ flexShrink: 0, marginTop: '2px' }} />
+                    <div>
+                      <div style={{ fontFamily: "'Manrope', sans-serif", fontWeight: 800, fontSize: '0.875rem', color: 'var(--text-primary)', marginBottom: '0.25rem' }}>
+                        {t('stackEvaluation.guidanceTitle')}
+                      </div>
+                      <p style={{ fontFamily: "'Inter', sans-serif", fontSize: '0.8125rem', color: 'var(--text-muted)', margin: 0, lineHeight: 1.5 }}>
+                        {t('stackEvaluation.guidanceBody')}
+                      </p>
+                    </div>
+                  </div>
+                )}
                 <ScheduleSection schedule={insights.schedule} />
                 <RedundancySection redundancies={insights.redundancies} />
                 <ComplementsSection complements={insights.missing_complements} onNavigate={slug => navigate(`/encyclopedia/${slug}`)} />

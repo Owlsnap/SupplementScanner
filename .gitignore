@@ -33,3 +33,6 @@ dist-ssr
 SuppScannerApp/.expo/
 SuppScannerApp/node_modules/
 SuppScannerApp/dist/
+
+# RAG eval run reports (CI uploads them as artifacts)
+scripts/eval/reports/

@@ -1,0 +1,46 @@
+name: RAG Eval
+
+# Runs the PubMed RAG evaluation (scripts/eval-rag.js) when retrieval, grounding or ingest code
+# changes, and fails the PR if a gated metric drops below its threshold.
+# Needs repo secrets: OPENAI_API_KEY, SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY.
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - 'lib/rag.js'
+      - 'scripts/eval-rag.js'
+      - 'scripts/eval/**'
+      - 'scripts/ingest-pubmed.js'
+      - 'scripts/evidence-terms.js'
+  workflow_dispatch:
+    inputs:
+      retrieval_only:
+        description: 'Skip the GPT-4o generation suite'
+        type: boolean
+        default: false
+
+jobs:
+  eval:
+    name: Evaluate RAG
+    runs-on: ubuntu-latest
+    env:
+      OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+      SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+      SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+      PUPPETEER_SKIP_DOWNLOAD: 'true'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+      - run: npm ci --legacy-peer-deps
+      - name: Run eval
+        run: node scripts/eval-rag.js ${{ inputs.retrieval_only && '--retrieval-only' || '' }}
+      - name: Upload report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: rag-eval-report
+          path: scripts/eval/reports/
