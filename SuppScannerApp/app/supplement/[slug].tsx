@@ -114,6 +114,9 @@ interface Interaction {
   substance_b: string;
   severity: 'danger' | 'caution' | 'synergy';
   mechanism: string;
+  source?: string | null;
+  // 'pubmed' = PubMed citation; 'guidance' = NIH/FDA/label reference; null = no citation (no badge)
+  source_type?: 'pubmed' | 'guidance' | null;
 }
 
 const SEVERITY_CONFIG = {
@@ -849,6 +852,26 @@ export default function SupplementDetailScreen() {
                                 </Text>
                               </View>
                               <Text style={styles.interactionMechanism}>{inter.mechanism}</Text>
+                              {inter.source_type && (
+                                <View style={styles.interactionSourceRow}>
+                                  <View style={[
+                                    styles.interactionSourceBadge,
+                                    inter.source_type === 'pubmed' ? styles.sourceBadgePubmed : styles.sourceBadgeGuidance,
+                                  ]}>
+                                    <Text style={[
+                                      styles.interactionSourceBadgeText,
+                                      { color: inter.source_type === 'pubmed' ? COLORS.primary : COLORS.outline },
+                                    ]}>
+                                      {inter.source_type === 'pubmed'
+                                        ? t('premiumDeepDive.sourcePubmed')
+                                        : t('premiumDeepDive.sourceGuidance')}
+                                    </Text>
+                                  </View>
+                                  {!!inter.source && (
+                                    <Text style={styles.interactionSourceText}>{inter.source}</Text>
+                                  )}
+                                </View>
+                              )}
                             </View>
                           );
                         })}
@@ -1507,6 +1530,41 @@ const styles = StyleSheet.create({
     fontSize: 13,
     color: COLORS.onSurfaceVariant,
     lineHeight: 19,
+  },
+  interactionSourceRow: {
+    flexDirection: 'row',
+    alignItems: 'flex-start',
+    flexWrap: 'wrap',
+    gap: 6,
+    marginTop: 8,
+  },
+  interactionSourceBadge: {
+    borderWidth: 1,
+    borderRadius: 28,
+    paddingHorizontal: 8,
+    paddingVertical: 1,
+  },
+  sourceBadgePubmed: {
+    backgroundColor: '#e6f4f1',
+    borderColor: '#6bd8cb',
+  },
+  sourceBadgeGuidance: {
+    backgroundColor: 'transparent',
+    borderColor: COLORS.surfaceContainerHigh,
+  },
+  interactionSourceBadgeText: {
+    fontFamily: 'Inter_600SemiBold',
+    fontWeight: '600',
+    fontSize: 11,
+  },
+  interactionSourceText: {
+    flex: 1,
+    minWidth: 120,
+    fontFamily: 'Inter_400Regular',
+    fontWeight: '400',
+    fontSize: 11,
+    color: COLORS.outline,
+    lineHeight: 16,
   },
   questionInput: {
     borderWidth: 1,

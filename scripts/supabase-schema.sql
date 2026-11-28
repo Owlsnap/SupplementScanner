@@ -282,9 +282,16 @@ create table if not exists public.interactions (
   severity     text not null check (severity in ('danger', 'caution', 'synergy')),
   mechanism    text,
   source       text,
+  -- 'pubmed' = PubMed-indexed citation; 'guidance' = NIH/FDA/label-type reference;
+  -- null = no citation yet. Set explicitly by scripts/seed-interactions.js.
+  source_type  text check (source_type in ('pubmed', 'guidance')),
   created_at   timestamptz default now(),
   unique(substance_a, substance_b)
 );
+
+-- Migration for existing databases (added 2026-11-28); re-run the seed afterwards.
+alter table public.interactions add column if not exists source_type text
+  check (source_type in ('pubmed', 'guidance'));
 
 create index if not exists idx_interactions_a on public.interactions(substance_a);
 create index if not exists idx_interactions_b on public.interactions(substance_b);

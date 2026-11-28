@@ -6,6 +6,7 @@ import { useAuth } from '../contexts/AuthContext';
 import { useLanguage } from '../contexts/LanguageContext';
 import { encyclopediaSupplements } from '../data/encyclopediaData';
 import AuthModal from '../components/AuthModal';
+import InteractionSource, { type InteractionSourceType } from '../components/InteractionSource';
 
 interface Interaction {
   id: string;
@@ -14,6 +15,7 @@ interface Interaction {
   severity: 'danger' | 'caution' | 'synergy';
   mechanism: string | null;
   source: string | null;
+  source_type?: InteractionSourceType;
 }
 
 interface BySeverity {
@@ -111,6 +113,7 @@ function SeverityGroup({ title, color, icon, items }: {
               {item.mechanism}
             </p>
           )}
+          <InteractionSource sourceType={item.source_type} source={item.source} />
         </div>
       ))}
     </div>

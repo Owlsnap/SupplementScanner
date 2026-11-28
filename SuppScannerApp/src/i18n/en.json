@@ -307,7 +307,10 @@
     "dangerLabel": "Danger",
     "cautionLabel": "Caution",
     "synergyLabel": "Synergy",
-    "noInteractions": "No documented interactions found for this supplement."
+    "noInteractions": "No documented interactions found for this supplement.",
+    "sourcePubmed": "PubMed study",
+    "sourceGuidance": "Clinical guidance",
+    "sourceGuidanceHint": "Based on regulatory or clinical reference sources (e.g. NIH, FDA, drug labelling), not a PubMed study."
   },
   "recommendations": {
     "pageTitle": "Goals &",

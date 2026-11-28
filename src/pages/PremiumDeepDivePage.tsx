@@ -5,6 +5,7 @@ import {
 } from '@phosphor-icons/react';
 import type { EvidenceTier } from '../data/encyclopediaData';
 import SourceCard, { type Citation } from '../components/SourceCard';
+import InteractionSource, { type InteractionSourceType } from '../components/InteractionSource';
 import { useLanguage } from '../contexts/LanguageContext';
 
 // ─── Types ───────────────────────────────────────────────────────────────────
@@ -48,7 +49,8 @@ interface Interaction {
   substance_b: string;
   severity: 'danger' | 'caution' | 'synergy';
   mechanism: string;
-  source: string;
+  source: string | null;
+  source_type?: InteractionSourceType;
 }
 
 interface PremiumDeepDivePageProps {
@@ -170,6 +172,7 @@ function InteractionCard({ interaction }: { interaction: Interaction }) {
       }}>
         {interaction.mechanism}
       </p>
+      <InteractionSource sourceType={interaction.source_type} source={interaction.source} />
     </div>
   );
 }

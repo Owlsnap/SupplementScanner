@@ -290,7 +290,10 @@
     "dangerLabel": "Fara",
     "cautionLabel": "Varning",
     "synergyLabel": "Synergi",
-    "noInteractions": "Inga dokumenterade interaktioner hittades för detta tillskott."
+    "noInteractions": "Inga dokumenterade interaktioner hittades för detta tillskott.",
+    "sourcePubmed": "PubMed-studie",
+    "sourceGuidance": "Klinisk vägledning",
+    "sourceGuidanceHint": "Baserat på myndighets- eller kliniska referenskällor (t.ex. NIH, FDA, läkemedelsinformation), inte en PubMed-studie."
   },
   "languageSwitcher": {
     "label": "Språk"

@@ -8,6 +8,12 @@
  *   caution — overlapping mechanisms or additive risk, monitor
  *   synergy — complementary mechanisms, beneficial pairing
  *
+ * Source types (shown as a badge in the UI):
+ *   'pubmed'   — at least one PubMed-indexed citation supports the row
+ *   'guidance' — only regulatory / clinical references (NIH ODS fact sheets, FDA notices,
+ *                drug labels, Natural Medicines Database); never presented as study evidence
+ *   null       — no citation yet; shown without a badge. Needs a PubMed source or removal.
+ *
  * Usage:
  *   node scripts/seed-interactions.js
  *   node scripts/seed-interactions.js --dry-run
@@ -35,6 +41,7 @@ const INTERACTIONS = [
     severity: 'danger',
     mechanism: 'Omega-3 fatty acids inhibit platelet aggregation and potentiate the anticoagulant effect of warfarin, increasing bleeding risk.',
     source: 'Buckley MS et al. Ann Pharmacother 2004; NIH ODS Omega-3 fact sheet',
+    source_type: 'pubmed',
   },
   {
     substance_a: 'curcumin',
@@ -42,6 +49,7 @@ const INTERACTIONS = [
     severity: 'danger',
     mechanism: 'Curcumin inhibits platelet aggregation and CYP2C9, raising warfarin plasma levels and bleeding risk.',
     source: 'Pharmacognosy Res 2012; Natural Medicines Database',
+    source_type: 'pubmed',
   },
   {
     substance_a: 'panax-ginseng',
@@ -49,6 +57,7 @@ const INTERACTIONS = [
     severity: 'danger',
     mechanism: 'Ginsenosides reduce warfarin efficacy via CYP3A4 induction, with documented case reports of decreased INR.',
     source: 'Janetzky K, Morreale AP. Am J Health Syst Pharm 1997',
+    source_type: 'pubmed',
   },
   {
     substance_a: 'berberine',
@@ -56,6 +65,7 @@ const INTERACTIONS = [
     severity: 'danger',
     mechanism: 'Both lower blood glucose via AMPK activation. Combined use risks hypoglycemia; dose adjustment required.',
     source: 'Zhang Y et al. Metabolism 2008',
+    source_type: 'pubmed',
   },
   {
     substance_a: 'berberine',
@@ -63,6 +73,7 @@ const INTERACTIONS = [
     severity: 'danger',
     mechanism: 'Berberine inhibits CYP3A4 and P-glycoprotein, significantly raising cyclosporine plasma levels and toxicity risk.',
     source: 'Xin HW et al. Eur J Clin Pharmacol 2006',
+    source_type: 'pubmed',
   },
   {
     substance_a: 'ashwagandha',
@@ -70,6 +81,7 @@ const INTERACTIONS = [
     severity: 'danger',
     mechanism: 'Ashwagandha increases T3 and T4 levels; combining with levothyroxine or antithyroid drugs can cause hyper- or hypothyroid overshoot.',
     source: 'Sharma AK et al. J Int Soc Sports Nutr 2018',
+    source_type: 'pubmed',
   },
   {
     substance_a: 'melatonin',
@@ -77,6 +89,7 @@ const INTERACTIONS = [
     severity: 'danger',
     mechanism: 'Fluvoxamine strongly inhibits CYP1A2, the primary melatonin-metabolising enzyme, increasing melatonin AUC up to 17-fold.',
     source: 'Härtter S et al. Clin Pharmacol Ther 2000',
+    source_type: 'pubmed',
   },
   {
     substance_a: 'caffeine',
@@ -84,6 +97,7 @@ const INTERACTIONS = [
     severity: 'danger',
     mechanism: 'MAOIs impair caffeine metabolism via CYP1A2 inhibition; high caffeine levels combined with MAOIs risk hypertensive crisis.',
     source: 'Natural Medicines Database; FDA drug interaction guidance',
+    source_type: 'guidance',
   },
   {
     substance_a: 'vitamin-d3-k2',
@@ -91,13 +105,15 @@ const INTERACTIONS = [
     severity: 'danger',
     mechanism: 'Thiazides reduce renal calcium excretion; high-dose vitamin D3 combined with thiazides significantly increases hypercalcemia risk.',
     source: 'Crowe M et al. BMJ 1984; NIH ODS Vitamin D fact sheet',
+    source_type: 'pubmed',
   },
   {
     substance_a: 'alpha-gpc',
     substance_b: 'anticholinergic drugs',
     severity: 'danger',
     mechanism: 'Alpha-GPC raises acetylcholine levels; directly opposes anticholinergic medications (antihistamines, bladder drugs, tricyclics), reducing their efficacy.',
-    source: 'Biological Psychiatry 1991; pharmacodynamic antagonism',
+    source: 'Biological Psychiatry 1991',
+    source_type: 'pubmed',
   },
 
   // ── CAUTION ───────────────────────────────────────────────────────────────
@@ -108,6 +124,7 @@ const INTERACTIONS = [
     severity: 'caution',
     mechanism: 'Both inhibit platelet aggregation via different pathways. Individually safe; combined use at high doses may have additive anticoagulant effect.',
     source: 'Chainani-Wu N. J Altern Complement Med 2003',
+    source_type: 'pubmed',
   },
   {
     substance_a: 'omega-3',
@@ -115,6 +132,7 @@ const INTERACTIONS = [
     severity: 'caution',
     mechanism: 'High-dose vitamin C (>1g) may oxidise omega-3 fatty acids in the gut, reducing absorption. Take at separate times.',
     source: 'Maron DJ et al. Arterioscler Thromb Vasc Biol 2003',
+    source_type: 'pubmed',
   },
   {
     substance_a: 'magnesium-glycinate',
@@ -122,6 +140,7 @@ const INTERACTIONS = [
     severity: 'caution',
     mechanism: 'Both deliver elemental magnesium. Stacking raises total daily intake; excess magnesium (>350mg supplemental) causes osmotic diarrhea.',
     source: 'NIH ODS Magnesium fact sheet',
+    source_type: 'guidance',
   },
   {
     substance_a: 'zinc-bisglycinate',
@@ -129,6 +148,7 @@ const INTERACTIONS = [
     severity: 'caution',
     mechanism: 'Zinc and magnesium compete for the same divalent mineral transporters. High-dose zinc (>40mg) can impair magnesium absorption and vice versa.',
     source: 'Coudray C et al. Eur J Clin Nutr 2005',
+    source_type: 'pubmed',
   },
   {
     substance_a: 'zinc-bisglycinate',
@@ -136,6 +156,7 @@ const INTERACTIONS = [
     severity: 'caution',
     mechanism: 'Curcumin chelates zinc ions, reducing bioavailability. Separate by at least 2 hours.',
     source: 'Mineo H et al. Biosci Biotechnol Biochem 2002',
+    source_type: 'pubmed',
   },
   {
     substance_a: 'ashwagandha',
@@ -143,6 +164,7 @@ const INTERACTIONS = [
     severity: 'caution',
     mechanism: 'Both modulate cortisol and the HPA axis. Stacking two adaptogens can cause excessive cortisol suppression; start low and monitor energy and stress response.',
     source: 'Panossian A. Phytomedicine 2017',
+    source_type: 'pubmed',
   },
   {
     substance_a: 'panax-ginseng',
@@ -150,6 +172,7 @@ const INTERACTIONS = [
     severity: 'caution',
     mechanism: 'Both are stimulating adaptogens with overlapping CNS effects. Combined use may cause overstimulation, insomnia, or irritability.',
     source: 'Panossian A, Wikman G. Phytother Res 2010',
+    source_type: 'pubmed',
   },
   {
     substance_a: 'melatonin',
@@ -157,6 +180,7 @@ const INTERACTIONS = [
     severity: 'caution',
     mechanism: 'Both have sedative/calming effects. Combined use at full doses can cause excessive drowsiness; reduce individual doses when stacking.',
     source: 'Pharmacodynamic additive sedation — clinical observation',
+    source_type: null,
   },
   {
     substance_a: 'melatonin',
@@ -164,6 +188,7 @@ const INTERACTIONS = [
     severity: 'caution',
     mechanism: 'Glycine lowers core body temperature and promotes sleep onset via NMDA receptors. Stacking with melatonin can over-deepen sedation.',
     source: 'Bannai M et al. Sleep Biol Rhythms 2012',
+    source_type: 'pubmed',
   },
   {
     substance_a: 'berberine',
@@ -171,6 +196,7 @@ const INTERACTIONS = [
     severity: 'caution',
     mechanism: 'Berberine inhibits CYP3A4, which metabolises vitamin D3. Combined use may elevate vitamin D levels above intended range.',
     source: 'Pharmacokinetic interaction via CYP3A4 inhibition',
+    source_type: null,
   },
   {
     substance_a: 'curcumin',
@@ -178,6 +204,7 @@ const INTERACTIONS = [
     severity: 'caution',
     mechanism: 'Curcumin chelates non-haem iron in the gut, reducing absorption by up to 50%. Separate by at least 2 hours if taking iron supplements.',
     source: 'Tuntipopipat S et al. J Nutr 2006',
+    source_type: 'pubmed',
   },
   {
     substance_a: 'caffeine',
@@ -185,6 +212,7 @@ const INTERACTIONS = [
     severity: 'caution',
     mechanism: 'Caffeine raises cortisol acutely; ashwagandha blunts cortisol chronically. The interaction is not dangerous but may reduce ashwagandha\'s cortisol-lowering benefit if taken together.',
     source: 'Chandrasekhar K et al. Indian J Psychol Med 2012',
+    source_type: 'pubmed',
   },
 
   // ── SYNERGY ───────────────────────────────────────────────────────────────
@@ -195,6 +223,7 @@ const INTERACTIONS = [
     severity: 'synergy',
     mechanism: 'L-theanine blunts caffeine\'s anxiety and jitteriness via GABA-A modulation while preserving the cognitive boost. The classic 2:1 (theanine:caffeine) stack is one of the most replicated nootropic combinations.',
     source: 'Haskell CF et al. Biol Psychol 2008',
+    source_type: 'pubmed',
   },
   {
     substance_a: 'creatine-monohydrate',
@@ -202,6 +231,7 @@ const INTERACTIONS = [
     severity: 'synergy',
     mechanism: 'Creatine powers explosive 0–10 second efforts via ATP regeneration; beta-alanine buffers acid in 60–240 second efforts. Complementary, non-overlapping mechanisms cover the full anaerobic spectrum.',
     source: 'Hoffman J et al. Int J Sport Nutr Exerc Metab 2006',
+    source_type: 'pubmed',
   },
   {
     substance_a: 'vitamin-d3-k2',
@@ -209,6 +239,7 @@ const INTERACTIONS = [
     severity: 'synergy',
     mechanism: 'Magnesium is a cofactor for the enzymes that convert vitamin D to its active form (1,25-OH2D3). Without adequate magnesium, vitamin D supplementation is less effective.',
     source: 'Uwitonze AM, Razzaque MS. J Am Osteopath Assoc 2018',
+    source_type: 'pubmed',
   },
   {
     substance_a: 'vitamin-d3-k2',
@@ -216,6 +247,7 @@ const INTERACTIONS = [
     severity: 'synergy',
     mechanism: 'Same as magnesium-glycinate: magnesium activates the vitamin D hydroxylation enzymes. Either magnesium form provides this benefit.',
     source: 'Uwitonze AM, Razzaque MS. J Am Osteopath Assoc 2018',
+    source_type: 'pubmed',
   },
   {
     substance_a: 'curcumin',
@@ -223,6 +255,7 @@ const INTERACTIONS = [
     severity: 'synergy',
     mechanism: 'Curcumin inhibits COX-2 and NF-κB; omega-3s resolve inflammation via SPMs. Dual-pathway anti-inflammatory action with no harmful additive anticoagulant effect at standard doses.',
     source: 'Chainani-Wu N. J Altern Complement Med 2003',
+    source_type: 'pubmed',
   },
   {
     substance_a: 'alpha-gpc',
@@ -230,6 +263,7 @@ const INTERACTIONS = [
     severity: 'synergy',
     mechanism: 'Alpha-GPC boosts acetylcholine availability acutely; lion\'s mane promotes NGF and long-term neurogenesis. Complementary acute + chronic cognitive mechanisms.',
     source: 'Mori K et al. Phytother Res 2009; De Jesus Moreno Moreno M. Clin Ther 2003',
+    source_type: 'pubmed',
   },
   {
     substance_a: 'bacopa-monnieri',
@@ -237,6 +271,7 @@ const INTERACTIONS = [
     severity: 'synergy',
     mechanism: 'Bacopa enhances memory consolidation via serotonin and acetylcholine modulation; lion\'s mane supports NGF-driven neuroplasticity. Together they target memory encoding and the substrate for learning.',
     source: 'Stough C et al. Psychopharmacology 2001; Mori K et al. Phytother Res 2009',
+    source_type: 'pubmed',
   },
   {
     substance_a: 'creatine-monohydrate',
@@ -244,6 +279,7 @@ const INTERACTIONS = [
     severity: 'synergy',
     mechanism: 'Creatine drives strength and power gains; HMB reduces muscle protein breakdown during caloric restriction. Together they support muscle gain and preserve mass during a cut.',
     source: 'Jówko E et al. Nutrition 2001',
+    source_type: 'pubmed',
   },
   {
     substance_a: 'coq10',
@@ -251,6 +287,7 @@ const INTERACTIONS = [
     severity: 'synergy',
     mechanism: 'CoQ10 supports mitochondrial electron transport; omega-3s improve membrane fluidity and reduce cardiac inflammation. Complementary cardiovascular mechanisms.',
     source: 'Sarter B. J Cardiovasc Nurs 2002',
+    source_type: 'pubmed',
   },
   {
     substance_a: 'tart-cherry',
@@ -258,6 +295,7 @@ const INTERACTIONS = [
     severity: 'synergy',
     mechanism: 'Tart cherry anthocyanins inhibit COX enzymes acutely post-exercise; omega-3-derived SPMs resolve inflammation over hours. Additive recovery benefit with complementary timing.',
     source: 'Connolly DA et al. Br J Sports Med 2006',
+    source_type: 'pubmed',
   },
   {
     substance_a: 'zinc-bisglycinate',
@@ -265,6 +303,7 @@ const INTERACTIONS = [
     severity: 'synergy',
     mechanism: 'Zinc and vitamin C both support immune function via independent pathways (T-cell signalling vs. neutrophil activity). Standard immune-support stack with strong safety profile.',
     source: 'Carr AC, Maggini S. Nutrients 2017',
+    source_type: 'pubmed',
   },
   {
     substance_a: 'magnesium-glycinate',
@@ -272,6 +311,7 @@ const INTERACTIONS = [
     severity: 'synergy',
     mechanism: 'Both reduce glutamate excitotoxicity and promote GABA activity. Complementary sleep and anxiety-reduction pathways without additive sedation risk at standard doses.',
     source: 'Boyle NB et al. Nutrients 2017; Kimura K et al. Biol Psychol 2007',
+    source_type: 'pubmed',
   },
   {
     substance_a: 'ashwagandha',
@@ -279,6 +319,7 @@ const INTERACTIONS = [
     severity: 'synergy',
     mechanism: 'Ashwagandha modulates HPA-axis cortisol response; magnesium reduces neurological stress sensitivity. Complementary mechanisms for stress and sleep without overlap.',
     source: 'Chandrasekhar K et al. Indian J Psychol Med 2012',
+    source_type: 'pubmed',
   },
   {
     substance_a: 'probiotics',
@@ -286,6 +327,7 @@ const INTERACTIONS = [
     severity: 'synergy',
     mechanism: 'Vitamin C creates a mildly acidic gut environment that supports probiotic survival through the digestive tract. Take together for enhanced probiotic colonisation.',
     source: 'Hill C et al. Nat Rev Gastroenterol Hepatol 2014',
+    source_type: 'pubmed',
   },
 
   // ── DANGER (new supplements) ──────────────────────────────────────────────
@@ -296,6 +338,7 @@ const INTERACTIONS = [
     severity: 'danger',
     mechanism: '5-HTP directly increases serotonin synthesis; SSRIs block serotonin reuptake. Combined serotonin excess can cause serotonin syndrome — hyperthermia, agitation, rapid heart rate, and in severe cases seizures.',
     source: 'Turner EH et al. Altern Med Rev 2006; Natural Medicines Database',
+    source_type: 'pubmed',
   },
   {
     substance_a: '5-htp',
@@ -303,6 +346,7 @@ const INTERACTIONS = [
     severity: 'danger',
     mechanism: 'MAOIs block serotonin breakdown while 5-HTP dramatically increases synthesis. This combination carries one of the highest serotonin syndrome risks of any supplement-drug interaction — avoid entirely.',
     source: 'Natural Medicines Database; FDA drug interaction guidance',
+    source_type: 'guidance',
   },
   {
     substance_a: 'ginkgo-biloba',
@@ -310,6 +354,7 @@ const INTERACTIONS = [
     severity: 'danger',
     mechanism: 'Ginkgolides inhibit platelet-activating factor (PAF), reducing platelet aggregation. Combined with warfarin, this meaningfully increases bleeding risk; case reports of spontaneous intracranial bleeding are documented.',
     source: 'Rosenblatt M, Mindel J. N Engl J Med 1997; Jiang X et al. J Clin Pharmacol 2005',
+    source_type: 'pubmed',
   },
   {
     substance_a: 'valerian-root',
@@ -317,6 +362,7 @@ const INTERACTIONS = [
     severity: 'danger',
     mechanism: 'Both act on GABA-A receptors — benzodiazepines via direct positive allosteric modulation, valerian via inhibiting GABA reuptake and breakdown. Combined use produces additive CNS depression: excessive sedation, impaired motor coordination, and respiratory depression risk.',
     source: 'Carrasco MC et al. Drug Alcohol Depend 2009; Natural Medicines Database',
+    source_type: 'pubmed',
   },
   {
     substance_a: 'nac',
@@ -324,6 +370,7 @@ const INTERACTIONS = [
     severity: 'danger',
     mechanism: 'NAC potentiates nitric oxide–mediated vasodilation from nitroglycerin, causing sudden and severe blood pressure drops. Case reports document pronounced hypotension and debilitating headaches with this combination.',
     source: 'Iversen HK et al. Eur J Clin Pharmacol 1992',
+    source_type: 'pubmed',
   },
   {
     substance_a: 'quercetin',
@@ -331,6 +378,7 @@ const INTERACTIONS = [
     severity: 'danger',
     mechanism: 'Quercetin inhibits CYP2C9, the primary enzyme metabolising warfarin. Reduced warfarin clearance raises plasma levels, potentiating anticoagulation and increasing bleeding risk significantly.',
     source: 'Mallet AL et al. Br J Clin Pharmacol 2002; Moon YJ et al. J Pharm Sci 2006',
+    source_type: 'pubmed',
   },
   {
     substance_a: 'resveratrol',
@@ -338,6 +386,7 @@ const INTERACTIONS = [
     severity: 'danger',
     mechanism: 'Resveratrol inhibits CYP2C9, slowing warfarin metabolism and elevating plasma concentrations. Particularly relevant at longevity-protocol doses (200mg+) where the inhibition is clinically meaningful.',
     source: 'Detampel P et al. Drug Metab Rev 2012; Bertelli AA et al. Drugs Exp Clin Res 1996',
+    source_type: 'pubmed',
   },
 
   // ── CAUTION (new supplements) ─────────────────────────────────────────────
@@ -347,7 +396,8 @@ const INTERACTIONS = [
     substance_b: 'melatonin',
     severity: 'caution',
     mechanism: '5-HTP raises serotonin, which the pineal gland converts to melatonin. Combined use at full doses can produce excessive pineal output and over-deepen sleep; reduce individual doses when stacking for sleep.',
-    source: 'Birdsall TC. Altern Med Rev 1998; pharmacodynamic additive effect',
+    source: 'Birdsall TC. Altern Med Rev 1998',
+    source_type: 'pubmed',
   },
   {
     substance_a: 'ginkgo-biloba',
@@ -355,6 +405,7 @@ const INTERACTIONS = [
     severity: 'caution',
     mechanism: 'Both inhibit platelet aggregation via different pathways — ginkgo via PAF inhibition, omega-3 via thromboxane A2 suppression. At high doses of each, the additive anticoagulant effect may increase bleeding risk.',
     source: 'Beckert BW et al. Plast Reconstr Surg 2007',
+    source_type: 'pubmed',
   },
   {
     substance_a: 'valerian-root',
@@ -362,6 +413,7 @@ const INTERACTIONS = [
     severity: 'caution',
     mechanism: 'Both modulate GABAergic neurotransmission — valerian inhibits GABA reuptake and breakdown; theanine reduces glutamate excitotoxicity and promotes GABA activity. Stacking at full doses can produce deeper sedation than intended; reduce individual doses.',
     source: 'Pharmacodynamic additive GABAergic effect — clinical observation',
+    source_type: null,
   },
   {
     substance_a: 'valerian-root',
@@ -369,13 +421,15 @@ const INTERACTIONS = [
     severity: 'caution',
     mechanism: 'Valerian produces sedation via GABA modulation; melatonin signals sleep onset via MT1/MT2 receptors. Combined use at standard doses of each can cause excessive sedation and prolonged morning grogginess in some individuals.',
     source: 'Pharmacodynamic additive sedation — clinical observation',
+    source_type: null,
   },
   {
     substance_a: 'alcar',
     substance_b: 'alpha-gpc',
     severity: 'caution',
     mechanism: 'Both elevate acetylcholine — ALCAR via acetyl group donation to synthesis, Alpha-GPC via direct choline supply. Stacking at full doses can produce acetylcholine excess: headaches, vivid dreams, and GI discomfort in sensitive individuals. Use half-doses of each.',
-    source: 'Ueland PM. Pharmacol Rev 1982; pharmacodynamic acetylcholine accumulation',
+    source: 'Ueland PM. Pharmacol Rev 1982',
+    source_type: 'pubmed',
   },
   {
     substance_a: 'alcar',
@@ -383,6 +437,7 @@ const INTERACTIONS = [
     severity: 'caution',
     mechanism: 'Both contribute to acetylcholine synthesis — ALCAR via acetyl groups, citicoline via choline. Combined use raises total ACh load; may cause headache or cognitive heaviness in sensitive individuals. Reduce doses when stacking.',
     source: 'Pharmacodynamic acetylcholine accumulation — clinical observation',
+    source_type: null,
   },
   {
     substance_a: 'msm',
@@ -390,6 +445,7 @@ const INTERACTIONS = [
     severity: 'caution',
     mechanism: 'MSM has mild antiplatelet properties, potentially via sulfur-mediated effects on platelet aggregation. Combined with warfarin, this may modestly increase anticoagulation; monitor INR when starting or stopping MSM.',
     source: 'Natural Medicines Database; Kim LS et al. Osteoarthritis Cartilage 2006',
+    source_type: 'pubmed',
   },
   {
     substance_a: 'spirulina',
@@ -397,6 +453,7 @@ const INTERACTIONS = [
     severity: 'caution',
     mechanism: 'Spirulina contains meaningful amounts of vitamin K, which opposes warfarin\'s anticoagulant mechanism. Consistent daily spirulina intake can lower INR; inconsistent use causes unpredictable INR fluctuations.',
     source: 'Natural Medicines Database; NIH Office of Dietary Supplements',
+    source_type: 'guidance',
   },
   {
     substance_a: 'vitamin-b12',
@@ -404,6 +461,7 @@ const INTERACTIONS = [
     severity: 'caution',
     mechanism: 'Metformin significantly reduces ileal B12 absorption by impairing calcium-dependent intrinsic factor binding. Long-term metformin users require higher B12 doses or periodic monitoring; deficiency risk increases substantially after 3+ years of use.',
     source: 'Reinstatler L et al. Diabetes Care 2012; de Jager J et al. BMJ 2010',
+    source_type: 'pubmed',
   },
   {
     substance_a: 'selenium',
@@ -411,6 +469,7 @@ const INTERACTIONS = [
     severity: 'caution',
     mechanism: 'High-dose Vitamin C (>1g) can reduce selenite (inorganic selenium) to elemental selenium in the gut, significantly impairing absorption. This interaction does not apply to organic selenomethionine — separate by 2+ hours only if using inorganic selenium forms.',
     source: 'Mutanen M, Mykkänen HM. Ann Nutr Metab 1985',
+    source_type: 'pubmed',
   },
 
   // ── SYNERGY (new supplements) ─────────────────────────────────────────────
@@ -421,6 +480,7 @@ const INTERACTIONS = [
     severity: 'synergy',
     mechanism: 'NMN raises cellular NAD+; resveratrol activates SIRT1, a longevity-associated sirtuin that requires NAD+ as its essential cofactor. Each amplifies the other — the most mechanistically validated longevity supplement pairing.',
     source: 'Baur JA et al. Nature 2006; Yoshino J et al. Cell Metab 2018',
+    source_type: 'pubmed',
   },
   {
     substance_a: 'quercetin',
@@ -428,6 +488,7 @@ const INTERACTIONS = [
     severity: 'synergy',
     mechanism: 'Ascorbate regenerates oxidized quercetin back to its active antioxidant form, substantially extending its activity in the body. The combination shows greater antioxidant and anti-inflammatory effect than either alone.',
     source: 'Skaper SD et al. Proc Natl Acad Sci 1997; Day AJ et al. Free Radic Res 2000',
+    source_type: 'pubmed',
   },
   {
     substance_a: 'nac',
@@ -435,6 +496,7 @@ const INTERACTIONS = [
     severity: 'synergy',
     mechanism: 'NAC provides cysteine for glutathione synthesis; selenium is the catalytic center of glutathione peroxidase (GPx), the enzyme that uses glutathione to neutralize peroxides. Together they support the complete glutathione antioxidant system.',
     source: 'Moosmann B, Behl C. Trends Neurosci 2002; Papp LV et al. Antioxid Redox Signal 2007',
+    source_type: 'pubmed',
   },
   {
     substance_a: 'msm',
@@ -442,6 +504,7 @@ const INTERACTIONS = [
     severity: 'synergy',
     mechanism: 'Collagen peptides provide hydroxyproline and glycine substrates for new collagen; MSM supplies the bioavailable sulfur required for collagen cross-linking and disulfide bond formation. Together they address both substrate supply and structural chemistry of connective tissue synthesis.',
     source: 'Usha PR, Naidu MU. Clin Drug Invest 2004; Butawan M et al. Nutrients 2017',
+    source_type: 'pubmed',
   },
   {
     substance_a: '5-htp',
@@ -449,6 +512,7 @@ const INTERACTIONS = [
     severity: 'synergy',
     mechanism: '5-HTP raises serotonin, addressing mood and anxiety-driven sleep disruption; L-theanine promotes alpha wave activity and GABA signaling for calm without sedation. Complementary neurotransmitter pathways converging on relaxation and sleep onset via serotonergic and GABAergic routes.',
     source: 'Birdsall TC. Altern Med Rev 1998; Kimura K et al. Biol Psychol 2007',
+    source_type: 'pubmed',
   },
   {
     substance_a: 'citicoline',
@@ -456,6 +520,7 @@ const INTERACTIONS = [
     severity: 'synergy',
     mechanism: 'Citicoline boosts acetylcholine acutely and provides uridine for neuronal membrane repair; bacopa enhances memory consolidation via cholinergic and antioxidant mechanisms over weeks. Acute cholinergic support paired with long-term memory architecture improvement.',
     source: 'Stough C et al. Psychopharmacology 2001; Fioravanti M, Buckley AE. Clin Drug Invest 2006',
+    source_type: 'pubmed',
   },
   {
     substance_a: 'taurine',
@@ -463,6 +528,7 @@ const INTERACTIONS = [
     severity: 'synergy',
     mechanism: 'Both are osmolytes that drive water into muscle cells — creatine via phosphocreatine-driven volumization, taurine via direct osmotic regulation. Together they maximize intracellular hydration, supporting power output and reducing exercise-induced cellular stress.',
     source: 'Hoffman JR et al. J Strength Cond Res 2008; Spriet LL, Whitfield J. Appl Physiol Nutr Metab 2015',
+    source_type: 'pubmed',
   },
   {
     substance_a: 'valerian-root',
@@ -470,6 +536,7 @@ const INTERACTIONS = [
     severity: 'synergy',
     mechanism: 'Valerian inhibits GABA reuptake and breakdown; magnesium activates GABA-A receptors and blocks NMDA excitotoxicity. Complementary mechanisms targeting the same inhibitory neurotransmitter system for more complete sleep preparation without additive sedation risk at standard doses.',
     source: 'Bent S et al. Am J Med 2006; Boyle NB et al. Nutrients 2017',
+    source_type: 'pubmed',
   },
   {
     substance_a: 'nac',
@@ -477,6 +544,7 @@ const INTERACTIONS = [
     severity: 'synergy',
     mechanism: 'Vitamin C (ascorbate) regenerates oxidized glutathione (GSSG) back to active GSH in the cytoplasm; NAC provides the cysteine substrate to synthesize more glutathione. Together they maintain the complete glutathione recycling cycle — synthesis and regeneration.',
     source: 'Johnston CS et al. J Am Coll Nutr 1993; Pastore A et al. Clin Chim Acta 2003',
+    source_type: 'pubmed',
   },
   {
     substance_a: 'nmn',
@@ -484,6 +552,7 @@ const INTERACTIONS = [
     severity: 'synergy',
     mechanism: 'NMN raises NAD+, fueling the electron transport chain at complexes I and III; CoQ10 carries electrons between those complexes in the same chain. Together they support both substrate supply and electron shuttle capacity for mitochondrial ATP production.',
     source: 'Yoshino J et al. Cell Metab 2018; Mortensen SA. Ann N Y Acad Sci 2003',
+    source_type: 'pubmed',
   },
   {
     substance_a: 'alcar',
@@ -491,6 +560,7 @@ const INTERACTIONS = [
     severity: 'synergy',
     mechanism: 'ALCAR shuttles long-chain fatty acids into mitochondria as fuel; CoQ10 transfers electrons derived from that fuel through the electron transport chain to generate ATP. Complementary upstream (substrate delivery) and downstream (electron shuttle) mitochondrial roles.',
     source: 'Hagen TM et al. Proc Natl Acad Sci 2002; Mortensen SA. Ann N Y Acad Sci 2003',
+    source_type: 'pubmed',
   },
   {
     substance_a: 'spirulina',
@@ -498,6 +568,7 @@ const INTERACTIONS = [
     severity: 'synergy',
     mechanism: 'Spirulina is rich in non-heme iron, which has poor intrinsic absorption. Vitamin C converts non-heme iron (Fe³⁺) to the more absorbable ferrous form (Fe²⁺) and chelates it to prevent re-oxidation. Taking together significantly improves iron uptake — especially important for plant-based athletes.',
     source: 'Hallberg L et al. Ann N Y Acad Sci 1987; NIH Office of Dietary Supplements',
+    source_type: 'pubmed',
   },
   {
     substance_a: 'ginkgo-biloba',
@@ -505,6 +576,7 @@ const INTERACTIONS = [
     severity: 'synergy',
     mechanism: 'Ginkgo improves cerebral blood flow and reduces neuronal oxidative stress; ginseng modulates the HPA axis and multiple neurotransmitter systems for sustained cognitive performance under stress. Together they address both the circulatory and neurochemical components of cognitive function — a combination with RCT-level support.',
     source: 'Kennedy DO et al. Psychopharmacology 2001; Wesnes KA et al. Psychopharmacology 2000',
+    source_type: 'pubmed',
   },
   {
     substance_a: 'quercetin',
@@ -512,6 +584,7 @@ const INTERACTIONS = [
     severity: 'synergy',
     mechanism: 'Quercetin inhibits COX-2-mediated pro-inflammatory prostaglandin synthesis acutely; omega-3-derived specialized pro-resolving mediators (SPMs) actively resolve inflammation over hours. Dual-pathway anti-inflammatory coverage with complementary mechanisms and timing.',
     source: 'Chainani-Wu N. J Altern Complement Med 2003; Serhan CN. Annu Rev Immunol 2007',
+    source_type: 'pubmed',
   },
   {
     substance_a: 'taurine',
@@ -519,6 +592,7 @@ const INTERACTIONS = [
     severity: 'synergy',
     mechanism: 'Taurine modulates GABA-A receptors and reduces adrenal-driven neurological excitability; magnesium blocks NMDA excitotoxicity and activates GABA-A. Complementary inhibitory pathways for exercise recovery, stress management, and sleep quality without meaningful sedation risk.',
     source: 'El Idrissi A, Trenkner E. J Neurosci 1999; Boyle NB et al. Nutrients 2017',
+    source_type: 'pubmed',
   },
   {
     substance_a: 'selenium',
@@ -526,6 +600,7 @@ const INTERACTIONS = [
     severity: 'synergy',
     mechanism: 'Both support immune function via distinct mechanisms — selenium as the catalytic site of immune-regulating selenoproteins (GPx, thioredoxin reductase), vitamin D3 as a transcription regulator of immune cell differentiation. Complementary immune modulation with no overlapping risk.',
     source: 'Hiffler L, Rakotoambinina B. Front Nutr 2020; Aranow C. J Investig Med 2011',
+    source_type: 'pubmed',
   },
 
   // ── DANGER (100-supplement expansion) ──────────────────────────────────────
@@ -536,13 +611,15 @@ const INTERACTIONS = [
     severity: 'danger',
     mechanism: 'Warfarin works by inhibiting vitamin K-dependent clotting factor synthesis. Supplemental vitamin K2 directly opposes this mechanism, lowering INR and reducing anticoagulant efficacy — consistent supplementation requires warfarin dose recalibration under medical supervision.',
     source: 'Natural Medicines Database; Booth SL et al. Am J Clin Nutr 2003',
+    source_type: 'pubmed',
   },
   {
     substance_a: 'l-arginine',
     substance_b: 'nitrate medications',
     severity: 'danger',
     mechanism: 'Arginine raises nitric oxide production; combined with nitrate/nitrite medications (used for angina) or PDE5 inhibitors (sildenafil, tadalafil), the additive vasodilation can cause a sudden, dangerous drop in blood pressure.',
-    source: 'Natural Medicines Database; pharmacodynamic additive vasodilation',
+    source: 'Natural Medicines Database',
+    source_type: 'guidance',
   },
   {
     substance_a: 'potassium',
@@ -550,6 +627,7 @@ const INTERACTIONS = [
     severity: 'danger',
     mechanism: 'ACE inhibitors reduce aldosterone-driven potassium excretion. Combined with potassium supplementation, this risks clinically significant hyperkalemia, which can cause dangerous cardiac arrhythmias — especially relevant with impaired kidney function.',
     source: 'Reardon LC, Macpherson DS. Arch Intern Med 1998; NIH ODS Potassium fact sheet',
+    source_type: 'pubmed',
   },
   {
     substance_a: 'yohimbine',
@@ -557,6 +635,7 @@ const INTERACTIONS = [
     severity: 'danger',
     mechanism: 'Yohimbine\'s alpha-2 antagonism increases norepinephrine release; MAOIs prevent its breakdown. The combination risks a hypertensive crisis through unchecked catecholamine accumulation.',
     source: 'Natural Medicines Database; FDA drug interaction guidance',
+    source_type: 'guidance',
   },
   {
     substance_a: 'kava',
@@ -564,13 +643,15 @@ const INTERACTIONS = [
     severity: 'danger',
     mechanism: 'Both act on GABA-A receptor pathways, producing additive CNS depression — excessive sedation and impaired motor coordination. Kava also carries an independent hepatotoxicity risk that compounds with other liver-metabolized sedatives.',
     source: 'Natural Medicines Database; Sarris J et al. Psychopharmacology 2013',
+    source_type: 'pubmed',
   },
   {
     substance_a: 'dhea',
     substance_b: 'tamoxifen',
     severity: 'danger',
     mechanism: 'DHEA converts peripherally to estrogen and testosterone. In hormone-sensitive cancer contexts, this directly opposes the mechanism of anti-estrogen therapies like tamoxifen and is contraindicated without oncology supervision.',
-    source: 'Natural Medicines Database; pharmacodynamic hormonal antagonism',
+    source: 'Natural Medicines Database',
+    source_type: 'guidance',
   },
 
   // ── CAUTION (100-supplement expansion) ─────────────────────────────────────
@@ -581,6 +662,7 @@ const INTERACTIONS = [
     severity: 'caution',
     mechanism: 'Both niacin and statins independently carry a myopathy risk; combined use at high niacin doses (1g+) has been associated with an increased incidence of muscle-related side effects, including rare rhabdomyolysis. Medical monitoring is advised at pharmacological niacin doses.',
     source: 'AIM-HIGH Investigators. N Engl J Med 2011; Natural Medicines Database',
+    source_type: 'pubmed',
   },
   {
     substance_a: 'copper',
@@ -588,6 +670,7 @@ const INTERACTIONS = [
     severity: 'caution',
     mechanism: 'Copper and zinc compete for the same intestinal metallothionein-mediated absorption pathway. Chronic high-dose zinc without copper is a well-documented cause of acquired copper deficiency; separate dosing or balanced ratios are advised.',
     source: 'Coudray C et al. Eur J Clin Nutr 2005; NIH ODS Copper fact sheet',
+    source_type: 'pubmed',
   },
   {
     substance_a: 'calcium',
@@ -595,6 +678,7 @@ const INTERACTIONS = [
     severity: 'caution',
     mechanism: 'Calcium competes with non-heme iron for divalent metal transporter absorption in the gut, reducing iron uptake by up to 50% when taken together. Separate calcium and iron supplements by at least 2 hours.',
     source: 'Hallberg L et al. Am J Clin Nutr 1991; NIH ODS Iron fact sheet',
+    source_type: 'pubmed',
   },
   {
     substance_a: 'ubiquinol',
@@ -602,6 +686,7 @@ const INTERACTIONS = [
     severity: 'caution',
     mechanism: 'CoQ10 (in either ubiquinone or ubiquinol form) has a structural similarity to vitamin K and may modestly reduce warfarin\'s anticoagulant effect, altering INR. Monitor INR when starting or stopping supplementation.',
     source: 'Natural Medicines Database; Engelsen J et al. Thromb Haemost 2002',
+    source_type: 'pubmed',
   },
   {
     substance_a: 'vitamin-d3',
@@ -609,13 +694,15 @@ const INTERACTIONS = [
     severity: 'caution',
     mechanism: 'High-dose vitamin D3 can raise serum calcium; elevated calcium potentiates digoxin\'s effect on cardiac tissue, increasing the risk of digoxin toxicity and arrhythmia. Relevant primarily at high supplemental doses or in those correcting severe deficiency.',
     source: 'Natural Medicines Database; NIH ODS Vitamin D fact sheet',
+    source_type: 'guidance',
   },
   {
     substance_a: 'forskolin',
     substance_b: 'antihypertensive medications',
     severity: 'caution',
     mechanism: 'Forskolin\'s cAMP-mediated vasodilation and mild blood-pressure-lowering effect can be additive with antihypertensive medications, risking symptomatic hypotension. Monitor blood pressure when combining.',
-    source: 'Natural Medicines Database; pharmacodynamic additive hypotension',
+    source: 'Natural Medicines Database',
+    source_type: 'guidance',
   },
   {
     substance_a: 'cla',
@@ -623,20 +710,23 @@ const INTERACTIONS = [
     severity: 'caution',
     mechanism: 'CLA may modestly affect insulin sensitivity in some individuals — evidence is mixed but includes reports of worsened glycemic control in insulin-resistant subjects. Those on diabetes medication should monitor blood glucose when starting CLA.',
     source: 'Riserus U et al. Diabetes Care 2002; Natural Medicines Database',
+    source_type: 'pubmed',
   },
   {
     substance_a: 'boron',
     substance_b: 'hormone replacement therapy',
     severity: 'caution',
     mechanism: 'Boron has been shown to modestly raise free testosterone and estrogen levels. Combined with hormone replacement therapy, this could theoretically push hormone levels above the intended therapeutic range; monitor levels when combining.',
-    source: 'Naghii MR et al. J Trace Elem Med Biol 2011; pharmacodynamic additive hormonal effect',
+    source: 'Naghii MR et al. J Trace Elem Med Biol 2011',
+    source_type: 'pubmed',
   },
   {
     substance_a: 'l-tyrosine',
     substance_b: 'maoi antidepressants',
     severity: 'caution',
     mechanism: 'Tyrosine is the direct precursor to norepinephrine and dopamine; MAOIs prevent catecholamine breakdown. The combination can raise catecholamine levels more than either alone, risking elevated blood pressure and agitation at high tyrosine doses.',
-    source: 'Natural Medicines Database; pharmacodynamic catecholamine accumulation',
+    source: 'Natural Medicines Database',
+    source_type: 'guidance',
   },
 
   // ── SYNERGY (100-supplement expansion) ─────────────────────────────────────
@@ -647,6 +737,7 @@ const INTERACTIONS = [
     severity: 'synergy',
     mechanism: 'Vitamin D3 increases intestinal calcium absorption and mobilization; vitamin K2 activates the proteins (osteocalcin, MGP) that direct that calcium into bone and away from arterial soft tissue. Together they complete the pathway D3 alone leaves unfinished.',
     source: 'Kuang X et al. Eur J Nutr 2020; Maresz K. Integr Med 2015',
+    source_type: 'pubmed',
   },
   {
     substance_a: 'calcium',
@@ -654,6 +745,7 @@ const INTERACTIONS = [
     severity: 'synergy',
     mechanism: 'Vitamin D3 is required to actively absorb dietary and supplemental calcium in the gut. Calcium supplementation without adequate D3 status is substantially less effective at raising usable calcium levels.',
     source: 'Heaney RP. J Am Coll Nutr 2008; NIH ODS Calcium fact sheet',
+    source_type: 'pubmed',
   },
   {
     substance_a: 'boron',
@@ -661,6 +753,7 @@ const INTERACTIONS = [
     severity: 'synergy',
     mechanism: 'Boron appears to reduce the urinary excretion and breakdown of vitamin D, helping maintain higher circulating 25(OH)D levels alongside D3 supplementation.',
     source: 'Naghii MR, Samman S. Biol Trace Elem Res 1997',
+    source_type: 'pubmed',
   },
   {
     substance_a: 'multivitamin',
@@ -668,6 +761,7 @@ const INTERACTIONS = [
     severity: 'synergy',
     mechanism: 'A healthy gut microbiome, supported by probiotics, improves the absorption and utilization of many multivitamin micronutrients, particularly B-vitamins and minerals dependent on healthy gut pH and epithelial integrity.',
     source: 'Hill C et al. Nat Rev Gastroenterol Hepatol 2014',
+    source_type: 'pubmed',
   },
   {
     substance_a: 'potassium',
@@ -675,6 +769,7 @@ const INTERACTIONS = [
     severity: 'synergy',
     mechanism: 'Magnesium is required for the Na+/K+-ATPase pump that maintains intracellular potassium levels. Magnesium deficiency makes potassium repletion less effective and can itself cause refractory hypokalemia — the two electrolytes work as a pair for muscle and cardiac function.',
     source: 'Huang CL, Kuo E. J Am Soc Nephrol 2007',
+    source_type: 'pubmed',
   },
   {
     substance_a: 'vitamin-b6',
@@ -682,6 +777,7 @@ const INTERACTIONS = [
     severity: 'synergy',
     mechanism: 'B6 and folate work together in the homocysteine metabolism pathway — folate remethylates homocysteine to methionine while B6 supports its alternate transsulfuration clearance route. Combined intake more effectively controls elevated homocysteine than either alone.',
     source: 'Selhub J. Annu Rev Nutr 1999',
+    source_type: 'pubmed',
   },
   {
     substance_a: 'niacin',
@@ -689,6 +785,7 @@ const INTERACTIONS = [
     severity: 'synergy',
     mechanism: 'Niacin and NMN are both precursors that feed into cellular NAD+ synthesis via different entry points in the salvage pathway. Combining precursor sources may support more robust NAD+ pool maintenance than either alone.',
     source: 'Yoshino J et al. Cell Metab 2018; Rajman L et al. Cell Metab 2018',
+    source_type: 'pubmed',
   },
   {
     substance_a: 'thiamine',
@@ -696,6 +793,7 @@ const INTERACTIONS = [
     severity: 'synergy',
     mechanism: 'Both are essential, non-overlapping cofactors in the mitochondrial energy metabolism chain — thiamine for pyruvate dehydrogenase and the Krebs cycle, riboflavin for FAD-dependent electron transport. Classic B-complex energy-pathway pairing.',
     source: 'NIH ODS Thiamin and Riboflavin fact sheets',
+    source_type: 'guidance',
   },
   {
     substance_a: 'riboflavin',
@@ -703,6 +801,7 @@ const INTERACTIONS = [
     severity: 'synergy',
     mechanism: 'Both have independent, RCT-supported evidence for migraine frequency reduction through distinct mechanisms — riboflavin via mitochondrial energy support, magnesium via reduced cortical excitability. Commonly combined in migraine-prevention protocols.',
     source: 'Schoenen J et al. Neurology 1998; Mauskop A, Varughese J. J Neural Transm 2012',
+    source_type: 'pubmed',
   },
   {
     substance_a: 'pantothenic-acid',
@@ -710,6 +809,7 @@ const INTERACTIONS = [
     severity: 'synergy',
     mechanism: 'Pantothenic acid is required to synthesize coenzyme A, which ALCAR-derived acetyl groups depend on to enter the Krebs cycle for energy production. Complementary substrate-and-cofactor pairing for mitochondrial fatty-acid metabolism.',
     source: 'NIH ODS Pantothenic Acid fact sheet; Ueland PM. Pharmacol Rev 1982',
+    source_type: 'pubmed',
   },
   {
     substance_a: 'copper',
@@ -717,6 +817,7 @@ const INTERACTIONS = [
     severity: 'synergy',
     mechanism: 'Copper-dependent ceruloplasmin (ferroxidase) is required to oxidize iron into the form transferrin can transport. Adequate copper status is necessary for iron to be effectively mobilized and used in red blood cell production.',
     source: 'Collins JF et al. Am J Physiol Gastrointest Liver Physiol 2010',
+    source_type: 'pubmed',
   },
   {
     substance_a: 'manganese',
@@ -724,6 +825,7 @@ const INTERACTIONS = [
     severity: 'synergy',
     mechanism: 'Manganese is a required cofactor for glycosyltransferase enzymes involved in synthesizing the glycosaminoglycans that glucosamine provides substrate for. Complementary substrate-and-cofactor roles in cartilage matrix formation.',
     source: 'NIH ODS Manganese fact sheet; Henrotin Y et al. Arthritis Res Ther 2012',
+    source_type: 'pubmed',
   },
   {
     substance_a: 'dhea',
@@ -731,6 +833,7 @@ const INTERACTIONS = [
     severity: 'synergy',
     mechanism: 'Boron modestly increases free (unbound) testosterone by reducing sex hormone-binding globulin; DHEA provides the upstream precursor pool boron\'s conversion enzymes act on. Complementary upstream-precursor and downstream-availability roles.',
     source: 'Naghii MR et al. J Trace Elem Med Biol 2011',
+    source_type: 'pubmed',
   },
   {
     substance_a: 'fish-oil',
@@ -738,6 +841,7 @@ const INTERACTIONS = [
     severity: 'synergy',
     mechanism: 'Omega-3 fatty acids are highly susceptible to oxidative damage; astaxanthin is a potent lipid-soluble antioxidant that protects unsaturated fats from oxidation both in the supplement and in cell membranes after absorption.',
     source: 'Barros MP et al. Comp Biochem Physiol C 2001',
+    source_type: 'pubmed',
   },
   {
     substance_a: 'beta-glucan',
@@ -745,6 +849,7 @@ const INTERACTIONS = [
     severity: 'synergy',
     mechanism: 'Vitamin C enhances neutrophil migration and function, while beta-glucan primes innate immune cells via Dectin-1 receptor binding. Complementary innate-immune mechanisms are commonly combined in immune-support formulas.',
     source: 'Carr AC, Maggini S. Nutrients 2017; Vetvicka V, Vetvickova J. Ann Transl Med 2015',
+    source_type: 'pubmed',
   },
   {
     substance_a: 'ubiquinol',
@@ -752,6 +857,7 @@ const INTERACTIONS = [
     severity: 'synergy',
     mechanism: 'PQQ stimulates mitochondrial biogenesis (creating new mitochondria) while ubiquinol supports the electron transport chain within existing mitochondria. Complementary upstream (biogenesis) and downstream (function) mitochondrial support.',
     source: 'Chowanadisai W et al. J Biol Chem 2010; Mortensen SA. Ann N Y Acad Sci 2003',
+    source_type: 'pubmed',
   },
   {
     substance_a: 'whey-protein',
@@ -759,6 +865,7 @@ const INTERACTIONS = [
     severity: 'synergy',
     mechanism: 'Whey supplies the complete amino acid pool for muscle protein synthesis while creatine supports the ATP regeneration that drives the training intensity needed to trigger that synthesis. The most common and best-evidenced recovery stack in sports nutrition.',
     source: 'Cribb PJ et al. Med Sci Sports Exerc 2007',
+    source_type: 'pubmed',
   },
   {
     substance_a: 'l-arginine',
@@ -766,13 +873,15 @@ const INTERACTIONS = [
     severity: 'synergy',
     mechanism: 'Citrulline raises plasma arginine levels over 1-2 hours by bypassing liver first-pass metabolism; direct arginine supplementation adds an immediate, if less efficient, substrate pool. Combined use can extend the duration of elevated plasma arginine.',
     source: 'Schwedhelm E et al. Br J Clin Pharmacol 2008',
+    source_type: 'pubmed',
   },
   {
     substance_a: 'yohimbine',
     substance_b: 'l-carnitine',
     severity: 'synergy',
     mechanism: 'Yohimbine mobilizes fatty acids from stubborn fat stores by blocking alpha-2 receptors; L-carnitine shuttles those mobilized fatty acids into mitochondria for oxidation. Complementary mobilization-and-oxidation mechanism for fat metabolism.',
-    source: 'Ostojic SM. Res Sports Med 2006; pharmacodynamic complementary lipid mobilization/oxidation',
+    source: 'Ostojic SM. Res Sports Med 2006',
+    source_type: 'pubmed',
   },
   {
     substance_a: 'kava',
@@ -780,6 +889,7 @@ const INTERACTIONS = [
     severity: 'synergy',
     mechanism: 'Kava\'s GABAergic anxiolysis pairs with L-theanine\'s alpha-wave-promoting calm-without-sedation effect, offering anxiety relief with less risk of the excessive drowsiness either might produce at a higher standalone dose.',
     source: 'Sarris J et al. Psychopharmacology 2013; Kimura K et al. Biol Psychol 2007',
+    source_type: 'pubmed',
   },
   {
     substance_a: 'passionflower',
@@ -787,6 +897,7 @@ const INTERACTIONS = [
     severity: 'synergy',
     mechanism: 'Passionflower raises GABA levels while magnesium blocks NMDA-receptor-driven excitability and activates GABA-A receptors. Complementary inhibitory neurotransmission pathways for sleep onset without additive next-day grogginess at standard doses.',
     source: 'Miyasaka LS et al. Cochrane Database Syst Rev 2007; Boyle NB et al. Nutrients 2017',
+    source_type: 'pubmed',
   },
   {
     substance_a: 'holy-basil',
@@ -794,6 +905,7 @@ const INTERACTIONS = [
     severity: 'synergy',
     mechanism: 'Holy basil modestly supports blood glucose regulation via adaptogenic cortisol modulation, while berberine directly activates AMPK to improve insulin sensitivity. Complementary mechanisms for blood sugar support.',
     source: 'Agrawal P et al. Diabetes Res Clin Pract 1996; Yin J et al. Metabolism 2008',
+    source_type: 'pubmed',
   },
   {
     substance_a: 'l-tyrosine',
@@ -801,6 +913,7 @@ const INTERACTIONS = [
     severity: 'synergy',
     mechanism: 'Caffeine blocks adenosine to reduce perceived fatigue; tyrosine replenishes the catecholamine precursor pool that sustained cognitive effort and stress deplete. Complementary acute-stimulant and precursor-replenishment mechanisms for performance under stress.',
     source: 'Attipoe S et al. Mil Med 2015',
+    source_type: 'pubmed',
   },
   {
     substance_a: 'nadh',
@@ -808,6 +921,7 @@ const INTERACTIONS = [
     severity: 'synergy',
     mechanism: 'NADH donates electrons at Complex I of the electron transport chain; CoQ10 shuttles those electrons onward to Complex III. Sequential roles in the same mitochondrial energy-production pathway.',
     source: 'Mortensen SA. Ann N Y Acad Sci 2003',
+    source_type: 'pubmed',
   },
   {
     substance_a: 'cla',
@@ -815,6 +929,7 @@ const INTERACTIONS = [
     severity: 'synergy',
     mechanism: 'CLA is proposed to alter fat cell metabolism and reduce fat storage, while L-carnitine transports the resulting free fatty acids into mitochondria for oxidation. Complementary fat-handling and fat-burning mechanisms, though both have modest individual effect sizes.',
     source: 'Pooyandjoo M et al. Obes Rev 2016; Blankson H et al. J Nutr 2000',
+    source_type: 'pubmed',
   },
   {
     substance_a: 'colostrum',
@@ -822,13 +937,15 @@ const INTERACTIONS = [
     severity: 'synergy',
     mechanism: 'Colostrum\'s immunoglobulins and growth factors support gut barrier repair, while probiotics restore beneficial microbial colonization. Complementary structural and microbial approaches to gut health, particularly relevant for endurance athletes managing exercise-induced permeability.',
     source: 'Playford RJ, Weiser MJ. Nutrients 2021',
+    source_type: 'pubmed',
   },
   {
     substance_a: 'forskolin',
     substance_b: 'l-carnitine',
     severity: 'synergy',
     mechanism: 'Forskolin raises cAMP to promote fatty acid release from fat cells; L-carnitine transports those released fatty acids into mitochondria for beta-oxidation. Complementary release-and-transport roles in fat metabolism.',
-    source: 'Godard MP et al. Obes Res 2005; pharmacodynamic complementary lipid mobilization/oxidation',
+    source: 'Godard MP et al. Obes Res 2005',
+    source_type: 'pubmed',
   },
   {
     substance_a: 'shilajit',
@@ -836,6 +953,246 @@ const INTERACTIONS = [
     severity: 'synergy',
     mechanism: 'Shilajit supports mitochondrial energy and modest testosterone elevation via fulvic acid and trace minerals, while ashwagandha lowers cortisol and supports stress resilience. Complementary vitality-and-stress-management mechanisms commonly combined in men\'s health protocols.',
     source: 'Pandit S et al. Andrologia 2016; Chandrasekhar K et al. Indian J Psychol Med 2012',
+    source_type: 'pubmed',
+  },
+
+  // ── DANGER (PubMed-sourced gap fill) ───────────────────────────────────────
+
+  {
+    substance_a: 'mucuna-pruriens',
+    substance_b: 'levodopa',
+    severity: 'danger',
+    mechanism: 'Mucuna seed extract is a natural source of L-dopa. Taken with levodopa/carbidopa it duplicates the drug and can cause excessive dopaminergic effects (dyskinesia, nausea, blood-pressure swings).',
+    source: 'Katzenschlager R et al. J Neurol Neurosurg Psychiatry 2004',
+    source_type: 'pubmed',
+  },
+
+  // ── CAUTION (PubMed-sourced gap fill) ──────────────────────────────────────
+
+  {
+    substance_a: 'chondroitin',
+    substance_b: 'warfarin',
+    severity: 'caution',
+    mechanism: 'Case reports describe raised INR when glucosamine-chondroitin products were added to warfarin. The mechanism is unclear and the evidence is limited to case reports; monitor INR if combined.',
+    source: 'Rozenfeld V et al. Am J Health Syst Pharm 2004; Knudsen JF, Sokol GH. Pharmacotherapy 2008',
+    source_type: 'pubmed',
+  },
+  {
+    substance_a: 'saw-palmetto',
+    substance_b: 'warfarin',
+    severity: 'caution',
+    mechanism: 'A case of intraoperative haemorrhage has been reported with saw palmetto extract, and it may have mild antiplatelet activity. Evidence is limited; raise with a prescriber if on anticoagulants or before surgery.',
+    source: 'Cheema P et al. J Intern Med 2001',
+    source_type: 'pubmed',
+  },
+  {
+    substance_a: 'vitamin-e',
+    substance_b: 'warfarin',
+    severity: 'caution',
+    mechanism: 'High-dose vitamin E can antagonise vitamin K-dependent clotting and inhibit platelet aggregation, which may increase bleeding risk with warfarin. Effects appear dose-dependent and inconsistent at lower doses.',
+    source: 'Corrigan JJ, Ulfers LL. Am J Clin Nutr 1981; Booth SL et al. Am J Clin Nutr 2004',
+    source_type: 'pubmed',
+  },
+  {
+    substance_a: 'vitamin-e',
+    substance_b: 'statins',
+    severity: 'caution',
+    mechanism: 'In the HATS trial an antioxidant combination that included vitamin E blunted the HDL-raising effect of simvastatin plus niacin. The finding was for the combination, not vitamin E alone.',
+    source: 'Brown BG et al. N Engl J Med 2001',
+    source_type: 'pubmed',
+  },
+  {
+    substance_a: 'vitamin-a',
+    substance_b: 'vitamin-d3',
+    severity: 'caution',
+    mechanism: 'High vitamin A intake has been shown to antagonise the calcium response to vitamin D, which may matter for bone health if vitamin A intake is high.',
+    source: 'Johansson S, Melhus H. J Bone Miner Res 2001',
+    source_type: 'pubmed',
+  },
+  {
+    substance_a: 'milk-thistle',
+    substance_b: 'diabetes medication',
+    severity: 'caution',
+    mechanism: 'Silymarin lowered fasting glucose and HbA1c in a small trial of type 2 diabetics on medication, so additive glucose lowering is possible.',
+    source: 'Huseini HF et al. Phytother Res 2006',
+    source_type: 'pubmed',
+  },
+  {
+    substance_a: 'beetroot-extract',
+    substance_b: 'antihypertensive medications',
+    severity: 'caution',
+    mechanism: 'Dietary nitrate lowers blood pressure; combined with antihypertensives the effect may be additive (risk of low blood pressure, dizziness).',
+    source: 'Kapil V et al. Hypertension 2015',
+    source_type: 'pubmed',
+  },
+  {
+    substance_a: 'bcaas',
+    substance_b: 'levodopa',
+    severity: 'caution',
+    mechanism: 'Large neutral amino acids, including the BCAAs, compete with levodopa for intestinal and blood-brain-barrier transport and can reduce its effect.',
+    source: 'Nutt JG et al. N Engl J Med 1984',
+    source_type: 'pubmed',
+  },
+  {
+    substance_a: 'eaas',
+    substance_b: 'levodopa',
+    severity: 'caution',
+    mechanism: 'EAA blends contain the large neutral amino acids that compete with levodopa for absorption and brain uptake, which can blunt its effect.',
+    source: 'Nutt JG et al. N Engl J Med 1984',
+    source_type: 'pubmed',
+  },
+  {
+    substance_a: 'bcaas',
+    substance_b: 'diabetes medication',
+    severity: 'caution',
+    mechanism: 'Elevated circulating BCAAs are associated with insulin resistance. Evidence is observational and supplement-specific effects are unclear, so people managing diabetes should discuss with a clinician.',
+    source: 'Newgard CB et al. Cell Metab 2009',
+    source_type: 'pubmed',
+  },
+  {
+    substance_a: 'gaba',
+    substance_b: 'benzodiazepines',
+    severity: 'caution',
+    mechanism: 'Additive sedation is theoretically possible with GABAergic drugs, although oral GABA may cross the blood-brain barrier only poorly. Evidence for a clinical interaction is lacking.',
+    source: 'Boonstra E et al. Front Psychol 2015',
+    source_type: 'pubmed',
+  },
+
+  // ── SYNERGY (PubMed-sourced gap fill) ──────────────────────────────────────
+
+  {
+    substance_a: 'sodium-bicarbonate',
+    substance_b: 'beta-alanine',
+    severity: 'synergy',
+    mechanism: 'Beta-alanine raises muscle carnosine (intracellular buffering) while bicarbonate buffers extracellular acid; combining them improved high-intensity performance more than either alone in one trial.',
+    source: 'Tobias G et al. Amino Acids 2013',
+    source_type: 'pubmed',
+  },
+  {
+    substance_a: 'betaine-anhydrous',
+    substance_b: 'folate',
+    severity: 'synergy',
+    mechanism: 'Betaine and folate remethylate homocysteine through separate pathways (BHMT and methionine synthase), so they are complementary for methylation support.',
+    source: 'Olthof MR, Verhoef P. Curr Drug Metab 2005',
+    source_type: 'pubmed',
+  },
+  {
+    substance_a: 'phosphatidylserine',
+    substance_b: 'omega-3',
+    severity: 'synergy',
+    mechanism: 'Phosphatidylserine delivered with omega-3 (DHA/EPA) improved memory measures in older adults with memory complaints in a small trial; both support neuronal membranes.',
+    source: 'Vakhapova V et al. Dement Geriatr Cogn Disord 2010',
+    source_type: 'pubmed',
+  },
+  {
+    substance_a: 'myo-inositol',
+    substance_b: 'folate',
+    severity: 'synergy',
+    mechanism: 'Inositol acts on neural-tube closure via a folate-independent pathway; pilot data support adding it alongside folic acid in pregnancy planning (clinician guidance required).',
+    source: 'Greene NDE et al. Br J Nutr 2016',
+    source_type: 'pubmed',
+  },
+  {
+    substance_a: 'magnesium-l-threonate',
+    substance_b: 'vitamin-d3',
+    severity: 'synergy',
+    mechanism: 'Magnesium is a cofactor for the enzymes that activate and metabolise vitamin D, so adequate magnesium supports vitamin D function.',
+    source: 'Uwitonze AM, Razzaque MS. J Am Osteopath Assoc 2018',
+    source_type: 'pubmed',
+  },
+  {
+    substance_a: 'vitamin-a',
+    substance_b: 'zinc-bisglycinate',
+    severity: 'synergy',
+    mechanism: 'Zinc is needed to synthesise retinol-binding protein and for vitamin A metabolism, so adequate zinc supports vitamin A utilisation.',
+    source: 'Christian P, West KP Jr. Am J Clin Nutr 1998',
+    source_type: 'pubmed',
+  },
+  {
+    substance_a: 'vitamin-e',
+    substance_b: 'vitamin-c',
+    severity: 'synergy',
+    mechanism: 'Vitamin C regenerates the oxidised tocopheroxyl radical back to active vitamin E, extending its antioxidant action.',
+    source: 'Packer JE et al. Nature 1979',
+    source_type: 'pubmed',
+  },
+  {
+    substance_a: 'iodine',
+    substance_b: 'selenium',
+    severity: 'synergy',
+    mechanism: 'Selenium-dependent deiodinases activate thyroid hormone and selenoproteins protect the thyroid from oxidative stress generated during iodine handling.',
+    source: 'Köhrle J et al. Endocr Rev 2005',
+    source_type: 'pubmed',
+  },
+
+  // ── DANGER (clinical guidance sources) ─────────────────────────────────────
+
+  {
+    substance_a: 'mucuna-pruriens',
+    substance_b: 'maoi antidepressants',
+    severity: 'danger',
+    mechanism: 'Levodopa combined with non-selective MAO inhibitors can precipitate a hypertensive crisis; mucuna supplies L-dopa, so the same risk is expected.',
+    source: 'Levodopa/carbidopa prescribing information (MAOI contraindication)',
+    source_type: 'guidance',
+  },
+  {
+    substance_a: 'vitamin-a',
+    substance_b: 'retinoids (isotretinoin, acitretin)',
+    severity: 'danger',
+    mechanism: 'Retinoid drugs are vitamin A analogues; adding preformed vitamin A raises the risk of hypervitaminosis A (liver toxicity, intracranial pressure, birth defects).',
+    source: 'NIH Office of Dietary Supplements, Vitamin A fact sheet',
+    source_type: 'guidance',
+  },
+
+  // ── CAUTION (clinical guidance sources) ────────────────────────────────────
+
+  {
+    substance_a: 'iodine',
+    substance_b: 'thyroid medication',
+    severity: 'caution',
+    mechanism: 'Supplemental iodine can alter thyroid hormone production and may interfere with levothyroxine or antithyroid drugs; avoid high-dose iodine without monitoring.',
+    source: 'NIH Office of Dietary Supplements, Iodine fact sheet',
+    source_type: 'guidance',
+  },
+  {
+    substance_a: 'iodine',
+    substance_b: 'ace inhibitors',
+    severity: 'caution',
+    mechanism: 'Potassium iodide combined with ACE inhibitors can cause hyperkalaemia.',
+    source: 'NIH Office of Dietary Supplements, Iodine fact sheet',
+    source_type: 'guidance',
+  },
+  {
+    substance_a: 'chromium',
+    substance_b: 'diabetes medication',
+    severity: 'caution',
+    mechanism: 'Chromium may improve insulin sensitivity and lower glucose, so combining with insulin or oral hypoglycaemics can raise hypoglycaemia risk; monitor glucose.',
+    source: 'NIH Office of Dietary Supplements, Chromium fact sheet',
+    source_type: 'guidance',
+  },
+  {
+    substance_a: 'electrolytes',
+    substance_b: 'ace inhibitors',
+    severity: 'caution',
+    mechanism: 'Electrolyte products containing potassium can push potassium too high when combined with ACE inhibitors, which reduce potassium excretion.',
+    source: 'NIH Office of Dietary Supplements, Potassium fact sheet',
+    source_type: 'guidance',
+  },
+  {
+    substance_a: 'biotin',
+    substance_b: 'thyroid and troponin lab tests',
+    severity: 'caution',
+    mechanism: 'High-dose biotin can cause falsely high or low results on streptavidin-biotin immunoassays (thyroid panels, troponin). Stop biotin before testing as advised by the lab.',
+    source: 'US FDA Safety Communication on biotin interference with lab tests, 2017 (updated 2019)',
+    source_type: 'guidance',
+  },
+  {
+    substance_a: 'magnesium-l-threonate',
+    substance_b: 'antibiotics (tetracyclines, fluoroquinolones)',
+    severity: 'caution',
+    mechanism: 'Magnesium chelates these antibiotics in the gut and reduces their absorption; separate doses by several hours.',
+    source: 'NIH Office of Dietary Supplements, Magnesium fact sheet',
+    source_type: 'guidance',
   },
 ];
 
