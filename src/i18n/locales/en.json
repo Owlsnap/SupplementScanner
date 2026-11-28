@@ -437,7 +437,13 @@
     "synergyTitle": "Synergy — Beneficial combinations",
     "networkError": "Network error — please try again",
     "guidanceTitle": "General guidance",
-    "guidanceBody": "The schedule, overlaps and suggestions below are general AI guidance. Unlike the interaction warnings above, they are not backed by cited sources. Check with a healthcare professional before changing your routine."
+    "guidanceBody": "The schedule, overlaps and suggestions below are general AI guidance. Unlike the interaction warnings above, they are not backed by cited sources. Check with a healthcare professional before changing your routine.",
+    "removeSupplement": "Remove {{name}} from stack",
+    "clearStack": "Clear stack",
+    "confirmClear": "Remove all supplements from your stack?",
+    "evaluatePrompt": "Ready to check {{count}} supplements for interactions, synergies and warnings.",
+    "evaluateButton": "Evaluate stack",
+    "retryButton": "Try again"
   },
   "mobileApp": {
     "badge": "iOS & ANDROID — COMING SOON",

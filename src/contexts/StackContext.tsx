@@ -13,6 +13,7 @@ interface StackContextValue {
   stack: string[];
   addToStack: (slug: string) => void;
   removeFromStack: (slug: string) => void;
+  clearStack: () => void;
   inStack: (slug: string) => boolean;
 }
 
@@ -20,6 +21,7 @@ const StackContext = createContext<StackContextValue>({
   stack: [],
   addToStack: () => {},
   removeFromStack: () => {},
+  clearStack: () => {},
   inStack: () => false,
 });
 
@@ -43,10 +45,15 @@ export function StackProvider({ children }: { children: React.ReactNode }) {
     });
   }, []);
 
+  const clearStack = useCallback(() => {
+    writeStack([]);
+    setStack([]);
+  }, []);
+
   const inStack = useCallback((slug: string) => stack.includes(slug), [stack]);
 
   return (
-    <StackContext.Provider value={{ stack, addToStack, removeFromStack, inStack }}>
+    <StackContext.Provider value={{ stack, addToStack, removeFromStack, clearStack, inStack }}>
       {children}
     </StackContext.Provider>
   );

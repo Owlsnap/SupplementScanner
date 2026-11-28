@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ArrowLeft, ArrowRight, Warning, Lightning, Sparkle, CheckCircle, UserCircle, Sun, Barbell, ForkKnife, Moon, Star, CopySimple, PlusCircle, Info } from '@phosphor-icons/react';
+import { ArrowLeft, ArrowRight, Warning, Lightning, Sparkle, CheckCircle, UserCircle, Sun, Barbell, ForkKnife, Moon, Star, CopySimple, PlusCircle, Info, X, Trash } from '@phosphor-icons/react';
 import { useStack } from '../contexts/StackContext';
 import { useAuth } from '../contexts/AuthContext';
 import { useLanguage } from '../contexts/LanguageContext';
@@ -289,10 +289,10 @@ function ComplementsSection({ complements, onNavigate }: { complements: MissingC
 
 export default function StackEvaluationPage() {
   const navigate = useNavigate();
-  const { stack } = useStack();
+  const { stack, removeFromStack, clearStack } = useStack();
   const { session } = useAuth();
   const { t } = useLanguage();
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [bySeverity, setBySeverity] = useState<BySeverity | null>(null);
   const [insights, setInsights] = useState<StackInsights | null>(null);
@@ -302,11 +302,31 @@ export default function StackEvaluationPage() {
 
   const apiUrl = (import.meta as any).env?.VITE_API_URL || 'http://localhost:3001';
 
+  // Evaluation only runs when the user clicks the button. Any stack change
+  // discards the previous results (they no longer match) and cancels an in-flight request.
+  const abortRef = useRef<AbortController | null>(null);
+  const stackKey = stack.join(',');
   useEffect(() => {
-    if (stack.length < 2 || !session) { setLoading(false); return; }
+    abortRef.current?.abort();
+    setBySeverity(null);
+    setInsights(null);
+    setError(null);
+    setLoading(false);
+  }, [stackKey, session?.access_token]);
+
+  useEffect(() => () => abortRef.current?.abort(), []);
+
+  const evaluateStack = () => {
+    if (stack.length < 2 || !session || loading) return;
+    abortRef.current?.abort();
+    const controller = new AbortController();
+    abortRef.current = controller;
+    setError(null);
+    setLoading(true);
 
     fetch(`${apiUrl}/api/premium/evaluate-stack`, {
       method: 'POST',
+      signal: controller.signal,
       headers: {
         'Content-Type': 'application/json',
         ...(session?.access_token ? { Authorization: `Bearer ${session.access_token}` } : {}),
@@ -326,9 +346,18 @@ export default function StackEvaluationPage() {
           setError(data.error ?? 'Failed to evaluate stack');
         }
       })
-      .catch(() => setError(t('stackEvaluation.networkError')))
-      .finally(() => setLoading(false));
-  }, []);
+      .catch(err => {
+        if (err?.name === 'AbortError') return;
+        setError(t('stackEvaluation.networkError'));
+      })
+      .finally(() => {
+        if (!controller.signal.aborted) setLoading(false);
+      });
+  };
+
+  const handleClearStack = () => {
+    if (window.confirm(t('stackEvaluation.confirmClear'))) clearStack();
+  };
 
   const total = bySeverity
     ? bySeverity.danger.length + bySeverity.caution.length + bySeverity.synergy.length
@@ -368,8 +397,25 @@ export default function StackEvaluationPage() {
           background: 'var(--bg-surface)', borderRadius: '16px',
           border: '1.5px solid var(--border)', padding: '1rem 1.25rem', marginBottom: '1.5rem',
         }}>
-          <div style={{ fontFamily: "'Manrope', sans-serif", fontWeight: 800, fontSize: '0.875rem', color: 'var(--text-secondary)', marginBottom: '0.625rem', textTransform: 'uppercase', letterSpacing: '0.5px' }}>
-            {t('stackEvaluation.yourStack')}
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '0.625rem' }}>
+            <div style={{ fontFamily: "'Manrope', sans-serif", fontWeight: 800, fontSize: '0.875rem', color: 'var(--text-secondary)', textTransform: 'uppercase', letterSpacing: '0.5px' }}>
+              {t('stackEvaluation.yourStack')}
+            </div>
+            {stackSupplements.length > 0 && (
+              <button
+                onClick={handleClearStack}
+                style={{
+                  display: 'inline-flex', alignItems: 'center', gap: '0.25rem',
+                  background: 'transparent', border: 'none', padding: '0.25rem 0.375rem',
+                  color: 'var(--text-secondary)', cursor: 'pointer', borderRadius: '8px',
+                  fontFamily: "'Inter', sans-serif", fontWeight: 600, fontSize: '0.8125rem',
+                }}
+                onMouseEnter={e => { e.currentTarget.style.color = '#ba1a1a'; }}
+                onMouseLeave={e => { e.currentTarget.style.color = 'var(--text-secondary)'; }}
+              >
+                <Trash size={14} /> {t('stackEvaluation.clearStack')}
+              </button>
+            )}
           </div>
           {stackSupplements.length === 0 ? (
             <p style={{ fontFamily: "'Inter', sans-serif", fontSize: '0.875rem', color: 'var(--text-secondary)', margin: 0 }}>
@@ -385,12 +431,28 @@ export default function StackEvaluationPage() {
             <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.375rem' }}>
               {stackSupplements.map(s => (
                 <span key={s.slug} style={{
-                  padding: '0.25rem 0.75rem', borderRadius: '999px',
+                  display: 'inline-flex', alignItems: 'center', gap: '0.25rem',
+                  padding: '0.25rem 0.375rem 0.25rem 0.75rem', borderRadius: '999px',
                   background: '#e6f4f1', border: '1px solid #b3ddd8',
                   color: '#00685f', fontFamily: "'Inter', sans-serif",
                   fontWeight: 600, fontSize: '0.8125rem',
                 }}>
                   {s.name}
+                  <button
+                    onClick={() => removeFromStack(s.slug)}
+                    aria-label={t('stackEvaluation.removeSupplement', { name: s.name })}
+                    title={t('stackEvaluation.removeSupplement', { name: s.name })}
+                    style={{
+                      display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
+                      width: '18px', height: '18px', borderRadius: '50%',
+                      background: 'transparent', border: 'none', padding: 0,
+                      color: '#00685f', cursor: 'pointer',
+                    }}
+                    onMouseEnter={e => { e.currentTarget.style.background = '#b3ddd8'; }}
+                    onMouseLeave={e => { e.currentTarget.style.background = 'transparent'; }}
+                  >
+                    <X size={11} weight="bold" />
+                  </button>
                 </span>
               ))}
             </div>
@@ -444,6 +506,32 @@ export default function StackEvaluationPage() {
             >
               <UserCircle size={16} />
               {t('stackEvaluation.signInButton')}
+            </button>
+          </div>
+        )}
+
+        {!loading && !bySeverity && stack.length >= 2 && session && (
+          <div style={{
+            textAlign: 'center', padding: '2rem 1.5rem',
+            background: 'var(--bg-surface)', borderRadius: '16px',
+            border: '1.5px solid var(--border)', marginBottom: '1rem',
+          }}>
+            <p style={{ fontFamily: "'Inter', sans-serif", fontSize: '0.875rem', color: 'var(--text-muted)', margin: '0 0 1.25rem', lineHeight: 1.6 }}>
+              {t('stackEvaluation.evaluatePrompt', { count: stack.length })}
+            </p>
+            <button
+              onClick={evaluateStack}
+              style={{
+                background: '#00685f', color: '#ffffff',
+                border: 'none', borderRadius: '28px',
+                padding: '0.75rem 1.5rem',
+                fontFamily: "'Inter', sans-serif", fontWeight: 600,
+                fontSize: '0.9375rem', cursor: 'pointer',
+                display: 'inline-flex', alignItems: 'center', gap: '0.375rem',
+              }}
+            >
+              <Lightning size={16} weight="fill" />
+              {error ? t('stackEvaluation.retryButton') : t('stackEvaluation.evaluateButton')}
             </button>
           </div>
         )}
