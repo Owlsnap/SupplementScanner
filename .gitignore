@@ -36,3 +36,4 @@ SuppScannerApp/dist/
 
 # RAG eval run reports (CI uploads them as artifacts)
 scripts/eval/reports/
+beta-invite-preview.html
